@@ -217,9 +217,13 @@ open-lab-components/
    - 填写 Manifest 元数据
    - 实现组件 HTML/CSS/JS
 
-3. **本地验证**
+3. **本地验证和注册**
    ```bash
+   # 验证组件是否符合规范
    npm run validate
+   
+   # 构建注册表（将新组件注册到 registry/）
+   npm run build:registry
    ```
 
 4. **提交 PR**

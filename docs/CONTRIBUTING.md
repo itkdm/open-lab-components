@@ -38,11 +38,33 @@
 
 ### Step 4：本地自检
 
-请对照 `docs/SPEC.md` 的“质量检查清单”逐条自检：
+请对照 `docs/SPEC.md` 的"质量检查清单"逐条自检：
 
 - HTML fragment / 单根节点 / 无外链 / CSS 隔离 / CSS 变量 / JS 自包含（如有）
 
-### Step 5：提交 PR
+### Step 5：验证和注册组件
+
+**重要：每次新增组件后，必须执行以下命令更新注册表：**
+
+```bash
+# 1. 验证组件是否符合规范
+npm run validate
+
+# 2. 构建注册表（将新组件注册到 registry/）
+npm run build:registry
+
+# 3. 如果需要更新展示站，运行完整构建
+npm run build
+```
+
+**说明：**
+- `npm run validate` - 验证所有组件是否符合规范（必须通过）
+- `npm run build:registry` - 从组件文件中提取 Manifest，生成 `registry/registry.json`、`registry/categories.json`、`registry/tags.json`
+- `npm run build` - 构建注册表和展示站（包含 `build:registry` 和 `build:site`）
+
+**注意：** 注册表文件（`registry/*.json`）是自动生成的，不要手动编辑。每次新增或修改组件后都需要重新运行 `npm run build:registry`。
+
+### Step 6：提交 PR
 
 PR 描述中请包含：
 

@@ -1,0 +1,113 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.switch.knife.basic",
+  "name": "开关（刀闸）",
+  "nameEn": "Knife Switch",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 118, "h": 100 },
+  "tags": ["switch", "knife-switch", "circuit", "static"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 120, "min": 48, "max": 360, "desc": "组件尺寸（正方形）" },
+    { "key": "stroke", "type": "color", "default": "#2b2b2b", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number(px)", "default": 2, "min": 0.5, "max": 6, "desc": "描边宽度" },
+
+    { "key": "metalHi", "type": "color", "default": "#f1b8a3", "desc": "金属高光色" },
+    { "key": "metalMid", "type": "color", "default": "#d07c66", "desc": "金属主体色" },
+    { "key": "metalLo", "type": "color", "default": "#a65443", "desc": "金属阴影色" },
+
+    { "key": "pivotFill", "type": "color", "default": "#c9c9c9", "desc": "转轴外圈填充" },
+    { "key": "pivotInner", "type": "color", "default": "#2d2d2d", "desc": "转轴内圈填充" },
+
+    { "key": "angle", "type": "number(deg)", "default": -50, "min": -90, "max": 0, "desc": "刀闸角度（-90~0，0 为闭合）" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+
+    "metalHi": "--cmp-metal-hi",
+    "metalMid": "--cmp-metal-mid",
+    "metalLo": "--cmp-metal-lo",
+
+    "pivotFill": "--cmp-pivot-fill",
+    "pivotInner": "--cmp-pivot-inner",
+
+    "angle": "--cmp-switch-angle"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.switch.knife.basic" role="img" aria-label="开关（刀闸）">
+    <svg viewBox="0 0 118 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="phy-switch-metal" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--cmp-metal-hi, #f1b8a3)"/>
+          <stop offset="0.55" stop-color="var(--cmp-metal-mid, #d07c66)"/>
+          <stop offset="1" stop-color="var(--cmp-metal-lo, #a65443)"/>
+        </linearGradient>
+  
+        <!-- 右侧触点：左端“卡槽” -->
+        <mask id="phy-switch-notch-right">
+          <rect x="0" y="0" width="118" height="100" fill="white"/>
+          <circle cx="76" cy="44" r="5.6" fill="black"/>
+        </mask>
+  
+        <!-- 刀闸：右端“卡槽” -->
+        <mask id="phy-switch-notch-lever">
+          <rect x="0" y="0" width="118" height="100" fill="white"/>
+          <circle cx="95" cy="44" r="5.6" fill="black"/>
+        </mask>
+      </defs>
+  
+      <!-- 左侧底座 -->
+      <rect x="6" y="36" width="52" height="16" rx="8"
+            fill="url(#phy-switch-metal)" class="stroke"/>
+  
+      <!-- 右侧触点 -->
+      <rect x="72" y="36" width="40" height="16" rx="8"
+            fill="url(#phy-switch-metal)" class="stroke"
+            mask="url(#phy-switch-notch-right)"/>
+  
+      <!-- 刀闸（可转动） -->
+      <g class="lever">
+        <rect x="58" y="36" width="44" height="16" rx="8"
+              fill="url(#phy-switch-metal)" class="stroke"
+              mask="url(#phy-switch-notch-lever)"/>
+      </g>
+  
+      <!-- 转轴 -->
+      <circle cx="58" cy="44" r="10"
+              fill="var(--cmp-pivot-fill, #c9c9c9)" class="stroke"/>
+      <circle cx="58" cy="44" r="4.8"
+              fill="var(--cmp-pivot-inner, #2d2d2d)"/>
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.switch.knife.basic"]{
+        width: var(--cmp-size, 120px);
+        height: var(--cmp-size, 120px);
+        display: inline-block;
+    }
+
+    .cmp[data-cmp-id="phy.switch.knife.basic"] svg{
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .cmp[data-cmp-id="phy.switch.knife.basic"] .stroke{
+        stroke: var(--cmp-stroke, #2b2b2b);
+        stroke-width: var(--cmp-stroke-width, 2px);
+        stroke-linejoin: round;
+        stroke-linecap: round;
+    }
+
+    .cmp[data-cmp-id="phy.switch.knife.basic"] .lever{
+        /* 以自身 bbox 左侧中点为旋转轴（对应转轴中心） */
+        transform-box: fill-box;
+        transform-origin: 0% 50%;
+        transform: rotate(var(--cmp-switch-angle, -50deg));
+    }
+</style>
