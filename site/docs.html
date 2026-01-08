@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="./logo.png">
   <title>Docs - Open Lab Components</title>
   <!-- GitHub 风格的 Markdown 样式 + 代码高亮样式，仅文档页使用 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown-light.min.css">
@@ -392,9 +393,9 @@
   <script>
     const LANG_KEY = 'olc-lang';
     const DOCS = {
-      spec: { path: '../docs/SPEC.md' },
-      category: { path: '../docs/CATEGORY.md' },
-      contrib: { path: '../docs/CONTRIBUTING.md' }
+      spec: { path: './docs/SPEC.md' },
+      category: { path: './docs/CATEGORY.md' },
+      contrib: { path: './docs/CONTRIBUTING.md' }
     };
 
     const i18n = {
@@ -520,8 +521,9 @@
         }
         buildToc();
       } catch (e) {
-        container.innerHTML = '<p>Failed to load document.</p>';
-        console.error(e);
+        container.innerHTML = `<p>Failed to load document: ${e.message}</p><p>Path: ${meta.path}</p>`;
+        console.error('Failed to load document:', e);
+        console.error('Attempted path:', meta.path);
       }
 
       document.querySelectorAll('.sidebar-link').forEach(link => {

@@ -54,6 +54,13 @@ function main() {
     copyDir(REGISTRY_DIR, path.join(SITE_DIST, 'registry'));
   }
 
+  // 复制 docs/ 到 site/dist/docs/
+  const DOCS_DIR = path.join(ROOT, 'docs');
+  if (fs.existsSync(DOCS_DIR)) {
+    console.log('  Copying docs/...');
+    copyDir(DOCS_DIR, path.join(SITE_DIST, 'docs'));
+  }
+
   // 复制 site 静态资源（如果有）
   const staticDirs = ['assets', 'pages'];
   for (const dir of staticDirs) {
