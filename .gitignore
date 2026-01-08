@@ -11,3 +11,8 @@ site/assets/registry.json
 site/assets/categories.json
 site/assets/tags.json
 site/assets/components/
+
+# Temporary documentation files
+INIT_GIT.md
+操作步骤.md
+docs/GITHUB_PAGES_SETUP.md
