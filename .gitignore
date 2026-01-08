@@ -1,0 +1,13 @@
+node_modules/
+.DS_Store
+*.log
+
+# Generated outputs
+registry/*.json
+!registry/.gitkeep
+!registry/category-names.json
+site/dist/
+site/assets/registry.json
+site/assets/categories.json
+site/assets/tags.json
+site/assets/components/

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docs - Open Lab Components</title>
+  <!-- GitHub 风格的 Markdown 样式 + 代码高亮样式，仅文档页使用 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@5.5.1/github-markdown-light.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --bg: #eff4ee;
+      --surface: #ffffff;
+      --border: #d1d5db;
+      --border-light: #e5e7eb;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --text-tertiary: #6b7280;
+      --accent: #10b981;
+      --radius: 0.75rem;
+      --radius-sm: 0.5rem;
+      --radius-lg: 1rem;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* 导航栏 */
+    .nav-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: none;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo {
+      height: 32px;
+      width: 32px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+    }
+
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      padding: 0.55rem 1.05rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid transparent;
+      line-height: 1.1;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+
+    .lang-btn {
+      min-width: 78px;
+    }
+
+    /* 内容布局 */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px 40px;
+    }
+
+    .docs-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+    }
+
+    .docs-sidebar {
+      width: 220px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 64px;
+      align-self: flex-start;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-tertiary);
+      margin-bottom: 0.75rem;
+    }
+
+    .sidebar-nav {
+      list-style: none;
+      border-radius: var(--radius-lg);
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      padding: 8px 0;
+    }
+
+    .sidebar-item {
+      margin: 0;
+    }
+
+    .sidebar-link {
+      display: block;
+      padding: 8px 16px;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .sidebar-link:hover {
+      color: var(--text-primary);
+      background: rgba(15, 118, 110, 0.04);
+    }
+
+    .sidebar-link.active {
+      color: var(--primary);
+      border-left: 3px solid var(--primary);
+      padding-left: 13px;
+      background: rgba(5, 150, 105, 0.06);
+    }
+
+    .docs-content {
+      flex: 1;
+      min-width: 0;
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      padding: 20px 24px 24px;
+    }
+
+    .page-header {
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 12px;
+    }
+
+    .page-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.25rem;
+    }
+
+    .page-desc {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      max-width: 640px;
+    }
+
+    .doc-body {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      max-width: 860px;
+    }
+
+    /* 调整 GitHub Markdown 样式适配当前页面 */
+    .markdown-body {
+      box-sizing: border-box;
+      min-width: 0;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+      color: var(--text-primary);
+      scroll-margin-top: 80px;
+    }
+
+    .docs-toc {
+      width: 200px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 64px;
+      align-self: flex-start;
+      max-height: calc(100vh - 64px);
+      overflow-y: auto;
+      font-size: 0.8rem;
+      color: var(--text-tertiary);
+    }
+
+    .toc-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .toc-nav {
+      list-style: none;
+      padding: 8px 0;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-light);
+      background: var(--surface);
+    }
+
+    .toc-item {
+      margin: 0;
+    }
+
+    .toc-link {
+      display: block;
+      padding: 6px 14px;
+      color: var(--text-tertiary);
+      text-decoration: none;
+    }
+
+    .toc-link.level-3 {
+      padding-left: 26px;
+    }
+
+    .toc-link:hover {
+      color: var(--text-primary);
+      background: rgba(15, 118, 110, 0.03);
+    }
+
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 0 16px;
+        height: auto;
+        min-height: 64px;
+        flex-wrap: wrap;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      main {
+        padding: 24px 16px 32px;
+      }
+
+      .docs-layout {
+        flex-direction: column;
+      }
+
+      .docs-sidebar {
+        position: static;
+        width: 100%;
+      }
+
+      .docs-content {
+        padding: 16px 16px 20px;
+      }
+
+      .docs-toc {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-header">
+    <div class="nav-container">
+      <a href="./index.html" class="nav-brand">
+        <img src="./logo.png" alt="OLC Logo" class="nav-logo" />
+        <span>Open Lab Components</span>
+      </a>
+      <div class="nav-links">
+        <a href="./docs.html" class="nav-link" data-i18n="nav-docs">文档</a>
+        <a href="./components.html" class="nav-link" data-i18n="nav-components">组件</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/itkdm/open-lab-components" class="btn btn-primary" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+        <a href="./index.html#contribute" class="btn btn-secondary" data-i18n="nav-contribute">贡献</a>
+        <button id="langToggle" class="btn btn-secondary lang-btn" type="button">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="docs-layout">
+      <aside class="docs-sidebar">
+        <div class="sidebar-title" data-i18n="sidebar-title">文档导航</div>
+        <ul class="sidebar-nav">
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link active" data-doc="spec" data-i18n="spec-title">组件协议（SPEC）</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link" data-doc="category" data-i18n="category-title">分类与命名（CATEGORY）</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link" data-doc="contrib" data-i18n="contrib-title">贡献指南（CONTRIBUTING）</a>
+          </li>
+        </ul>
+      </aside>
+
+      <section class="docs-content">
+        <header class="page-header">
+          <h1 class="page-title" data-i18n="docs-title">文档中心</h1>
+          <p class="page-desc" data-i18n="docs-desc">
+            这里汇总了 Open Lab Components 的规范与贡献指南，帮助你按统一标准编写和维护实验器材组件。
+          </p>
+        </header>
+
+        <article id="docContent" class="doc-body markdown-body">
+          <!-- 将在运行时从 Markdown 渲染到这里 -->
+        </article>
+      </section>
+
+      <aside class="docs-toc">
+        <div class="toc-title" data-i18n="toc-title">目录</div>
+        <ul id="tocList" class="toc-nav"></ul>
+      </aside>
+    </div>
+  </main>
+
+  <!-- 引入 Markdown 渲染库和代码高亮（仅站内文档页使用） -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+  <script>
+    const LANG_KEY = 'olc-lang';
+    const DOCS = {
+      spec: { path: '../docs/SPEC.md' },
+      category: { path: '../docs/CATEGORY.md' },
+      contrib: { path: '../docs/CONTRIBUTING.md' }
+    };
+
+    const i18n = {
+      zh: {
+        'nav-docs': '文档',
+        'nav-components': '组件',
+        'nav-spec': '规范',
+        'nav-contribute': '贡献',
+        'docs-title': '文档中心',
+        'docs-desc': '这里汇总了 Open Lab Components 的规范与贡献指南，帮助你按统一标准编写和维护实验器材组件。',
+        'sidebar-title': '文档导航',
+        'toc-title': '目录',
+        'spec-title': '组件协议',
+        'spec-meta': 'docs/SPEC.md',
+        'spec-desc': '定义单个 HTML Fragment 组件的结构、Manifest、DOM 契约、样式与 JS 约束，是本仓库的“硬规范”。',
+        'spec-tagline': '新增或修改组件前，建议完整阅读一遍。',
+        'category-title': '分类与命名',
+        'category-meta': 'docs/CATEGORY.md',
+        'category-desc': '约定组件的 category、id、tags 命名规范，以及与目录结构的映射，保证组件在规模增大后依然可管理。',
+        'category-tagline': '为你的新组件选一个合理的“地址”和标签。',
+        'contrib-title': '贡献指南',
+        'contrib-meta': 'docs/CONTRIBUTING.md',
+        'contrib-desc': '说明如何提交新组件、修改现有组件，以及版本号、评审关注点等流程性约定。',
+        'contrib-tagline': '在提交 Pull Request 前快速过一遍这份清单。',
+        'btn-open-raw': '查看原文',
+        'lang-label': 'English'
+      },
+      en: {
+        'nav-docs': 'Docs',
+        'nav-components': 'Components',
+        'nav-spec': 'Spec',
+        'nav-contribute': 'Contribute',
+        'docs-title': 'Documentation',
+        'docs-desc': 'Centralized specs and contribution guides for Open Lab Components, so everyone builds HTML fragments in a consistent way.',
+        'sidebar-title': 'Docs',
+        'toc-title': 'Outline',
+        'spec-title': 'Component Spec (SPEC)',
+        'spec-meta': 'docs/SPEC.md',
+        'spec-desc': 'Hard rules for a single HTML fragment component: structure, manifest, DOM contract, styling and JS constraints.',
+        'spec-tagline': 'Read this before adding or refactoring any component.',
+        'category-title': 'Categories & Naming (CATEGORY)',
+        'category-meta': 'docs/CATEGORY.md',
+        'category-desc': 'Defines category, id and tags conventions, and how they map to folder structure, so the library scales cleanly.',
+        'category-tagline': 'Use this to pick the right “address” and tags for your components.',
+        'contrib-title': 'Contribution Guide (CONTRIBUTING)',
+        'contrib-meta': 'docs/CONTRIBUTING.md',
+        'contrib-desc': 'How to add new components, change existing ones, versioning rules, and what reviewers will look at.',
+        'contrib-tagline': 'Skim this before you open a pull request.',
+        'btn-open-raw': 'Open source file',
+        'lang-label': '中文'
+      }
+    };
+
+    let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+    let currentDoc = 'spec';
+
+    function t(key) {
+      return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
+    }
+
+    function applyStaticTexts() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+      });
+      const langBtn = document.getElementById('langToggle');
+      if (langBtn) langBtn.textContent = t('lang-label');
+    }
+
+    function slugify(text) {
+      return text
+        .trim()
+        .toLowerCase()
+        .replace(/[\s]+/g, '-')
+        .replace(/[^a-z0-9\-\u4e00-\u9fa5]/g, '');
+    }
+
+    function buildToc() {
+      const toc = document.getElementById('tocList');
+      const container = document.getElementById('docContent');
+      if (!toc || !container) return;
+
+      toc.innerHTML = '';
+      const headings = container.querySelectorAll('h2, h3');
+      headings.forEach(h => {
+        const level = h.tagName.toLowerCase() === 'h3' ? 3 : 2;
+        const text = h.textContent || '';
+        const id = h.id || slugify(text);
+        h.id = id;
+        const li = document.createElement('li');
+        li.className = 'toc-item';
+        const a = document.createElement('a');
+        a.className = 'toc-link' + (level === 3 ? ' level-3' : '');
+        a.href = `#${id}`;
+        a.textContent = text;
+        li.appendChild(a);
+        toc.appendChild(li);
+      });
+    }
+
+    async function loadDoc(docKey) {
+      const meta = DOCS[docKey];
+      const container = document.getElementById('docContent');
+      if (!meta || !container) return;
+
+      currentDoc = docKey;
+      container.innerHTML = '';
+
+      try {
+        const res = await fetch(meta.path);
+        const text = await res.text();
+        // 使用 marked 渲染 Markdown 为 HTML
+        if (window.marked && window.marked.parse) {
+          container.innerHTML = window.marked.parse(text);
+        } else {
+          container.innerHTML = `<pre>${text}</pre>`;
+        }
+        // 代码高亮
+        if (window.hljs) {
+          container.querySelectorAll('pre code').forEach(block => {
+            window.hljs.highlightElement(block);
+          });
+        }
+        buildToc();
+      } catch (e) {
+        container.innerHTML = '<p>Failed to load document.</p>';
+        console.error(e);
+      }
+
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        const key = link.getAttribute('data-doc');
+        if (!key) return;
+        if (key === docKey) {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    function switchLang() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      localStorage.setItem(LANG_KEY, currentLang);
+      applyStaticTexts();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      applyStaticTexts();
+
+      const langToggle = document.getElementById('langToggle');
+      if (langToggle) {
+        langToggle.addEventListener('click', switchLang);
+      }
+
+      document.querySelectorAll('.sidebar-link').forEach(link => {
+        const docKey = link.getAttribute('data-doc');
+        if (!docKey) return;
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          loadDoc(docKey);
+        });
+      });
+
+      // 处理目录链接点击，添加滚动偏移
+      function handleTocClick(e) {
+        const tocLink = e.target.closest('.toc-link');
+        if (!tocLink) return;
+        
+        e.preventDefault();
+        const href = tocLink.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
+        
+        const targetId = href.substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          const navHeight = 64;
+          const offset = 16; // 额外间距
+          const targetPosition = targetElement.getBoundingClientRect().top + (window.pageYOffset || window.scrollY) - navHeight - offset;
+          
+          window.scrollTo({
+            top: Math.max(0, targetPosition),
+            behavior: 'smooth'
+          });
+          
+          // 更新 URL hash
+          history.pushState(null, '', href);
+        }
+      }
+
+      // 使用事件委托，监听整个文档的点击事件
+      document.addEventListener('click', handleTocClick);
+
+      loadDoc(currentDoc);
+    });
+  </script>
+</body>
+</html>
+
+

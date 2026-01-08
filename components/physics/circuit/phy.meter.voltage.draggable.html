@@ -1,0 +1,444 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.meter.voltage.draggable",
+  "name": "电压表",
+  "nameEn": "Voltmeter",
+  "category": "physics/circuit",
+  "version": "1.0.7",
+  "viewport": { "w": 320, "h": 240 },
+  "props": [
+    { "key": "size",   "type": "number(px)", "default": 180, "min": 64, "max": 512, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "aspect", "type": "number",     "default": 1.333, "min": 1.0, "max": 2.2, "desc": "宽高比（width = size * aspect）" },
+
+    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 2.5, "min": 0, "max": 6, "desc": "描边粗细（SVG stroke-width）" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" },
+
+    { "key": "meterShell",  "type": "color", "default": "#111827", "desc": "表壳颜色" },
+    { "key": "meterPanel",  "type": "color", "default": "#f59e0b", "desc": "表盘面板颜色" },
+
+    { "key": "wireBlack",   "type": "color", "default": "#111827", "desc": "黑线颜色" },
+    { "key": "wireRed",     "type": "color", "default": "#ef4444", "desc": "红线颜色" },
+    { "key": "wireWidth",   "type": "number", "default": 5, "min": 2, "max": 12, "desc": "导线粗细" },
+
+    { "key": "probeBlack",  "type": "color", "default": "#111827", "desc": "黑表笔颜色" },
+    { "key": "probeRed",    "type": "color", "default": "#f97316", "desc": "红表笔颜色（偏橙红）" },
+
+    { "key": "leftX",  "type": "number", "default": 92,  "min": -200, "max": 520, "desc": "黑表笔位置 X（viewBox坐标；若<=1则按比例）" },
+    { "key": "leftY",  "type": "number", "default": 160, "min": -200, "max": 440, "desc": "黑表笔位置 Y（viewBox坐标；若<=1则按比例）" },
+    { "key": "rightX", "type": "number", "default": 268, "min": -200, "max": 520, "desc": "红表笔位置 X（viewBox坐标；若<=1则按比例）" },
+    { "key": "rightY", "type": "number", "default": 120, "min": -200, "max": 440, "desc": "红表笔位置 Y（viewBox坐标；若<=1则按比例）" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "aspect": "--cmp-aspect",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow",
+    "meterShell": "--cmp-meter-shell",
+    "meterPanel": "--cmp-meter-panel",
+    "wireBlack": "--cmp-wire-black",
+    "wireRed": "--cmp-wire-red",
+    "wireWidth": "--cmp-wire-width",
+    "probeBlack": "--cmp-probe-black",
+    "probeRed": "--cmp-probe-red",
+    "leftX": "--cmp-left-x",
+    "leftY": "--cmp-left-y",
+    "rightX": "--cmp-right-x",
+    "rightY": "--cmp-right-y"
+  },
+  "tags": ["voltmeter", "meter", "circuit", "draggable"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.meter.voltage.draggable" role="img" aria-label="电压表（可拖动表笔）">
+    <svg class="cmp__svg" viewBox="0 0 320 240" aria-hidden="true" style="overflow:visible">
+        <!-- 1) 电压表主体 -->
+        <g class="cmp__meter" data-role="meter">
+            <path d="M160 45
+           C125 45, 112 65, 112 95
+           V165
+           C112 195, 128 210, 160 210
+           C192 210, 208 195, 208 165
+           V95
+           C208 65, 195 45, 160 45 Z" fill="var(--cmp-meter-shell, #111827)" opacity="0.95" />
+            <path d="M160 62
+           C135 62, 126 76, 126 96
+           V152
+           C126 172, 140 184, 160 184
+           C180 184, 194 172, 194 152
+           V96
+           C194 76, 185 62, 160 62 Z" fill="var(--cmp-meter-panel, #f59e0b)" />
+
+            <text x="160" y="108" text-anchor="middle" font-size="20" fill="#111827"
+                style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto;">电压</text>
+
+            <rect x="132" y="120" width="56" height="26" rx="6" fill="#ffffff" stroke="var(--cmp-stroke, #111827)"
+                stroke-width="calc(var(--cmp-stroke-width, 2.5) * 0.6)" opacity="0.98" />
+            <text x="160" y="139" text-anchor="middle" font-size="18" fill="#111827"
+                style="font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto;">—</text>
+
+            <ellipse cx="160" cy="188" rx="28" ry="16" fill="#f59e0b" opacity="0.9" />
+            <circle cx="150" cy="190" r="8.2" fill="#111827" opacity="0.16" />
+            <circle cx="170" cy="190" r="8.2" fill="#111827" opacity="0.16" />
+        </g>
+
+        <!-- 2) 导线 -->
+        <path class="cmp__wire" data-role="wire-l" d="M150 190 C 120 190, 90 160, 70 120" fill="none"
+            stroke="var(--cmp-wire-black, #111827)" stroke-width="var(--cmp-wire-width, 5)" stroke-linecap="round"
+            opacity="0.95" />
+        <path class="cmp__wireHi" data-role="wire-l-hi" d="M150 190 C 120 190, 90 160, 70 120" fill="none"
+            stroke="#ffffff" stroke-width="calc(var(--cmp-wire-width, 5) * 0.38)" stroke-linecap="round"
+            opacity="0.14" />
+
+        <path class="cmp__wire" data-role="wire-r" d="M170 190 C 200 190, 230 160, 250 120" fill="none"
+            stroke="var(--cmp-wire-red, #ef4444)" stroke-width="var(--cmp-wire-width, 5)" stroke-linecap="round"
+            opacity="0.95" />
+        <path class="cmp__wireHi" data-role="wire-r-hi" d="M170 190 C 200 190, 230 160, 250 120" fill="none"
+            stroke="#ffffff" stroke-width="calc(var(--cmp-wire-width, 5) * 0.34)" stroke-linecap="round"
+            opacity="0.11" />
+
+        <!-- 3) 插孔外圈 -->
+        <g class="cmp__jacks" data-role="jacks">
+            <circle cx="150" cy="190" r="8.4" fill="none" stroke="var(--cmp-stroke, #111827)"
+                stroke-width="calc(var(--cmp-stroke-width, 2.5) * 0.55)" opacity="0.75" />
+            <circle cx="170" cy="190" r="8.4" fill="none" stroke="var(--cmp-stroke, #111827)"
+                stroke-width="calc(var(--cmp-stroke-width, 2.5) * 0.55)" opacity="0.75" />
+            <circle cx="150" cy="190" r="4.6" fill="var(--cmp-wire-black, #111827)" opacity="0.95" />
+            <circle cx="170" cy="190" r="4.6" fill="var(--cmp-wire-red, #ef4444)" opacity="0.95" />
+        </g>
+
+        <!-- 4) 表笔（只能拖笔） -->
+        <!-- 黑表笔：与红笔同尺寸结构（颜色不同） -->
+        <g class="cmp__probe cmp__probe--l" data-role="probe-l">
+            <circle cx="0" cy="0" r="3.6" fill="var(--cmp-wire-black, #111827)" opacity="0.92" />
+            <path d="M0 -5.2 C7 -7.6, 16 -7.6, 23 -5.2 L23 5.2 C16 7.6, 7 7.6, 0 5.2 Z"
+                fill="var(--cmp-probe-black, #111827)" opacity="0.98" />
+            <path d="M22 -7.2
+               C46 -9.0, 78 -9.0, 118 -7.2
+               L118 7.2
+               C78 9.0, 46 9.0, 22 7.2 Z" fill="var(--cmp-probe-black, #111827)" opacity="0.99" />
+            <path d="M28 -5.4 C52 -6.6, 82 -6.6, 112 -5.4" fill="none" stroke="#ffffff" stroke-width="2.3"
+                stroke-linecap="round" opacity="0.20" />
+            <path d="M30 5.8 C56 7.0, 84 7.0, 112 5.8" fill="none" stroke="#000000" stroke-width="2.0"
+                stroke-linecap="round" opacity="0.20" />
+            <ellipse cx="54" cy="0" rx="14" ry="8.6" fill="#000000" opacity="0.18" />
+            <path d="M42 -8.2 C48 -10.2, 60 -10.2, 66 -8.2
+               L66 8.2
+               C60 10.2, 48 10.2, 42 8.2 Z" fill="var(--cmp-probe-black, #111827)" opacity="0.99" />
+            <path d="M44 -6.2 C50 -7.2, 58 -7.2, 64 -6.2" fill="none" stroke="#ffffff" stroke-width="2.0"
+                stroke-linecap="round" opacity="0.14" />
+            <g opacity="0.22" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round">
+                <path d="M58 -6.6 V6.6" />
+                <path d="M64 -6.8 V6.8" />
+                <path d="M70 -7.0 V7.0" />
+                <path d="M76 -7.0 V7.0" />
+                <path d="M82 -7.0 V7.0" />
+                <path d="M88 -6.8 V6.8" />
+                <path d="M94 -6.6 V6.6" />
+            </g>
+            <g opacity="0.18" stroke="#000000" stroke-width="1.1" stroke-linecap="round">
+                <path d="M60 -6.2 V6.2" />
+                <path d="M72 -6.6 V6.6" />
+                <path d="M84 -6.6 V6.6" />
+                <path d="M96 -6.2 V6.2" />
+            </g>
+            <path d="M118 -4.2 C124 -4.8, 130 -4.8, 136 -4.2
+               L136 4.2
+               C130 4.8, 124 4.8, 118 4.2 Z" fill="#cfd4dc" opacity="0.98" stroke="var(--cmp-stroke, #111827)"
+                stroke-width="calc(var(--cmp-stroke-width, 2.5) * 0.35)" />
+            <path d="M120 -2.6 C125 -3.0, 129 -3.0, 134 -2.6" fill="none" stroke="#ffffff" stroke-width="1.6"
+                stroke-linecap="round" opacity="0.25" />
+            <path d="M136 -1.2 L160 0 L136 1.2 Z" fill="#d1d5db" stroke="var(--cmp-stroke, #111827)"
+                stroke-width="calc(var(--cmp-stroke-width, 2.5) * 0.32)" opacity="0.98" />
+            <path d="M138 -0.6 L158 0 L138 0.6 Z" fill="#ffffff" opacity="0.22" />
+        </g>
+
+        <!-- 红表笔：保持 -->
+        <g class="cmp__probe cmp__probe--r" data-role="probe-r">
+            <circle cx="0" cy="0" r="3.6" fill="var(--cmp-wire-red, #ef4444)" opacity="0.9" />
+            <path d="M0 -5.2 C7 -7.6, 16 -7.6, 23 -5.2 L23 5.2 C16 7.6, 7 7.6, 0 5.2 Z"
+                fill="var(--cmp-probe-red, #f97316)" opacity="0.97" />
+            <path d="M22 -7.2
+               C46 -9.0, 78 -9.0, 118 -7.2
+               L118 7.2
+               C78 9.0, 46 9.0, 22 7.2 Z" fill="var(--cmp-probe-red, #f97316)" opacity="0.98" />
+            <path d="M28 -5.4 C52 -6.6, 82 -6.6, 112 -5.4" fill="none" stroke="#ffffff" stroke-width="2.4"
+                stroke-linecap="round" opacity="0.22" />
+            <path d="M30 5.8 C56 7.0, 84 7.0, 112 5.8" fill="none" stroke="#000000" stroke-width="2.0"
+                stroke-linecap="round" opacity="0.12" />
+            <ellipse cx="54" cy="0" rx="14" ry="8.6" fill="#000000" opacity="0.14" />
+            <path d="M42 -8.2 C48 -10.2, 60 -10.2, 66 -8.2
+               L66 8.2
+               C60 10.2, 48 10.2, 42 8.2 Z" fill="var(--cmp-probe-red, #f97316)" opacity="0.98" />
+            <path d="M44 -6.2 C50 -7.2, 58 -7.2, 64 -6.2" fill="none" stroke="#ffffff" stroke-width="2.0"
+                stroke-linecap="round" opacity="0.18" />
+            <g opacity="0.28" stroke="#000" stroke-width="1.6" stroke-linecap="round">
+                <path d="M58 -6.6 V6.6" />
+                <path d="M64 -6.8 V6.8" />
+                <path d="M70 -7.0 V7.0" />
+                <path d="M76 -7.0 V7.0" />
+                <path d="M82 -7.0 V7.0" />
+                <path d="M88 -6.8 V6.8" />
+                <path d="M94 -6.6 V6.6" />
+            </g>
+            <g opacity="0.18" stroke="#fff" stroke-width="1.2" stroke-linecap="round">
+                <path d="M60 -6.2 V6.2" />
+                <path d="M72 -6.6 V6.6" />
+                <path d="M84 -6.6 V6.6" />
+                <path d="M96 -6.2 V6.2" />
+            </g>
+            <path d="M118 -4.2 C124 -4.8, 130 -4.8, 136 -4.2
+               L136 4.2
+               C130 4.8, 124 4.8, 118 4.2 Z" fill="#cfd4dc" opacity="0.98" stroke="var(--cmp-stroke, #111827)"
+                stroke-width="calc(var(--cmp-stroke-width, 2.5) * 0.35)" />
+            <path d="M120 -2.6 C125 -3.0, 129 -3.0, 134 -2.6" fill="none" stroke="#ffffff" stroke-width="1.6"
+                stroke-linecap="round" opacity="0.25" />
+            <path d="M136 -1.2 L160 0 L136 1.2 Z" fill="#d1d5db" stroke="var(--cmp-stroke, #111827)"
+                stroke-width="calc(var(--cmp-stroke-width, 2.5) * 0.32)" opacity="0.98" />
+            <path d="M138 -0.6 L158 0 L138 0.6 Z" fill="#ffffff" opacity="0.22" />
+        </g>
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.meter.voltage.draggable"] {
+        height: var(--cmp-size, 180px);
+        width: calc(var(--cmp-size, 180px) * var(--cmp-aspect, 1.333));
+        display: inline-grid;
+        place-items: center;
+        transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+        overflow: visible;
+    }
+
+    .cmp[data-cmp-id="phy.meter.voltage.draggable"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        touch-action: none;
+        overflow: visible;
+        filter: drop-shadow(0 0 calc(10px * var(--cmp-glow, 0)) rgba(var(--cmp-glow-rgb, 255, 214, 102), calc(0.9 * var(--cmp-glow, 0))));
+    }
+
+    .cmp[data-cmp-id="phy.meter.voltage.draggable"] .cmp__wire,
+    .cmp[data-cmp-id="phy.meter.voltage.draggable"] .cmp__wireHi {
+        pointer-events: none;
+    }
+
+    .cmp[data-cmp-id="phy.meter.voltage.draggable"] .cmp__probe {
+        cursor: grab;
+    }
+
+    .cmp[data-cmp-id="phy.meter.voltage.draggable"] .cmp__probe:active {
+        cursor: grabbing;
+    }
+</style>
+
+<script>
+    (function () {
+        const s = document.currentScript;
+        let root = s && s.previousElementSibling;
+        while (root && !(root.classList && root.classList.contains("cmp"))) root = root.previousElementSibling;
+        if (!root) return;
+
+        const svg = root.querySelector("svg");
+        if (!svg) return;
+
+        const W = 320, H = 240;
+
+        const el = {
+            wireL: svg.querySelector('[data-role="wire-l"]'),
+            wireLHi: svg.querySelector('[data-role="wire-l-hi"]'),
+            wireR: svg.querySelector('[data-role="wire-r"]'),
+            wireRHi: svg.querySelector('[data-role="wire-r-hi"]'),
+            probeL: svg.querySelector('[data-role="probe-l"]'),
+            probeR: svg.querySelector('[data-role="probe-r"]')
+        };
+
+        const anchorL = { x: 150, y: 190 };
+        const anchorR = { x: 170, y: 190 };
+
+        // 固定笔杆角度（不变）
+        const ROT_L = -62;   // 黑：右上
+        const ROT_R = -115;  // 红：左上
+
+        const TAIL_LOCAL = { x: 0, y: 0 };
+
+        function num(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
+        function readVarPx(name) {
+            const v = getComputedStyle(root).getPropertyValue(name).trim();
+            if (!v) return null;
+            return num(v.replace("px", "").trim());
+        }
+        function readDataProps() {
+            const raw = root.getAttribute("data-props");
+            if (!raw) return {};
+            try { return JSON.parse(raw) || {}; } catch (e) { return {}; }
+        }
+        function resolvePos(val, max) {
+            if (val == null) return null;
+            if (val <= 1 && val >= 0) return val * max;
+            return val;
+        }
+
+        const p = readDataProps();
+        let left = {
+            x: resolvePos(readVarPx("--cmp-left-x") ?? p.leftX ?? 92, W),
+            y: resolvePos(readVarPx("--cmp-left-y") ?? p.leftY ?? 160, H)
+        };
+        let right = {
+            x: resolvePos(readVarPx("--cmp-right-x") ?? p.rightX ?? 268, W),
+            y: resolvePos(readVarPx("--cmp-right-y") ?? p.rightY ?? 120, H)
+        };
+
+        const PAD = 260;
+        function clampPt(pt) {
+            pt.x = Math.max(-PAD, Math.min(W + PAD, pt.x));
+            pt.y = Math.max(-PAD, Math.min(H + PAD, pt.y));
+            return pt;
+        }
+        function clientToSvg(e) {
+            const r = svg.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width * W;
+            const y = (e.clientY - r.top) / r.height * H;
+            return { x, y };
+        }
+
+        function rotRad(deg) { return deg * Math.PI / 180; }
+        function dist(a, b) { return Math.hypot(b.x - a.x, b.y - a.y); }
+        function norm(v) {
+            const l = Math.hypot(v.x, v.y) || 1;
+            return { x: v.x / l, y: v.y / l };
+        }
+        function add(a, b) { return { x: a.x + b.x, y: a.y + b.y }; }
+        function sub(a, b) { return { x: a.x - b.x, y: a.y - b.y }; }
+        function mul(v, s) { return { x: v.x * s, y: v.y * s }; }
+
+        function localToWorld(pos, rotDeg, local) {
+            const a = rotRad(rotDeg);
+            const ca = Math.cos(a), sa = Math.sin(a);
+            return {
+                x: pos.x + local.x * ca - local.y * sa,
+                y: pos.y + local.x * sa + local.y * ca
+            };
+        }
+        function getProbeTail(which) {
+            if (which === "l") return localToWorld(left, ROT_L, TAIL_LOCAL);
+            return localToWorld(right, ROT_R, TAIL_LOCAL);
+        }
+
+        // 更圆滑、更自然的弧线：
+        // - sag 不再“只向下”，而是“偏向下 + 带一点侧向”，形状更像真实导线（你截图那种）
+        // - 末端仍保留短直出段，但整体更圆滑
+        function cablePath(a, b, aExitDir, bExitDir, softness) {
+            const d = dist(a, b);
+            const v = sub(b, a);
+            const vn = norm(v);
+            const perp = norm({ x: -vn.y, y: vn.x }); // 方向垂直于 a->b
+
+            // 弯曲方向：以“向下”为主，叠加一点perp（让曲线更自然）
+            // softness 越大弯得越多
+            const sagMag = Math.min(42, Math.max(10, d * (0.12 + 0.05 * softness)));
+            const sagVec = norm(add(mul(perp, 0.28 + 0.10 * softness), { x: 0, y: 1 }));
+            const sag = mul(sagVec, sagMag);
+
+            // 末端直出段（连接处自然，不突然拐）
+            const straight = Math.min(26, Math.max(10, d * 0.08));
+
+            // 表端引导（轻微引导，避免太直）
+            const aLead = Math.min(26, Math.max(12, d * 0.09));
+
+            // 笔尾直出点（b1）+ 用于保证末端切线的控制点（b2）
+            const b1 = add(b, mul(bExitDir, straight));
+            const b2 = add(b, mul(bExitDir, straight * 2.2));
+
+            // 中心点：整体下垂并带一点侧向
+            const mid = add({ x: (a.x + b.x) * 0.5, y: (a.y + b.y) * 0.5 }, sag);
+
+            // 让两段曲线更圆滑：控制点围绕 mid 与 v 分布
+            const c1 = add(a, mul(aExitDir, aLead));
+            const c2 = add(mid, add(mul(vn, -d * 0.18), mul(sagVec, sagMag * 0.08)));
+            const c3 = add(mid, add(mul(vn, d * 0.18), mul(sagVec, sagMag * 0.10)));
+
+            return [
+                `M ${a.x.toFixed(2)} ${a.y.toFixed(2)}`,
+                `C ${c1.x.toFixed(2)} ${c1.y.toFixed(2)}, ${c2.x.toFixed(2)} ${c2.y.toFixed(2)}, ${mid.x.toFixed(2)} ${mid.y.toFixed(2)}`,
+                `C ${c3.x.toFixed(2)} ${c3.y.toFixed(2)}, ${b2.x.toFixed(2)} ${b2.y.toFixed(2)}, ${b1.x.toFixed(2)} ${b1.y.toFixed(2)}`,
+                `L ${b.x.toFixed(2)} ${b.y.toFixed(2)}`
+            ].join(" ");
+        }
+
+        function render() {
+            // 固定角度：只平移
+            if (el.probeL) el.probeL.setAttribute("transform", `translate(${left.x.toFixed(2)} ${left.y.toFixed(2)}) rotate(${ROT_L})`);
+            if (el.probeR) el.probeR.setAttribute("transform", `translate(${right.x.toFixed(2)} ${right.y.toFixed(2)}) rotate(${ROT_R})`);
+
+            const tailL = getProbeTail("l");
+            const tailR = getProbeTail("r");
+
+            // 表端出线方向（略向外 + 略向下）
+            const aExitL = norm({ x: -0.92, y: 0.35 });
+            const aExitR = norm({ x: 0.92, y: 0.35 });
+
+            // 笔端出线方向：严格沿“笔轴反方向”
+            const axL = { x: Math.cos(rotRad(ROT_L)), y: Math.sin(rotRad(ROT_L)) };
+            const axR = { x: Math.cos(rotRad(ROT_R)), y: Math.sin(rotRad(ROT_R)) };
+            const bExitL = norm({ x: -axL.x, y: -axL.y });
+            const bExitR = norm({ x: -axR.x, y: -axR.y });
+
+            // black 稍硬，red 稍软：就会更接近你图（黑线弧度更稳，红线弧度更柔）
+            const dL = cablePath(anchorL, tailL, aExitL, bExitL, 0.70);
+            const dR = cablePath(anchorR, tailR, aExitR, bExitR, 0.95);
+
+            if (el.wireL) el.wireL.setAttribute("d", dL);
+            if (el.wireLHi) el.wireLHi.setAttribute("d", dL);
+            if (el.wireR) el.wireR.setAttribute("d", dR);
+            if (el.wireRHi) el.wireRHi.setAttribute("d", dR);
+        }
+
+        render();
+
+        // 交互：只能拖笔
+        let active = null; // "l" | "r"
+        let dragOffset = { x: 0, y: 0 };
+
+        function onDown(which, e) {
+            active = which;
+            const pt = clientToSvg(e);
+            if (which === "l") {
+                dragOffset = { x: pt.x - left.x, y: pt.y - left.y };
+            } else {
+                dragOffset = { x: pt.x - right.x, y: pt.y - right.y };
+            }
+            try { e.target.setPointerCapture(e.pointerId); } catch (_) { }
+            e.preventDefault();
+        }
+
+        function onMove(e) {
+            if (!active) return;
+            const pt = clampPt(clientToSvg(e));
+            if (active === "l") {
+                left.x = pt.x - dragOffset.x;
+                left.y = pt.y - dragOffset.y;
+            } else {
+                right.x = pt.x - dragOffset.x;
+                right.y = pt.y - dragOffset.y;
+            }
+            render();
+            e.preventDefault();
+        }
+
+        function onUp(e) {
+            if (!active) return;
+            active = null;
+            e.preventDefault();
+        }
+
+        if (el.probeL) el.probeL.addEventListener("pointerdown", (e) => onDown("l", e), { passive: false });
+        if (el.probeR) el.probeR.addEventListener("pointerdown", (e) => onDown("r", e), { passive: false });
+
+        svg.addEventListener("pointermove", onMove, { passive: false });
+        svg.addEventListener("pointerup", onUp, { passive: false });
+        svg.addEventListener("pointercancel", onUp, { passive: false });
+    })();
+</script>

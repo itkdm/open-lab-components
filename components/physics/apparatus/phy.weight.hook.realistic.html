@@ -1,0 +1,177 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.weight.hook.realistic",
+  "name": "砝码（钩子）",
+  "nameEn": "Weight with Hook",
+  "category": "physics/apparatus",
+  "version": "1.3.0",
+  "viewport": { "w": 96, "h": 96 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 96,  "min": 24, "max": 256, "desc": "组件尺寸（正方形）" },
+
+    { "key": "mass",        "type": "number",     "default": 250, "min": 1,  "max": 5000, "desc": "砝码质量数值" },
+    { "key": "unit",        "type": "enum",       "default": "g", "enum": ["g","kg"], "desc": "质量单位" },
+    { "key": "label",       "type": "string",     "default": "",  "desc": "显示文字（留空则用 mass+unit）" },
+    { "key": "showLabel",   "type": "enum",       "default": "auto", "enum": ["auto","on","off"], "desc": "是否显示重量文字" },
+
+    { "key": "stroke",      "type": "color",      "default": "#6b7280", "desc": "砝码轮廓线颜色" },
+    { "key": "strokeWidth", "type": "number",     "default": 1.6, "min": 1, "max": 4, "desc": "砝码轮廓线粗细" },
+
+    { "key": "hook",        "type": "color",      "default": "#111827", "desc": "钩子颜色（黑）" },
+    { "key": "hookWidth",   "type": "number",     "default": 4.0, "min": 2, "max": 7, "desc": "钩子线粗细" },
+
+    { "key": "blockEdge",   "type": "color",      "default": "#bdbdbd", "desc": "砝码边缘灰" },
+    { "key": "blockCenter", "type": "color",      "default": "#e7e7e7", "desc": "砝码中心灰" },
+
+    { "key": "glow",        "type": "number(0-1)","default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "glow": "--cmp-glow",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "hook": "--cmp-hook",
+    "hookWidth": "--cmp-hook-width",
+    "blockEdge": "--cmp-block-edge",
+    "blockCenter": "--cmp-block-center"
+  },
+  "tags": ["weight","mass","hook"]
+}-->
+<div class="cmp" data-cmp-id="phy.weight.hook.realistic" role="img" aria-label="砝码（钩子）">
+    <svg class="cmp__svg" viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+            <!-- 方形砝码：左右轻渐变（贴近参考图） -->
+            <linearGradient id="w__block" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" stop-color="var(--cmp-block-edge, #bdbdbd)" />
+                <stop offset="0.5" stop-color="var(--cmp-block-center, #e7e7e7)" />
+                <stop offset="1" stop-color="var(--cmp-block-edge, #bdbdbd)" />
+            </linearGradient>
+        </defs>
+
+        <!-- ✅ 参考图钩子：问号形（无圆环）+ 竖直短柄 -->
+        <path class="w__hook" d="
+        M40 22
+        C40 14 56 14 56 22
+        C56 29 49 28 48 32
+        L48 36
+      " fill="none" stroke="var(--cmp-hook, #111827)" stroke-width="var(--cmp-hook-width, 4.0)" stroke-linecap="round"
+            stroke-linejoin="round" />
+
+        <!-- 方形砝码 -->
+        <rect x="24" y="36" width="48" height="56" fill="url(#w__block)" stroke="var(--cmp-stroke, #6b7280)"
+            stroke-width="var(--cmp-stroke-width, 1.6)" />
+
+        <!-- 重量文字（参考图：黑色加粗） -->
+        <text class="w__label" x="48" y="68" text-anchor="middle">250 g</text>
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.weight.hook.realistic"] {
+        width: var(--cmp-size, 96px);
+        height: var(--cmp-size, 96px);
+        display: inline-grid;
+        place-items: center;
+        transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+    }
+
+    .cmp[data-cmp-id="phy.weight.hook.realistic"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 0 calc(10px * var(--cmp-glow, 0)) rgba(var(--cmp-glow-rgb, 255, 214, 102), calc(0.9 * var(--cmp-glow, 0))));
+    }
+
+    .cmp[data-cmp-id="phy.weight.hook.realistic"] .w__label {
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+        fill: rgba(0, 0, 0, 0.92);
+        user-select: none;
+    }
+</style>
+
+<script>
+    (function () {
+        const script = document.currentScript;
+        let root = script ? script.previousElementSibling : null;
+        while (root && !(root.classList && root.classList.contains("cmp") && root.getAttribute("data-cmp-id") === "phy.weight.hook.realistic")) {
+            root = root.previousElementSibling;
+        }
+        if (!root) return;
+
+        const defaults = {
+            size: 96,
+            mass: 250,
+            unit: "g",
+            label: "",
+            showLabel: "auto",
+            stroke: "#6b7280",
+            strokeWidth: 1.6,
+            hook: "#111827",
+            hookWidth: 4.0,
+            blockEdge: "#bdbdbd",
+            blockCenter: "#e7e7e7",
+            glow: 0
+        };
+
+        let p = { ...defaults };
+        const raw = root.getAttribute("data-props");
+        if (raw) {
+            try {
+                const o = JSON.parse(raw);
+                if (o && typeof o === "object") p = { ...p, ...o };
+            } catch (e) { }
+        }
+
+        // 写入 CSS 变量
+        if (p.size != null) {
+            const n = Number(p.size);
+            if (Number.isFinite(n)) root.style.setProperty("--cmp-size", n + "px");
+        }
+        if (p.glow != null) {
+            const n = Math.max(0, Math.min(1, Number(p.glow)));
+            if (Number.isFinite(n)) root.style.setProperty("--cmp-glow", String(n));
+        }
+        if (p.stroke) root.style.setProperty("--cmp-stroke", String(p.stroke));
+        if (p.strokeWidth != null) {
+            const n = Number(p.strokeWidth);
+            if (Number.isFinite(n)) root.style.setProperty("--cmp-stroke-width", String(n));
+        }
+        if (p.hook) root.style.setProperty("--cmp-hook", String(p.hook));
+        if (p.hookWidth != null) {
+            const n = Number(p.hookWidth);
+            if (Number.isFinite(n)) root.style.setProperty("--cmp-hook-width", String(n));
+        }
+        if (p.blockEdge) root.style.setProperty("--cmp-block-edge", String(p.blockEdge));
+        if (p.blockCenter) root.style.setProperty("--cmp-block-center", String(p.blockCenter));
+
+        // 文本：label 优先，否则 mass+unit
+        const mass = Number(p.mass);
+        const unit = (p.unit === "kg" ? "kg" : "g");
+        const labelText = (p.label && String(p.label).trim())
+            ? String(p.label).trim()
+            : (Number.isFinite(mass) ? formatMass(mass, unit) : (defaults.mass + " " + defaults.unit));
+
+        const show = String(p.showLabel || "auto");
+        const shouldShow = (show === "on") || (show === "auto" && labelText.length > 0);
+
+        const t = root.querySelector(".w__label");
+        if (t) {
+            t.textContent = labelText;
+            t.style.display = shouldShow ? "" : "none";
+        }
+
+        root.setAttribute("aria-label", "砝码（钩子）" + (shouldShow ? (" " + labelText) : ""));
+
+        function formatMass(m, u) {
+            if (u === "kg") {
+                const v = Math.round(m * 100) / 100;
+                return v + " kg";
+            }
+            return Math.round(m) + " g";
+        }
+    })();
+</script>
+

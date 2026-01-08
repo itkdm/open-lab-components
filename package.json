@@ -1,0 +1,39 @@
+{
+  "name": "open-lab-components",
+  "version": "0.1.0",
+  "description": "Open, host-agnostic HTML fragment component library for STEM lab apparatus and UI elements (with registry + showcase site + validation tools).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itkdm/open-lab-components.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itkdm/open-lab-components/issues"
+  },
+  "homepage": "https://github.com/itkdm/open-lab-components#readme",
+  "keywords": [
+    "components",
+    "html",
+    "fragment",
+    "physics",
+    "education",
+    "stem",
+    "lab",
+    "apparatus"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "validate": "node tools/validate/index.js",
+    "build:registry": "node tools/build-registry/index.js",
+    "build:site": "node tools/build-site/index.js",
+    "build": "npm run build:registry && npm run build:site",
+    "dev:site": "node tools/dev-site/index.js"
+  },
+  "devDependencies": {
+    "parse5": "^7.3.0"
+  }
+}
+
+

@@ -1,0 +1,88 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.resistor.axial.basic",
+  "name": "电阻",
+  "nameEn": "Resistor",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 108, "h": 40 },
+  "props": [
+    { "key": "size",   "type": "number(px)", "default": 64, "min": 16, "max": 256, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "aspect", "type": "number",     "default": 2.7, "min": 1.6, "max": 4.0, "desc": "宽高比（width = size * aspect）" },
+
+    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色（可选）" },
+    { "key": "strokeWidth", "type": "number", "default": 2.2, "min": 0, "max": 6, "desc": "描边粗细（SVG stroke-width）" },
+
+    { "key": "body",  "type": "color", "default": "#caa070", "desc": "电阻本体颜色" },
+    { "key": "band1", "type": "color", "default": "#9a4d0f", "desc": "色环1（默认棕）" },
+    { "key": "band2", "type": "color", "default": "#111827", "desc": "色环2（默认黑）" },
+    { "key": "band3", "type": "color", "default": "#111827", "desc": "色环3（默认黑）" },
+    { "key": "band4", "type": "color", "default": "#facc15", "desc": "色环4（默认黄）" },
+
+    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "aspect": "--cmp-aspect",
+
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+
+    "body": "--cmp-body",
+    "band1": "--cmp-band1",
+    "band2": "--cmp-band2",
+    "band3": "--cmp-band3",
+    "band4": "--cmp-band4",
+
+    "glow": "--cmp-glow"
+  },
+  "tags": ["resistor", "circuit", "axial"]
+}-->
+<div class="cmp" data-cmp-id="phy.resistor.axial.basic" role="img" aria-label="电阻">
+    <svg class="cmp__svg" viewBox="0 0 108 40" aria-hidden="true">
+        <!-- 引脚（可选，轻量表示） -->
+        <path d="M0 20 H12 M96 20 H108" fill="none" stroke="var(--cmp-stroke, #111827)"
+            stroke-width="var(--cmp-stroke-width, 2.2)" stroke-linecap="round" opacity="0.85" />
+
+        <!-- 本体 -->
+        <rect x="12" y="6" width="84" height="28" rx="14" fill="var(--cmp-body, #caa070)"
+            stroke="var(--cmp-stroke, #111827)" stroke-width="var(--cmp-stroke-width, 2.2)" stroke-linejoin="round" />
+
+        <!-- 高光 / 阴影（不使用 defs，避免 id 冲突） -->
+        <rect x="15" y="9" width="78" height="10" rx="5" fill="#ffffff" opacity="0.22" />
+        <rect x="15" y="21" width="78" height="10" rx="5" fill="#000000" opacity="0.10" />
+
+        <!-- 色环（参考图：棕 / 黑 / 黑 / 黄） -->
+        <rect x="28" y="6" width="8" height="28" rx="1.5" fill="var(--cmp-band1, #9a4d0f)" opacity="0.98" />
+        <rect x="40" y="6" width="8" height="28" rx="1.5" fill="var(--cmp-band2, #111827)" opacity="0.98" />
+        <rect x="52" y="6" width="8" height="28" rx="1.5" fill="var(--cmp-band3, #111827)" opacity="0.98" />
+        <rect x="74" y="6" width="8" height="28" rx="1.5" fill="var(--cmp-band4, #facc15)" opacity="0.98" />
+
+        <!-- 色环边缘微弱描边，增加"贴合"质感 -->
+        <path d="M28 6 V34 M36 6 V34
+         M40 6 V34 M48 6 V34
+         M52 6 V34 M60 6 V34
+         M74 6 V34 M82 6 V34" fill="none" stroke="var(--cmp-stroke, #111827)"
+            stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.35)" opacity="0.22" />
+    </svg>
+</div>
+
+<style>
+    /* 按规范：样式必须作用域隔离，且仅通过 CSS 变量读取配置 */
+    .cmp[data-cmp-id="phy.resistor.axial.basic"] {
+        height: var(--cmp-size, 64px);
+        width: calc(var(--cmp-size, 64px) * var(--cmp-aspect, 2.7));
+        display: inline-grid;
+        place-items: center;
+        transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+    }
+
+    .cmp[data-cmp-id="phy.resistor.axial.basic"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 0 calc(10px * var(--cmp-glow, 0)) rgba(var(--cmp-glow-rgb, 255, 214, 102), calc(0.9 * var(--cmp-glow, 0))));
+    }
+</style>
+

@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Components - Open Lab Components</title>
+  <style>
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+    
+    :root {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --bg: #eff4ee;
+      --surface: #ffffff;
+      --border: #d1d5db;
+      --border-light: #e5e7eb;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --text-tertiary: #6b7280;
+      --accent: #10b981;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --radius: 0.75rem;
+      --radius-sm: 0.5rem;
+      --radius-lg: 1rem;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* 第1层：导航层 */
+    .nav-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      border-bottom: none;
+      z-index: 100;
+    }
+    
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    
+    .nav-logo {
+      height: 32px;
+      width: 32px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+    
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+    }
+    
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+    
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .btn {
+      padding: 0.55rem 1.05rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.84rem;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid transparent;
+      line-height: 1.1;
+    }
+    
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+    }
+    
+    .lang-btn {
+      min-width: 78px;
+    }
+    
+    /* 第2层：工具层 */
+    .toolbar-header {
+      background: var(--bg);
+    }
+    
+    .toolbar-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 16px 24px;
+    }
+    
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .search-box {
+      flex: 0 1 640px;
+      min-width: 280px;
+      padding: 0.75rem 1rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+    }
+    
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    }
+    
+    .search-box::placeholder {
+      color: var(--text-tertiary);
+    }
+    
+    .toolbar-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-left: auto;
+    }
+    
+    select {
+      padding: 0.75rem 1rem;
+      padding-right: 2.5rem;
+      background: var(--surface);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231f2937' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.875rem center;
+      background-size: 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    
+    select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+    }
+    
+    .stats-bar {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      color: var(--text-tertiary);
+      font-size: 0.8125rem;
+    }
+    
+    /* Hero区域 */
+    .hero {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 32px 24px;
+      text-align: left;
+    }
+    
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+    
+    .hero p {
+      font-size: 0.9375rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      max-width: 600px;
+    }
+    
+    /* 主内容区 */
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 24px 32px;
+    }
+    
+    .section-header {
+      margin-bottom: 24px;
+    }
+    
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .section-header p {
+      font-size: 0.9375rem;
+      color: var(--text-secondary);
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      cursor: pointer;
+    }
+    
+    .card-preview {
+      background: var(--bg);
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border-light);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card-preview iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      transform: scale(0.7);
+      transform-origin: center;
+    }
+    
+    .card-actions {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .card:hover .card-actions {
+      opacity: 1;
+      pointer-events: all;
+    }
+    
+    .card-action-btn {
+      padding: 0.5rem 1rem;
+      background: var(--surface);
+      color: var(--text-primary);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    
+    .card-action-btn.primary {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .card-body {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .card-title {
+      font-weight: 600;
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+    
+    .card-meta {
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: var(--text-secondary);
+      margin-bottom: 0.75rem;
+    }
+    
+    .card-meta .category {
+      color: var(--accent);
+      font-weight: 500;
+    }
+    
+    .card-meta .version {
+      color: var(--text-tertiary);
+      font-family: 'Monaco', 'Courier New', monospace;
+    }
+    
+    .card-tags {
+      display: flex;
+      gap: 0.375rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+    
+    .tag {
+      padding: 0.25rem 0.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+    
+    .tag-more {
+      color: var(--text-tertiary);
+    }
+    
+    .empty {
+      text-align: center;
+      padding: 6rem 2rem;
+      color: var(--text-secondary);
+      grid-column: 1 / -1;
+    }
+    
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+    
+    .empty h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 6rem 2rem;
+      color: var(--text-secondary);
+      grid-column: 1 / -1;
+    }
+    
+    .load-more {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-secondary);
+    }
+    
+    .load-more-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid var(--border-light);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 0.5rem;
+      vertical-align: middle;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 0 16px;
+        height: auto;
+        min-height: 64px;
+        flex-wrap: wrap;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .toolbar-container {
+        padding: 12px 16px;
+      }
+      
+      .toolbar-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-box {
+        flex: 1;
+        min-width: 100%;
+      }
+      
+      .toolbar-controls {
+        margin-left: 0;
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .hero {
+        padding: 24px 16px;
+      }
+      
+      main {
+        padding: 24px 16px 32px;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.75rem;
+      }
+      
+      .btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 第1层：导航层 -->
+  <nav class="nav-header">
+    <div class="nav-container">
+      <a href="./index.html" class="nav-brand">
+        <img src="./logo.png" alt="OLC Logo" class="nav-logo" />
+        <span>Open Lab Components</span>
+      </a>
+      <div class="nav-links">
+        <a href="./docs.html" class="nav-link" data-i18n="nav-docs">文档</a>
+        <a href="./components.html" class="nav-link" data-i18n="nav-components">组件</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/itkdm/open-lab-components" class="btn btn-primary" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+        <a href="./index.html#contribute" class="btn btn-secondary" data-i18n="nav-contribute">贡献</a>
+        <button id="langToggle" class="btn btn-secondary lang-btn" type="button">English</button>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- 第2层：工具层 -->
+  <div class="toolbar-header">
+    <div class="toolbar-container">
+      <div class="toolbar-row">
+        <input 
+          type="text" 
+          class="search-box" 
+          id="search" 
+          placeholder="搜索组件（名称、标签、分类）..."
+          autocomplete="off"
+        >
+        <div class="toolbar-controls">
+          <select id="categoryFilter">
+            <option value="" data-i18n-option="filter-all-categories">所有分类</option>
+          </select>
+          <select id="sortFilter">
+            <option value="name" data-i18n-option="sort-by-name">按名称</option>
+            <option value="version" data-i18n-option="sort-by-version">按版本</option>
+            <option value="category" data-i18n-option="sort-by-category">按分类</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <span id="statsText">Showing <strong id="componentCount">-</strong> components · <strong id="categoryCount">-</strong> categories</span>
+    </div>
+  </div>
+  
+  <!-- 主内容区 -->
+  <main id="components">
+    <div class="section-header">
+      <h2 data-i18n="section-title">全部组件</h2>
+      <p><span data-i18n="section-desc-prefix">共</span> <span id="componentCountText">-</span> <span data-i18n="section-desc-suffix">个组件，覆盖多个物理实验场景。</span></p>
+    </div>
+    
+    <div id="grid" class="grid">
+      <div class="loading" id="loadingText" data-i18n="loading">加载中</div>
+    </div>
+  </main>
+
+  <script>
+    let registry = [];
+    let categories = [];
+    let filtered = [];
+    let displayedCount = 16; // 每次显示的组件数量
+    let isLoading = false; // 是否正在加载
+    const LANG_KEY = 'olc-lang';
+    const i18n = {
+      zh: {
+        'nav-docs': '文档',
+        'nav-components': '组件',
+        'nav-spec': '规范',
+        'nav-contribute': '贡献',
+        'hero-title': '组件广场',
+        'hero-desc': '在这里搜索、筛选和预览所有 Open Lab Components 组件，并复制代码到你的宿主系统中使用。',
+        'section-title': '全部组件',
+        'section-desc-prefix': '共',
+        'section-desc-suffix': '个组件，覆盖多个物理实验场景。',
+        'search-placeholder': '搜索组件（名称、标签、分类）...',
+        'loading': '加载中',
+        'empty-title': '未找到匹配的组件',
+        'empty-desc': '尝试调整搜索条件或筛选器',
+        'load-fail-title': '无法加载组件列表',
+        'load-fail-desc': '请先运行 npm run build:registry',
+        'stats-prefix': '显示',
+        'components-word': '个组件',
+        'categories-word': '个分类',
+        'filter-all-categories': '所有分类',
+        'sort-by-name': '按名称',
+        'sort-by-version': '按版本',
+        'sort-by-category': '按分类',
+        'btn-preview': '预览',
+        'btn-copy': '复制',
+        'copy-success': '组件代码已复制到剪贴板',
+        'lang-label': 'English'
+      },
+      en: {
+        'nav-docs': 'Docs',
+        'nav-components': 'Components',
+        'nav-spec': 'Spec',
+        'nav-contribute': 'Contribute',
+        'hero-title': 'Components Plaza',
+        'hero-desc': 'Search, filter, and preview all Open Lab Components, then copy snippets into your host app.',
+        'section-title': 'All Components',
+        'section-desc-prefix': 'Total',
+        'section-desc-suffix': 'components across scenarios.',
+        'search-placeholder': 'Search components (name, tags, category)...',
+        'loading': 'Loading',
+        'empty-title': 'No matching components',
+        'empty-desc': 'Try adjusting search or filters',
+        'load-fail-title': 'Failed to load components',
+        'load-fail-desc': 'Please run npm run build:registry first.',
+        'stats-prefix': 'Showing',
+        'components-word': 'components',
+        'categories-word': 'categories',
+        'filter-all-categories': 'All Categories',
+        'sort-by-name': 'By Name',
+        'sort-by-version': 'By Version',
+        'sort-by-category': 'By Category',
+        'btn-preview': 'Preview',
+        'btn-copy': 'Copy',
+        'copy-success': 'Component code copied to clipboard',
+        'lang-label': '中文'
+      }
+    };
+
+    let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+
+    function t(key) {
+      return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
+    }
+
+    function getComponentName(component) {
+      // 优先使用 registry 中的 nameEn 字段
+      if (currentLang === 'en' && component.nameEn) {
+        return component.nameEn;
+      }
+      return component.name;
+    }
+
+    function getCategoryName(component) {
+      // 优先使用 registry 中的 categoryNameEn 字段
+      if (currentLang === 'en' && component.categoryNameEn) {
+        return component.categoryNameEn;
+      }
+      return component.categoryName || component.category;
+    }
+
+    function applyStaticTexts() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        el.textContent = t(key);
+      });
+      // 更新下拉框选项
+      document.querySelectorAll('[data-i18n-option]').forEach(el => {
+        const key = el.getAttribute('data-i18n-option');
+        el.textContent = t(key);
+      });
+      const search = document.getElementById('search');
+      if (search) search.placeholder = t('search-placeholder');
+      const langBtn = document.getElementById('langToggle');
+      if (langBtn) langBtn.textContent = t('lang-label');
+      // stats bar文本
+      updateStatsText();
+    }
+    
+    function updateStatsText() {
+      const stats = document.getElementById('statsText');
+      const comp = document.getElementById('componentCount')?.textContent || '-';
+      const cat = document.getElementById('categoryCount')?.textContent || '-';
+      if (stats) {
+        if (currentLang === 'zh') {
+          stats.innerHTML = `${t('stats-prefix')} <strong id="componentCount">${comp}</strong>${t('components-word')} · <strong id="categoryCount">${cat}</strong>${t('categories-word')}`;
+        } else {
+          stats.innerHTML = `${t('stats-prefix')} <strong id="componentCount">${comp}</strong> ${t('components-word')} · <strong id="categoryCount">${cat}</strong> ${t('categories-word')}`;
+        }
+      }
+    }
+
+    async function loadRegistry() {
+      try {
+        const res = await fetch('./registry/registry.json');
+        const data = await res.json();
+        registry = Array.isArray(data.items) ? data.items : (Array.isArray(data) ? data : []);
+        filtered = registry;
+        
+        // 重置显示数量
+        displayedCount = 16;
+        isLoading = false;
+        
+        updateStats();
+        buildCategoryFilter();
+        render();
+        
+        // 添加滚动事件监听器
+        window.addEventListener('scroll', handleScroll, { passive: true });
+      } catch (err) {
+        document.getElementById('grid').innerHTML = `
+          <div class="empty">
+            <div class="empty-icon">⚠️</div>
+            <h3>${t('load-fail-title')}</h3>
+            <p>${t('load-fail-desc')}</p>
+          </div>
+        `;
+        console.error(err);
+      }
+    }
+
+    function updateStats() {
+      const componentCount = filtered.length;
+      const categoryCount = new Set(filtered.map(c => c.category)).size;
+      
+      const countEl = document.getElementById('componentCount');
+      const catEl = document.getElementById('categoryCount');
+      const textEl = document.getElementById('componentCountText');
+      if (countEl) countEl.textContent = componentCount;
+      if (catEl) catEl.textContent = categoryCount;
+      if (textEl) textEl.textContent = componentCount;
+      updateStatsText();
+    }
+
+    function buildCategoryFilter() {
+      if (!Array.isArray(registry) || registry.length === 0) return;
+      const cats = [...new Set(registry.map(c => c.category))].sort();
+      categories = cats;
+      const select = document.getElementById('categoryFilter');
+      // 清空现有选项（保留"所有分类"选项）
+      const firstOption = select.options[0];
+      select.innerHTML = '';
+      if (firstOption) {
+        select.appendChild(firstOption);
+      }
+      cats.forEach(cat => {
+        const component = registry.find(c => c.category === cat);
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = component ? getCategoryName(component) : cat;
+        select.appendChild(option);
+      });
+      
+      select.addEventListener('change', filter);
+    }
+
+    document.getElementById('sortFilter').addEventListener('change', (e) => {
+      const sortBy = e.target.value;
+      filtered.sort((a, b) => {
+        if (sortBy === 'name') {
+          return a.name.localeCompare(b.name);
+        } else if (sortBy === 'version') {
+          return b.version.localeCompare(a.version);
+        } else if (sortBy === 'category') {
+          return a.category.localeCompare(b.category);
+        }
+        return 0;
+      });
+      // 重置显示数量
+      displayedCount = 16;
+      isLoading = false;
+      render();
+    });
+
+    function filter() {
+      if (!Array.isArray(registry)) return;
+      const searchInput = document.getElementById('search');
+      const query = (searchInput?.value || '').toLowerCase();
+      const activeCategory = document.getElementById('categoryFilter').value;
+
+      filtered = registry.filter(c => {
+        const matchQuery = !query || 
+          c.name.toLowerCase().includes(query) ||
+          c.id.toLowerCase().includes(query) ||
+          (c.tags || []).some(t => t.toLowerCase().includes(query));
+        const matchCategory = !activeCategory || c.category === activeCategory;
+        return matchQuery && matchCategory;
+      });
+
+      // 重置显示数量
+      displayedCount = 16;
+      isLoading = false;
+      
+      updateStats();
+      render();
+    }
+
+    function render() {
+      const grid = document.getElementById('grid');
+      if (!Array.isArray(filtered) || filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="empty">
+            <div class="empty-icon">🔍</div>
+            <h3>${t('empty-title')}</h3>
+            <p>${t('empty-desc')}</p>
+          </div>
+        `;
+        return;
+      }
+
+      // 只显示当前应该显示的组件
+      const displayItems = filtered.slice(0, displayedCount);
+      const hasMore = filtered.length > displayedCount;
+      
+      grid.innerHTML = displayItems.map(c => {
+        const categoryPath = c.category.replace('/', '/');
+        const componentPath = `./components/${categoryPath}/${c.id}.html`;
+        const tags = c.tags || [];
+        const tagsHtml = tags.slice(0, 3).map(t => `<span class="tag">${t}</span>`).join('');
+        const moreTags = tags.length > 3 ? `<span class="tag tag-more">+${tags.length - 3}</span>` : '';
+        
+        return `
+          <div class="card" onclick="openPlayground('${c.id}')">
+            <div class="card-preview">
+              <iframe src="${componentPath}" scrolling="no"></iframe>
+              <div class="card-actions">
+                <button class="card-action-btn primary" onclick="event.stopPropagation(); openPlayground('${c.id}')">${t('btn-preview')}</button>
+                <button class="card-action-btn" onclick="event.stopPropagation(); copyComponent('${c.id}')">${t('btn-copy')}</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="card-title">${getComponentName(c)}</div>
+              <div class="card-meta">
+                <span class="category">${getCategoryName(c)}</span>
+                <span> · </span>
+                <span class="version">v${c.version}</span>
+              </div>
+              <div class="card-tags">${tagsHtml}${moreTags}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      
+      // 如果还有更多组件，显示加载提示
+      if (hasMore) {
+        grid.innerHTML += `
+          <div class="load-more" id="loadMoreIndicator">
+            <span class="load-more-spinner"></span>
+            <span>${t('loading')}...</span>
+          </div>
+        `;
+      }
+    }
+    
+    function loadMore() {
+      if (isLoading) return;
+      if (displayedCount >= filtered.length) return;
+      
+      isLoading = true;
+      // 模拟加载延迟，实际使用时可以移除
+      setTimeout(() => {
+        displayedCount += 16;
+        render();
+        isLoading = false;
+      }, 300);
+    }
+    
+    function handleScroll() {
+      if (isLoading) return;
+      if (displayedCount >= filtered.length) return;
+      
+      const loadMoreIndicator = document.getElementById('loadMoreIndicator');
+      if (!loadMoreIndicator) return;
+      
+      const rect = loadMoreIndicator.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      
+      // 当加载提示进入视口时，加载更多
+      if (rect.top <= windowHeight + 200) {
+        loadMore();
+      }
+    }
+
+    function openPlayground(id) {
+      window.location.href = `./playground.html?id=${id}`;
+    }
+
+    async function copyComponent(id) {
+      const component = registry.find(c => c.id === id);
+      if (!component) return;
+      
+      try {
+        // 获取组件路径
+        const categoryPath = component.category.replace('/', '/');
+        const componentPath = `./components/${categoryPath}/${component.id}.html`;
+        
+        // 获取组件的实际 HTML 内容
+        const componentHtml = await getComponentHTML(componentPath);
+        
+        // 构建 CSS 变量（使用默认值）
+        const cssVars = {};
+        if (component.cssVars && component.props) {
+          component.props.forEach(prop => {
+            const cssVar = component.cssVars[prop.key];
+            if (cssVar) {
+              let val = prop.default;
+              if (prop.type === 'number(px)') {
+                val = val + 'px';
+              } else if (prop.type === 'number(deg)') {
+                val = val + 'deg';
+              }
+              cssVars[cssVar] = val;
+            }
+          });
+        }
+        
+        // 生成 style 字符串
+        const styleStr = Object.entries(cssVars)
+          .map(([k, v]) => `${k}: ${v}`)
+          .join('; ');
+        
+        // 生成完整的组件代码
+        let code;
+        if (styleStr) {
+          code = `<div class="cmp" data-cmp-id="${component.id}" style="${styleStr}">
+${componentHtml}
+</div>`;
+        } else {
+          code = `<div class="cmp" data-cmp-id="${component.id}">
+${componentHtml}
+</div>`;
+        }
+        
+        // 复制到剪贴板
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(code);
+          alert(t('copy-success'));
+        } else {
+          fallbackCopy(code);
+        }
+      } catch (err) {
+        console.error('Failed to copy component:', err);
+        // 如果获取组件内容失败，至少复制一个基本的占位符
+        const fallbackCode = `<div class="cmp" data-cmp-id="${component.id}">
+  <!-- 组件内容 -->
+</div>`;
+        fallbackCopy(fallbackCode);
+      }
+    }
+    
+    async function getComponentHTML(path) {
+      try {
+        const res = await fetch(path);
+        let text = await res.text();
+        
+        // 移除 @cmp-manifest 注释块
+        text = text.replace(/<!--\s*@cmp-manifest[\s\S]*?-->/g, '').trim();
+        
+        // 如果包含完整的 HTML 文档结构，提取 body 内容
+        if (text.includes('<body>')) {
+          const bodyMatch = text.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+          if (bodyMatch) {
+            text = bodyMatch[1].trim();
+          }
+        }
+        
+        // 确保返回的代码有适当的缩进
+        const lines = text.split('\n');
+        const indented = lines.map((line, index) => {
+          // 第一行不缩进，其他行缩进 2 个空格
+          if (index === 0) return line.trim();
+          return '  ' + line;
+        }).join('\n');
+        
+        return indented;
+      } catch (err) {
+        console.error('Failed to load component HTML:', err);
+        return '  <!-- 组件内容 -->';
+      }
+    }
+
+    function fallbackCopy(code) {
+      const textarea = document.createElement('textarea');
+      textarea.value = code;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      alert(t('copy-success'));
+    }
+
+    const searchInput = document.getElementById('search');
+    if (searchInput) {
+      searchInput.addEventListener('input', filter);
+    }
+
+    function switchLang() {
+      currentLang = currentLang === 'zh' ? 'en' : 'zh';
+      localStorage.setItem(LANG_KEY, currentLang);
+      applyStaticTexts();
+      buildCategoryFilter();
+      updateStats();
+      render();
+    }
+
+    const langToggle = document.getElementById('langToggle');
+    if (langToggle) {
+      langToggle.addEventListener('click', switchLang);
+    }
+
+    applyStaticTexts();
+    loadRegistry();
+  </script>
+</body>
+</html>
+
+

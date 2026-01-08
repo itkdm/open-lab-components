@@ -1,0 +1,188 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.weight.mass.basic",
+  "name": "砝码（带重量显示）",
+  "nameEn": "Weight with Mass Display",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 64, "h": 64 },
+  "props": [
+    { "key": "size",         "type": "number(px)",  "default": 64,      "min": 16,  "max": 256, "desc": "组件尺寸（正方形）" },
+    { "key": "rotate",       "type": "number(deg)", "default": 0,       "min": -180,"max": 180, "desc": "旋转角度" },
+    { "key": "scale",        "type": "number",      "default": 1,       "min": 0.2, "max": 4,   "desc": "缩放比例" },
+
+    { "key": "stroke",       "type": "color",       "default": "#111827","desc": "描边颜色（可选）" },
+    { "key": "strokeWidth",  "type": "number",      "default": 2.5,     "min": 1,   "max": 6,   "desc": "描边粗细（可选）" },
+    { "key": "fill",         "type": "color",       "default": "rgba(255,255,255,0.0)", "desc": "填充色（可选）" },
+    { "key": "accent",       "type": "color",       "default": "#f97316","desc": "强调色/数字颜色（可选）" },
+
+    { "key": "label",        "type": "string",      "default": "50 g",  "desc": "重量显示文本（如：50 g / 0.5 kg）" },
+    { "key": "labelColor",   "type": "color",       "default": "#111827","desc": "单位颜色（可选）" },
+    { "key": "labelOpacity", "type": "number(0-1)", "default": 1,       "min": 0,   "max": 1,   "desc": "重量文本透明度" },
+
+    { "key": "glow",         "type": "number(0-1)", "default": 0,       "min": 0,   "max": 1,   "desc": "强调/亮度（可选）" },
+    { "key": "glowRgb",      "type": "string(rgb)", "default": "255,214,102", "desc": "强调 RGB（可选）" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "rotate": "--cmp-rotate",
+    "scale": "--cmp-scale",
+
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "fill": "--cmp-fill",
+    "accent": "--cmp-accent",
+
+    "label": "--cmp-label",
+    "labelColor": "--cmp-label-color",
+    "labelOpacity": "--cmp-label-opacity",
+
+    "glow": "--cmp-glow",
+    "glowRgb": "--cmp-glow-rgb"
+  },
+  "tags": ["physics", "mass", "weight"]
+}-->
+<div class="cmp" data-cmp-id="phy.weight.mass.basic" role="img" aria-label="砝码（带重量显示）" data-label="50 g">
+    <svg class="cmp__svg" viewBox="0 0 64 64" aria-hidden="true">
+        <!-- 顶部把手 -->
+        <rect x="27" y="10" width="10" height="7" rx="2.5" fill="var(--cmp-fill, rgba(255,255,255,0.0))"
+            stroke="var(--cmp-stroke, #111827)" stroke-width="var(--cmp-stroke-width, 2.5)" stroke-linejoin="round" />
+        <rect x="20" y="17" width="24" height="9" rx="4.5" fill="var(--cmp-fill, rgba(255,255,255,0.0))"
+            stroke="var(--cmp-stroke, #111827)" stroke-width="var(--cmp-stroke-width, 2.5)" stroke-linejoin="round" />
+
+        <!-- 主体 -->
+        <rect x="12" y="24" width="40" height="34" rx="9" fill="var(--cmp-fill, rgba(255,255,255,0.0))"
+            stroke="var(--cmp-stroke, #111827)" stroke-width="var(--cmp-stroke-width, 2.5)" stroke-linejoin="round" />
+
+        <!-- 重量文字：放在主体中上部；装饰线放在更下方，避免重叠 -->
+        <text x="32" y="39" text-anchor="middle" dominant-baseline="middle" class="cmp__text">
+            <tspan class="cmp__num">50</tspan>
+            <tspan class="cmp__unit"> g</tspan>
+        </text>
+
+        <path d="M20 46H44" fill="none" stroke="var(--cmp-accent, #f97316)"
+            stroke-width="calc(var(--cmp-stroke-width, 2.5) - 0.4)" stroke-linecap="round" />
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.weight.mass.basic"] {
+        width: var(--cmp-size, 64px);
+        height: var(--cmp-size, 64px);
+        display: inline-grid;
+        place-items: center;
+        transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+    }
+
+    .cmp[data-cmp-id="phy.weight.mass.basic"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 0 calc(10px * var(--cmp-glow, 0)) rgba(var(--cmp-glow-rgb, 255, 214, 102), calc(0.9 * var(--cmp-glow, 0))));
+    }
+
+    /* SVG 文字：使用 viewBox 坐标字体，随缩放稳定，不容易"跳" */
+    .cmp[data-cmp-id="phy.weight.mass.basic"] .cmp__text {
+        opacity: var(--cmp-label-opacity, 1);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .cmp[data-cmp-id="phy.weight.mass.basic"] .cmp__num {
+        fill: var(--cmp-accent, #f97316);
+    }
+
+    .cmp[data-cmp-id="phy.weight.mass.basic"] .cmp__unit {
+        fill: var(--cmp-label-color, var(--cmp-stroke, #111827));
+        font-weight: 600;
+    }
+</style>
+
+<!-- 可选：需要从 data-label / data-props / --cmp-label 注入重量文字时再保留这段；否则可删 -->
+<script>
+    (function () {
+        // 只在"自己这段 fragment"里向前找根节点，不 query 全页面
+        let el = document.currentScript;
+        let root = null;
+        while (el && (el = el.previousElementSibling)) {
+            if (el.classList && el.classList.contains("cmp")) { root = el; break; }
+        }
+        if (!root) return;
+
+        const numEl = root.querySelector(".cmp__num");
+        const unitEl = root.querySelector(".cmp__unit");
+        if (!numEl || !unitEl) return;
+
+        function stripQuotes(s) {
+            const t = (s || "").trim();
+            if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) return t.slice(1, -1);
+            return t;
+        }
+
+        function splitLabel(s) {
+            const t = (s || "").trim();
+            const m = t.match(/^([+-]?\d+(?:\.\d+)?)(.*)$/);
+            if (!m) return { num: t, unit: "" };
+            let unit = (m[2] || "");
+            if (unit && !/^\s/.test(unit)) unit = " " + unit;
+            return { num: m[1], unit };
+        }
+
+        // 1) data-label（最推荐，字符串不需要引号）
+        let label = root.getAttribute("data-label");
+
+        // 2) data-props（可选）
+        const raw = root.getAttribute("data-props");
+        if (!label && raw) {
+            try {
+                const p = JSON.parse(raw);
+
+                // 常用 token 映射到 CSS 变量（宿主不做时可用）
+                if (p.size != null) {
+                    const n = Number(p.size); if (Number.isFinite(n)) root.style.setProperty("--cmp-size", n + "px");
+                }
+                if (p.rotate != null) {
+                    const n = Number(p.rotate); if (Number.isFinite(n)) root.style.setProperty("--cmp-rotate", n + "deg");
+                }
+                if (p.scale != null) {
+                    const n = Number(p.scale); if (Number.isFinite(n)) root.style.setProperty("--cmp-scale", String(n));
+                }
+                if (p.stroke) root.style.setProperty("--cmp-stroke", String(p.stroke));
+                if (p.strokeWidth != null) {
+                    const n = Number(p.strokeWidth); if (Number.isFinite(n)) root.style.setProperty("--cmp-stroke-width", String(n));
+                }
+                if (p.fill) root.style.setProperty("--cmp-fill", String(p.fill));
+                if (p.accent) root.style.setProperty("--cmp-accent", String(p.accent));
+                if (p.labelColor) root.style.setProperty("--cmp-label-color", String(p.labelColor));
+                if (p.labelOpacity != null) {
+                    const n = Math.max(0, Math.min(1, Number(p.labelOpacity)));
+                    if (Number.isFinite(n)) root.style.setProperty("--cmp-label-opacity", String(n));
+                }
+                if (p.glow != null) {
+                    const n = Math.max(0, Math.min(1, Number(p.glow)));
+                    if (Number.isFinite(n)) root.style.setProperty("--cmp-glow", String(n));
+                }
+                if (p.glowRgb) root.style.setProperty("--cmp-glow-rgb", String(p.glowRgb));
+
+                if (p.label) label = String(p.label);
+            } catch (e) { }
+        }
+
+        // 3) --cmp-label（需要宿主传入带引号的字符串：--cmp-label:"50 g"）
+        if (!label) {
+            const cssLabel = stripQuotes(getComputedStyle(root).getPropertyValue("--cmp-label"));
+            if (cssLabel) label = cssLabel;
+        }
+
+        if (label) {
+            const sp = splitLabel(label);
+            numEl.textContent = sp.num;
+            unitEl.textContent = sp.unit;
+        }
+    })();
+</script>
+

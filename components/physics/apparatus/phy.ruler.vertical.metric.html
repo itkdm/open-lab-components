@@ -1,0 +1,282 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.ruler.vertical.metric",
+  "name": "刻度尺（垂直米制）",
+  "nameEn": "Vertical Metric Ruler",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 64, "h": 400 },
+  "props": [
+    { "key": "height", "type": "number(px)", "default": 400, "min": 200, "max": 800, "desc": "刻度尺高度" },
+    { "key": "width", "type": "number(px)", "default": 64, "min": 32, "max": 128, "desc": "刻度尺宽度" },
+    { "key": "rotate", "type": "number(deg)", "default": 0, "min": -180, "max": 180, "desc": "旋转角度" },
+    
+    { "key": "minValue", "type": "number", "default": 0, "min": 0, "max": 100, "desc": "起始刻度值（厘米）" },
+    { "key": "maxValue", "type": "number", "default": 90, "min": 10, "max": 200, "desc": "结束刻度值（厘米）" },
+    
+    { "key": "fill", "type": "color", "default": "#f1e68e", "desc": "刻度尺背景色" },
+    { "key": "stroke", "type": "color", "default": "#111827", "desc": "刻度线和数字颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 1, "max": 4, "desc": "刻度线粗细" },
+    
+    { "key": "unit", "type": "string", "default": "cm", "desc": "单位标识" },
+    
+    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "height": "--cmp-height",
+    "width": "--cmp-width",
+    "rotate": "--cmp-rotate",
+    "minValue": "--cmp-min-value",
+    "maxValue": "--cmp-max-value",
+    "fill": "--cmp-fill",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "unit": "--cmp-unit",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["ruler", "measurement", "metric", "vertical", "scale"]
+}-->
+<div class="cmp" data-cmp-id="phy.ruler.vertical.metric" role="img" aria-label="刻度尺（垂直米制）">
+    <svg class="cmp__svg" viewBox="0 0 64 400" aria-hidden="true">
+        <!-- 刻度尺主体背景（带边框） -->
+        <rect x="0" y="0" width="64" height="400" fill="var(--cmp-fill, #f1e68e)" 
+            stroke="var(--cmp-stroke, #111827)" stroke-width="var(--cmp-stroke-width, 1.5)" />
+        
+        <!-- 刻度线和数字将通过 JavaScript 动态生成 -->
+        <g class="cmp__marks"></g>
+        <g class="cmp__labels"></g>
+        <g class="cmp__unit"></g>
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.ruler.vertical.metric"] {
+        width: var(--cmp-width, 64px);
+        height: var(--cmp-height, 400px);
+        display: inline-block;
+        transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+    }
+
+    .cmp[data-cmp-id="phy.ruler.vertical.metric"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 0 calc(10px * var(--cmp-glow, 0)) rgba(var(--cmp-glow-rgb, 255, 214, 102), calc(0.9 * var(--cmp-glow, 0))));
+    }
+
+    .cmp[data-cmp-id="phy.ruler.vertical.metric"] .cmp__mark-decimeter {
+        stroke: var(--cmp-stroke, #111827);
+        stroke-width: var(--cmp-stroke-width, 1.5);
+        stroke-linecap: square;
+    }
+
+    .cmp[data-cmp-id="phy.ruler.vertical.metric"] .cmp__mark-centimeter {
+        stroke: var(--cmp-stroke, #111827);
+        stroke-width: calc(var(--cmp-stroke-width, 1.5) * 0.75);
+        stroke-linecap: square;
+    }
+
+    .cmp[data-cmp-id="phy.ruler.vertical.metric"] .cmp__mark-millimeter {
+        stroke: var(--cmp-stroke, #111827);
+        stroke-width: calc(var(--cmp-stroke-width, 1.5) * 0.5);
+        stroke-linecap: square;
+    }
+
+    .cmp[data-cmp-id="phy.ruler.vertical.metric"] .cmp__label {
+        fill: var(--cmp-stroke, #111827);
+        font-size: 10px;
+        font-weight: 500;
+        font-family: Arial, sans-serif;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .cmp[data-cmp-id="phy.ruler.vertical.metric"] .cmp__unit-text {
+        fill: var(--cmp-stroke, #111827);
+        font-size: 10px;
+        font-weight: 500;
+        font-family: Arial, sans-serif;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        pointer-events: none;
+        user-select: none;
+    }
+</style>
+
+<script>
+(function () {
+    let el = document.currentScript;
+    let root = null;
+    while (el && (el = el.previousElementSibling)) {
+        if (el.classList && el.classList.contains("cmp")) { root = el; break; }
+    }
+    if (!root) return;
+
+    const svg = root.querySelector(".cmp__svg");
+    const marksGroup = root.querySelector(".cmp__marks");
+    const labelsGroup = root.querySelector(".cmp__labels");
+    const unitGroup = root.querySelector(".cmp__unit");
+    if (!svg || !marksGroup || !labelsGroup || !unitGroup) return;
+
+    function parseCSSVar(value) {
+        const str = getComputedStyle(root).getPropertyValue(value).trim();
+        if (!str) return null;
+        // 移除引号
+        const cleaned = str.replace(/^["']|["']$/g, "");
+        return cleaned;
+    }
+
+    function parseNumber(value) {
+        const str = parseCSSVar(value);
+        if (!str) return null;
+        const num = Number(str);
+        return Number.isFinite(num) ? num : null;
+    }
+
+    function renderRuler() {
+        // 清除现有内容
+        marksGroup.innerHTML = "";
+        labelsGroup.innerHTML = "";
+        unitGroup.innerHTML = "";
+
+        // 获取参数
+        const minValue = parseNumber("--cmp-min-value") || 0;
+        const maxValue = parseNumber("--cmp-max-value") || 90;
+        const unit = parseCSSVar("--cmp-unit") || "cm";
+        
+        const viewBox = svg.getAttribute("viewBox").split(" ").map(Number);
+        const svgWidth = viewBox[2] || 64;
+        const svgHeight = viewBox[3] || 400;
+        
+        const totalRange = maxValue - minValue; // 范围（厘米）
+        
+        // 刻度线长度定义
+        const tenCmMarkLength = svgWidth * 0.35; // 10厘米长刻度线（最长）
+        const fiveCmMarkLength = svgWidth * 0.25; // 5厘米中刻度线（中等）
+        const centimeterMarkLength = svgWidth * 0.18; // 1厘米刻度线（短）
+        
+        // 位置定义（从右侧边缘开始）
+        const markStartX = svgWidth; // 右侧边缘
+        const labelX = svgWidth * 0.25; // 数字位置（左侧，距离左边缘25%）
+        
+        // 从起始值到结束值，遍历每个厘米
+        // 每个厘米对应的像素间距：总高度除以总厘米数
+        // 例如：0-90厘米，共90厘米，需要均匀分布在svgHeight高度内
+        const pixelsPerCm = totalRange > 0 ? svgHeight / totalRange : 0;
+        
+        for (let cm = minValue; cm <= maxValue; cm++) {
+            // 计算垂直位置（从顶部开始，minValue在顶部，maxValue在底部）
+            // 每个厘米标记的位置：从顶部开始，每个厘米向下移动 pixelsPerCm 像素
+            const y = (cm - minValue) * pixelsPerCm;
+            
+            // 判断刻度类型
+            if (cm % 10 === 0) {
+                // 每10厘米：最长刻度线 + 数字标签
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("class", "cmp__mark-decimeter");
+                line.setAttribute("x1", String(markStartX));
+                line.setAttribute("y1", String(y));
+                line.setAttribute("x2", String(markStartX - tenCmMarkLength));
+                line.setAttribute("y2", String(y));
+                marksGroup.appendChild(line);
+                
+                // 显示数字标签（跳过起始值和结束值）
+                if (cm !== minValue && cm !== maxValue) {
+                    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    text.setAttribute("class", "cmp__label");
+                    text.setAttribute("x", String(labelX));
+                    text.setAttribute("y", String(y));
+                    text.setAttribute("transform", `rotate(90 ${labelX} ${y})`);
+                    text.textContent = String(cm);
+                    labelsGroup.appendChild(text);
+                }
+            } else if (cm % 5 === 0) {
+                // 每5厘米（但不是10的倍数）：中长刻度线
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("class", "cmp__mark-centimeter");
+                line.setAttribute("x1", String(markStartX));
+                line.setAttribute("y1", String(y));
+                line.setAttribute("x2", String(markStartX - fiveCmMarkLength));
+                line.setAttribute("y2", String(y));
+                marksGroup.appendChild(line);
+            } else {
+                // 每1厘米：短刻度线
+                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                line.setAttribute("class", "cmp__mark-centimeter");
+                line.setAttribute("x1", String(markStartX));
+                line.setAttribute("y1", String(y));
+                line.setAttribute("x2", String(markStartX - centimeterMarkLength));
+                line.setAttribute("y2", String(y));
+                marksGroup.appendChild(line);
+            }
+        }
+
+        // 添加单位标识（在底部，距离底部有一定距离）
+        const unitY = svgHeight - 15;
+        const unitText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        unitText.setAttribute("class", "cmp__unit-text");
+        unitText.setAttribute("x", String(labelX));
+        unitText.setAttribute("y", String(unitY));
+        unitText.setAttribute("transform", `rotate(90 ${labelX} ${unitY})`);
+        // 在"c"和"m"之间添加间距
+        const unitDisplay = unit === "cm" ? "c m" : unit;
+        unitText.textContent = unitDisplay;
+        unitGroup.appendChild(unitText);
+    }
+
+    // 支持 data-props 属性
+    const raw = root.getAttribute("data-props");
+    if (raw) {
+        try {
+            const p = JSON.parse(raw);
+            if (p.height != null) {
+                const n = Number(p.height);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-height", n + "px");
+            }
+            if (p.width != null) {
+                const n = Number(p.width);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-width", n + "px");
+            }
+            if (p.rotate != null) {
+                const n = Number(p.rotate);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-rotate", n + "deg");
+            }
+            if (p.minValue != null) {
+                const n = Number(p.minValue);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-min-value", String(n));
+            }
+            if (p.maxValue != null) {
+                const n = Number(p.maxValue);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-max-value", String(n));
+            }
+            if (p.fill) root.style.setProperty("--cmp-fill", String(p.fill));
+            if (p.stroke) root.style.setProperty("--cmp-stroke", String(p.stroke));
+            if (p.strokeWidth != null) {
+                const n = Number(p.strokeWidth);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-stroke-width", String(n));
+            }
+            if (p.unit) root.style.setProperty("--cmp-unit", String(p.unit));
+            if (p.glow != null) {
+                const n = Math.max(0, Math.min(1, Number(p.glow)));
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-glow", String(n));
+            }
+        } catch (e) {}
+    }
+
+    // 初始渲染
+    renderRuler();
+
+    // 监听 CSS 变量变化（通过 MutationObserver）
+    const observer = new MutationObserver(() => {
+        renderRuler();
+    });
+    observer.observe(root, {
+        attributes: true,
+        attributeFilter: ["style"]
+    });
+})();
+</script>
+
