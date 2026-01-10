@@ -674,6 +674,124 @@
       if (langBtn) langBtn.textContent = t('lang-label');
     }
 
+    function updatePageTDK(component) {
+      if (!component) return;
+      
+      const componentName = getComponentName(component);
+      const categoryName = getCategoryName(component);
+      const componentTags = (component.tags || []).join(', ');
+      
+      // 生成页面标题
+      const pageTitle = currentLang === 'zh' 
+        ? `${componentName} - 组件预览 - Open Lab Components`
+        : `${componentName} - Component Preview - Open Lab Components`;
+      
+      // 生成页面描述
+      const pageDescription = currentLang === 'zh'
+        ? `预览和调试 ${componentName} 组件。分类：${categoryName}，版本：v${component.version}。支持实时参数调整和代码复制。`
+        : `Preview and debug ${componentName} component. Category: ${categoryName}, Version: v${component.version}. Supports real-time parameter adjustment and code copying.`;
+      
+      // 生成关键词（包含组件名称、分类、标签等）
+      const keywords = currentLang === 'zh'
+        ? `Open Lab Components,${componentName},${categoryName},组件预览,组件调试,实时预览${componentTags ? ',' + componentTags : ''},HTML组件,STEM教育`
+        : `Open Lab Components,${componentName},${categoryName},component preview,component debug,live preview${componentTags ? ',' + componentTags : ''},HTML component,STEM education`;
+      
+      // 更新页面标题
+      document.title = pageTitle;
+      
+      // 更新或创建 meta description
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.setAttribute('name', 'description');
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.setAttribute('content', pageDescription);
+      
+      // 更新或创建 meta keywords
+      let metaKeywords = document.querySelector('meta[name="keywords"]');
+      if (!metaKeywords) {
+        metaKeywords = document.createElement('meta');
+        metaKeywords.setAttribute('name', 'keywords');
+        document.head.appendChild(metaKeywords);
+      }
+      metaKeywords.setAttribute('content', keywords);
+      
+      // 更新 canonical URL
+      const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
+      const playgroundUrl = `${baseUrl}/playground.html?id=${component.id}`;
+      let canonical = document.querySelector('link[rel="canonical"]');
+      if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+      }
+      canonical.setAttribute('href', playgroundUrl);
+      
+      // 更新 Open Graph 标签
+      const updateOGTag = (property, content) => {
+        let tag = document.querySelector(`meta[property="${property}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('property', property);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      };
+      
+      updateOGTag('og:title', pageTitle);
+      updateOGTag('og:description', pageDescription);
+      updateOGTag('og:url', playgroundUrl);
+      
+      // 更新 Twitter Card 标签
+      const updateTwitterTag = (name, content) => {
+        let tag = document.querySelector(`meta[name="${name}"]`);
+        if (!tag) {
+          tag = document.createElement('meta');
+          tag.setAttribute('name', name);
+          document.head.appendChild(tag);
+        }
+        tag.setAttribute('content', content);
+      };
+      
+      updateTwitterTag('twitter:title', pageTitle);
+      updateTwitterTag('twitter:description', pageDescription);
+      updateTwitterTag('twitter:url', playgroundUrl);
+      
+      // 更新 JSON-LD 结构化数据
+      let jsonLd = document.querySelector('script[type="application/ld+json"]');
+      if (!jsonLd) {
+        jsonLd = document.createElement('script');
+        jsonLd.setAttribute('type', 'application/ld+json');
+        document.head.appendChild(jsonLd);
+      }
+      
+      const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": componentName,
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "CNY"
+        },
+        "description": pageDescription,
+        "softwareVersion": component.version,
+        "category": categoryName,
+        "keywords": keywords,
+        "url": playgroundUrl,
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "Open Lab Components",
+          "url": baseUrl + '/'
+        }
+      };
+      
+      jsonLd.textContent = JSON.stringify(structuredData, null, 2);
+    }
+
     async function loadComponent() {
       try {
         const res = await fetch('./registry/registry.json');
@@ -695,6 +813,9 @@
 
         document.getElementById('componentName').textContent = getComponentName(component);
         document.getElementById('componentMeta').textContent = `${getCategoryName(component)} · v${component.version}`;
+        
+        // 更新页面 TDK（Title, Description, Keywords）
+        updatePageTDK(component);
         
         if (component.props) {
           component.props.forEach(prop => {
@@ -1090,6 +1211,8 @@ ${componentHtml}
         // 更新组件名称和分类显示
         document.getElementById('componentName').textContent = getComponentName(component);
         document.getElementById('componentMeta').textContent = `${getCategoryName(component)} · v${component.version}`;
+        // 更新页面 TDK（根据新语言）
+        updatePageTDK(component);
         // 重新渲染右侧文案和空状态等
         renderControls();
         updateCode();
