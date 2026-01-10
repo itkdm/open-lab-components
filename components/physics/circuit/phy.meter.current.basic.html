@@ -1,0 +1,308 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.meter.current.basic",
+  "name": "电流表",
+  "nameEn": "Ammeter",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 320 },
+  "tags": ["ammeter", "meter", "current", "circuit", "static", "basic"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 280, "min": 80, "max": 560, "desc": "组件尺寸（正方形）" },
+    { "key": "stroke", "type": "color", "default": "#111111", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number(px)", "default": 3, "min": 1, "max": 8, "desc": "描边宽度" },
+    { "key": "accent", "type": "color", "default": "#F39A1F", "desc": "强调色（表盘橙色）" },
+    { "key": "body", "type": "color", "default": "#2B2B2B", "desc": "外壳颜色" },
+    { "key": "wire", "type": "color", "default": "#0F0F0F", "desc": "导线颜色" },
+    { "key": "headFill", "type": "color", "default": "#CFE0FF", "desc": "探头内圈填充" },
+    { "key": "displayFill", "type": "color", "default": "#FFFFFF", "desc": "显示窗填充" },
+    { "key": "value", "type": "string", "default": "-", "desc": "显示值（通过 CSS 变量注入）" },
+    { "key": "unit", "type": "string", "default": "", "desc": "单位（如 A / mA，通过 CSS 变量注入）" },
+    { "key": "probex", "type": "number", "default": 268, "min": 0, "max": 320, "desc": "探头位置 X（viewBox坐标；若<=1则按比例）" },
+    { "key": "probey", "type": "number", "default": 80, "min": 0, "max": 320, "desc": "探头位置 Y（viewBox坐标；若<=1则按比例）" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "accent": "--cmp-accent",
+    "body": "--cmp-body",
+    "wire": "--cmp-wire",
+    "headFill": "--cmp-head-fill",
+    "displayFill": "--cmp-display-fill",
+    "value": "--cmp-value",
+    "unit": "--cmp-unit",
+    "probex": "--cmp-probe-x",
+    "probey": "--cmp-probe-y"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.meter.current.basic" role="img" aria-label="电流表">
+    <style>
+      .cmp[data-cmp-id="phy.meter.current.basic"]{
+        width: var(--cmp-size, 280px);
+        height: var(--cmp-size, 280px);
+        display: inline-block;
+      }
+  
+      .cmp[data-cmp-id="phy.meter.current.basic"] svg{
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+  
+      .cmp[data-cmp-id="phy.meter.current.basic"] .s-stroke{
+        stroke: var(--cmp-stroke, #111111);
+        stroke-width: var(--cmp-stroke-width, 3);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+  
+      .cmp[data-cmp-id="phy.meter.current.basic"] .t-label{
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, "Noto Sans", "PingFang SC", "Microsoft YaHei", sans-serif;
+        font-weight: 700;
+        fill: var(--cmp-stroke, #111111);
+      }
+  
+      .cmp[data-cmp-id="phy.meter.current.basic"] .t-value{
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+        font-weight: 700;
+        fill: var(--cmp-stroke, #111111);
+      }
+    </style>
+  
+    <svg viewBox="0 0 320 320" aria-hidden="true">
+      <defs>
+        <filter id="cmp-ammeter-shadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(0,0,0,0.28)"/>
+        </filter>
+      </defs>
+  
+      <!-- 导线 -->
+      <path
+        class="s-stroke"
+        d="M 96 202 C 150 168 140 150 188 150 C 228 150 232 118 258 112"
+        fill="none"
+        stroke="var(--cmp-wire, #0F0F0F)"
+        stroke-width="6"
+        stroke-linecap="round"
+      />
+  
+      <!-- 探头（外形） -->
+      <g filter="url(#cmp-ammeter-shadow)" data-role="probe">
+        <circle data-role="probe-circle-outer" cx="268" cy="80" r="30" fill="#3A3A3A" class="s-stroke"/>
+        <rect data-role="probe-rect" x="253" y="98" width="30" height="40" rx="15" fill="#3A3A3A" class="s-stroke"/>
+        <circle data-role="probe-circle-inner" cx="268" cy="80" r="23" fill="var(--cmp-head-fill, #CFE0FF)" class="s-stroke" stroke-width="2"/>
+
+        <!-- 十字准星 -->
+        <line data-role="probe-cross-v" x1="268" y1="60" x2="268" y2="100" class="s-stroke" />
+        <line data-role="probe-cross-h" x1="248" y1="80" x2="288" y2="80" class="s-stroke" />
+
+        <!-- 探头橙色标识 -->
+        <rect data-role="probe-badge" x="258" y="116" width="20" height="14" rx="4" fill="var(--cmp-accent, #F39A1F)" class="s-stroke" stroke-width="2"/>
+      </g>
+  
+      <!-- 表身（外壳） -->
+      <g filter="url(#cmp-ammeter-shadow)">
+        <rect x="40" y="190" width="180" height="110" rx="30" fill="var(--cmp-body, #2B2B2B)" class="s-stroke"/>
+  
+        <!-- 表面橙色面板 -->
+        <rect x="56" y="206" width="148" height="88" rx="24" fill="var(--cmp-accent, #F39A1F)" />
+  
+        <!-- 外壳高光 -->
+        <path
+          d="M 55 204 C 85 192 120 192 150 198 C 168 202 186 205 205 202
+             C 198 194 182 188 165 186 C 122 180 82 182 55 190 Z"
+          fill="rgba(255,255,255,0.18)"
+        />
+  
+        <!-- 引线孔 -->
+        <circle cx="96" cy="202" r="12" fill="var(--cmp-accent, #F39A1F)" class="s-stroke" stroke-width="2"/>
+        <circle cx="96" cy="202" r="6" fill="var(--cmp-body, #2B2B2B)"/>
+  
+        <!-- "电流"文字 -->
+        <text x="130" y="238" text-anchor="middle" font-size="24" class="t-label">电流</text>
+  
+        <!-- 显示窗 -->
+        <rect x="86" y="248" width="110" height="34" rx="8"
+              fill="var(--cmp-display-fill, #FFFFFF)"
+              class="s-stroke" stroke-width="2"/>
+  
+        <text data-role="value" x="141" y="271" text-anchor="middle" font-size="18" class="t-value">-</text>
+      </g>
+    </svg>
+  
+    <!-- 用于更新 value/unit 显示和探头位置；IIFE 自包含、只操作自身节点 -->
+    <script>
+      (() => {
+        const root = document.currentScript?.parentElement;
+        if (!root) return;
+        
+        const svg = root.querySelector('svg');
+        if (!svg) return;
+        
+        const valueEl = root.querySelector('[data-role="value"]');
+        const probeGroup = root.querySelector('[data-role="probe"]');
+        const probeCircleOuter = root.querySelector('[data-role="probe-circle-outer"]');
+        const probeCircleInner = root.querySelector('[data-role="probe-circle-inner"]');
+        const probeRect = root.querySelector('[data-role="probe-rect"]');
+        const probeCrossV = root.querySelector('[data-role="probe-cross-v"]');
+        const probeCrossH = root.querySelector('[data-role="probe-cross-h"]');
+        const probeBadge = root.querySelector('[data-role="probe-badge"]');
+
+        const W = 320, H = 320;
+        const PROBE_R = 30; // 探头外圈半径
+        const PROBE_RECT_W = 30;
+        const PROBE_RECT_H = 40;
+        const PROBE_BADGE_W = 20;
+        const PROBE_BADGE_H = 14;
+
+        const dequote = (s) => {
+          const t = (s ?? "").trim();
+          if ((t.startsWith('"') && t.endsWith('"')) || (t.startsWith("'") && t.endsWith("'"))) {
+            return t.slice(1, -1).trim();
+          }
+          return t;
+        };
+
+        const num = (v) => {
+          const n = Number(v);
+          return Number.isFinite(n) ? n : null;
+        };
+
+        // 读取 CSS 变量（支持数字，自动去除 px 等单位）
+        const readVarNum = (name) => {
+          const v = getComputedStyle(root).getPropertyValue(name).trim();
+          if (!v) return null;
+          // 去除引号（字符串类型的 CSS 变量可能带引号）
+          let cleaned = v;
+          if ((cleaned.startsWith('"') && cleaned.endsWith('"')) || 
+              (cleaned.startsWith("'") && cleaned.endsWith("'"))) {
+            cleaned = cleaned.slice(1, -1).trim();
+          }
+          // 去除可能的单位（px, deg 等）
+          cleaned = cleaned.replace(/px|deg|%/g, '').trim();
+          return num(cleaned);
+        };
+
+        // 读取 data-props JSON
+        const readDataProps = () => {
+          const raw = root.getAttribute('data-props');
+          if (!raw) return {};
+          try {
+            return JSON.parse(raw) || {};
+          } catch (e) {
+            return {};
+          }
+        };
+
+        const resolvePos = (val, max) => {
+          if (val == null) return null;
+          if (val <= 1 && val >= 0) return val * max;
+          return val;
+        };
+
+        const updateValue = () => {
+          if (!valueEl) return;
+          
+          const cs = getComputedStyle(root);
+          const p = readDataProps();
+          
+          // 优先级：data-props > data-* > CSS 变量
+          const v1 = p.value ?? root.getAttribute('data-value');
+          const u1 = p.unit ?? root.getAttribute('data-unit');
+          
+          // 从 CSS 变量读取（可能带引号）
+          const cssValue = cs.getPropertyValue('--cmp-value')?.trim() || '';
+          const cssUnit = cs.getPropertyValue('--cmp-unit')?.trim() || '';
+
+          let v = dequote(v1 ?? cssValue);
+          let u = dequote(u1 ?? cssUnit);
+
+          if (!v) v = '-';
+          valueEl.textContent = u ? `${v} ${u}` : `${v}`;
+        };
+
+        const updateProbe = () => {
+          if (!probeGroup) return;
+
+          const cs = getComputedStyle(root);
+          const p = readDataProps();
+          
+          // 优先级：data-props > data-* > CSS 变量
+          const rawX = p.probex ?? root.getAttribute('data-probex');
+          const rawY = p.probey ?? root.getAttribute('data-probey');
+          
+          // 从 CSS 变量读取数字（支持纯数字，不带单位）
+          const cssX = readVarNum('--cmp-probe-x');
+          const cssY = readVarNum('--cmp-probe-y');
+          
+          let px = resolvePos(cssX ?? (rawX ? num(rawX) : null) ?? 268, W);
+          let py = resolvePos(cssY ?? (rawY ? num(rawY) : null) ?? 80, H);
+
+          // 更新所有探头相关元素的位置
+          if (probeCircleOuter) {
+            probeCircleOuter.setAttribute('cx', px);
+            probeCircleOuter.setAttribute('cy', py);
+          }
+          if (probeCircleInner) {
+            probeCircleInner.setAttribute('cx', px);
+            probeCircleInner.setAttribute('cy', py);
+          }
+          if (probeRect) {
+            probeRect.setAttribute('x', px - PROBE_RECT_W / 2);
+            probeRect.setAttribute('y', py + PROBE_R - 2);
+          }
+          if (probeCrossV) {
+            probeCrossV.setAttribute('x1', px);
+            probeCrossV.setAttribute('y1', py - 20);
+            probeCrossV.setAttribute('x2', px);
+            probeCrossV.setAttribute('y2', py + 20);
+          }
+          if (probeCrossH) {
+            probeCrossH.setAttribute('x1', px - 20);
+            probeCrossH.setAttribute('y1', py);
+            probeCrossH.setAttribute('x2', px + 20);
+            probeCrossH.setAttribute('y2', py);
+          }
+          if (probeBadge) {
+            probeBadge.setAttribute('x', px - PROBE_BADGE_W / 2);
+            probeBadge.setAttribute('y', py + PROBE_R + 6);
+          }
+        };
+
+        const update = () => {
+          updateValue();
+          updateProbe();
+        };
+
+        update();
+
+        // 监听 style 属性变化和 CSS 变量变化
+        const mo = new MutationObserver(() => {
+          update();
+        });
+        mo.observe(root, { 
+          attributes: true, 
+          attributeFilter: ['style', 'data-value', 'data-unit', 'data-probex', 'data-probey', 'data-props'] 
+        });
+
+        // 使用 requestAnimationFrame 定期检查 CSS 变量变化（作为补充）
+        // 因为某些情况下 MutationObserver 可能无法捕获到 CSS 变量的变化
+        let lastCheck = 0;
+        const checkInterval = 100; // 每 100ms 检查一次
+        
+        const periodicCheck = () => {
+          const now = Date.now();
+          if (now - lastCheck >= checkInterval) {
+            update();
+            lastCheck = now;
+          }
+          requestAnimationFrame(periodicCheck);
+        };
+        requestAnimationFrame(periodicCheck);
+      })();
+    </script>
+  </div>
+  
