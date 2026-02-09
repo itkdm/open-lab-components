@@ -16,17 +16,20 @@ English | [中文](./README.md)
 
 ## 📦 Component List
 
-Currently includes **6 physics experiment components**, covering the following categories:
+Currently includes **9 physics experiment components**, covering the following categories:
 
 ### Physics Apparatus
 - 💡 **Light Bulb** (`phy.apparatus.bulb.basic`) - Basic light bulb component
 - 📏 **Ruler** (`phy.ruler.vertical.metric`) - Vertical metric ruler
 - ⚖️ **Weight (Basic)** (`phy.weight.mass.basic`) - Basic weight component
 - ⚖️ **Weight (Realistic)** (`phy.weight.hook.realistic`) - Realistic weight with hook
+- ⏱️ **Timer (Interactive)** (`phy.apparatus.timer.interactive`) - Interactive timer with start/pause/reset
 
 ### Circuit Components
 - 🔌 **Resistor** (`phy.resistor.axial.basic`) - Axial resistor with customizable color bands
 - 🔋 **Voltmeter** (`phy.meter.voltage.draggable`) - Draggable voltmeter component
+- 📊 **Ammeter** (`phy.meter.current.basic`) - Basic ammeter component
+- 🔀 **Knife Switch** (`phy.switch.knife.basic`) - Knife switch component
 
 > Visit the [Component Showcase](./site/index.html) or run `npm run dev:site` to see more component details
 
@@ -297,7 +300,7 @@ This project is licensed under the [MIT License](./LICENSE).
 
 ### v0.1.0 (2025-01-08)
 - ✨ Initial release
-- 🎯 Support for 6 physics experiment components
+- 🎯 Support for 9 physics experiment components (5 physics apparatus, 4 circuit components)
 - 📦 Complete build and validation toolchain
 - 📚 Component showcase and documentation system
 

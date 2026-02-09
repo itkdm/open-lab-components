@@ -16,17 +16,20 @@
 
 ## 📦 组件列表
 
-当前包含 **6 个物理实验组件**，涵盖以下分类：
+当前包含 **9 个物理实验组件**，涵盖以下分类：
 
 ### 物理器材 (Physics Apparatus)
 - 💡 **灯泡** (`phy.apparatus.bulb.basic`) - 基础灯泡组件
 - 📏 **刻度尺** (`phy.ruler.vertical.metric`) - 垂直米制刻度尺
 - ⚖️ **砝码（基础）** (`phy.weight.mass.basic`) - 基础砝码组件
 - ⚖️ **砝码（写实）** (`phy.weight.hook.realistic`) - 写实风格带钩砝码
+- ⏱️ **计时器（交互式）** (`phy.apparatus.timer.interactive`) - 带开始/暂停/重置的交互式计时器
 
 ### 电路元件 (Circuit Components)
 - 🔌 **电阻** (`phy.resistor.axial.basic`) - 轴向电阻，支持色环自定义
 - 🔋 **电压表** (`phy.meter.voltage.draggable`) - 可拖拽电压表组件
+- 📊 **电流表** (`phy.meter.current.basic`) - 基础电流表组件
+- 🔀 **开关（刀闸）** (`phy.switch.knife.basic`) - 刀闸开关组件
 
 > 查看更多组件详情，请访问 [组件展示站](./site/index.html) 或运行 `npm run dev:site`
 
@@ -301,7 +304,7 @@ npm run dev:site
 
 ### v0.1.0 (2025-01-08)
 - ✨ 初始版本发布
-- 🎯 支持 6 个物理实验组件
+- 🎯 支持 9 个物理实验组件（包含物理器材 5 个、电路元件 4 个）
 - 📦 完整的构建和验证工具链
 - 📚 组件展示站和文档系统
 
