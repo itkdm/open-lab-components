@@ -1,0 +1,197 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.pulley.fixed",
+  "name": "定滑轮",
+  "nameEn": "Fixed Pulley",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 240 },
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 240, "min": 120, "max": 500, "desc": "组件高度（宽度按比例缩放）" },
+
+    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth",  "type": "number", "default": 2,   "min": 0.5, "max": 5, "desc": "描边粗细" },
+
+    { "key": "wheelColor",   "type": "color",  "default": "#b0b0b0", "desc": "滑轮颜色" },
+    { "key": "wheelEdge",    "type": "color",  "default": "#888888", "desc": "滑轮边缘深色" },
+    { "key": "axleColor",    "type": "color",  "default": "#555555", "desc": "轴心颜色" },
+    { "key": "bracketColor", "type": "color",  "default": "#666666", "desc": "支架/挂钩颜色" },
+    { "key": "ropeColor",    "type": "color",  "default": "#8B7355", "desc": "绳索颜色" },
+    { "key": "ropeWidth",    "type": "number", "default": 3,   "min": 1.5, "max": 8, "desc": "绳索粗细" },
+
+    { "key": "ropeLeftY",    "type": "number", "default": 220, "min": 80,  "max": 240, "desc": "左侧绳索末端Y（viewBox坐标）" },
+    { "key": "ropeRightY",   "type": "number", "default": 220, "min": 80,  "max": 240, "desc": "右侧绳索末端Y（viewBox坐标）" },
+    { "key": "angle",        "type": "number(deg)", "default": 0, "min": -30, "max": 30, "desc": "滑轮旋转角度（模拟绳索移动）" },
+
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":         "--cmp-size",
+    "stroke":       "--cmp-stroke",
+    "strokeWidth":  "--cmp-stroke-width",
+    "wheelColor":   "--cmp-wheel",
+    "wheelEdge":    "--cmp-wheel-edge",
+    "axleColor":    "--cmp-axle",
+    "bracketColor": "--cmp-bracket",
+    "ropeColor":    "--cmp-rope",
+    "ropeWidth":    "--cmp-rope-width",
+    "glow":         "--cmp-glow"
+  },
+  "tags": ["pulley", "fixed-pulley", "simple-machine", "mechanics", "apparatus"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.pulley.fixed" role="img" aria-label="定滑轮">
+    <style>
+      .cmp[data-cmp-id="phy.apparatus.pulley.fixed"] {
+        --h: var(--cmp-size, 240px);
+        display: inline-block;
+        width: calc(var(--h) * 0.667);
+        height: var(--h);
+        filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0))
+                rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      }
+      .cmp[data-cmp-id="phy.apparatus.pulley.fixed"] svg {
+        width: 100%; height: 100%; display: block; overflow: visible;
+      }
+    </style>
+  
+    <svg viewBox="0 0 160 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <!-- 滑轮径向渐变 -->
+        <radialGradient id="fpul__wheel" cx="0.4" cy="0.35" r="0.6">
+          <stop offset="0"   stop-color="var(--cmp-wheel, #b0b0b0)"/>
+          <stop offset="0.85" stop-color="var(--cmp-wheel, #b0b0b0)"/>
+          <stop offset="1"   stop-color="var(--cmp-wheel-edge, #888)"/>
+        </radialGradient>
+        <!-- 支架金属渐变 -->
+        <linearGradient id="fpul__bracket" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0"   stop-color="var(--cmp-bracket, #666)"/>
+          <stop offset="0.5" stop-color="#999"/>
+          <stop offset="1"   stop-color="var(--cmp-bracket, #666)"/>
+        </linearGradient>
+      </defs>
+  
+      <!-- ═══ 1. 天花板/固定点 ═══ -->
+      <rect x="55" y="0" width="50" height="8" rx="2"
+            fill="#555" stroke="var(--cmp-stroke, #333)"
+            stroke-width="var(--cmp-stroke-width, 2)"/>
+      <!-- 悬挂螺栓 -->
+      <circle cx="80" cy="8" r="3.5"
+              fill="#444" stroke="var(--cmp-stroke, #333)"
+              stroke-width="1"/>
+  
+      <!-- ═══ 2. 支架（U形叉） ═══ -->
+      <path d="M80 8 L80 30
+               M80 30 L62 45
+               M80 30 L98 45"
+            fill="none" stroke="url(#fpul__bracket)"
+            stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  
+      <!-- ═══ 3. 滑轮轮体 ═══ -->
+      <g class="fpul__wheel-group">
+        <!-- 外轮 -->
+        <circle cx="80" cy="68" r="28"
+                fill="url(#fpul__wheel)"
+                stroke="var(--cmp-stroke, #333)"
+                stroke-width="var(--cmp-stroke-width, 2)"/>
+        <!-- 轮槽（凹槽） -->
+        <circle cx="80" cy="68" r="24" fill="none"
+                stroke="var(--cmp-wheel-edge, #888)"
+                stroke-width="1.5" stroke-dasharray="4,3"
+                opacity="0.4"/>
+        <!-- 辐条 -->
+        <g stroke="var(--cmp-wheel-edge, #888)" stroke-width="1.2" opacity="0.5">
+          <line x1="80" y1="44" x2="80" y2="92"/>
+          <line x1="56" y1="68" x2="104" y2="68"/>
+          <line x1="60.2" y1="48.2" x2="99.8" y2="87.8"/>
+          <line x1="99.8" y1="48.2" x2="60.2" y2="87.8"/>
+        </g>
+        <!-- 轴心 -->
+        <circle cx="80" cy="68" r="5"
+                fill="var(--cmp-axle, #555)"
+                stroke="var(--cmp-stroke, #333)"
+                stroke-width="1.5"/>
+        <circle cx="80" cy="68" r="2" fill="#777"/>
+      </g>
+  
+      <!-- ═══ 4. 绳索 ═══ -->
+      <!-- 左侧绳（从轮槽顶部沿左侧下垂） -->
+      <path class="fpul__rope-left"
+            fill="none"
+            stroke="var(--cmp-rope, #8B7355)"
+            stroke-width="var(--cmp-rope-width, 3)"
+            stroke-linecap="round"/>
+      <!-- 右侧绳（从轮槽顶部沿右侧下垂） -->
+      <path class="fpul__rope-right"
+            fill="none"
+            stroke="var(--cmp-rope, #8B7355)"
+            stroke-width="var(--cmp-rope-width, 3)"
+            stroke-linecap="round"/>
+      <!-- 绳索搭在轮槽上的弧段 -->
+      <path class="fpul__rope-arc"
+            fill="none"
+            stroke="var(--cmp-rope, #8B7355)"
+            stroke-width="var(--cmp-rope-width, 3)"
+            stroke-linecap="round"/>
+    </svg>
+  
+    <script>
+    (function() {
+      var script = document.currentScript;
+      if (!script) return;
+      var root = script.previousElementSibling;
+      while (root && root.tagName === 'STYLE') root = root.previousElementSibling;
+      if (!root || root.getAttribute('data-cmp-id') !== 'phy.apparatus.pulley.fixed') return;
+  
+      var D = { ropeLeftY: 220, ropeRightY: 220, angle: 0 };
+      var P = {};
+      try {
+        var raw = root.getAttribute('data-props');
+        if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+      } catch(e) {}
+  
+      var rLeftY  = Math.max(80, Math.min(240, Number(P.ropeLeftY)  || D.ropeLeftY));
+      var rRightY = Math.max(80, Math.min(240, Number(P.ropeRightY) || D.ropeRightY));
+  
+      /* 滑轮中心 & 半径 */
+      var CX = 80, CY = 68, R = 24; /* 轮槽半径 */
+  
+      /* 绳索左侧切点（轮的左边，约 x=56） */
+      var leftTangentX = CX - R;
+      var leftTangentY = CY;
+  
+      /* 绳索右侧切点 */
+      var rightTangentX = CX + R;
+      var rightTangentY = CY;
+  
+      /* 弧段：从左切点沿顶部到右切点 */
+      var ropeArc = root.querySelector('.fpul__rope-arc');
+      if (ropeArc) {
+        /* SVG arc: 从左切点画半圆到右切点（经过顶部） */
+        ropeArc.setAttribute('d',
+          'M' + leftTangentX + ' ' + leftTangentY +
+          ' A' + R + ' ' + R + ' 0 1 1 ' + rightTangentX + ' ' + rightTangentY);
+      }
+  
+      /* 左侧下垂绳 */
+      var ropeLeft = root.querySelector('.fpul__rope-left');
+      if (ropeLeft) {
+        ropeLeft.setAttribute('d',
+          'M' + leftTangentX + ' ' + leftTangentY +
+          ' L' + leftTangentX + ' ' + rLeftY);
+      }
+  
+      /* 右侧下垂绳 */
+      var ropeRight = root.querySelector('.fpul__rope-right');
+      if (ropeRight) {
+        ropeRight.setAttribute('d',
+          'M' + rightTangentX + ' ' + rightTangentY +
+          ' L' + rightTangentX + ' ' + rRightY);
+      }
+  
+      /* aria */
+      root.setAttribute('aria-label', '定滑轮');
+    })();
+    </script>
+  </div>

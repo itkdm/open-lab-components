@@ -1,0 +1,459 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.pulley-movable.interactive",
+  "name": "动滑轮（交互式）",
+  "nameEn": "Movable Pulley (Interactive)",
+  "category": "physics/apparatus",
+  "version": "1.3.0",
+  "viewport": { "w": 200, "h": 380 },
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 380, "min": 240, "max": 640, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth",  "type": "number", "default": 2,   "min": 0.5, "max": 5, "desc": "描边粗细" },
+    { "key": "wheelColor",   "type": "color",  "default": "#b0b0b0", "desc": "滑轮颜色" },
+    { "key": "wheelEdge",    "type": "color",  "default": "#888888", "desc": "滑轮边缘深色" },
+    { "key": "axleColor",    "type": "color",  "default": "#555555", "desc": "轴心颜色" },
+    { "key": "bracketColor", "type": "color",  "default": "#666666", "desc": "滑轮框架颜色" },
+    { "key": "ropeColor",    "type": "color",  "default": "#8B7355", "desc": "绳索颜色" },
+    { "key": "ropeWidth",    "type": "number", "default": 3,   "min": 1.5, "max": 8, "desc": "绳索粗细" },
+    { "key": "loadMass",     "type": "number", "default": 200, "min": 0, "max": 5000, "desc": "负载质量(g)" },
+    { "key": "unit",         "type": "enum",   "default": "g", "enum": ["g","kg"], "desc": "质量单位" },
+    { "key": "blockEdge",    "type": "color",  "default": "#bdbdbd", "desc": "砝码边缘色" },
+    { "key": "blockCenter",  "type": "color",  "default": "#e7e7e7", "desc": "砝码中心色" },
+    { "key": "hookColor",    "type": "color",  "default": "#111827", "desc": "钩子颜色" },
+    { "key": "accent",       "type": "color",  "default": "#1565c0", "desc": "强调色（力值文字）" },
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":         "--cmp-size",
+    "stroke":       "--cmp-stroke",
+    "strokeWidth":  "--cmp-stroke-width",
+    "wheelColor":   "--cmp-wheel",
+    "wheelEdge":    "--cmp-wheel-edge",
+    "axleColor":    "--cmp-axle",
+    "bracketColor": "--cmp-bracket",
+    "ropeColor":    "--cmp-rope",
+    "ropeWidth":    "--cmp-rope-width",
+    "blockEdge":    "--cmp-block-edge",
+    "blockCenter":  "--cmp-block-center",
+    "hookColor":    "--cmp-hook",
+    "accent":       "--cmp-accent",
+    "glow":         "--cmp-glow"
+  },
+  "tags": ["pulley", "movable-pulley", "simple-machine", "mechanics", "interactive", "draggable"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.pulley-movable.interactive" role="img" aria-label="动滑轮（交互式）">
+    <style>
+      .cmp[data-cmp-id="phy.apparatus.pulley-movable.interactive"] {
+        --h: var(--cmp-size, 380px);
+        display: inline-block;
+        width: calc(var(--h) * 0.526);
+        height: var(--h);
+        filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0))
+                rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+        user-select: none;
+        touch-action: none;
+      }
+      .cmp[data-cmp-id="phy.apparatus.pulley-movable.interactive"] svg {
+        width: 100%; height: 100%; display: block; overflow: visible;
+      }
+      .cmp[data-cmp-id="phy.apparatus.pulley-movable.interactive"] .mpl__handle {
+        cursor: ns-resize;
+      }
+      .cmp[data-cmp-id="phy.apparatus.pulley-movable.interactive"] .mpl__force-text {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+      .cmp[data-cmp-id="phy.apparatus.pulley-movable.interactive"] .mpl__mass-text {
+        font-family: Arial, sans-serif;
+        font-weight: 800;
+        font-size: 12px;
+        fill: rgba(0, 0, 0, 0.92);
+      }
+    </style>
+  
+    <svg viewBox="0 0 200 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <radialGradient id="mpl__wg" cx="0.4" cy="0.35" r="0.6">
+          <stop offset="0"    stop-color="var(--cmp-wheel, #b0b0b0)"/>
+          <stop offset="0.85" stop-color="var(--cmp-wheel, #b0b0b0)"/>
+          <stop offset="1"    stop-color="var(--cmp-wheel-edge, #888)"/>
+        </radialGradient>
+        <linearGradient id="mpl__bg" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0"   stop-color="var(--cmp-bracket, #666)"/>
+          <stop offset="0.5" stop-color="#999"/>
+          <stop offset="1"   stop-color="var(--cmp-bracket, #666)"/>
+        </linearGradient>
+        <linearGradient id="mpl__block" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0"   stop-color="var(--cmp-block-edge, #bdbdbd)"/>
+          <stop offset="0.5" stop-color="var(--cmp-block-center, #e7e7e7)"/>
+          <stop offset="1"   stop-color="var(--cmp-block-edge, #bdbdbd)"/>
+        </linearGradient>
+      </defs>
+  
+      <!-- ═══ 1. 天花板横梁 ═══ -->
+      <rect x="35" y="0" width="130" height="12" rx="3"
+            fill="#4a4a4a" stroke="var(--cmp-stroke, #333)" stroke-width="1.5"/>
+  
+      <!-- ═══ 2. 左侧固定绳端（系在天花板上） ═══ -->
+      <rect x="68" y="10" width="12" height="10" rx="2"
+            fill="#555" stroke="var(--cmp-stroke, #333)" stroke-width="1"/>
+  
+      <!-- ═══ 3. 绳索（两根都是竖直的，最简洁） ═══ -->
+      <!-- 左绳（天花板固定 → 滑轮左切点，竖直） -->
+      <line class="mpl__rope-left"
+            x1="74" y1="20" x2="74" y2="200"
+            stroke="var(--cmp-rope, #8B7355)"
+            stroke-width="var(--cmp-rope-width, 3)"
+            stroke-linecap="round"/>
+      <!-- 弧段（绕滑轮底部） -->
+      <path class="mpl__rope-arc"
+            d="M74,200 A26,26 0 1,0 126,200"
+            fill="none"
+            stroke="var(--cmp-rope, #8B7355)"
+            stroke-width="var(--cmp-rope-width, 3)"
+            stroke-linecap="round"/>
+      <!-- 右绳（滑轮右切点 → 向上��伸，竖直，这是施力端） -->
+      <line class="mpl__rope-right"
+            x1="126" y1="200" x2="126" y2="12"
+            stroke="var(--cmp-rope, #8B7355)"
+            stroke-width="var(--cmp-rope-width, 3)"
+            stroke-linecap="round"/>
+  
+      <!-- ═══ 4. 滑轮 ═══ -->
+      <circle class="mpl__wheel-outer" cx="100" cy="200" r="30"
+              fill="url(#mpl__wg)" stroke="var(--cmp-stroke, #333)"
+              stroke-width="var(--cmp-stroke-width, 2)"/>
+      <circle class="mpl__wheel-groove" cx="100" cy="200" r="26" fill="none"
+              stroke="var(--cmp-wheel-edge, #888)" stroke-width="1.2"
+              stroke-dasharray="4,3" opacity="0.35"/>
+      <g class="mpl__spokes" stroke="var(--cmp-wheel-edge, #888)" stroke-width="1" opacity="0.4">
+        <line x1="100" y1="174" x2="100" y2="226"/>
+        <line x1="74"  y1="200" x2="126" y2="200"/>
+        <line x1="81.6" y1="181.6" x2="118.4" y2="218.4"/>
+        <line x1="118.4" y1="181.6" x2="81.6" y2="218.4"/>
+      </g>
+      <circle class="mpl__axle-outer" cx="100" cy="200" r="6" fill="var(--cmp-axle, #555)"
+              stroke="var(--cmp-stroke, #333)" stroke-width="1.5"/>
+      <circle class="mpl__axle-inner" cx="100" cy="200" r="2.5" fill="#777"/>
+  
+      <!-- ═══ 5. 框架 ═══ -->
+      <line class="mpl__frame-left" x1="88" y1="200" x2="94" y2="224"
+            stroke="url(#mpl__bg)" stroke-width="4" stroke-linecap="round"/>
+      <line class="mpl__frame-right" x1="112" y1="200" x2="106" y2="224"
+            stroke="url(#mpl__bg)" stroke-width="4" stroke-linecap="round"/>
+      <line class="mpl__frame-bottom" x1="94" y1="224" x2="106" y2="224"
+            stroke="url(#mpl__bg)" stroke-width="3.5" stroke-linecap="round"/>
+      <line class="mpl__frame-rod" x1="100" y1="224" x2="100" y2="232"
+            stroke="var(--cmp-bracket, #666)" stroke-width="3.5" stroke-linecap="round"/>
+  
+      <!-- ═══ 6. 双钩子 + 砝码 ═══ -->
+      <path class="mpl__frame-hook" fill="none"
+            stroke="var(--cmp-hook, #111827)"
+            stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <path class="mpl__load-hook" fill="none"
+            stroke="var(--cmp-hook, #111827)"
+            stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect class="mpl__load-block" width="48" height="56" rx="1"
+            fill="url(#mpl__block)" stroke="var(--cmp-stroke, #333)"
+            stroke-width="1.4"/>
+      <text class="mpl__mass-text" text-anchor="middle"></text>
+  
+      <!-- ═══ 7. 施力端（右绳旁边，箭头朝上） ═══ -->
+      <g class="mpl__handle">
+        <!-- 力箭头（在右绳旁边，不遮挡绳子） -->
+        <polygon class="mpl__pull-arrow"
+                 fill="var(--cmp-accent, #1565c0)"/>
+        <line class="mpl__pull-line"
+              stroke="var(--cmp-accent, #1565c0)"
+              stroke-width="2.5" stroke-linecap="round"/>
+        <!-- 力值文字 -->
+        <text class="mpl__force-text"
+              text-anchor="start"
+              font-size="11" fill="var(--cmp-accent, #1565c0)"></text>
+        <!-- 拖拽热区（覆盖右绳上半段） -->
+        <rect class="mpl__hit"
+              fill="transparent" cursor="ns-resize"/>
+      </g>
+    </svg>
+  
+    <script>
+    (function() {
+      var script = document.currentScript;
+      if (!script) return;
+      var root = script.parentElement;
+      if (!root || root.getAttribute('data-cmp-id') !== 'phy.apparatus.pulley-movable.interactive') return;
+  
+      var svg = root.querySelector('svg');
+      if (!svg) return;
+  
+      /* ─── 参数 ─── */
+      var P = {};
+      try {
+        var raw = root.getAttribute('data-props');
+        if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+      } catch(e) {}
+  
+      var loadMass = Math.max(0, Number(P.loadMass) || 200);
+      var massUnit = (P.unit === 'kg') ? 'kg' : 'g';
+  
+      /* ─── 几何常量 ─── */
+      /*
+       * 教科书标准画法：
+       *
+       *   天花板 ══════════════
+       *   ┃(固定)          ┃ ↑F
+       *   ┃                ┃
+       *   ┃    ┌──轮──┐    ┃
+       *   ┗━━━━┤  ●   ├━━━━┛
+       *        └──┬──┘
+       *           │框架
+       *          🪝🪝
+       *        ┌─────┐
+       *        │200 g│
+       *        └─────┘
+       *
+       *   左绳竖直，右绳竖直，绳绕滑轮底部
+       *   F = mg/2
+       */
+      var PULLEY_R = 26;
+      var PCX = 100;                     /* 滑轮中心 x */
+      var LX = PCX - PULLEY_R;           /* 74: 左绳 x */
+      var RX = PCX + PULLEY_R;           /* 126: 右绳 x */
+  
+      var CEIL_Y = 12;                   /* 天花板底边 y */
+      var ANCHOR_Y = 20;                 /* 固定点/绳顶 y */
+      var PULLEY_MIN_CY = 62;           /* 滑轮中心最高 */
+      var PULLEY_MAX_CY = 230;          /* 滑轮中心最低 */
+      var PULLEY_TRAVEL = PULLEY_MAX_CY - PULLEY_MIN_CY;
+  
+      /* ratio: 0 = 滑轮最低, 1 = 滑轮最高 */
+      var ratio = 0.15;
+  
+      /* ─── DOM ─── */
+      var ropeLeft  = root.querySelector('.mpl__rope-left');
+      var ropeArc   = root.querySelector('.mpl__rope-arc');
+      var ropeRight = root.querySelector('.mpl__rope-right');
+      var spokes    = root.querySelector('.mpl__spokes');
+  
+      var wheelOuter  = root.querySelector('.mpl__wheel-outer');
+      var wheelGroove = root.querySelector('.mpl__wheel-groove');
+      var axleOuter   = root.querySelector('.mpl__axle-outer');
+      var axleInner   = root.querySelector('.mpl__axle-inner');
+  
+      var frameLeft   = root.querySelector('.mpl__frame-left');
+      var frameRight  = root.querySelector('.mpl__frame-right');
+      var frameBottom = root.querySelector('.mpl__frame-bottom');
+      var frameRod    = root.querySelector('.mpl__frame-rod');
+  
+      var frameHook = root.querySelector('.mpl__frame-hook');
+      var loadHook  = root.querySelector('.mpl__load-hook');
+      var loadBlock = root.querySelector('.mpl__load-block');
+      var massTxt   = root.querySelector('.mpl__mass-text');
+  
+      var pullLine  = root.querySelector('.mpl__pull-line');
+      var pullArrow = root.querySelector('.mpl__pull-arrow');
+      var hitRect   = root.querySelector('.mpl__hit');
+      var forceTxt  = root.querySelector('.mpl__force-text');
+  
+      /* ─── 渲染 ─── */
+      function render() {
+        var pcy = PULLEY_MAX_CY - ratio * PULLEY_TRAVEL;
+  
+        /* ── 绳索 ── */
+        if (ropeLeft) {
+          ropeLeft.setAttribute('x1', LX); ropeLeft.setAttribute('y1', ANCHOR_Y);
+          ropeLeft.setAttribute('x2', LX); ropeLeft.setAttribute('y2', pcy);
+        }
+        if (ropeArc) {
+          ropeArc.setAttribute('d',
+            'M' + LX + ',' + pcy + ' A' + PULLEY_R + ',' + PULLEY_R + ' 0 1,0 ' + RX + ',' + pcy);
+        }
+        /* 右绳：从滑轮右切点竖直向上到天花板 */
+        if (ropeRight) {
+          ropeRight.setAttribute('x1', RX); ropeRight.setAttribute('y1', pcy);
+          ropeRight.setAttribute('x2', RX); ropeRight.setAttribute('y2', CEIL_Y);
+        }
+  
+        /* ── 滑轮位置 ── */
+        if (wheelOuter)  { wheelOuter.setAttribute('cx', PCX);  wheelOuter.setAttribute('cy', pcy); }
+        if (wheelGroove) { wheelGroove.setAttribute('cx', PCX); wheelGroove.setAttribute('cy', pcy); }
+        if (axleOuter)   { axleOuter.setAttribute('cx', PCX);   axleOuter.setAttribute('cy', pcy); }
+        if (axleInner)   { axleInner.setAttribute('cx', PCX);   axleInner.setAttribute('cy', pcy); }
+  
+        /* 辐条 */
+        var spokeLines = spokes ? spokes.querySelectorAll('line') : [];
+        if (spokeLines.length === 4) {
+          var sr = PULLEY_R;
+          var sd = sr * 0.707;
+          spokeLines[0].setAttribute('x1', PCX);      spokeLines[0].setAttribute('y1', pcy - sr);
+          spokeLines[0].setAttribute('x2', PCX);      spokeLines[0].setAttribute('y2', pcy + sr);
+          spokeLines[1].setAttribute('x1', PCX - sr);  spokeLines[1].setAttribute('y1', pcy);
+          spokeLines[1].setAttribute('x2', PCX + sr);  spokeLines[1].setAttribute('y2', pcy);
+          spokeLines[2].setAttribute('x1', PCX - sd);  spokeLines[2].setAttribute('y1', pcy - sd);
+          spokeLines[2].setAttribute('x2', PCX + sd);  spokeLines[2].setAttribute('y2', pcy + sd);
+          spokeLines[3].setAttribute('x1', PCX + sd);  spokeLines[3].setAttribute('y1', pcy - sd);
+          spokeLines[3].setAttribute('x2', PCX - sd);  spokeLines[3].setAttribute('y2', pcy + sd);
+        }
+        if (spokes) {
+          var deg = ratio * 720;
+          spokes.setAttribute('transform',
+            'rotate(' + deg.toFixed(1) + ',' + PCX + ',' + pcy + ')');
+        }
+  
+        /* ── 框架 ── */
+        if (frameLeft) {
+          frameLeft.setAttribute('x1', PCX - 12); frameLeft.setAttribute('y1', pcy);
+          frameLeft.setAttribute('x2', PCX - 6);  frameLeft.setAttribute('y2', pcy + 24);
+        }
+        if (frameRight) {
+          frameRight.setAttribute('x1', PCX + 12); frameRight.setAttribute('y1', pcy);
+          frameRight.setAttribute('x2', PCX + 6);  frameRight.setAttribute('y2', pcy + 24);
+        }
+        if (frameBottom) {
+          frameBottom.setAttribute('x1', PCX - 6); frameBottom.setAttribute('y1', pcy + 24);
+          frameBottom.setAttribute('x2', PCX + 6); frameBottom.setAttribute('y2', pcy + 24);
+        }
+        if (frameRod) {
+          frameRod.setAttribute('x1', PCX); frameRod.setAttribute('y1', pcy + 24);
+          frameRod.setAttribute('x2', PCX); frameRod.setAttribute('y2', pcy + 32);
+        }
+  
+        /* ── 双钩子 ── */
+        var hookBaseY = pcy + 32;
+  
+        if (frameHook) {
+          var fhy = hookBaseY;
+          frameHook.setAttribute('d',
+            'M' + PCX + ',' + fhy +
+            ' L' + PCX + ',' + (fhy + 4) +
+            ' C' + PCX + ',' + (fhy + 14) +
+            ' ' + (PCX - 16) + ',' + (fhy + 14) +
+            ' ' + (PCX - 16) + ',' + (fhy + 4) +
+            ' C' + (PCX - 16) + ',' + (fhy - 2) +
+            ' ' + (PCX - 9) + ',' + (fhy - 1) +
+            ' ' + (PCX - 8) + ',' + (fhy + 3));
+        }
+  
+        var whY = hookBaseY + 14;
+        if (loadHook) {
+          loadHook.setAttribute('d',
+            'M' + (PCX - 8) + ',' + (whY + 0) +
+            ' C' + (PCX - 8) + ',' + (whY - 8) +
+            ' ' + (PCX + 8) + ',' + (whY - 8) +
+            ' ' + (PCX + 8) + ',' + (whY + 0) +
+            ' C' + (PCX + 8) + ',' + (whY + 7) +
+            ' ' + (PCX + 1) + ',' + (whY + 6) +
+            ' ' + PCX + ',' + (whY + 10) +
+            ' L' + PCX + ',' + (whY + 14));
+        }
+  
+        var bx = PCX - 24;
+        var by = whY + 14;
+        if (loadBlock) {
+          loadBlock.setAttribute('x', bx);
+          loadBlock.setAttribute('y', by);
+        }
+        if (massTxt) {
+          var mStr = (massUnit === 'kg')
+            ? (Math.round(loadMass * 100) / 100) + ' kg'
+            : Math.round(loadMass) + ' g';
+          massTxt.textContent = mStr;
+          massTxt.setAttribute('x', PCX);
+          massTxt.setAttribute('y', by + 33);
+        }
+  
+        /* ── 施力标注（右绳旁边，不遮挡） ── */
+        /*
+         * 在右绳中部偏上的位置，绘制一个向上的力箭头
+         * 箭头在右绳右侧偏移 12px，不与绳重叠
+         */
+        var arrowX = RX + 14;           /* 箭头 x：在右绳右侧偏移 */
+        var arrowMidY = (CEIL_Y + pcy) / 2;  /* 箭头中部 y：右绳中点 */
+        var arrowLen = 36;
+  
+        /* 箭头朝上 */
+        var arrowTipY = arrowMidY - arrowLen / 2;
+        var arrowTailY = arrowMidY + arrowLen / 2;
+  
+        if (pullLine) {
+          pullLine.setAttribute('x1', arrowX); pullLine.setAttribute('y1', arrowTipY + 10);
+          pullLine.setAttribute('x2', arrowX); pullLine.setAttribute('y2', arrowTailY);
+        }
+        if (pullArrow) {
+          pullArrow.setAttribute('points',
+            (arrowX - 6) + ',' + (arrowTipY + 12) + ' ' +
+            arrowX + ',' + arrowTipY + ' ' +
+            (arrowX + 6) + ',' + (arrowTipY + 12));
+        }
+  
+        /* 力值文字（箭头右侧） */
+        var massKg = (massUnit === 'kg') ? loadMass : loadMass / 1000;
+        var force = massKg * 9.8 / 2;
+        if (forceTxt) {
+          forceTxt.textContent = 'F=' + force.toFixed(2) + ' N';
+          forceTxt.setAttribute('x', arrowX + 10);
+          forceTxt.setAttribute('y', arrowMidY + 4);
+        }
+  
+        /* 拖拽热区（覆盖右绳整段） */
+        if (hitRect) {
+          hitRect.setAttribute('x', RX - 15);
+          hitRect.setAttribute('y', CEIL_Y);
+          hitRect.setAttribute('width', 55);
+          hitRect.setAttribute('height', pcy - CEIL_Y);
+        }
+  
+        root.setAttribute('aria-label',
+          '动滑轮（交互式），负载 ' + Math.round(loadMass) + ' ' + massUnit +
+          '，施力 ' + force.toFixed(2) + ' N（省一半力）');
+      }
+  
+      render();
+  
+      /* ─── 拖拽 ─── */
+      var dragging = false;
+      var startClientY = 0, startRatio = 0;
+  
+      function onDown(e) {
+        e.preventDefault();
+        dragging = true;
+        var pt = e.touches ? e.touches[0] : e;
+        startClientY = pt.clientY;
+        startRatio = ratio;
+        document.addEventListener('mousemove', onMove, { passive: false });
+        document.addEventListener('mouseup',   onUp);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend',  onUp);
+      }
+      function onMove(e) {
+        if (!dragging) return;
+        e.preventDefault();
+        var pt = e.touches ? e.touches[0] : e;
+        var rect = svg.getBoundingClientRect();
+        var scale = rect.height / 380;
+        var dy = (pt.clientY - startClientY) / scale;
+        /* 向上拖(dy<0) → ratio增大 → 滑轮上升 */
+        var newRatio = startRatio - dy / (PULLEY_TRAVEL * 2);
+        ratio = Math.max(0, Math.min(1, newRatio));
+        render();
+      }
+      function onUp() {
+        dragging = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup',   onUp);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend',  onUp);
+      }
+  
+      var handle = root.querySelector('.mpl__handle');
+      if (handle) {
+        handle.addEventListener('mousedown',  onDown, { passive: false });
+        handle.addEventListener('touchstart', onDown, { passive: false });
+      }
+    })();
+    </script>
+  </div>
