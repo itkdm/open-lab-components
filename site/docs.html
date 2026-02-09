@@ -575,8 +575,6 @@
         buildToc();
       } catch (e) {
         container.innerHTML = `<p>Failed to load document: ${e.message}</p><p>Path: ${meta.path}</p>`;
-        console.error('Failed to load document:', e);
-        console.error('Attempted path:', meta.path);
       }
 
       document.querySelectorAll('.sidebar-link').forEach(link => {

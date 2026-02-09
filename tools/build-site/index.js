@@ -34,8 +34,6 @@ function copyDir(src, dest) {
 }
 
 function main() {
-  console.log('Building site...');
-
   // 清理并创建 dist
   if (fs.existsSync(SITE_DIST)) {
     fs.rmSync(SITE_DIST, { recursive: true, force: true });
@@ -44,20 +42,17 @@ function main() {
 
   // 复制 components/ 到 site/dist/components/
   if (fs.existsSync(COMPONENTS_DIR)) {
-    console.log('  Copying components/...');
     copyDir(COMPONENTS_DIR, path.join(SITE_DIST, 'components'));
   }
 
   // 复制 registry/ 到 site/dist/registry/
   if (fs.existsSync(REGISTRY_DIR)) {
-    console.log('  Copying registry/...');
     copyDir(REGISTRY_DIR, path.join(SITE_DIST, 'registry'));
   }
 
   // 复制 docs/ 到 site/dist/docs/
   const DOCS_DIR = path.join(ROOT, 'docs');
   if (fs.existsSync(DOCS_DIR)) {
-    console.log('  Copying docs/...');
     copyDir(DOCS_DIR, path.join(SITE_DIST, 'docs'));
   }
 
@@ -66,7 +61,6 @@ function main() {
   for (const dir of staticDirs) {
     const srcDir = path.join(SITE_SRC, dir);
     if (fs.existsSync(srcDir)) {
-      console.log(`  Copying site/${dir}/...`);
       copyDir(srcDir, path.join(SITE_DIST, dir));
     }
   }
@@ -74,7 +68,6 @@ function main() {
   // 复制 site/*.html 到 dist
   const htmlFiles = fs.readdirSync(SITE_SRC).filter(f => f.endsWith('.html'));
   for (const file of htmlFiles) {
-    console.log(`  Copying site/${file}...`);
     fs.copyFileSync(path.join(SITE_SRC, file), path.join(SITE_DIST, file));
   }
 
@@ -84,14 +77,12 @@ function main() {
     return ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp'].includes(ext);
   });
   for (const file of staticFiles) {
-    console.log(`  Copying site/${file}...`);
     fs.copyFileSync(path.join(SITE_SRC, file), path.join(SITE_DIST, file));
   }
 
   // 创建 .nojekyll 文件（禁用 GitHub Pages 的 Jekyll 处理）
   fs.writeFileSync(path.join(SITE_DIST, '.nojekyll'), '', 'utf8');
 
-  console.log('✓ Site built to site/dist/');
 }
 
 if (require.main === module) {

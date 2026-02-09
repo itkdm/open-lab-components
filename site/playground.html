@@ -649,6 +649,16 @@
       return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
     }
 
+    async function fetchWithTimeout(url, timeoutMs = 12000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        return await fetch(url, { signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
     function getComponentName(component) {
       // 优先使用 registry 中的 nameEn 字段
       if (currentLang === 'en' && component.nameEn) {
@@ -794,7 +804,10 @@
 
     async function loadComponent() {
       try {
-        const res = await fetch('./registry/registry.json');
+        const res = await fetchWithTimeout('./registry/registry.json');
+        if (!res.ok) {
+          throw new Error(`Failed to fetch registry: HTTP ${res.status}`);
+        }
         const data = await res.json();
         const registry = Array.isArray(data.items) ? data.items : (Array.isArray(data) ? data : []);
         component = registry.find(c => c.id === componentId);
@@ -827,7 +840,6 @@
         await updatePreview();
         updateCode();
       } catch (err) {
-        console.error(err);
         document.body.innerHTML = `
           <div style="padding: 4rem; text-align: center; color: var(--text-primary); background: var(--bg); min-height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;">
             <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
@@ -984,7 +996,6 @@
           }
         });
       }
-
       const styleStr = Object.entries(cssVars).map(([k, v]) => `${k}: ${v}`).join('; ');
       
       // 构建 data-props（包含所有 props，用于需要 JavaScript 处理的组件）
@@ -1003,7 +1014,6 @@
         }
       });
       const dataPropsStr = JSON.stringify(dataProps).replace(/"/g, '&quot;');
-      
       const componentHtml = await getComponentHTML(componentPath);
       
       // 如果组件 HTML 中包含 data-cmp-id，需要添加/更新 data-props 和 data-label 属性
@@ -1068,7 +1078,10 @@
 
     async function getComponentHTML(path) {
       try {
-        const res = await fetch(path);
+        const res = await fetchWithTimeout(path);
+        if (!res.ok) {
+          throw new Error(`Failed to fetch component html: HTTP ${res.status} (${path})`);
+        }
         let text = await res.text();
         
         // 移除 @cmp-manifest 注释块
@@ -1076,7 +1089,8 @@
         
         // 如果包含完整的 HTML 文档结构，提取 body 内容
         if (text) {
-          const bodyRegex = new RegExp('<body[^>]*>([\\s\\S]*)</' + 'body>', 'i');
+          // 使用普通字符串 + RegExp 构造，兼容性更好
+          const bodyRegex = new RegExp('<body[^>]*>([\\s\\S]*)</body>', 'i');
           const bodyMatch = text.match(bodyRegex);
           if (bodyMatch && bodyMatch[1]) {
             text = bodyMatch[1].trim();
@@ -1093,7 +1107,6 @@
         
         return indented;
       } catch (err) {
-        console.error('Failed to load component HTML:', err);
         return '  <!-- 组件内容 -->';
       }
     }
@@ -1102,7 +1115,6 @@
 
     async function updateCode() {
       if (!component) return;
-      
       const categoryPath = component.category.replace('/', '/');
       const componentPath = `./components/${categoryPath}/${component.id}.html`;
       
@@ -1165,7 +1177,6 @@ ${componentHtml}
           fallbackCopyCode(currentCode);
         }
       } catch (err) {
-        console.error('Failed to copy code:', err);
         fallbackCopyCode(currentCode);
       }
     }

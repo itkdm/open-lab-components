@@ -151,13 +151,9 @@ function main() {
   }
 
   if (errors.length) {
-    console.error(`[validate] failed with ${errors.length} error(s):`);
-    for (const e of errors) console.error(`- ${e.filePath}: ${e.message}`);
     process.exitCode = 1;
     return;
   }
-
-  console.log(`[validate] ok: ${files.length} component file(s)`);
 }
 
 main();

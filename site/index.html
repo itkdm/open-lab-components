@@ -764,7 +764,6 @@
             <p>${t('empty-desc')}</p>
           </div>
         `;
-        console.error(err);
       }
     }
 
@@ -825,7 +824,8 @@
     }
 
     function openPlayground(id) {
-      window.location.href = `./playground.html?id=${id}`;
+      const target = `./playground.html?id=${id}`;
+      window.location.href = target;
     }
 
     async function getComponentHTML(path) {
@@ -854,7 +854,6 @@
         
         return indented;
       } catch (err) {
-        console.error('Failed to load component HTML:', err);
         return '  <!-- 组件内容 -->';
       }
     }
@@ -913,7 +912,6 @@ ${componentHtml}
           fallbackCopy(code);
         }
       } catch (err) {
-        console.error('Failed to copy component:', err);
         // 如果获取组件内容失败，至少复制一个基本的占位符
         const fallbackCode = `<div class="cmp" data-cmp-id="${component.id}">
   <!-- 组件内容 -->

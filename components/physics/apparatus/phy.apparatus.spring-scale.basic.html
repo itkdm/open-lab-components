@@ -1,0 +1,233 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.spring-scale.basic",
+  "name": "弹簧测力计（静态）",
+  "nameEn": "Spring Scale (Static)",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 80, "h": 320 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "force",       "type": "number",     "default": 0,   "min": 0,   "max": 5,   "desc": "当前力值（N）" },
+    { "key": "maxForce",    "type": "number",     "default": 5,   "min": 1,   "max": 20,  "desc": "最大量程（N）" },
+    { "key": "divisions",   "type": "number",     "default": 5,   "min": 1,   "max": 20,  "desc": "大刻度数量" },
+    { "key": "subDiv",      "type": "number",     "default": 5,   "min": 1,   "max": 10,  "desc": "每大格小刻度数" },
+    { "key": "unit",        "type": "string",     "default": "N", "desc": "单位标识" },
+
+    { "key": "shellColor",  "type": "color", "default": "#e8e0d0", "desc": "外壳颜色" },
+    { "key": "scaleColor",  "type": "color", "default": "#faf8f2", "desc": "刻度面板颜色" },
+    { "key": "stroke",      "type": "color", "default": "#333333", "desc": "刻度线颜色" },
+    { "key": "strokeWidth", "type": "number","default": 1.2, "min": 0.5, "max": 3, "desc": "刻度线粗细" },
+    { "key": "springColor", "type": "color", "default": "#555555", "desc": "弹簧颜色" },
+    { "key": "pointerColor","type": "color", "default": "#e53935", "desc": "指针颜色" },
+    { "key": "hookColor",   "type": "color", "default": "#444444", "desc": "挂钩颜色" },
+    { "key": "accent",      "type": "color", "default": "#1565c0", "desc": "强调色（标题/单位）" },
+
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":         "--cmp-size",
+    "shellColor":   "--cmp-shell",
+    "scaleColor":   "--cmp-scale-bg",
+    "stroke":       "--cmp-stroke",
+    "strokeWidth":  "--cmp-stroke-width",
+    "springColor":  "--cmp-spring",
+    "pointerColor": "--cmp-pointer",
+    "hookColor":    "--cmp-hook",
+    "accent":       "--cmp-accent",
+    "glow":         "--cmp-glow"
+  },
+  "tags": ["spring-scale", "dynamometer", "force", "apparatus", "measurement", "static"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.spring-scale.basic" role="img" aria-label="弹簧测力计（静态）">
+  <style>
+    .cmp[data-cmp-id="phy.apparatus.spring-scale.basic"] {
+      --h: var(--cmp-size, 320px);
+      display: inline-block;
+      width: calc(var(--h) * 0.25);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0)) rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+    }
+    .cmp[data-cmp-id="phy.apparatus.spring-scale.basic"] svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+  </style>
+
+  <svg viewBox="0 0 80 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 外壳渐变 -->
+      <linearGradient id="ss__shell" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="color-mix(in srgb, var(--cmp-shell, #e8e0d0) 80%, #000)"/>
+        <stop offset="0.3" stop-color="var(--cmp-shell, #e8e0d0)"/>
+        <stop offset="0.7" stop-color="var(--cmp-shell, #e8e0d0)"/>
+        <stop offset="1"   stop-color="color-mix(in srgb, var(--cmp-shell, #e8e0d0) 80%, #000)"/>
+      </linearGradient>
+      <!-- 弹簧渐变 -->
+      <linearGradient id="ss__springG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="color-mix(in srgb, var(--cmp-spring, #555) 70%, #000)"/>
+        <stop offset="0.5" stop-color="var(--cmp-spring, #555)"/>
+        <stop offset="1"   stop-color="color-mix(in srgb, var(--cmp-spring, #555) 70%, #000)"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 提环 -->
+    <ellipse cx="40" cy="14" rx="10" ry="10" fill="none"
+             stroke="var(--cmp-hook, #444)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="40" y1="24" x2="40" y2="38" stroke="var(--cmp-hook, #444)" stroke-width="2.5"/>
+
+    <!-- 外壳主体 -->
+    <rect x="12" y="38" width="56" height="220" rx="6" ry="6"
+          fill="url(#ss__shell)" stroke="#aaa" stroke-width="0.8"/>
+
+    <!-- 观察窗 -->
+    <rect class="ss__window" x="18" y="48" width="44" height="200" rx="3" ry="3"
+          fill="var(--cmp-scale-bg, #faf8f2)" stroke="#bbb" stroke-width="0.6"/>
+
+    <!-- 弹簧（静态锯齿） -->
+    <path class="ss__spring" fill="none" stroke="url(#ss__springG)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 刻度线组 -->
+    <g class="ss__ticks"></g>
+
+    <!-- 指针三角 -->
+    <g class="ss__pointer">
+      <polygon fill="var(--cmp-pointer, #e53935)" stroke="none"/>
+      <line stroke="var(--cmp-pointer, #e53935)" stroke-width="1.2"/>
+    </g>
+
+    <!-- 标题 -->
+    <text x="40" y="60" text-anchor="middle" font-size="7" font-weight="700"
+          fill="var(--cmp-accent, #1565c0)" font-family="Arial, sans-serif" class="ss__title">N</text>
+
+    <!-- 底部出口 + 挂钩 -->
+    <line class="ss__rod" x1="40" y1="258" x2="40" y2="280"
+          stroke="var(--cmp-hook, #444)" stroke-width="2.5" stroke-linecap="round"/>
+    <path class="ss__hook" d="M40 280 C40 296 28 296 28 286"
+          fill="none" stroke="var(--cmp-hook, #444)" stroke-width="2.8" stroke-linecap="round"/>
+
+    <!-- 读数 -->
+    <text class="ss__reading" x="40" y="312" text-anchor="middle" font-size="11" font-weight="700"
+          fill="var(--cmp-accent, #1565c0)" font-family="Arial, sans-serif">0 N</text>
+  </svg>
+
+  <script>
+  (() => {
+    const script = document.currentScript;
+    if (!script) return;
+    const root = script.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'phy.apparatus.spring-scale.basic') return;
+
+    /* ---- 参数解析 ---- */
+    const D = { force: 0, maxForce: 5, divisions: 5, subDiv: 5, unit: 'N' };
+    let P = { ...D };
+    try {
+      const raw = root.getAttribute('data-props');
+      if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') P = { ...P, ...o }; }
+    } catch(e) {}
+
+    const force    = Math.max(0, Math.min(Number(P.maxForce) || 5, Number(P.force) || 0));
+    const maxF     = Number(P.maxForce) || 5;
+    const divs     = Math.max(1, Number(P.divisions) || 5);
+    const subD     = Math.max(1, Number(P.subDiv) || 5);
+    const unit     = String(P.unit || 'N');
+    const ratio    = force / maxF;                       // 0 ~ 1
+
+    /* ---- 布局常量 ---- */
+    const WIN_TOP  = 68;    // 刻度区域顶部 Y（0N 位置）
+    const WIN_BOT  = 240;   // 刻度区域底部 Y（maxN 位置）
+    const WIN_H    = WIN_BOT - WIN_TOP;
+    const pointerY = WIN_TOP + ratio * WIN_H;
+
+    /* ---- 绘制刻度 ---- */
+    const ticksG = root.querySelector('.ss__ticks');
+    if (ticksG) {
+      ticksG.innerHTML = '';
+      const totalSmall = divs * subD;
+      for (let i = 0; i <= totalSmall; i++) {
+        const y = WIN_TOP + (i / totalSmall) * WIN_H;
+        const isMajor = (i % subD === 0);
+        const len = isMajor ? 14 : 7;
+        const sw  = isMajor ? (Number(P.strokeWidth) || 1.2) : (Number(P.strokeWidth) || 1.2) * 0.6;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', 56 - len);
+        line.setAttribute('x2', 56);
+        line.setAttribute('y1', y.toFixed(1));
+        line.setAttribute('y2', y.toFixed(1));
+        line.setAttribute('stroke', 'var(--cmp-stroke, #333)');
+        line.setAttribute('stroke-width', sw);
+        ticksG.appendChild(line);
+
+        // 大刻度数字
+        if (isMajor) {
+          const val = (maxF / divs) * (i / subD);
+          const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txt.setAttribute('x', '30');
+          txt.setAttribute('y', (y + 3).toFixed(1));
+          txt.setAttribute('text-anchor', 'middle');
+          txt.setAttribute('font-size', '8');
+          txt.setAttribute('font-weight', '600');
+          txt.setAttribute('fill', 'var(--cmp-stroke, #333)');
+          txt.setAttribute('font-family', 'Arial, sans-serif');
+          txt.textContent = Number.isInteger(val) ? val : val.toFixed(1);
+          ticksG.appendChild(txt);
+        }
+      }
+    }
+
+    /* ---- 绘制弹簧（锯齿） ---- */
+    const springEl = root.querySelector('.ss__spring');
+    if (springEl) {
+      const sTop = 48;
+      const sBot = pointerY - 4;
+      const coils = 12;
+      const amp   = 8;
+      let d = `M40 ${sTop}`;
+      for (let i = 0; i < coils; i++) {
+        const y0 = sTop + ((i + 0.25) / coils) * (sBot - sTop);
+        const y1 = sTop + ((i + 0.75) / coils) * (sBot - sTop);
+        const dir = (i % 2 === 0) ? -1 : 1;
+        d += ` L${40 + dir * amp} ${y0.toFixed(1)}`;
+        d += ` L${40 - dir * amp} ${y1.toFixed(1)}`;
+      }
+      d += ` L40 ${sBot.toFixed(1)}`;
+      springEl.setAttribute('d', d);
+    }
+
+    /* ---- 指针 ---- */
+    const ptrG = root.querySelector('.ss__pointer');
+    if (ptrG) {
+      const tri = ptrG.querySelector('polygon');
+      const lin = ptrG.querySelector('line');
+      if (tri) {
+        const py = pointerY;
+        tri.setAttribute('points',
+          `58,${py} 64,${py - 3.5} 64,${py + 3.5}`);
+      }
+      if (lin) {
+        lin.setAttribute('x1', '22');
+        lin.setAttribute('x2', '58');
+        lin.setAttribute('y1', pointerY.toFixed(1));
+        lin.setAttribute('y2', pointerY.toFixed(1));
+      }
+    }
+
+    /* ---- 标题 ---- */
+    const title = root.querySelector('.ss__title');
+    if (title) title.textContent = unit;
+
+    /* ---- 读数 ---- */
+    const reading = root.querySelector('.ss__reading');
+    if (reading) {
+      reading.textContent = (Math.round(force * 100) / 100) + ' ' + unit;
+    }
+
+    /* ---- aria ---- */
+    root.setAttribute('aria-label', `弹簧测力计 ${force} ${unit}`);
+  })();
+  </script>
+</div>
+

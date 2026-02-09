@@ -1,0 +1,469 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.rheostat.slide.interactive",
+  "name": "滑动变阻器",
+  "nameEn": "Slide Rheostat",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 180 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 180, "min": 80,  "max": 400, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "aspect",      "type": "number",     "default": 1.78,"min": 1.4, "max": 2.4, "desc": "宽高比（width = size × aspect）" },
+
+    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 2.2, "min": 0.5, "max": 5, "desc": "描边粗细" },
+
+    { "key": "coilColor",   "type": "color", "default": "#b87333", "desc": "电阻丝/线圈颜色（铜色）" },
+    { "key": "tubeColor",   "type": "color", "default": "#e8dcc8", "desc": "瓷管颜色（米白）" },
+    { "key": "railColor",   "type": "color", "default": "#a0a0a0", "desc": "金属滑杆颜色（银灰）" },
+    { "key": "sliderColor", "type": "color", "default": "#555555", "desc": "滑块颜色（深灰）" },
+    { "key": "termColor",   "type": "color", "default": "#d4a017", "desc": "接线柱颜色（黄铜）" },
+    { "key": "baseColor",   "type": "color", "default": "#f5f0e6", "desc": "底座颜色（浅米白）" },
+
+    { "key": "maxR",        "type": "number",     "default": 50,  "min": 1,   "max": 9999, "desc": "最大电阻值（Ω）" },
+    { "key": "position",    "type": "number(0-1)","default": 0.5, "min": 0,   "max": 1,    "desc": "滑块位置（0=最左，1=最右）" },
+    { "key": "showLabel",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "是否显示铭牌" },
+
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "aspect":      "--cmp-aspect",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "coilColor":   "--cmp-coil",
+    "tubeColor":   "--cmp-tube",
+    "railColor":   "--cmp-rail",
+    "sliderColor": "--cmp-slider",
+    "termColor":   "--cmp-term",
+    "baseColor":   "--cmp-base",
+    "glow":        "--cmp-glow"
+  },
+  "tags": ["rheostat", "variable-resistor", "slider", "circuit", "interactive"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.rheostat.slide.interactive" role="img" aria-label="滑动变阻器 50Ω">
+    <svg class="cmp__svg" viewBox="0 0 320 180" aria-hidden="true">
+        <!-- ═══════════════════════════════════════════
+             1. 底座
+             ═══════════════════════════════════════════ -->
+        <rect class="rh__base" x="30" y="100" width="260" height="52" rx="6"
+              fill="var(--cmp-base, #f5f0e6)"
+              stroke="var(--cmp-stroke, #111827)"
+              stroke-width="var(--cmp-stroke-width, 2.2)"
+              stroke-linejoin="round"/>
+        <!-- 底座高光 -->
+        <rect x="34" y="103" width="252" height="18" rx="4"
+              fill="#ffffff" opacity="0.28"/>
+        <!-- 底座阴影 -->
+        <rect x="34" y="132" width="252" height="14" rx="4"
+              fill="#000000" opacity="0.06"/>
+
+        <!-- ═══════════════════════════════════════════
+             2. 瓷管（绕线管） — 横卧圆柱
+             ═══════════════════════════════════════════ -->
+        <!-- 瓷管主体 -->
+        <rect class="rh__tube" x="60" y="108" width="200" height="32" rx="16"
+              fill="var(--cmp-tube, #e8dcc8)"
+              stroke="var(--cmp-stroke, #111827)"
+              stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.8)"
+              stroke-linejoin="round"/>
+        <!-- 瓷管高光 -->
+        <rect x="66" y="111" width="188" height="10" rx="5"
+              fill="#ffffff" opacity="0.32"/>
+        <!-- 瓷管底部阴影 -->
+        <rect x="66" y="128" width="188" height="8" rx="4"
+              fill="#000000" opacity="0.08"/>
+
+        <!-- ═══════════════════════════════════════════
+             3. 电阻丝（绕线）— 细密等距竖线
+             ═══════════════════════════════════════════ -->
+        <g class="rh__coils" stroke="var(--cmp-coil, #b87333)"
+           stroke-width="1.2" stroke-linecap="round" opacity="0.75">
+            <!-- 40 根线圈绕线，间距 4.75px，从 x=62 到 x=257 -->
+            <line x1="62"  y1="112" x2="62"  y2="136"/>
+            <line x1="67"  y1="112" x2="67"  y2="136"/>
+            <line x1="72"  y1="112" x2="72"  y2="136"/>
+            <line x1="77"  y1="112" x2="77"  y2="136"/>
+            <line x1="82"  y1="112" x2="82"  y2="136"/>
+            <line x1="87"  y1="112" x2="87"  y2="136"/>
+            <line x1="92"  y1="112" x2="92"  y2="136"/>
+            <line x1="97"  y1="112" x2="97"  y2="136"/>
+            <line x1="102" y1="112" x2="102" y2="136"/>
+            <line x1="107" y1="112" x2="107" y2="136"/>
+            <line x1="112" y1="112" x2="112" y2="136"/>
+            <line x1="117" y1="112" x2="117" y2="136"/>
+            <line x1="122" y1="112" x2="122" y2="136"/>
+            <line x1="127" y1="112" x2="127" y2="136"/>
+            <line x1="132" y1="112" x2="132" y2="136"/>
+            <line x1="137" y1="112" x2="137" y2="136"/>
+            <line x1="142" y1="112" x2="142" y2="136"/>
+            <line x1="147" y1="112" x2="147" y2="136"/>
+            <line x1="152" y1="112" x2="152" y2="136"/>
+            <line x1="157" y1="112" x2="157" y2="136"/>
+            <line x1="162" y1="112" x2="162" y2="136"/>
+            <line x1="167" y1="112" x2="167" y2="136"/>
+            <line x1="172" y1="112" x2="172" y2="136"/>
+            <line x1="177" y1="112" x2="177" y2="136"/>
+            <line x1="182" y1="112" x2="182" y2="136"/>
+            <line x1="187" y1="112" x2="187" y2="136"/>
+            <line x1="192" y1="112" x2="192" y2="136"/>
+            <line x1="197" y1="112" x2="197" y2="136"/>
+            <line x1="202" y1="112" x2="202" y2="136"/>
+            <line x1="207" y1="112" x2="207" y2="136"/>
+            <line x1="212" y1="112" x2="212" y2="136"/>
+            <line x1="217" y1="112" x2="217" y2="136"/>
+            <line x1="222" y1="112" x2="222" y2="136"/>
+            <line x1="227" y1="112" x2="227" y2="136"/>
+            <line x1="232" y1="112" x2="232" y2="136"/>
+            <line x1="237" y1="112" x2="237" y2="136"/>
+            <line x1="242" y1="112" x2="242" y2="136"/>
+            <line x1="247" y1="112" x2="247" y2="136"/>
+            <line x1="252" y1="112" x2="252" y2="136"/>
+            <line x1="257" y1="112" x2="257" y2="136"/>
+        </g>
+
+        <!-- ═══════════════════════════════════════════
+             4. 金属滑杆（导轨） — 瓷管上方
+             ═══════════════════════════════════════════ -->
+        <!-- 滑杆支架竖柱（左） -->
+        <rect x="52" y="72" width="10" height="38" rx="2"
+              fill="var(--cmp-rail, #a0a0a0)"
+              stroke="var(--cmp-stroke, #111827)"
+              stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.7)"/>
+        <!-- 滑杆支架竖柱（右） -->
+        <rect x="258" y="72" width="10" height="38" rx="2"
+              fill="var(--cmp-rail, #a0a0a0)"
+              stroke="var(--cmp-stroke, #111827)"
+              stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.7)"/>
+        <!-- 竖柱高光 -->
+        <rect x="53" y="74" width="4" height="14" rx="1" fill="#fff" opacity="0.22"/>
+        <rect x="259" y="74" width="4" height="14" rx="1" fill="#fff" opacity="0.22"/>
+
+        <!-- 横杆（滑杆本体） -->
+        <rect class="rh__rail" x="52" y="72" width="216" height="10" rx="5"
+              fill="var(--cmp-rail, #a0a0a0)"
+              stroke="var(--cmp-stroke, #111827)"
+              stroke-width="var(--cmp-stroke-width, 2.2)"
+              stroke-linejoin="round"/>
+        <!-- 横杆高光 -->
+        <rect x="58" y="73" width="204" height="4" rx="2"
+              fill="#ffffff" opacity="0.32"/>
+        <!-- 横杆阴影 -->
+        <rect x="58" y="79" width="204" height="2" rx="1"
+              fill="#000000" opacity="0.10"/>
+
+        <!-- ═══════════════════════════════════════════
+             5. 滑块 — 可被 JS 拖拽移动
+             ═══════════════════════════════════════════ -->
+        <g class="rh__slider" data-role="slider">
+            <!-- 滑块到线圈的金属接触片 -->
+            <rect class="rh__contact" x="-3" y="82" width="6" height="28" rx="1.5"
+                  fill="var(--cmp-rail, #a0a0a0)"
+                  stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.5)"
+                  opacity="0.85"/>
+
+            <!-- 滑块主体 -->
+            <rect class="rh__knob" x="-14" y="60" width="28" height="24" rx="4"
+                  fill="var(--cmp-slider, #555555)"
+                  stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="var(--cmp-stroke-width, 2.2)"
+                  stroke-linejoin="round"/>
+            <!-- 滑块高光 -->
+            <rect x="-12" y="62" width="24" height="8" rx="3"
+                  fill="#ffffff" opacity="0.22"/>
+            <!-- 滑块阴影 -->
+            <rect x="-12" y="74" width="24" height="6" rx="3"
+                  fill="#000000" opacity="0.10"/>
+            <!-- 滑块防滑纹理（三条横线） -->
+            <g stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0.18">
+                <line x1="-8" y1="68" x2="8" y2="68"/>
+                <line x1="-8" y1="72" x2="8" y2="72"/>
+                <line x1="-8" y1="76" x2="8" y2="76"/>
+            </g>
+        </g>
+
+        <!-- ═══════════════════════════════════════════
+             6. 四个接线柱（A、B、C、D）
+                布局：底座下方两端各两个
+                A(左下) B(右下) — 连接线圈两端
+                C(左上偏右) D(右上偏左) — 连接滑杆
+                实际教学中常用 A-D 或 B-D
+             ═══════════════════════════════════════════ -->
+        <!-- 接线柱 A（左下） -->
+        <g class="rh__term" data-role="term-a">
+            <circle cx="80" cy="158" r="8"
+                    fill="var(--cmp-term, #d4a017)"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.8)"/>
+            <circle cx="80" cy="158" r="3.5" fill="var(--cmp-stroke, #111827)" opacity="0.25"/>
+            <circle cx="78" cy="155" r="2" fill="#ffffff" opacity="0.28"/>
+            <text x="80" y="175" text-anchor="middle" font-size="10" font-weight="700"
+                  fill="var(--cmp-stroke, #111827)"
+                  font-family="Arial, Helvetica, sans-serif" opacity="0.7">A</text>
+        </g>
+        <!-- 连线 A → 线圈左端 -->
+        <path d="M80 150 V140 H60 V108" fill="none"
+              stroke="var(--cmp-coil, #b87333)"
+              stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.7)"
+              stroke-linecap="round" opacity="0.6"/>
+
+        <!-- 接线柱 B（右下） -->
+        <g class="rh__term" data-role="term-b">
+            <circle cx="240" cy="158" r="8"
+                    fill="var(--cmp-term, #d4a017)"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.8)"/>
+            <circle cx="240" cy="158" r="3.5" fill="var(--cmp-stroke, #111827)" opacity="0.25"/>
+            <circle cx="238" cy="155" r="2" fill="#ffffff" opacity="0.28"/>
+            <text x="240" y="175" text-anchor="middle" font-size="10" font-weight="700"
+                  fill="var(--cmp-stroke, #111827)"
+                  font-family="Arial, Helvetica, sans-serif" opacity="0.7">B</text>
+        </g>
+        <!-- 连线 B → 线圈右端 -->
+        <path d="M240 150 V140 H260 V108" fill="none"
+              stroke="var(--cmp-coil, #b87333)"
+              stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.7)"
+              stroke-linecap="round" opacity="0.6"/>
+
+        <!-- 接线柱 C（左上 — 连接滑杆左端） -->
+        <g class="rh__term" data-role="term-c">
+            <circle cx="57" cy="56" r="7"
+                    fill="var(--cmp-term, #d4a017)"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.8)"/>
+            <circle cx="57" cy="56" r="3" fill="var(--cmp-stroke, #111827)" opacity="0.25"/>
+            <circle cx="55" cy="54" r="1.8" fill="#ffffff" opacity="0.28"/>
+            <text x="57" y="44" text-anchor="middle" font-size="10" font-weight="700"
+                  fill="var(--cmp-stroke, #111827)"
+                  font-family="Arial, Helvetica, sans-serif" opacity="0.7">C</text>
+        </g>
+        <!-- 连线 C → 滑杆左端 -->
+        <path d="M57 63 V72" fill="none"
+              stroke="var(--cmp-rail, #a0a0a0)"
+              stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.7)"
+              stroke-linecap="round" opacity="0.6"/>
+
+        <!-- 接线柱 D（右上 — 连接滑杆右端） -->
+        <g class="rh__term" data-role="term-d">
+            <circle cx="263" cy="56" r="7"
+                    fill="var(--cmp-term, #d4a017)"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.8)"/>
+            <circle cx="263" cy="56" r="3" fill="var(--cmp-stroke, #111827)" opacity="0.25"/>
+            <circle cx="261" cy="54" r="1.8" fill="#ffffff" opacity="0.28"/>
+            <text x="263" y="44" text-anchor="middle" font-size="10" font-weight="700"
+                  fill="var(--cmp-stroke, #111827)"
+                  font-family="Arial, Helvetica, sans-serif" opacity="0.7">D</text>
+        </g>
+        <!-- 连线 D → 滑杆右端 -->
+        <path d="M263 63 V72" fill="none"
+              stroke="var(--cmp-rail, #a0a0a0)"
+              stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.7)"
+              stroke-linecap="round" opacity="0.6"/>
+
+        <!-- ═══════════════════════════════════════════
+             7. 铭牌（底座正面中央）
+             ═══════════════════════════════════════════ -->
+        <g class="rh__label" data-role="label">
+            <rect x="126" y="143" width="68" height="18" rx="3"
+                  fill="#ffffff" stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.5)"
+                  opacity="0.9"/>
+            <text class="rh__label-text" x="160" y="156"
+                  text-anchor="middle" font-size="10" font-weight="700"
+                  fill="var(--cmp-stroke, #111827)"
+                  font-family="Arial, Helvetica, sans-serif">50Ω 1A</text>
+        </g>
+
+        <!-- ═══════════════════════════════════════════
+             8. 电阻值实时指示（滑块上方）
+             ═══════════════════════════════════════════ -->
+        <g class="rh__indicator" data-role="indicator" opacity="0.85">
+            <rect class="rh__ind-bg" x="-24" y="36" width="48" height="18" rx="4"
+                  fill="var(--cmp-base, #f5f0e6)"
+                  stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="calc(var(--cmp-stroke-width, 2.2) * 0.4)"/>
+            <text class="rh__ind-text" x="0" y="49"
+                  text-anchor="middle" font-size="9" font-weight="700"
+                  fill="var(--cmp-stroke, #111827)"
+                  font-family="Arial, Helvetica, sans-serif">25.0Ω</text>
+        </g>
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.rheostat.slide.interactive"] {
+        height: var(--cmp-size, 180px);
+        width: calc(var(--cmp-size, 180px) * var(--cmp-aspect, 1.78));
+        display: inline-grid;
+        place-items: center;
+        transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+    }
+
+    .cmp[data-cmp-id="phy.rheostat.slide.interactive"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        touch-action: none;
+        filter: drop-shadow(0 0 calc(10px * var(--cmp-glow, 0))
+                rgba(var(--cmp-glow-rgb, 255, 214, 102),
+                calc(0.9 * var(--cmp-glow, 0))));
+    }
+
+    .cmp[data-cmp-id="phy.rheostat.slide.interactive"] .rh__slider {
+        cursor: grab;
+    }
+
+    .cmp[data-cmp-id="phy.rheostat.slide.interactive"] .rh__slider:active {
+        cursor: grabbing;
+    }
+</style>
+
+<script>
+(() => {
+    const script = document.currentScript;
+    if (!script) return;
+
+    /* ── 找根节点 ── */
+    let root = script.previousElementSibling;
+    while (root && root.tagName === 'STYLE') root = root.previousElementSibling;
+    if (!root || root.getAttribute('data-cmp-id') !== 'phy.rheostat.slide.interactive') return;
+
+    const svg = root.querySelector('.cmp__svg');
+    if (!svg) return;
+
+    /* ── 常量：滑块可移动范围���viewBox 坐标） ── */
+    const RAIL_LEFT  = 66;   /* 滑杆左端可达 x */
+    const RAIL_RIGHT = 254;  /* 滑杆右端可达 x */
+    const VB_W = 320;
+    const VB_H = 180;
+
+    /* ── 读取参数 ── */
+    const DEFAULTS = { maxR: 50, position: 0.5, showLabel: 'on' };
+    let P = { ...DEFAULTS };
+    try {
+        const raw = root.getAttribute('data-props');
+        if (raw) {
+            const o = JSON.parse(raw);
+            if (o && typeof o === 'object') P = { ...P, ...o };
+        }
+    } catch (e) { /* ignore */ }
+
+    const maxR      = Math.max(1, Number(P.maxR) || DEFAULTS.maxR);
+    let   pos       = Math.max(0, Math.min(1, Number(P.position) || DEFAULTS.position));
+    const showLabel = String(P.showLabel || 'on');
+
+    /* ── 关键 DOM 元素 ── */
+    const sliderG   = svg.querySelector('[data-role="slider"]');
+    const indicatorG = svg.querySelector('[data-role="indicator"]');
+    const indText   = svg.querySelector('.rh__ind-text');
+    const labelG    = svg.querySelector('[data-role="label"]');
+    const labelText = svg.querySelector('.rh__label-text');
+
+    if (!sliderG || !indicatorG) return;
+
+    /* ── 隐藏铭牌 ── */
+    if (showLabel === 'off' && labelG) {
+        labelG.style.display = 'none';
+    }
+
+    /* ── 更新铭牌文本 ── */
+    if (labelText) {
+        labelText.textContent = maxR + 'Ω 1A';
+    }
+
+    /* ── 计算滑块 x 坐标 ── */
+    function posToX(p) {
+        return RAIL_LEFT + p * (RAIL_RIGHT - RAIL_LEFT);
+    }
+
+    /* ── 更新视图 ── */
+    function update() {
+        const x = posToX(pos);
+
+        /* 移动滑块组 */
+        sliderG.setAttribute('transform', 'translate(' + x + ', 0)');
+
+        /* 移动指示器 */
+        indicatorG.setAttribute('transform', 'translate(' + x + ', 0)');
+
+        /* 计算当前电阻值：滑块在左端 → 0Ω，右端 → maxR */
+        const currentR = Math.round(pos * maxR * 10) / 10;
+
+        /* 更新指示文字 */
+        if (indText) {
+            indText.textContent = currentR + 'Ω';
+        }
+
+        /* 更新 aria-label */
+        root.setAttribute('aria-label',
+            '滑动变阻器 ' + maxR + 'Ω，当前 ' + currentR + 'Ω');
+    }
+
+    /* 初始化 */
+    update();
+
+    /* ════════════════════════════════════════════
+       拖拽交互（pointer events，兼容鼠标 + 触摸）
+       ════════════════════════════════════════════ */
+    let dragging = false;
+
+    function svgPoint(clientX) {
+        /* 将页面坐标转换为 SVG viewBox 坐标 */
+        const pt = svg.createSVGPoint();
+        pt.x = clientX;
+        pt.y = 0;
+        const ctm = svg.getScreenCTM();
+        if (!ctm) return null;
+        const inv = ctm.inverse();
+        return pt.matrixTransform(inv);
+    }
+
+    function onDown(e) {
+        e.preventDefault();
+        dragging = true;
+        sliderG.style.cursor = 'grabbing';
+        /* 捕获指针到 svg（确保拖出组件区域仍可响应） */
+        if (e.pointerId !== undefined) {
+            svg.setPointerCapture(e.pointerId);
+        }
+    }
+
+    function onMove(e) {
+        if (!dragging) return;
+        e.preventDefault();
+        const clientX = e.clientX !== undefined ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : null);
+        if (clientX === null) return;
+        const pt = svgPoint(clientX);
+        if (!pt) return;
+
+        /* 限制在滑杆范围内 */
+        const x = Math.max(RAIL_LEFT, Math.min(RAIL_RIGHT, pt.x));
+        pos = (x - RAIL_LEFT) / (RAIL_RIGHT - RAIL_LEFT);
+        update();
+    }
+
+    function onUp(e) {
+        if (!dragging) return;
+        dragging = false;
+        sliderG.style.cursor = '';
+        if (e.pointerId !== undefined) {
+            try { svg.releasePointerCapture(e.pointerId); } catch (ex) { /* ignore */ }
+        }
+    }
+
+    /* 事件绑定 */
+    sliderG.addEventListener('pointerdown', onDown);
+    svg.addEventListener('pointermove', onMove);
+    svg.addEventListener('pointerup', onUp);
+    svg.addEventListener('pointercancel', onUp);
+
+    /* 防止文本选中干扰拖拽 */
+    svg.addEventListener('selectstart', function (e) {
+        if (dragging) e.preventDefault();
+    });
+})();
+</script>

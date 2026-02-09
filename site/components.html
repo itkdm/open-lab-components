@@ -751,7 +751,6 @@
             <p>${t('load-fail-desc')}</p>
           </div>
         `;
-        console.error(err);
       }
     }
 
@@ -975,7 +974,6 @@ ${componentHtml}
           fallbackCopy(code);
         }
       } catch (err) {
-        console.error('Failed to copy component:', err);
         // 如果获取组件内容失败，至少复制一个基本的占位符
         const fallbackCode = `<div class="cmp" data-cmp-id="${component.id}">
   <!-- 组件内容 -->
@@ -1010,7 +1008,6 @@ ${componentHtml}
         
         return indented;
       } catch (err) {
-        console.error('Failed to load component HTML:', err);
         return '  <!-- 组件内容 -->';
       }
     }

@@ -1,0 +1,290 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.power.battery-pack.basic",
+  "name": "电池组（串联）",
+  "nameEn": "Battery Pack (Series)",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 48 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 64,  "min": 24, "max": 256, "desc": "组件高度（宽度按节数自适应）" },
+    { "key": "cells",       "type": "number",     "default": 2,   "min": 1,  "max": 6,   "desc": "电池节数" },
+    { "key": "cellVoltage", "type": "number",     "default": 1.5, "min": 0.1,"max": 24,  "desc": "每节电压（V）" },
+
+    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 2.0, "min": 0.5, "max": 6, "desc": "描边粗细" },
+
+    { "key": "bodyColor",   "type": "color", "default": "#3b82f6", "desc": "电池外壳颜色" },
+    { "key": "capColor",    "type": "color", "default": "#d4a017", "desc": "正极铜帽颜色" },
+    { "key": "baseColor",   "type": "color", "default": "#a0a0a0", "desc": "负极底座颜色" },
+    { "key": "labelColor",  "type": "color", "default": "#ffffff", "desc": "标签文字颜色" },
+
+    { "key": "showLabel",   "type": "enum", "default": "auto", "enum": ["auto","on","off"], "desc": "是否显示电压标签" },
+    { "key": "showTotal",   "type": "enum", "default": "on",   "enum": ["on","off"], "desc": "是否显示总电压" },
+
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "bodyColor":   "--cmp-body",
+    "capColor":    "--cmp-cap",
+    "baseColor":   "--cmp-base",
+    "labelColor":  "--cmp-label-color",
+    "glow":        "--cmp-glow"
+  },
+  "tags": ["battery", "battery-pack", "series", "power", "circuit", "dc"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.power.battery-pack.basic" role="img" aria-label="电池组 3V">
+  <style>
+    .cmp[data-cmp-id="phy.power.battery-pack.basic"] {
+      height: var(--cmp-size, 64px);
+      display: inline-grid;
+      place-items: center;
+      transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+    }
+
+    .cmp[data-cmp-id="phy.power.battery-pack.basic"] .cmp__svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(
+        0 0 calc(10px * var(--cmp-glow, 0))
+        rgba(var(--cmp-glow-rgb, 255, 214, 102), calc(0.9 * var(--cmp-glow, 0)))
+      );
+    }
+
+    .cmp[data-cmp-id="phy.power.battery-pack.basic"] .bp__label {
+      font-size: 9px;
+      font-weight: 700;
+      font-family: Arial, Helvetica, sans-serif;
+      letter-spacing: 0.3px;
+    }
+
+    .cmp[data-cmp-id="phy.power.battery-pack.basic"] .bp__total {
+      font-size: 10px;
+      font-weight: 800;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+  </style>
+
+  <svg class="cmp__svg" aria-hidden="true"></svg>
+
+  <script>
+  (function () {
+    const script = document.currentScript;
+    if (!script) return;
+    const root = script.closest('[data-cmp-id="phy.power.battery-pack.basic"]');
+    if (!root) return;
+
+    /* 参数解析 */
+    const D = { cells: 2, cellVoltage: 1.5, showLabel: 'auto', showTotal: 'on' };
+    let P = { ...D };
+    try {
+      const raw = root.getAttribute('data-props');
+      if (raw) {
+        const o = JSON.parse(raw);
+        if (o && typeof o === 'object') P = { ...P, ...o };
+      }
+    } catch (e) {}
+
+    const cells     = Math.max(1, Math.min(6, Math.round(Number(P.cells) || D.cells)));
+    const cellVRaw  = Number(P.cellVoltage);
+    const cellV     = Number.isFinite(cellVRaw) ? cellVRaw : D.cellVoltage;
+    const totalV    = Math.round(cells * cellV * 100) / 100;
+    const showLabel = String(P.showLabel || 'auto');
+    const showTotal = String(P.showTotal || 'on');
+
+    /* 布局计算（基于单个电池 viewBox 的比例） */
+    const CELL_W   = 66;   // 单节电池宽（与 phy.power.battery.basic 协调）
+    const GAP      = 4;    // 节间距
+    const PAD      = 16;   // 两端引脚区域
+    const H        = 48;
+    const totalW   = PAD + cells * CELL_W + (cells - 1) * GAP + PAD;
+
+    const svg = root.querySelector('.cmp__svg');
+    if (!svg) return;
+    svg.setAttribute('viewBox', '0 0 ' + totalW + ' ' + H);
+    // 同步宽度（保持和高度比例一致）
+    root.style.width = 'calc(var(--cmp-size, 64px) * ' + (totalW / H).toFixed(2) + ')';
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs) => {
+      const e = document.createElementNS(NS, tag);
+      for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+      return e;
+    };
+
+    svg.innerHTML = '';
+
+    /* 左引脚（负极） */
+    svg.appendChild(el('path', {
+      d: 'M0 24 H' + PAD,
+      fill: 'none',
+      stroke: 'var(--cmp-stroke, #111827)',
+      'stroke-width': 'var(--cmp-stroke-width, 2)',
+      'stroke-linecap': 'round',
+      opacity: '0.85'
+    }));
+
+    /* 逐节绘制电池 */
+    for (let i = 0; i < cells; i++) {
+      const x = PAD + i * (CELL_W + GAP);
+
+      /* 负极底座 */
+      svg.appendChild(el('rect', {
+        x: String(x),
+        y: '10',
+        width: '7',
+        height: '28',
+        rx: '2',
+        fill: 'var(--cmp-base, #a0a0a0)',
+        stroke: 'var(--cmp-stroke, #111827)',
+        'stroke-width': 'var(--cmp-stroke-width, 2)'
+      }));
+
+      /* 主体 */
+      svg.appendChild(el('rect', {
+        x: String(x + 7),
+        y: '6',
+        width: '46',
+        height: '36',
+        rx: '3',
+        fill: 'var(--cmp-body, #3b82f6)',
+        stroke: 'var(--cmp-stroke, #111827)',
+        'stroke-width': 'var(--cmp-stroke-width, 2)',
+        'stroke-linejoin': 'round'
+      }));
+      /* 高光 */
+      svg.appendChild(el('rect', {
+        x: String(x + 9),
+        y: '8',
+        width: '42',
+        height: '12',
+        rx: '2',
+        fill: '#fff',
+        opacity: '0.18'
+      }));
+      /* 阴影 */
+      svg.appendChild(el('rect', {
+        x: String(x + 9),
+        y: '28',
+        width: '42',
+        height: '8',
+        rx: '2',
+        fill: '#000',
+        opacity: '0.10'
+      }));
+
+      /* 单节电压标签 */
+      if (showLabel !== 'off') {
+        const t = document.createElementNS(NS, 'text');
+        t.setAttribute('x', String(x + 30));
+        t.setAttribute('y', '28');
+        t.setAttribute('text-anchor', 'middle');
+        t.setAttribute('fill', 'var(--cmp-label-color, #fff)');
+        t.setAttribute('class', 'bp__label');
+        t.textContent = cellV + 'V';
+        svg.appendChild(t);
+      }
+
+      /* 正极铜帽 */
+      svg.appendChild(el('rect', {
+        x: String(x + 53),
+        y: '8',
+        width: '8',
+        height: '32',
+        rx: '2',
+        fill: 'var(--cmp-cap, #d4a017)',
+        stroke: 'var(--cmp-stroke, #111827)',
+        'stroke-width': 'var(--cmp-stroke-width, 2)'
+      }));
+      svg.appendChild(el('rect', {
+        x: String(x + 58),
+        y: '14',
+        width: '5',
+        height: '20',
+        rx: '2.5',
+        fill: 'var(--cmp-cap, #d4a017)',
+        stroke: 'var(--cmp-stroke, #111827)',
+        'stroke-width': 'var(--cmp-stroke-width, 2)'
+      }));
+      /* 铜帽高光 */
+      svg.appendChild(el('rect', {
+        x: String(x + 54),
+        y: '10',
+        width: '6',
+        height: '10',
+        rx: '1.5',
+        fill: '#fff',
+        opacity: '0.22'
+      }));
+
+      /* 节间连接线 */
+      if (i < cells - 1) {
+        const cx = x + CELL_W;
+        svg.appendChild(el('path', {
+          d: 'M' + cx + ' 24 H' + (cx + GAP),
+          fill: 'none',
+          stroke: 'var(--cmp-stroke, #111827)',
+          'stroke-width': 'var(--cmp-stroke-width, 2)',
+          'stroke-linecap': 'round',
+          opacity: '0.6'
+        }));
+      }
+    }
+
+    /* 右引脚（正极） */
+    const rStart = PAD + cells * CELL_W + (cells - 1) * GAP;
+    svg.appendChild(el('path', {
+      d: 'M' + rStart + ' 24 H' + totalW,
+      fill: 'none',
+      stroke: 'var(--cmp-stroke, #111827)',
+      'stroke-width': 'var(--cmp-stroke-width, 2)',
+      'stroke-linecap': 'round',
+      opacity: '0.85'
+    }));
+
+    /* 极性标记 */
+    const tMinus = document.createElementNS(NS, 'text');
+    tMinus.setAttribute('x', String(PAD + 3));
+    tMinus.setAttribute('y', '7');
+    tMinus.setAttribute('text-anchor', 'middle');
+    tMinus.setAttribute('font-size', '8');
+    tMinus.setAttribute('font-weight', '800');
+    tMinus.setAttribute('fill', 'var(--cmp-stroke, #111827)');
+    tMinus.setAttribute('font-family', 'Arial, sans-serif');
+    tMinus.textContent = '−';
+    svg.appendChild(tMinus);
+
+    const tPlus = document.createElementNS(NS, 'text');
+    tPlus.setAttribute('x', String(rStart - 3));
+    tPlus.setAttribute('y', '7');
+    tPlus.setAttribute('text-anchor', 'middle');
+    tPlus.setAttribute('font-size', '8');
+    tPlus.setAttribute('font-weight', '800');
+    tPlus.setAttribute('fill', 'var(--cmp-stroke, #111827)');
+    tPlus.setAttribute('font-family', 'Arial, sans-serif');
+    tPlus.textContent = '+';
+    svg.appendChild(tPlus);
+
+    /* 总电压标注 */
+    if (showTotal === 'on' && cells > 1) {
+      const t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', String(totalW / 2));
+      t.setAttribute('y', String(H - 1));
+      t.setAttribute('text-anchor', 'middle');
+      t.setAttribute('fill', 'var(--cmp-stroke, #111827)');
+      t.setAttribute('class', 'bp__total');
+      t.textContent = '总 ' + totalV + 'V';
+      svg.appendChild(t);
+    }
+
+    root.setAttribute('aria-label', '电池组 ' + cells + '节串联 ' + totalV + 'V');
+  })();
+  </script>
+</div>
+

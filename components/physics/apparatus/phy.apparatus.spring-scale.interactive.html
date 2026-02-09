@@ -1,0 +1,334 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.spring-scale.interactive",
+  "name": "弹簧测力计（交互式）",
+  "nameEn": "Spring Scale (Interactive)",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 80, "h": 320 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "force",       "type": "number",     "default": 0,   "min": 0,   "max": 5,   "desc": "初始力值（N）" },
+    { "key": "maxForce",    "type": "number",     "default": 5,   "min": 1,   "max": 20,  "desc": "最大量程（N）" },
+    { "key": "divisions",   "type": "number",     "default": 5,   "min": 1,   "max": 20,  "desc": "大刻度数量" },
+    { "key": "subDiv",      "type": "number",     "default": 5,   "min": 1,   "max": 10,  "desc": "每大格小刻度数" },
+    { "key": "unit",        "type": "string",     "default": "N", "desc": "单位标识" },
+
+    { "key": "shellColor",  "type": "color", "default": "#e8e0d0", "desc": "外壳颜色" },
+    { "key": "scaleColor",  "type": "color", "default": "#faf8f2", "desc": "刻度面板颜色" },
+    { "key": "stroke",      "type": "color", "default": "#333333", "desc": "刻度线颜色" },
+    { "key": "strokeWidth", "type": "number","default": 1.2, "min": 0.5, "max": 3, "desc": "刻度线粗细" },
+    { "key": "springColor", "type": "color", "default": "#555555", "desc": "弹簧颜色" },
+    { "key": "pointerColor","type": "color", "default": "#e53935", "desc": "指针颜色" },
+    { "key": "hookColor",   "type": "color", "default": "#444444", "desc": "挂钩颜色" },
+    { "key": "accent",      "type": "color", "default": "#1565c0", "desc": "强调色（标题/单位）" },
+
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":         "--cmp-size",
+    "shellColor":   "--cmp-shell",
+    "scaleColor":   "--cmp-scale-bg",
+    "stroke":       "--cmp-stroke",
+    "strokeWidth":  "--cmp-stroke-width",
+    "springColor":  "--cmp-spring",
+    "pointerColor": "--cmp-pointer",
+    "hookColor":    "--cmp-hook",
+    "accent":       "--cmp-accent",
+    "glow":         "--cmp-glow"
+  },
+  "tags": ["spring-scale", "dynamometer", "force", "apparatus", "measurement", "interactive", "draggable"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.spring-scale.interactive" role="img" aria-label="弹簧测力计（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.apparatus.spring-scale.interactive"] {
+      --h: var(--cmp-size, 320px);
+      display: inline-block;
+      width: calc(var(--h) * 0.25);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0)) rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.apparatus.spring-scale.interactive"] svg {
+      width: 100%; height: 100%; display: block;
+    }
+    /* 挂钩拖拽手柄 */
+    .cmp[data-cmp-id="phy.apparatus.spring-scale.interactive"] .ss__drag-handle {
+      cursor: ns-resize;
+      transition: filter 0.15s;
+    }
+    .cmp[data-cmp-id="phy.apparatus.spring-scale.interactive"] .ss__drag-handle:hover {
+      filter: brightness(1.3);
+    }
+    /* 读数面板 */
+    .cmp[data-cmp-id="phy.apparatus.spring-scale.interactive"] .ss__lcd {
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+
+  <svg viewBox="0 0 80 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="ssi__shell" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="color-mix(in srgb, var(--cmp-shell, #e8e0d0) 80%, #000)"/>
+        <stop offset="0.3" stop-color="var(--cmp-shell, #e8e0d0)"/>
+        <stop offset="0.7" stop-color="var(--cmp-shell, #e8e0d0)"/>
+        <stop offset="1"   stop-color="color-mix(in srgb, var(--cmp-shell, #e8e0d0) 80%, #000)"/>
+      </linearGradient>
+      <linearGradient id="ssi__springG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="color-mix(in srgb, var(--cmp-spring, #555) 70%, #000)"/>
+        <stop offset="0.5" stop-color="var(--cmp-spring, #555)"/>
+        <stop offset="1"   stop-color="color-mix(in srgb, var(--cmp-spring, #555) 70%, #000)"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 提环 -->
+    <ellipse cx="40" cy="14" rx="10" ry="10" fill="none"
+             stroke="var(--cmp-hook, #444)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="40" y1="24" x2="40" y2="38" stroke="var(--cmp-hook, #444)" stroke-width="2.5"/>
+
+    <!-- 外壳主体 -->
+    <rect x="12" y="38" width="56" height="220" rx="6" ry="6"
+          fill="url(#ssi__shell)" stroke="#aaa" stroke-width="0.8"/>
+
+    <!-- 观察窗 -->
+    <rect x="18" y="48" width="44" height="200" rx="3" ry="3"
+          fill="var(--cmp-scale-bg, #faf8f2)" stroke="#bbb" stroke-width="0.6"/>
+
+    <!-- 弹簧 -->
+    <path class="ss__spring" fill="none" stroke="url(#ssi__springG)"
+          stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 刻度 -->
+    <g class="ss__ticks"></g>
+
+    <!-- 指针 -->
+    <g class="ss__pointer">
+      <polygon fill="var(--cmp-pointer, #e53935)"/>
+      <line stroke="var(--cmp-pointer, #e53935)" stroke-width="1.2" stroke-dasharray="2,2"/>
+    </g>
+
+    <!-- 单位标题 -->
+    <text x="40" y="60" text-anchor="middle" font-size="7" font-weight="700"
+          fill="var(--cmp-accent, #1565c0)" font-family="Arial, sans-serif" class="ss__title">N</text>
+
+    <!-- 底部连接杆（可动部分） -->
+    <line class="ss__rod" stroke="var(--cmp-hook, #444)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- 挂钩（可拖拽） -->
+    <g class="ss__drag-handle">
+      <path class="ss__hook-path" fill="none" stroke="var(--cmp-hook, #444)"
+            stroke-width="2.8" stroke-linecap="round"/>
+      <!-- 透明的拖拽热区 -->
+      <rect class="ss__hit" x="20" y="270" width="40" height="40"
+            fill="rgba(0,0,0,0)" stroke="none" cursor="ns-resize"/>
+    </g>
+
+    <!-- 数字读数 LCD -->
+    <rect x="16" y="294" width="48" height="20" rx="3"
+          fill="#111" fill-opacity="0.85" stroke="var(--cmp-accent, #1565c0)" stroke-width="0.8"/>
+    <text class="ss__lcd" x="40" y="308" text-anchor="middle" font-size="11" font-weight="700"
+          fill="#4fc3f7" font-family="'Courier New', Courier, monospace">0.00 N</text>
+  </svg>
+
+  <script>
+  (() => {
+    const script = document.currentScript;
+    if (!script) return;
+    const root = script.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'phy.apparatus.spring-scale.interactive') return;
+
+    /* ---- 参数 ---- */
+    const D = { force: 0, maxForce: 5, divisions: 5, subDiv: 5, unit: 'N', strokeWidth: 1.2 };
+    let P = { ...D };
+    try {
+      const raw = root.getAttribute('data-props');
+      if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') P = { ...P, ...o }; }
+    } catch(e) {}
+
+    const maxF  = Math.max(1, Number(P.maxForce) || 5);
+    const divs  = Math.max(1, Number(P.divisions) || 5);
+    const subD  = Math.max(1, Number(P.subDiv) || 5);
+    const unit  = String(P.unit || 'N');
+    const sw    = Number(P.strokeWidth) || 1.2;
+    let   curF  = Math.max(0, Math.min(maxF, Number(P.force) || 0));
+
+    /* ---- 布局 ---- */
+    const WIN_TOP = 68, WIN_BOT = 240, WIN_H = WIN_BOT - WIN_TOP;
+    const HOOK_LEN = 38;    // 挂钩总长
+    const SHELL_BOT = 258;  // 外壳底边
+
+    /* ---- DOM ---- */
+    const svg      = root.querySelector('svg');
+    const springEl = root.querySelector('.ss__spring');
+    const ticksG   = root.querySelector('.ss__ticks');
+    const ptrG     = root.querySelector('.ss__pointer');
+    const rodEl    = root.querySelector('.ss__rod');
+    const hookPath = root.querySelector('.ss__hook-path');
+    const hitRect  = root.querySelector('.ss__hit');
+    const lcd      = root.querySelector('.ss__lcd');
+    const titleEl  = root.querySelector('.ss__title');
+
+    if (titleEl) titleEl.textContent = unit;
+
+    /* ---- 绘制刻度（一次性） ---- */
+    if (ticksG) {
+      ticksG.innerHTML = '';
+      const total = divs * subD;
+      for (let i = 0; i <= total; i++) {
+        const y = WIN_TOP + (i / total) * WIN_H;
+        const major = (i % subD === 0);
+        const len = major ? 14 : 7;
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', String(56 - len));
+        line.setAttribute('x2', '56');
+        line.setAttribute('y1', y.toFixed(1));
+        line.setAttribute('y2', y.toFixed(1));
+        line.setAttribute('stroke', 'var(--cmp-stroke, #333)');
+        line.setAttribute('stroke-width', String(major ? sw : sw * 0.6));
+        ticksG.appendChild(line);
+        if (major) {
+          const val = (maxF / divs) * (i / subD);
+          const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+          txt.setAttribute('x', '30');
+          txt.setAttribute('y', (y + 3).toFixed(1));
+          txt.setAttribute('text-anchor', 'middle');
+          txt.setAttribute('font-size', '8');
+          txt.setAttribute('font-weight', '600');
+          txt.setAttribute('fill', 'var(--cmp-stroke, #333)');
+          txt.setAttribute('font-family', 'Arial, sans-serif');
+          txt.textContent = Number.isInteger(val) ? String(val) : val.toFixed(1);
+          ticksG.appendChild(txt);
+        }
+      }
+    }
+
+    /* ---- 渲染函数 ---- */
+    function render(f) {
+      const ratio = Math.max(0, Math.min(1, f / maxF));
+      const ptrY  = WIN_TOP + ratio * WIN_H;
+
+      // 弹簧
+      if (springEl) {
+        const sTop = 48, sBot = ptrY - 4;
+        const coils = 12;
+        const baseAmp = 8;
+        const amp = baseAmp * (1 - ratio * 0.5);
+        let d = `M40 ${sTop}`;
+        for (let i = 0; i < coils; i++) {
+          const y0 = sTop + ((i + 0.25) / coils) * (sBot - sTop);
+          const y1 = sTop + ((i + 0.75) / coils) * (sBot - sTop);
+          const dir = (i % 2 === 0) ? -1 : 1;
+          d += ` L${40 + dir * amp} ${y0.toFixed(1)}`;
+          d += ` L${40 - dir * amp} ${y1.toFixed(1)}`;
+        }
+        d += ` L40 ${sBot.toFixed(1)}`;
+        springEl.setAttribute('d', d);
+      }
+
+      // 指针
+      if (ptrG) {
+        const tri = ptrG.querySelector('polygon');
+        const lin = ptrG.querySelector('line');
+        if (tri) tri.setAttribute('points',
+          `58,${ptrY} 64,${ptrY - 3.5} 64,${ptrY + 3.5}`);
+        if (lin) {
+          lin.setAttribute('x1', '22'); lin.setAttribute('x2', '58');
+          lin.setAttribute('y1', ptrY.toFixed(1)); lin.setAttribute('y2', ptrY.toFixed(1));
+        }
+      }
+
+      // 连接杆 + 挂钩
+      const rodTop = SHELL_BOT;
+      const hookTopY = rodTop + ratio * HOOK_LEN * 0.6;
+      if (rodEl) {
+        rodEl.setAttribute('x1', '40'); rodEl.setAttribute('x2', '40');
+        rodEl.setAttribute('y1', rodTop.toFixed(1));
+        rodEl.setAttribute('y2', (hookTopY).toFixed(1));
+      }
+      if (hookPath) {
+        const hy = hookTopY;
+        hookPath.setAttribute('d',
+          `M40 ${hy.toFixed(1)} C40 ${(hy + 16).toFixed(1)} 28 ${(hy + 16).toFixed(1)} 28 ${(hy + 6).toFixed(1)}`);
+      }
+      if (hitRect) {
+        hitRect.setAttribute('y', (hookTopY - 5).toFixed(1));
+      }
+
+      // LCD 读数
+      if (lcd) {
+        lcd.textContent = f.toFixed(2) + ' ' + unit;
+      }
+
+      // aria
+      root.setAttribute('aria-label', `弹簧测力计 ${f.toFixed(2)} ${unit}`);
+    }
+
+    /* ---- 初始渲染 ---- */
+    render(curF);
+
+    /* ---- 拖拽交互 ---- */
+    let dragging = false;
+    let startY = 0, startForce = 0;
+
+    function getSvgScale() {
+      const rect = svg.getBoundingClientRect();
+      return rect.height / 320;   // viewBox 高度 320
+    }
+
+    function onStart(e) {
+      e.preventDefault();
+      dragging = true;
+      const pt = e.touches ? e.touches[0] : e;
+      startY = pt.clientY;
+      startForce = curF;
+      document.addEventListener('mousemove', onMove, { passive: false });
+      document.addEventListener('mouseup', onEnd);
+      document.addEventListener('touchmove', onMove, { passive: false });
+      document.addEventListener('touchend', onEnd);
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      const pt = e.touches ? e.touches[0] : e;
+      const dy = pt.clientY - startY;
+      const scale = getSvgScale();
+      const dForce = (dy / scale) / WIN_H * maxF;
+      curF = Math.max(0, Math.min(maxF, startForce + dForce));
+      render(curF);
+    }
+
+    function onEnd() {
+      dragging = false;
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onEnd);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onEnd);
+    }
+
+    // 绑定挂钩区域
+    const handle = root.querySelector('.ss__drag-handle');
+    if (handle) {
+      handle.addEventListener('mousedown', onStart, { passive: false });
+      handle.addEventListener('touchstart', onStart, { passive: false });
+    }
+
+    // 清理
+    const cleanup = () => {
+      if (handle) {
+        handle.removeEventListener('mousedown', onStart);
+        handle.removeEventListener('touchstart', onStart);
+      }
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onEnd);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onEnd);
+    };
+    window.addEventListener('beforeunload', cleanup);
+  })();
+  </script>
+</div>
+

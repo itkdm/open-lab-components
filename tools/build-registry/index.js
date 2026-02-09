@@ -24,7 +24,7 @@ function main() {
       const categoryNamesData = JSON.parse(fs.readFileSync(categoryNamesPath, "utf8"));
       categoryNames = categoryNamesData.categories || {};
     } catch (err) {
-      console.warn(`[build-registry] Failed to load category-names.json: ${err.message}`);
+      // ignore category-names.json load error, fallback to defaults
     }
   }
 
@@ -128,8 +128,6 @@ function main() {
       .map(([tag, count]) => ({ tag, count }))
   };
   fs.writeFileSync(path.join(registryDir, "tags.json"), JSON.stringify(tags, null, 2), "utf8");
-
-  console.log(`[build-registry] ok: ${items.length} components`);
 }
 
 main();

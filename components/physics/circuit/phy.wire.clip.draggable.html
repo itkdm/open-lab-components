@@ -1,0 +1,351 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.wire.clip.draggable",
+  "name": "导线（鳄鱼夹）",
+  "nameEn": "Wire with Alligator Clips",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 200 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 80,  "max": 500, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "aspect",      "type": "number",     "default": 1.6, "min": 1.0, "max": 3.0, "desc": "宽高比（width = size × aspect）" },
+
+    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 2,   "min": 0.5, "max": 5, "desc": "描边粗细" },
+
+    { "key": "wireColor",   "type": "color",  "default": "#222222", "desc": "导线颜色（绝缘皮）" },
+    { "key": "wireWidth",   "type": "number", "default": 5,   "min": 2,   "max": 14, "desc": "导线粗细" },
+    { "key": "coreColor",   "type": "color",  "default": "#b87333", "desc": "铜芯颜色（夹口处可见）" },
+
+    { "key": "clipColorA",  "type": "color",  "default": "#111827", "desc": "A 端夹子颜色" },
+    { "key": "clipColorB",  "type": "color",  "default": "#111827", "desc": "B 端夹子颜色" },
+
+    { "key": "ax",          "type": "number", "default": 40,  "min": 0, "max": 320, "desc": "A 端位置 X（viewBox 坐标）" },
+    { "key": "ay",          "type": "number", "default": 100, "min": 0, "max": 200, "desc": "A 端位置 Y（viewBox 坐标）" },
+    { "key": "bx",          "type": "number", "default": 280, "min": 0, "max": 320, "desc": "B 端位置 X（viewBox 坐标）" },
+    { "key": "by",          "type": "number", "default": 100, "min": 0, "max": 200, "desc": "B 端位置 Y（viewBox 坐标）" },
+
+    { "key": "sag",         "type": "number(0-1)", "default": 0.35, "min": 0, "max": 1, "desc": "导线下垂程度（0=直线，1=大弧度）" },
+
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "aspect":      "--cmp-aspect",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "wireColor":   "--cmp-wire-color",
+    "wireWidth":   "--cmp-wire-width",
+    "coreColor":   "--cmp-core-color",
+    "clipColorA":  "--cmp-clip-a",
+    "clipColorB":  "--cmp-clip-b",
+    "glow":        "--cmp-glow"
+  },
+  "tags": ["wire", "cable", "connector", "alligator-clip", "circuit", "draggable"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.wire.clip.draggable" role="img" aria-label="导线（鳄鱼夹）">
+    <svg class="cmp__svg" viewBox="0 0 320 200" aria-hidden="true">
+
+        <!-- ═══════════════════════════════════════════
+             1. 导线主体（贝塞尔曲线，模拟自然下垂）
+             ═══════════════════════════════════════════ -->
+        <path class="wire__cable" data-role="cable"
+              d="" fill="none"
+              stroke="var(--cmp-wire-color, #222222)"
+              stroke-width="var(--cmp-wire-width, 5)"
+              stroke-linecap="round"
+              stroke-linejoin="round"/>
+        <!-- 铜芯高光线（导线中心更亮的一条细线） -->
+        <path class="wire__core-highlight" data-role="core-hl"
+              d="" fill="none"
+              stroke="#ffffff"
+              stroke-width="1.2"
+              stroke-linecap="round"
+              opacity="0.12"/>
+
+        <!-- ════════════���══════════════════════════════
+             2. A 端 — 鳄鱼夹
+             ═══════════════════════════════════════════ -->
+        <g class="wire__clip-a" data-role="clip-a">
+            <!-- 夹子下颚 -->
+            <path class="clip__jaw-lower" d="M0 2 L-22 8 L-22 4 L-6 0 Z"
+                  fill="var(--cmp-clip-a, #111827)"
+                  stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="calc(var(--cmp-stroke-width, 2) * 0.6)"
+                  stroke-linejoin="round"/>
+            <!-- 夹子上颚 -->
+            <path class="clip__jaw-upper" d="M0 -2 L-22 -8 L-22 -4 L-6 0 Z"
+                  fill="var(--cmp-clip-a, #111827)"
+                  stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="calc(var(--cmp-stroke-width, 2) * 0.6)"
+                  stroke-linejoin="round"/>
+            <!-- 夹口铜芯 -->
+            <circle cx="-20" cy="0" r="2.5"
+                    fill="var(--cmp-core-color, #b87333)"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="0.6"/>
+            <!-- 铰接点 -->
+            <circle cx="-4" cy="0" r="3.2"
+                    fill="#888888"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="calc(var(--cmp-stroke-width, 2) * 0.5)"/>
+            <!-- 绝缘套管（连接导线处） -->
+            <rect x="-2" y="-4.5" width="14" height="9" rx="3"
+                  fill="var(--cmp-clip-a, #111827)"
+                  opacity="0.85"/>
+            <!-- 齿纹 -->
+            <g stroke="var(--cmp-core-color, #b87333)" stroke-width="0.5"
+               stroke-linecap="round" opacity="0.5">
+                <line x1="-18" y1="-5"  x2="-18" y2="-2.5"/>
+                <line x1="-15" y1="-6"  x2="-15" y2="-2.8"/>
+                <line x1="-12" y1="-6.5" x2="-12" y2="-3"/>
+                <line x1="-18" y1="5"   x2="-18" y2="2.5"/>
+                <line x1="-15" y1="6"   x2="-15" y2="2.8"/>
+                <line x1="-12" y1="6.5" x2="-12" y2="3"/>
+            </g>
+            <!-- 拖拽手柄（不可见但可点击的较大区域） -->
+            <circle cx="0" cy="0" r="16" fill="transparent" class="wire__handle"/>
+        </g>
+
+        <!-- ═══════════════════════════════════════════
+             3. B 端 — 鳄鱼夹（水平镜像）
+             ═══════════════════════════════════════════ -->
+        <g class="wire__clip-b" data-role="clip-b">
+            <!-- 夹子下颚 -->
+            <path class="clip__jaw-lower" d="M0 2 L22 8 L22 4 L6 0 Z"
+                  fill="var(--cmp-clip-b, #111827)"
+                  stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="calc(var(--cmp-stroke-width, 2) * 0.6)"
+                  stroke-linejoin="round"/>
+            <!-- 夹子上颚 -->
+            <path class="clip__jaw-upper" d="M0 -2 L22 -8 L22 -4 L6 0 Z"
+                  fill="var(--cmp-clip-b, #111827)"
+                  stroke="var(--cmp-stroke, #111827)"
+                  stroke-width="calc(var(--cmp-stroke-width, 2) * 0.6)"
+                  stroke-linejoin="round"/>
+            <!-- 夹口铜芯 -->
+            <circle cx="20" cy="0" r="2.5"
+                    fill="var(--cmp-core-color, #b87333)"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="0.6"/>
+            <!-- 铰接点 -->
+            <circle cx="4" cy="0" r="3.2"
+                    fill="#888888"
+                    stroke="var(--cmp-stroke, #111827)"
+                    stroke-width="calc(var(--cmp-stroke-width, 2) * 0.5)"/>
+            <!-- 绝缘套管 -->
+            <rect x="-12" y="-4.5" width="14" height="9" rx="3"
+                  fill="var(--cmp-clip-b, #111827)"
+                  opacity="0.85"/>
+            <!-- 齿纹 -->
+            <g stroke="var(--cmp-core-color, #b87333)" stroke-width="0.5"
+               stroke-linecap="round" opacity="0.5">
+                <line x1="18" y1="-5"  x2="18" y2="-2.5"/>
+                <line x1="15" y1="-6"  x2="15" y2="-2.8"/>
+                <line x1="12" y1="-6.5" x2="12" y2="-3"/>
+                <line x1="18" y1="5"   x2="18" y2="2.5"/>
+                <line x1="15" y1="6"   x2="15" y2="2.8"/>
+                <line x1="12" y1="6.5" x2="12" y2="3"/>
+            </g>
+            <!-- 拖拽手柄 -->
+            <circle cx="0" cy="0" r="16" fill="transparent" class="wire__handle"/>
+        </g>
+
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.wire.clip.draggable"] {
+        height: var(--cmp-size, 200px);
+        width: calc(var(--cmp-size, 200px) * var(--cmp-aspect, 1.6));
+        display: inline-grid;
+        place-items: center;
+    }
+
+    .cmp[data-cmp-id="phy.wire.clip.draggable"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+        touch-action: none;
+        filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0))
+                rgba(var(--cmp-glow-rgb, 255, 214, 102),
+                calc(0.9 * var(--cmp-glow, 0))));
+    }
+
+    .cmp[data-cmp-id="phy.wire.clip.draggable"] .wire__handle {
+        cursor: grab;
+    }
+
+    .cmp[data-cmp-id="phy.wire.clip.draggable"] .wire__handle:active {
+        cursor: grabbing;
+    }
+</style>
+
+<script>
+(() => {
+    const script = document.currentScript;
+    if (!script) return;
+
+    /* ── 找根节点 ── */
+    let root = script.previousElementSibling;
+    while (root && root.tagName === 'STYLE') root = root.previousElementSibling;
+    if (!root || root.getAttribute('data-cmp-id') !== 'phy.wire.clip.draggable') return;
+
+    const svg = root.querySelector('.cmp__svg');
+    if (!svg) return;
+
+    /* ── 读取参数 ── */
+    const DEFAULTS = { ax: 40, ay: 100, bx: 280, by: 100, sag: 0.35 };
+    let P = { ...DEFAULTS };
+    try {
+        const raw = root.getAttribute('data-props');
+        if (raw) {
+            const o = JSON.parse(raw);
+            if (o && typeof o === 'object') P = { ...P, ...o };
+        }
+    } catch (e) { /* ignore */ }
+
+    let ax = Number(P.ax) || DEFAULTS.ax;
+    let ay = Number(P.ay) || DEFAULTS.ay;
+    let bx = Number(P.bx) || DEFAULTS.bx;
+    let by = Number(P.by) || DEFAULTS.by;
+    const sag = Math.max(0, Math.min(1, Number(P.sag) || DEFAULTS.sag));
+
+    /* ── 关键 DOM 元素 ── */
+    const clipA  = svg.querySelector('[data-role="clip-a"]');
+    const clipB  = svg.querySelector('[data-role="clip-b"]');
+    const cable  = svg.querySelector('[data-role="cable"]');
+    const coreHl = svg.querySelector('[data-role="core-hl"]');
+
+    if (!clipA || !clipB || !cable) return;
+
+    /* ── 计算贝塞尔曲线 ── */
+    function buildPath(x1, y1, x2, y2) {
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+
+        /* 下垂量与距离和 sag 参数成正比 */
+        var sagPx = dist * sag * 0.6;
+
+        /* 中点 */
+        var mx = (x1 + x2) / 2;
+        var my = (y1 + y2) / 2 + sagPx;
+
+        /* 两个控制点，在中点附近左右偏移，制造自然弯曲 */
+        var cpOff = dist * 0.15;
+        var cp1x = mx - cpOff;
+        var cp1y = my;
+        var cp2x = mx + cpOff;
+        var cp2y = my;
+
+        return 'M' + x1 + ' ' + y1 +
+               ' C' + cp1x + ' ' + cp1y +
+               ' ' + cp2x + ' ' + cp2y +
+               ' ' + x2 + ' ' + y2;
+    }
+
+    /* ── 更新视图 ── */
+    function update() {
+        /* 移动夹子 */
+        clipA.setAttribute('transform', 'translate(' + ax + ',' + ay + ')');
+        clipB.setAttribute('transform', 'translate(' + bx + ',' + by + ')');
+
+        /* 导线出发点：夹子绝缘套管的末端 */
+        var wireAx = ax + 12;
+        var wireAy = ay;
+        var wireBx = bx - 12;
+        var wireBy = by;
+
+        /* 更新导线路径 */
+        var d = buildPath(wireAx, wireAy, wireBx, wireBy);
+        cable.setAttribute('d', d);
+        if (coreHl) coreHl.setAttribute('d', d);
+
+        /* aria-label */
+        root.setAttribute('aria-label',
+            '导线（鳄鱼夹），A端(' + Math.round(ax) + ',' + Math.round(ay) +
+            ') → B端(' + Math.round(bx) + ',' + Math.round(by) + ')');
+    }
+
+    /* 初始渲染 */
+    update();
+
+    /* ════════════════════════════════════════════
+       拖拽交互
+       ════════════════════════════════════════════ */
+    var dragging = null; /* 'a' | 'b' | null */
+
+    function svgPoint(clientX, clientY) {
+        var pt = svg.createSVGPoint();
+        pt.x = clientX;
+        pt.y = clientY;
+        var ctm = svg.getScreenCTM();
+        if (!ctm) return null;
+        return pt.matrixTransform(ctm.inverse());
+    }
+
+    function onDown(e, which) {
+        e.preventDefault();
+        e.stopPropagation();
+        dragging = which;
+        if (e.pointerId !== undefined) {
+            svg.setPointerCapture(e.pointerId);
+        }
+    }
+
+    /* A 端事件 */
+    var handleA = clipA.querySelector('.wire__handle');
+    if (handleA) {
+        handleA.addEventListener('pointerdown', function (e) { onDown(e, 'a'); });
+    }
+
+    /* B 端事件 */
+    var handleB = clipB.querySelector('.wire__handle');
+    if (handleB) {
+        handleB.addEventListener('pointerdown', function (e) { onDown(e, 'b'); });
+    }
+
+    svg.addEventListener('pointermove', function (e) {
+        if (!dragging) return;
+        e.preventDefault();
+        var cx = e.clientX;
+        var cy = e.clientY;
+        if (cx === undefined) return;
+        var pt = svgPoint(cx, cy);
+        if (!pt) return;
+
+        /* 限制在 viewBox 范围内（留 20px 边距给夹子） */
+        var nx = Math.max(10, Math.min(310, pt.x));
+        var ny = Math.max(10, Math.min(190, pt.y));
+
+        if (dragging === 'a') {
+            ax = nx;
+            ay = ny;
+        } else {
+            bx = nx;
+            by = ny;
+        }
+        update();
+    });
+
+    svg.addEventListener('pointerup', function (e) {
+        if (!dragging) return;
+        dragging = null;
+        if (e.pointerId !== undefined) {
+            try { svg.releasePointerCapture(e.pointerId); } catch (ex) { /* ignore */ }
+        }
+    });
+
+    svg.addEventListener('pointercancel', function (e) {
+        dragging = null;
+    });
+
+    svg.addEventListener('selectstart', function (e) {
+        if (dragging) e.preventDefault();
+    });
+})();
+</script>

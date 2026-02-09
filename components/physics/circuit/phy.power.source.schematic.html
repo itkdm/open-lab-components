@@ -1,0 +1,181 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.power.source.schematic",
+  "name": "电源（电路符号）",
+  "nameEn": "Power Source (Schematic)",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 40 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 48, "min": 20, "max": 200, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "aspect",      "type": "number",     "default": 2.5, "min": 1.5, "max": 4.0, "desc": "宽高比" },
+    { "key": "cells",       "type": "number",     "default": 1,   "min": 1,   "max": 4,   "desc": "电池符号节数（每节=一长一短竖线）" },
+
+    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "线条颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 2.2, "min": 1, "max": 5, "desc": "线条粗细" },
+    { "key": "accent",      "type": "color",  "default": "#ef4444", "desc": "正极标记颜色" },
+
+    { "key": "showPolar",   "type": "enum", "default": "on", "enum": ["on","off"], "desc": "是否显示 +/− 标记" },
+
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "aspect":      "--cmp-aspect",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "accent":      "--cmp-accent",
+    "glow":        "--cmp-glow"
+  },
+  "tags": ["battery", "power", "source", "schematic", "circuit-symbol", "circuit"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.power.source.schematic" role="img" aria-label="电源符号">
+    <svg class="cmp__svg" aria-hidden="true"></svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.power.source.schematic"] {
+        height: var(--cmp-size, 48px);
+        width: calc(var(--cmp-size, 48px) * var(--cmp-aspect, 2.5));
+        display: inline-grid;
+        place-items: center;
+        transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+    }
+
+    .cmp[data-cmp-id="phy.power.source.schematic"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0)) rgba(var(--cmp-glow-rgb, 255, 214, 102), calc(0.8 * var(--cmp-glow, 0))));
+    }
+</style>
+
+<script>
+(function () {
+    const script = document.currentScript;
+    if (!script) return;
+    let root = script.previousElementSibling;
+    while (root && root.tagName === 'STYLE') root = root.previousElementSibling;
+    if (!root || root.getAttribute('data-cmp-id') !== 'phy.power.source.schematic') return;
+
+    const D = { cells: 1, showPolar: 'on' };
+    let P = { ...D };
+    try {
+        const raw = root.getAttribute('data-props');
+        if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') P = { ...P, ...o }; }
+    } catch (e) {}
+
+    const cells     = Math.max(1, Math.min(4, Math.round(Number(P.cells) || D.cells)));
+    const showPolar = String(P.showPolar || 'on');
+
+    /*
+     * 电池电路符号规范：
+     *   长竖线 = 正极（高线），短竖线 = 负极（矮线）
+     *   每"节"由 [负极短线 间距 正极长线] 组成
+     *   左端连线 ── 符号 ── 右端连线
+     *
+     * 排列（左到右）: ──|负 |正|负 |正── 
+     */
+    const H    = 40;
+    const CX   = H / 2;          // 中线 Y
+    const LONG = 26;              // 正极线高度
+    const SHORT = 14;             // 负极线高度
+    const PAIR_W = 8;             // 一对线间距
+    const CELL_GAP = 6;           // 节间间距
+    const PAD  = 18;              // 两端引脚长度
+
+    const symbolW = cells * PAIR_W + (cells - 1) * CELL_GAP;
+    const totalW  = PAD + symbolW + PAD;
+
+    const svg = root.querySelector('.cmp__svg');
+    if (!svg) return;
+    svg.setAttribute('viewBox', `0 0 ${totalW} ${H}`);
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const el = (tag, attrs) => {
+        const e = document.createElementNS(NS, tag);
+        for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+        return e;
+    };
+
+    svg.innerHTML = '';
+
+    const SC = 'var(--cmp-stroke, #111827)';
+    const SW = 'var(--cmp-stroke-width, 2.2)';
+
+    /* 左引脚 → 到第一根负极线 */
+    svg.appendChild(el('path', {
+        d: `M0 ${CX} H${PAD}`, fill: 'none',
+        stroke: SC, 'stroke-width': SW, 'stroke-linecap': 'round'
+    }));
+
+    /* 绘制每节 */
+    for (let i = 0; i < cells; i++) {
+        const baseX = PAD + i * (PAIR_W + CELL_GAP);
+
+        /* 负极短线 */
+        const negX = baseX;
+        svg.appendChild(el('line', {
+            x1: negX, y1: CX - SHORT / 2,
+            x2: negX, y2: CX + SHORT / 2,
+            stroke: SC, 'stroke-width': SW, 'stroke-linecap': 'round'
+        }));
+
+        /* 正极长线 */
+        const posX = baseX + PAIR_W;
+        svg.appendChild(el('line', {
+            x1: posX, y1: CX - LONG / 2,
+            x2: posX, y2: CX + LONG / 2,
+            stroke: SC, 'stroke-width': SW, 'stroke-linecap': 'round'
+        }));
+
+        /* 节间连接横线（除最后一节） */
+        if (i < cells - 1) {
+            const fromX = posX;
+            const toX   = PAD + (i + 1) * (PAIR_W + CELL_GAP);
+            svg.appendChild(el('path', {
+                d: `M${fromX} ${CX} H${toX}`, fill: 'none',
+                stroke: SC, 'stroke-width': SW, 'stroke-linecap': 'round'
+            }));
+        }
+    }
+
+    /* 右引脚 ← 从最后一根正极线 */
+    const lastPosX = PAD + (cells - 1) * (PAIR_W + CELL_GAP) + PAIR_W;
+    svg.appendChild(el('path', {
+        d: `M${lastPosX} ${CX} H${totalW}`, fill: 'none',
+        stroke: SC, 'stroke-width': SW, 'stroke-linecap': 'round'
+    }));
+
+    /* +/− 极性标记 */
+    if (showPolar === 'on') {
+        /* + 在右侧（正极端） */
+        const tPlus = document.createElementNS(NS, 'text');
+        tPlus.setAttribute('x', String(lastPosX));
+        tPlus.setAttribute('y', '7');
+        tPlus.setAttribute('text-anchor', 'middle');
+        tPlus.setAttribute('font-size', '9');
+        tPlus.setAttribute('font-weight', '800');
+        tPlus.setAttribute('fill', 'var(--cmp-accent, #ef4444)');
+        tPlus.setAttribute('font-family', 'Arial, sans-serif');
+        tPlus.textContent = '+';
+        svg.appendChild(tPlus);
+
+        /* − 在左侧（负极端） */
+        const tMinus = document.createElementNS(NS, 'text');
+        tMinus.setAttribute('x', String(PAD));
+        tMinus.setAttribute('y', '7');
+        tMinus.setAttribute('text-anchor', 'middle');
+        tMinus.setAttribute('font-size', '9');
+        tMinus.setAttribute('font-weight', '800');
+        tMinus.setAttribute('fill', 'var(--cmp-stroke, #111827)');
+        tMinus.setAttribute('font-family', 'Arial, sans-serif');
+        tMinus.textContent = '−';
+        svg.appendChild(tMinus);
+    }
+
+    root.setAttribute('aria-label', '电源符号 ' + cells + '节');
+})();
+</script>
