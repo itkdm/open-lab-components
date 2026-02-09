@@ -25,6 +25,10 @@
       "name": "几何图形",
       "nameEn": "Geometry"
     },
+    "math/clock": {
+      "name": "钟表与时间",
+      "nameEn": "Clock & Time"
+    },
     "general/ui": {
       "name": "通用UI",
       "nameEn": "General UI"

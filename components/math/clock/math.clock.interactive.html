@@ -1,0 +1,309 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.clock.interactive",
+  "name": "交互式钟表",
+  "nameEn": "Interactive Clock",
+  "category": "math/clock",
+  "version": "2.1.0",
+  "viewport": { "w": 400, "h": 500 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 400, "min": 200, "max": 600, "desc": "钟表直径" },
+    { "key": "speed", "type": "number", "default": 1, "min": 0, "max": 3600, "desc": "时间流逝倍速（0=静止，1=真实时间）" },
+    { "key": "secondSmooth", "type": "boolean", "default": false, "desc": "秒针是否顺滑（true=顺滑，false=跳秒）" },
+    { "key": "hourLengthRatio", "type": "number", "default": 0.22, "min": 0.15, "max": 0.35, "desc": "时针长度占钟表直径的比例" },
+    { "key": "minuteLengthRatio", "type": "number", "default": 0.32, "min": 0.2, "max": 0.45, "desc": "分针长度占钟表直径的比例" },
+    { "key": "secondLengthRatio", "type": "number", "default": 0.38, "min": 0.25, "max": 0.5, "desc": "秒针长度占钟表直径的比例" },
+    { "key": "dialBg", "type": "color", "default": "#ffffff", "desc": "表盘背景色" },
+    { "key": "bezelColor", "type": "color", "default": "#888888", "desc": "外圈边框颜色" },
+    { "key": "markColor", "type": "color", "default": "#333333", "desc": "刻度线颜色（整点）" },
+    { "key": "markSmallColor", "type": "color", "default": "#999999", "desc": "刻度线颜色（非整点）" },
+    { "key": "numberColor", "type": "color", "default": "#222222", "desc": "数字颜色" },
+    { "key": "hourHandColor", "type": "color", "default": "#222222", "desc": "时针颜色" },
+    { "key": "minuteHandColor", "type": "color", "default": "#444444", "desc": "分针颜色" },
+    { "key": "secondHandColor", "type": "color", "default": "#d63031", "desc": "秒针颜色" },
+    { "key": "centerDotColor", "type": "color", "default": "#222222", "desc": "中心圆点颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-clock-size",
+    "speed": "--cmp-speed",
+    "secondSmooth": "--cmp-second-smooth",
+    "hourLengthRatio": "--cmp-hour-length-ratio",
+    "minuteLengthRatio": "--cmp-minute-length-ratio",
+    "secondLengthRatio": "--cmp-second-length-ratio",
+    "dialBg": "--cmp-dial-bg",
+    "bezelColor": "--cmp-bezel-color",
+    "markColor": "--cmp-mark-color",
+    "markSmallColor": "--cmp-mark-small-color",
+    "numberColor": "--cmp-number-color",
+    "hourHandColor": "--cmp-hour-hand-color",
+    "minuteHandColor": "--cmp-minute-hand-color",
+    "secondHandColor": "--cmp-second-hand-color",
+    "centerDotColor": "--cmp-center-dot-color"
+  },
+  "tags": ["clock", "time", "interactive", "teaching", "math"]
+}
+-->
+<div class="cmp" data-cmp-id="math.clock.interactive" role="img" aria-label="交互式钟表">
+  <style>
+    .cmp[data-cmp-id="math.clock.interactive"] {
+      /* 尺寸 */
+      --clock-size: var(--cmp-clock-size, 400px);
+
+      /* 颜色相关，可通过 props 配置 */
+      --clock-bg: var(--cmp-dial-bg, #ffffff);
+      --bezel-color: var(--cmp-bezel-color, #888888);
+      --mark-color: var(--cmp-mark-color, #333333);
+      --mark-small-color: var(--cmp-mark-small-color, #999999);
+      --number-color: var(--cmp-number-color, #222222);
+      --hour-hand-color: var(--cmp-hour-hand-color, #222222);
+      --minute-hand-color: var(--cmp-minute-hand-color, #444444);
+      --second-hand-color: var(--cmp-second-hand-color, #d63031);
+      --center-dot-color: var(--cmp-center-dot-color, #222222);
+
+      /* 金属外圈与阴影，可按需扩展为 props */
+      --metal-shine: linear-gradient(135deg, #e0e0e0 0%, #ffffff 45%, #a0a0a0 55%, #d0d0d0 100%);
+      --shadow-color: rgba(0, 0, 0, 0.15);
+
+      /* 指针长度比例（基于直径），可被宿主覆盖 */
+      --hour-length-ratio: var(--cmp-hour-length-ratio, 0.22);
+      --minute-length-ratio: var(--cmp-minute-length-ratio, 0.32);
+      --second-length-ratio: var(--cmp-second-length-ratio, 0.38);
+
+      /* 派生出的实际长度 */
+      --hour-hand-length: calc(var(--clock-size) * var(--hour-length-ratio));
+      --minute-hand-length: calc(var(--clock-size) * var(--minute-length-ratio));
+      --second-hand-length: calc(var(--clock-size) * var(--second-length-ratio));
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Noto Sans SC', sans-serif;
+      width: var(--clock-size);
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* 钟表容器 */
+    .cmp[data-cmp-id="math.clock.interactive"] .clock-container {
+      position: relative;
+      width: var(--clock-size);
+      height: var(--clock-size);
+      border-radius: 50%;
+      background: var(--metal-shine);
+      box-shadow: 0 20px 50px var(--shadow-color), inset 0 2px 5px rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    /* 表盘 */
+    .cmp[data-cmp-id="math.clock.interactive"] .clock-face {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--clock-bg);
+      border-radius: 50%;
+      border: 2px solid var(--bezel-color);
+      box-shadow: inset 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    /* 刻度 */
+    .cmp[data-cmp-id="math.clock.interactive"] .mark {
+      position: absolute;
+      width: calc(var(--clock-size) * 0.005);
+      height: calc(var(--clock-size) * 0.025);
+      background: var(--mark-color);
+      left: 50%;
+      top: 50%;
+      transform-origin: center center;
+    }
+
+    .cmp[data-cmp-id="math.clock.interactive"] .mark.small {
+      width: calc(var(--clock-size) * 0.003);
+      height: calc(var(--clock-size) * 0.015);
+      background: var(--mark-small-color);
+    }
+
+    /* 数字 */
+    .cmp[data-cmp-id="math.clock.interactive"] .number {
+      position: absolute;
+      width: calc(var(--clock-size) * 0.1);
+      height: calc(var(--clock-size) * 0.1);
+      text-align: center;
+      line-height: calc(var(--clock-size) * 0.1);
+      font-family: 'Noto Serif SC', serif;
+      font-size: calc(var(--clock-size) * 0.08);
+      color: var(--number-color);
+      left: 50%;
+      top: 50%;
+      margin-left: calc(var(--clock-size) * -0.05);
+      margin-top: calc(var(--clock-size) * -0.05);
+    }
+
+    /* 指针 */
+    .cmp[data-cmp-id="math.clock.interactive"] .hand {
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform-origin: bottom center;
+      border-radius: 10px;
+      z-index: 10;
+    }
+
+    .cmp[data-cmp-id="math.clock.interactive"] .hour-hand {
+      width: calc(var(--clock-size) * 0.02);
+      height: var(--hour-hand-length);
+      background: var(--hour-hand-color);
+      margin-left: calc(var(--clock-size) * -0.01);
+    }
+
+    .cmp[data-cmp-id="math.clock.interactive"] .minute-hand {
+      width: calc(var(--clock-size) * 0.0125);
+      height: var(--minute-hand-length);
+      background: var(--minute-hand-color);
+      margin-left: calc(var(--clock-size) * -0.00625);
+    }
+
+    .cmp[data-cmp-id="math.clock.interactive"] .second-hand {
+      width: calc(var(--clock-size) * 0.0075);
+      height: var(--second-hand-length);
+      background: var(--second-hand-color);
+      margin-left: calc(var(--clock-size) * -0.00375);
+      z-index: 11;
+    }
+
+    /* 中心点 */
+    .cmp[data-cmp-id="math.clock.interactive"] .center-dot {
+      position: absolute;
+      width: calc(var(--clock-size) * 0.03);
+      height: calc(var(--clock-size) * 0.03);
+      background: var(--center-dot-color);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 12;
+      border: 2px solid #fff;
+    }
+  </style>
+
+  <!-- 钟表容器 -->
+  <div class="clock-container">
+    <div class="clock-face" id="clockFace">
+      <!-- 刻度和数字将由 JS 生成 -->
+      <div class="hand hour-hand" id="hourHand"></div>
+      <div class="hand minute-hand" id="minuteHand"></div>
+      <div class="hand second-hand" id="secondHand"></div>
+      <div class="center-dot"></div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // 获取当前组件容器，确保作用域隔离
+      const cmp = document.currentScript.closest('[data-cmp-id="math.clock.interactive"]');
+      if (!cmp) return;
+
+      // 获取DOM元素
+      const clockFace = cmp.querySelector('#clockFace');
+      const hourHand = cmp.querySelector('#hourHand');
+      const minuteHand = cmp.querySelector('#minuteHand');
+      const secondHand = cmp.querySelector('#secondHand');
+
+      if (!clockFace || !hourHand || !minuteHand || !secondHand) return;
+
+      // 获取钟表尺寸（用于计算刻度和数字位置）
+      const clockSize = parseInt(getComputedStyle(cmp).getPropertyValue('--clock-size')) || 400;
+      const numberRadius = clockSize * 0.36; // 数字位置半径（略靠内）
+      const markRadius = clockSize * 0.44;   // 刻度位置半径（靠外圈）
+
+      // 初始化表盘刻度和数字
+      function initClock() {
+        // 绘制刻度（60个刻度，每5个一个长刻度）
+        for (let i = 0; i < 60; i++) {
+          const mark = document.createElement('div');
+          mark.className = i % 5 === 0 ? 'mark' : 'mark small';
+
+          const angleDeg = i * 6;
+          const angleRad = (angleDeg - 90) * (Math.PI / 180);
+          const x = Math.cos(angleRad) * markRadius;
+          const y = Math.sin(angleRad) * markRadius;
+
+          // 先平移到对应圆周位置，再按角度旋转保持径向
+          mark.style.transform = `translate(${x}px, ${y}px) rotate(${angleDeg}deg)`;
+          clockFace.appendChild(mark);
+        }
+
+        // 绘制数字（1-12）
+        for (let i = 1; i <= 12; i++) {
+          const num = document.createElement('div');
+          num.className = 'number';
+          num.innerText = i;
+          const angle = (i * 30 - 90) * (Math.PI / 180);
+          const x = Math.cos(angle) * numberRadius;
+          const y = Math.sin(angle) * numberRadius;
+          num.style.transform = `translate(${x}px, ${y}px)`;
+          clockFace.appendChild(num);
+        }
+      }
+
+      // 时间状态
+      let currentTime = new Date();
+      let lastTimestamp = 0;
+      // 从配置（CSS 变量）读取时间倍速，默认为 1
+      let speedMultiplier = parseFloat(getComputedStyle(cmp).getPropertyValue('--cmp-speed')) || 1;
+      // 秒针是否顺滑（默认跳秒，更接近实物钟表）
+      const secondSmoothRaw = getComputedStyle(cmp).getPropertyValue('--cmp-second-smooth').trim().toLowerCase();
+      const isSecondSmooth = secondSmoothRaw
+        ? !['0', 'false', 'off', 'step'].includes(secondSmoothRaw)
+        : false;
+      let animationFrameId = null;
+
+      // 更新指针位置
+      function updateClock(timestamp) {
+        if (!lastTimestamp) lastTimestamp = timestamp;
+        const deltaTime = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+
+        // 根据倍速增加时间 (deltaTime 是毫秒)
+        const addedMs = deltaTime * speedMultiplier;
+        currentTime = new Date(currentTime.getTime() + addedMs);
+
+        let seconds = currentTime.getSeconds() + currentTime.getMilliseconds() / 1000;
+        // 跳秒模式：对秒数取整，让秒针一格一格走
+        if (!isSecondSmooth) {
+          seconds = Math.floor(seconds);
+        }
+        const minutes = currentTime.getMinutes() + seconds / 60;
+        const hours = (currentTime.getHours() % 12) + minutes / 60;
+
+        // 计算角度（秒针：每秒6度，分针：每分钟6度，时针：每小时30度）
+        const secDeg = seconds * 6;
+        const minDeg = minutes * 6;
+        const hourDeg = hours * 30;
+
+        // 应用旋转
+        secondHand.style.transform = `rotate(${secDeg}deg)`;
+        minuteHand.style.transform = `rotate(${minDeg}deg)`;
+        hourHand.style.transform = `rotate(${hourDeg}deg)`;
+
+        animationFrameId = requestAnimationFrame(updateClock);
+      }
+
+      // 初始化并启动
+      initClock();
+      animationFrameId = requestAnimationFrame(updateClock);
+
+      // 清理函数（当组件被移除时）
+      cmp.addEventListener('remove', function() {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+        }
+      });
+    })();
+  </script>
+</div>

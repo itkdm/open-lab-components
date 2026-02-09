@@ -1,0 +1,443 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.protractor.interactive",
+  "name": "量角器（交互式）",
+  "nameEn": "Interactive Protractor",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 240 },
+  "props": [
+    { "key": "width", "type": "number(px)", "default": 480, "min": 240, "max": 960, "desc": "量角器宽度" },
+    { "key": "height", "type": "number(px)", "default": 240, "min": 120, "max": 480, "desc": "量角器高度" },
+    { "key": "rotate", "type": "number(deg)", "default": 0, "min": -180, "max": 180, "desc": "旋转角度" },
+    { "key": "opacity", "type": "number(0-1)", "default": 0.92, "min": 0, "max": 1, "desc": "透明度" },
+    { "key": "fill", "type": "color", "default": "rgba(200,230,255,0.3)", "desc": "填充色" },
+    { "key": "stroke", "type": "color", "default": "#1976d2", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 3, "min": 1, "max": 6, "desc": "描边宽度" },
+    { "key": "centerColor", "type": "color", "default": "#1976d2", "desc": "中心点颜色" },
+    { "key": "scaleColor", "type": "color", "default": "#1565c0", "desc": "刻度颜色" },
+    { "key": "draggable", "type": "boolean", "default": true, "desc": "是否可拖拽" },
+    { "key": "rotatable", "type": "boolean", "default": true, "desc": "是否可旋转" },
+    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "width": "--cmp-width",
+    "height": "--cmp-height",
+    "rotate": "--cmp-rotate",
+    "opacity": "--cmp-opacity",
+    "fill": "--cmp-fill",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "centerColor": "--cmp-center-color",
+    "scaleColor": "--cmp-scale-color",
+    "draggable": "--cmp-draggable",
+    "rotatable": "--cmp-rotatable",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["protractor", "angle", "measurement", "geometry", "interactive", "draggable"]
+}-->
+<div class="cmp" data-cmp-id="phy.apparatus.protractor.interactive" role="img" aria-label="量角器（交互式）">
+    <svg class="cmp__svg" viewBox="0 0 960 480" aria-hidden="true">
+        <defs>
+            <radialGradient id="protractorGradient" cx="50%" cy="100%" r="50%">
+                <stop offset="0%" style="stop-color:var(--cmp-fill, rgba(200,230,255,0.3));stop-opacity:1" />
+                <stop offset="70%" style="stop-color:var(--cmp-fill, rgba(200,230,255,0.2));stop-opacity:1" />
+                <stop offset="100%" style="stop-color:var(--cmp-fill, rgba(200,230,255,0.1));stop-opacity:1" />
+            </radialGradient>
+        </defs>
+        
+        <!-- 半圆主体 -->
+        <path d="M 0 480 A 480 480 0 0 1 960 480 Z" 
+              fill="url(#protractorGradient)" 
+              stroke="var(--cmp-stroke, #1976d2)" 
+              stroke-width="var(--cmp-stroke-width, 3)"/>
+        
+        <!-- 刻度容器 -->
+        <g class="cmp__scale-container"></g>
+        
+        <!-- 中心点 -->
+        <circle cx="480" cy="480" r="6" 
+                fill="var(--cmp-center-color, #1976d2)" 
+                stroke="var(--cmp-stroke, #1976d2)" 
+                stroke-width="var(--cmp-stroke-width, 3)"/>
+        
+        <!-- 基准线 -->
+        <line x1="0" y1="480" x2="960" y2="480" 
+              stroke="var(--cmp-stroke, #1976d2)" 
+              stroke-width="4"/>
+    </svg>
+</div>
+
+<style>
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"] {
+        width: var(--cmp-width, 480px);
+        height: var(--cmp-height, 240px);
+        display: inline-block;
+        position: relative;
+        opacity: var(--cmp-opacity, 0.92);
+        transform: rotate(var(--cmp-rotate, 0deg));
+        transform-origin: 50% 100%;
+        cursor: move;
+        transition: opacity 0.3s ease;
+        filter: drop-shadow(0 0 calc(25px * var(--cmp-glow, 0)) rgba(255, 255, 255, calc(0.6 * var(--cmp-glow, 0))));
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"]:hover {
+        opacity: calc(var(--cmp-opacity, 0.92) + 0.06);
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"].cmp--selected {
+        opacity: 1;
+        filter: drop-shadow(0 0 25px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 calc(25px * var(--cmp-glow, 0)) rgba(255, 255, 255, calc(0.6 * var(--cmp-glow, 0))));
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"] .cmp__svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"] .cmp__scale-line {
+        stroke: var(--cmp-scale-color, rgba(255,255,255,0.9));
+        stroke-linecap: round;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"] .cmp__scale-text {
+        fill: var(--cmp-scale-color, #1565c0);
+        font-family: Arial, sans-serif;
+        font-weight: bold;
+        text-anchor: middle;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"] .cmp__scale-text--outer {
+        font-size: 20px;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.protractor.interactive"] .cmp__scale-text--inner {
+        font-size: 16px;
+        font-weight: 500;
+        opacity: 0.8;
+    }
+</style>
+
+<script>
+(function () {
+    const s = document.currentScript;
+    let root = s && s.previousElementSibling;
+    while (root && !(root.classList && root.classList.contains("cmp"))) {
+        root = root.previousElementSibling;
+    }
+    if (!root) return;
+
+    const svg = root.querySelector(".cmp__svg");
+    const scaleContainer = root.querySelector(".cmp__scale-container");
+    if (!svg || !scaleContainer) return;
+
+    // 解析CSS变量
+    function parseCSSVar(name) {
+        const str = getComputedStyle(root).getPropertyValue(name).trim();
+        if (!str) return null;
+        return str.replace(/^["']|["']$/g, "");
+    }
+
+    function parseNumber(name) {
+        const str = parseCSSVar(name);
+        if (!str) return null;
+        const num = Number(str);
+        return Number.isFinite(num) ? num : null;
+    }
+
+    function parseBoolean(name) {
+        const str = parseCSSVar(name);
+        if (str === "true" || str === "1") return true;
+        if (str === "false" || str === "0") return false;
+        return null;
+    }
+
+    // 绘制高精度刻度
+    function drawScales() {
+        scaleContainer.innerHTML = "";
+        
+        const centerX = 480;
+        const centerY = 480;
+        const radius = 456;
+        
+        for (let i = 0; i <= 180; i++) {
+            const angle = (i * Math.PI) / 180;
+            const cos = Math.cos(Math.PI - angle);
+            const sin = Math.sin(Math.PI - angle);
+            
+            let tickLength, strokeWidth, opacity, showNumber = false;
+            
+            if (i % 10 === 0) {
+                tickLength = 40;
+                strokeWidth = 2.5;
+                opacity = 0.9;
+                showNumber = true;
+            } else if (i % 5 === 0) {
+                tickLength = 30;
+                strokeWidth = 2;
+                opacity = 0.8;
+            } else {
+                tickLength = 20;
+                strokeWidth = 1.5;
+                opacity = 0.7;
+            }
+            
+            const x1 = centerX + radius * cos;
+            const y1 = centerY - radius * sin;
+            const x2 = centerX + (radius - tickLength) * cos;
+            const y2 = centerY - (radius - tickLength) * sin;
+            
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            line.setAttribute("class", "cmp__scale-line");
+            line.setAttribute("x1", x1);
+            line.setAttribute("y1", y1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y2", y2);
+            line.setAttribute("stroke-width", strokeWidth);
+            line.setAttribute("opacity", opacity);
+            scaleContainer.appendChild(line);
+            
+            if (showNumber) {
+                // 外圈数字
+                const outerTextX = centerX + 400 * cos;
+                const outerTextY = centerY - 400 * sin + 8;
+                
+                const outerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                outerText.setAttribute("class", "cmp__scale-text cmp__scale-text--outer");
+                outerText.setAttribute("x", outerTextX);
+                outerText.setAttribute("y", outerTextY);
+                outerText.textContent = i;
+                scaleContainer.appendChild(outerText);
+                
+                // 内圈数字
+                const innerTextX = centerX + 350 * cos;
+                const innerTextY = centerY - 350 * sin + 6;
+                
+                const innerText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                innerText.setAttribute("class", "cmp__scale-text cmp__scale-text--inner");
+                innerText.setAttribute("x", innerTextX);
+                innerText.setAttribute("y", innerTextY);
+                innerText.textContent = 180 - i;
+                scaleContainer.appendChild(innerText);
+            }
+        }
+    }
+
+    // 支持 data-props 属性
+    const raw = root.getAttribute("data-props");
+    if (raw) {
+        try {
+            const p = JSON.parse(raw);
+            if (p.width != null) {
+                const n = Number(p.width);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-width", n + "px");
+            }
+            if (p.height != null) {
+                const n = Number(p.height);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-height", n + "px");
+            }
+            if (p.rotate != null) {
+                const n = Number(p.rotate);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-rotate", n + "deg");
+            }
+            if (p.opacity != null) {
+                const n = Math.max(0, Math.min(1, Number(p.opacity)));
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-opacity", String(n));
+            }
+            if (p.fill != null) root.style.setProperty("--cmp-fill", String(p.fill));
+            if (p.stroke != null) root.style.setProperty("--cmp-stroke", String(p.stroke));
+            if (p.strokeWidth != null) {
+                const n = Number(p.strokeWidth);
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-stroke-width", String(n));
+            }
+            if (p.centerColor != null) root.style.setProperty("--cmp-center-color", String(p.centerColor));
+            if (p.scaleColor != null) root.style.setProperty("--cmp-scale-color", String(p.scaleColor));
+            if (p.glow != null) {
+                const n = Math.max(0, Math.min(1, Number(p.glow)));
+                if (Number.isFinite(n)) root.style.setProperty("--cmp-glow", String(n));
+            }
+        } catch (e) {}
+    }
+
+    // 初始渲染刻度
+    drawScales();
+
+    // 监听 CSS 变量变化
+    const observer = new MutationObserver(() => {
+        drawScales();
+    });
+    observer.observe(root, {
+        attributes: true,
+        attributeFilter: ["style"]
+    });
+
+    // 交互功能：拖拽和旋转
+    let isDragging = false;
+    let isRotating = false;
+    let dragStart = { x: 0, y: 0 };
+    let initialRotation = 0;
+    let initialAngle = 0;
+
+    function getCurrentRotation() {
+        const rotate = parseNumber("--cmp-rotate") || 0;
+        return rotate;
+    }
+
+    function setRotation(deg) {
+        root.style.setProperty("--cmp-rotate", deg + "deg");
+    }
+
+    function clientToLocal(e) {
+        const rect = root.getBoundingClientRect();
+        return {
+            x: e.clientX - rect.left - rect.width / 2,
+            y: e.clientY - rect.top - rect.height / 2
+        };
+    }
+
+    function getAngleFromCenter(point) {
+        return Math.atan2(point.y, point.x) * 180 / Math.PI;
+    }
+
+    // 鼠标/触摸事件处理
+    function onPointerDown(e) {
+        const draggable = parseBoolean("--cmp-draggable");
+        const rotatable = parseBoolean("--cmp-rotatable");
+        
+        if (!draggable && !rotatable) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        const local = clientToLocal(e);
+        const distance = Math.sqrt(local.x * local.x + local.y * local.y);
+        const rect = root.getBoundingClientRect();
+        const centerRadius = Math.min(rect.width, rect.height) * 0.1;
+
+        // 判断是拖拽还是旋转
+        if (rotatable && distance < centerRadius) {
+            // 点击中心区域：旋转模式
+            isRotating = true;
+            initialRotation = getCurrentRotation();
+            initialAngle = getAngleFromCenter(local);
+            root.classList.add("cmp--selected");
+        } else if (draggable) {
+            // 点击其他区域：拖拽模式
+            isDragging = true;
+            dragStart = { x: e.clientX, y: e.clientY };
+            const rect = root.getBoundingClientRect();
+            dragStart.offsetX = e.clientX - rect.left;
+            dragStart.offsetY = e.clientY - rect.top;
+            root.classList.add("cmp--selected");
+        }
+
+        try {
+            e.target.setPointerCapture(e.pointerId);
+        } catch (_) {}
+    }
+
+    function onPointerMove(e) {
+        if (isDragging) {
+            e.preventDefault();
+            const dx = e.clientX - dragStart.x;
+            const dy = e.clientY - dragStart.y;
+            
+            const currentLeft = root.offsetLeft || 0;
+            const currentTop = root.offsetTop || 0;
+            
+            root.style.position = "absolute";
+            root.style.left = (currentLeft + dx) + "px";
+            root.style.top = (currentTop + dy) + "px";
+            
+            dragStart = { x: e.clientX, y: e.clientY };
+        } else if (isRotating) {
+            e.preventDefault();
+            const local = clientToLocal(e);
+            const currentAngle = getAngleFromCenter(local);
+            const deltaAngle = currentAngle - initialAngle;
+            setRotation(initialRotation + deltaAngle);
+        }
+    }
+
+    function onPointerUp(e) {
+        if (isDragging || isRotating) {
+            e.preventDefault();
+            isDragging = false;
+            isRotating = false;
+            root.classList.remove("cmp--selected");
+        }
+    }
+
+    // 滚轮旋转
+    function onWheel(e) {
+        const rotatable = parseBoolean("--cmp-rotatable");
+        if (!rotatable) return;
+
+        const isSelected = root.classList.contains("cmp--selected");
+        if (!isSelected) {
+            // 检查鼠标是否在量角器上
+            const rect = root.getBoundingClientRect();
+            const x = e.clientX;
+            const y = e.clientY;
+            if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+                return;
+            }
+        }
+
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? 2 : -2;
+        setRotation(getCurrentRotation() + delta);
+    }
+
+    // 绑定事件
+    root.addEventListener("pointerdown", onPointerDown, { passive: false });
+    root.addEventListener("pointermove", onPointerMove, { passive: false });
+    root.addEventListener("pointerup", onPointerUp, { passive: false });
+    root.addEventListener("pointercancel", onPointerUp, { passive: false });
+    root.addEventListener("wheel", onWheel, { passive: false });
+
+    // 触摸设备支持
+    root.addEventListener("touchstart", function(e) {
+        if (e.touches.length === 1) {
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent("pointerdown", {
+                clientX: touch.clientX,
+                clientY: touch.clientY,
+                button: 0,
+                bubbles: true,
+                cancelable: true
+            });
+            onPointerDown(mouseEvent);
+        }
+    }, { passive: false });
+
+    root.addEventListener("touchmove", function(e) {
+        if (isDragging || isRotating) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                const touch = e.touches[0];
+                const mouseEvent = new MouseEvent("pointermove", {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY,
+                    bubbles: true,
+                    cancelable: true
+                });
+                onPointerMove(mouseEvent);
+            }
+        }
+    }, { passive: false });
+
+    root.addEventListener("touchend", function(e) {
+        const mouseEvent = new MouseEvent("pointerup", {
+            bubbles: true,
+            cancelable: true
+        });
+        onPointerUp(mouseEvent);
+    }, { passive: false });
+})();
+</script>

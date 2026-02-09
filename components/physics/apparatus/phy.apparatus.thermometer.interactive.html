@@ -1,0 +1,468 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.thermometer.interactive",
+  "name": "温度计（交互式）",
+  "nameEn": "Thermometer (Interactive)",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 150, "h": 420 },
+  "props": [
+    { "key": "height", "type": "number(px)", "default": 420, "min": 260, "max": 720, "desc": "温度计总高度" },
+    { "key": "width", "type": "number(px)", "default": 140, "min": 80, "max": 260, "desc": "温度计区域宽度（含刻度）" },
+    { "key": "minTemp", "type": "number", "default": -10, "min": -50, "max": 0, "desc": "刻度最小温度（摄氏度）" },
+    { "key": "maxTemp", "type": "number", "default": 50, "min": 10, "max": 100, "desc": "刻度最大温度（摄氏度）" },
+    { "key": "temperature", "type": "number", "default": 26, "min": -50, "max": 100, "desc": "当前温度（摄氏度）" },
+    { "key": "tubeFill", "type": "color", "default": "rgba(245,245,245,0.9)", "desc": "玻璃管背景色" },
+    { "key": "tubeStroke", "type": "color", "default": "#333333", "desc": "玻璃管描边颜色" },
+    { "key": "mercuryColor", "type": "color", "default": "#DC2626", "desc": "液柱主颜色" },
+    { "key": "scaleColor", "type": "color", "default": "#333333", "desc": "主刻度线颜色" },
+    { "key": "scaleMinorColor", "type": "color", "default": "#666666", "desc": "次刻度线颜色" },
+    { "key": "labelColor", "type": "color", "default": "#004737", "desc": "数字刻度文字颜色" }
+  ],
+  "cssVars": {
+    "height": "--cmp-height",
+    "width": "--cmp-width",
+    "minTemp": "--cmp-min-temp",
+    "maxTemp": "--cmp-max-temp",
+    "temperature": "--cmp-temperature",
+    "tubeFill": "--cmp-tube-fill",
+    "tubeStroke": "--cmp-tube-stroke",
+    "mercuryColor": "--cmp-mercury-color",
+    "scaleColor": "--cmp-scale-color",
+    "scaleMinorColor": "--cmp-scale-minor-color",
+    "labelColor": "--cmp-label-color"
+  },
+  "tags": ["thermometer", "temperature", "apparatus", "interactive", "measurement"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.thermometer.interactive" role="img" aria-label="温度计（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] {
+      --height: var(--cmp-height, 420px);
+      --width: var(--cmp-width, 140px);
+
+      --min-temp: var(--cmp-min-temp, -10);
+      --max-temp: var(--cmp-max-temp, 50);
+      --temperature: var(--cmp-temperature, 26);
+
+      --tube-fill: var(--cmp-tube-fill, rgba(245,245,245,0.9));
+      --tube-stroke: var(--cmp-tube-stroke, #333333);
+      --mercury-color: var(--cmp-mercury-color, #DC2626);
+      --mercury-fill: linear-gradient(90deg, #ff6a6a 0%, var(--mercury-color) 40%, #b61f22 100%);
+      --scale-color: var(--cmp-scale-color, #333333);
+      --scale-minor-color: var(--cmp-scale-minor-color, #666666);
+      --label-color: var(--cmp-label-color, #004737);
+
+      --tube-outer-width: calc(var(--width) * 0.25);
+      --tube-outer-height: calc(var(--height) * 0.72);
+      --tube-border: max(2px, calc(var(--tube-outer-width) * 0.09));
+      --bulb-size: calc(var(--tube-outer-width) * 1.95);
+      --capillary-width: calc(var(--tube-outer-width) * 0.34);
+      --channel-top: calc(var(--tube-outer-width) * 0.22);
+      --channel-bottom: 0px;
+      --stem-bottom: calc(var(--bulb-size) * 0.9);
+      --body-width: calc(var(--bulb-size) * 1.02);
+      --scale-gap: max(2px, calc(var(--width) * 0.012));
+      --scale-panel-width: max(34px, calc(var(--width) - var(--body-width) - var(--scale-gap)));
+      --major-tick-width: calc(var(--scale-panel-width) * 0.4);
+      --medium-tick-width: calc(var(--major-tick-width) * 0.68);
+      --minor-tick-width: calc(var(--major-tick-width) * 0.46);
+      --bulb-fill: var(--mercury-fill);
+      --label-size: clamp(12px, calc(var(--height) * 0.06), 30px);
+
+      box-sizing: border-box;
+      display: inline-block;
+      width: var(--width);
+      height: var(--height);
+      user-select: none;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .thermometer {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .measure-area {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: var(--scale-gap);
+      touch-action: none;
+      cursor: ns-resize;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .thermometer-body {
+      position: relative;
+      width: var(--body-width);
+      height: 100%;
+      overflow: visible;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .stem-shell {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: var(--stem-bottom);
+      width: var(--tube-outer-width);
+      height: var(--tube-outer-height);
+      border: var(--tube-border) solid var(--tube-stroke);
+      border-bottom: none;
+      border-radius: calc(var(--tube-outer-width) * 0.52) calc(var(--tube-outer-width) * 0.52) 0 0;
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.92) 0%,
+        var(--tube-fill) 34%,
+        rgba(220, 227, 230, 0.72) 100%
+      );
+      box-shadow:
+        inset calc(var(--tube-outer-width) * 0.12) 0 calc(var(--tube-outer-width) * 0.2) rgba(255, 255, 255, 0.85),
+        inset 0 calc(var(--tube-outer-width) * -0.06) calc(var(--tube-outer-width) * 0.22) rgba(0, 0, 0, 0.09);
+      z-index: 2;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .glass-glare {
+      position: absolute;
+      left: calc(var(--tube-outer-width) * 0.15);
+      top: calc(var(--tube-outer-width) * 0.2);
+      width: calc(var(--tube-outer-width) * 0.22);
+      height: calc(100% - var(--tube-outer-width) * 0.4);
+      border-radius: 999px;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.7) 0%,
+        rgba(255, 255, 255, 0.12) 55%,
+        rgba(255, 255, 255, 0.38) 100%
+      );
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .glass-neck {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: calc(var(--bulb-size) * 0.55);
+      width: calc(var(--tube-outer-width) * 0.55);
+      height: calc(var(--bulb-size) * 0.48);
+      border-left: var(--tube-border) solid var(--tube-stroke);
+      border-right: var(--tube-border) solid var(--tube-stroke);
+      background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.84) 0%,
+        var(--tube-fill) 42%,
+        rgba(216, 222, 226, 0.74) 100%
+      );
+      border-radius: 999px;
+      z-index: 2;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .capillary {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: var(--channel-top);
+      bottom: var(--channel-bottom);
+      width: var(--capillary-width);
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(180, 186, 191, 0.52) 0%, rgba(245, 249, 250, 0.86) 48%, rgba(175, 182, 187, 0.46) 100%);
+      overflow: hidden;
+      z-index: 4;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .mercury-column {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 50%;
+      border-radius: 999px;
+      background: var(--mercury-fill);
+      box-shadow: 0 0 calc(var(--capillary-width) * 0.75) rgba(220, 38, 38, 0.36);
+      transition: height 160ms ease-out;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .thermometer-bulb {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 0;
+      width: var(--bulb-size);
+      height: var(--bulb-size);
+      border-radius: 50%;
+      border: var(--tube-border) solid var(--tube-stroke);
+      background: var(--bulb-fill);
+      box-shadow:
+        0 calc(var(--tube-outer-width) * 0.12) calc(var(--tube-outer-width) * 0.52) rgba(0, 0, 0, 0.24),
+        inset calc(var(--bulb-size) * -0.12) calc(var(--bulb-size) * -0.12) calc(var(--bulb-size) * 0.2) rgba(255, 255, 255, 0.18);
+      z-index: 2;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .thermometer-bulb::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: calc(var(--tube-border) * -1);
+      width: var(--capillary-width);
+      height: calc(var(--tube-border) + 1px);
+      border-bottom-left-radius: calc(var(--tube-border) * 0.5);
+      border-bottom-right-radius: calc(var(--tube-border) * 0.5);
+      background: var(--mercury-fill);
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .thermometer-scale {
+      position: relative;
+      width: var(--scale-panel-width);
+      height: calc(var(--tube-outer-height) - var(--channel-top) - var(--channel-bottom));
+      margin-bottom: calc(var(--stem-bottom) + var(--channel-bottom));
+      margin-left: calc((var(--body-width) - var(--tube-outer-width)) * -0.46);
+      overflow: visible;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .thermometer-scale::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: rgba(70, 70, 70, 0.42);
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .scale-tick {
+      position: absolute;
+      left: 0;
+      height: 1px;
+      background: var(--scale-minor-color);
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .scale-tick.minor {
+      width: var(--minor-tick-width);
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .scale-tick.medium {
+      width: var(--medium-tick-width);
+      background: var(--scale-color);
+      opacity: 0.78;
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .scale-tick.major {
+      width: var(--major-tick-width);
+      height: 2px;
+      background: var(--scale-color);
+    }
+
+    .cmp[data-cmp-id="phy.apparatus.thermometer.interactive"] .scale-label {
+      position: absolute;
+      left: calc(var(--major-tick-width) + 6px);
+      transform: translateY(50%);
+      font-size: var(--label-size);
+      line-height: 1;
+      font-family: "DIN Alternate", "Arial Narrow", "Segoe UI", "PingFang SC", sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      color: var(--label-color);
+      white-space: nowrap;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.58);
+    }
+  </style>
+
+  <div class="thermometer">
+    <div class="measure-area">
+      <div class="thermometer-body">
+        <div class="stem-shell">
+          <div class="capillary">
+            <div class="mercury-column"></div>
+          </div>
+          <div class="glass-glare"></div>
+        </div>
+        <div class="glass-neck"></div>
+        <div class="thermometer-bulb"></div>
+      </div>
+      <div class="thermometer-scale" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const script = document.currentScript;
+      if (!script) return;
+      const root = script.closest('[data-cmp-id="phy.apparatus.thermometer.interactive"]');
+      if (!root) return;
+
+      const measureArea = root.querySelector('.measure-area');
+      const capillary = root.querySelector('.capillary');
+      const mercuryColumn = root.querySelector('.mercury-column');
+      const scaleContainer = root.querySelector('.thermometer-scale');
+
+      if (!measureArea || !capillary || !mercuryColumn || !scaleContainer) return;
+
+      const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+      const parseNum = (raw, fallback) => {
+        const n = parseFloat(raw);
+        return Number.isFinite(n) ? n : fallback;
+      };
+      const isMultiple = (value, step) => Math.abs(value / step - Math.round(value / step)) < 1e-6;
+      const formatTemp = (value) => {
+        const rounded = Math.round(value * 10) / 10;
+        return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
+      };
+
+      const state = {
+        min: -10,
+        max: 50,
+        temperature: 26
+      };
+
+      function syncConfig() {
+        const style = getComputedStyle(root);
+        const min = parseNum(style.getPropertyValue('--cmp-min-temp'), -10);
+        const max = parseNum(style.getPropertyValue('--cmp-max-temp'), 50);
+        const validMax = max > min ? max : min + 1;
+        state.min = min;
+        state.max = validMax;
+        state.temperature = clamp(parseNum(style.getPropertyValue('--cmp-temperature'), state.temperature), state.min, state.max);
+      }
+
+      function setTemperature(nextTemp, emitChange) {
+        const clamped = clamp(Math.round(nextTemp), state.min, state.max);
+        const ratio = (clamped - state.min) / (state.max - state.min);
+        const displayRatio = clamp(ratio, 0, 1);
+
+        mercuryColumn.style.height = (displayRatio * 100) + '%';
+        root.style.setProperty('--cmp-temperature', String(clamped));
+        root.setAttribute('aria-label', '温度计（交互式），当前 ' + formatTemp(clamped) + ' 摄氏度');
+        state.temperature = clamped;
+
+        if (emitChange) {
+          root.dispatchEvent(new CustomEvent('cmp-temperature-change', {
+            detail: { temperature: clamped },
+            bubbles: true
+          }));
+        }
+      }
+
+      function createScale() {
+        scaleContainer.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        const range = state.max - state.min;
+        if (range <= 0) return;
+        const scaleHeight = scaleContainer.getBoundingClientRect().height;
+        if (scaleHeight <= 0) return;
+        const minorStep = range <= 80 ? 1 : 2;
+        const mediumStep = 5;
+        const majorStep = 10;
+        const start = Math.ceil(state.min / minorStep) * minorStep;
+        const epsilon = minorStep / 1000;
+
+        for (let t = start; t <= state.max + epsilon; t += minorStep) {
+          const roundedT = Math.round(t * 1000) / 1000;
+          const ratio = (roundedT - state.min) / range;
+          const bottom = Math.round(ratio * scaleHeight) + 'px';
+          const major = isMultiple(roundedT, majorStep);
+          const medium = !major && isMultiple(roundedT, mediumStep);
+
+          const tick = document.createElement('div');
+          tick.className = 'scale-tick ' + (major ? 'major' : (medium ? 'medium' : 'minor'));
+          tick.style.bottom = bottom;
+          fragment.appendChild(tick);
+
+          if (major) {
+            const label = document.createElement('div');
+            label.className = 'scale-label';
+            label.style.bottom = bottom;
+            label.textContent = formatTemp(roundedT);
+            fragment.appendChild(label);
+          }
+        }
+
+        if (!isMultiple(state.min, majorStep)) {
+          const minBottom = '0px';
+          const minTick = document.createElement('div');
+          minTick.className = 'scale-tick major';
+          minTick.style.bottom = minBottom;
+          fragment.appendChild(minTick);
+
+          const minLabel = document.createElement('div');
+          minLabel.className = 'scale-label';
+          minLabel.style.bottom = minBottom;
+          minLabel.textContent = formatTemp(state.min);
+          fragment.appendChild(minLabel);
+        }
+
+        if (!isMultiple(state.max, majorStep)) {
+          const maxBottom = scaleHeight + 'px';
+          const maxTick = document.createElement('div');
+          maxTick.className = 'scale-tick major';
+          maxTick.style.bottom = maxBottom;
+          fragment.appendChild(maxTick);
+
+          const maxLabel = document.createElement('div');
+          maxLabel.className = 'scale-label';
+          maxLabel.style.bottom = maxBottom;
+          maxLabel.textContent = formatTemp(state.max);
+          fragment.appendChild(maxLabel);
+        }
+
+        scaleContainer.appendChild(fragment);
+      }
+
+      function tempFromPointer(clientY) {
+        const rect = capillary.getBoundingClientRect();
+        const y = clamp(rect.bottom - clientY, 0, rect.height);
+        const ratio = y / rect.height;
+        return state.min + ratio * (state.max - state.min);
+      }
+
+      let activePointerId = null;
+
+      function onPointerDown(event) {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        activePointerId = event.pointerId;
+        if (measureArea.setPointerCapture) {
+          measureArea.setPointerCapture(activePointerId);
+        }
+        setTemperature(tempFromPointer(event.clientY), true);
+      }
+
+      function onPointerMove(event) {
+        if (activePointerId !== event.pointerId) return;
+        setTemperature(tempFromPointer(event.clientY), true);
+      }
+
+      function onPointerUp(event) {
+        if (activePointerId !== event.pointerId) return;
+        if (measureArea.releasePointerCapture && measureArea.hasPointerCapture(activePointerId)) {
+          measureArea.releasePointerCapture(activePointerId);
+        }
+        activePointerId = null;
+      }
+
+      measureArea.addEventListener('pointerdown', onPointerDown);
+      measureArea.addEventListener('pointermove', onPointerMove);
+      measureArea.addEventListener('pointerup', onPointerUp);
+      measureArea.addEventListener('pointercancel', onPointerUp);
+
+      syncConfig();
+      createScale();
+      setTemperature(state.temperature, false);
+
+      if (typeof ResizeObserver !== 'undefined') {
+        const resizeObserver = new ResizeObserver(() => {
+          syncConfig();
+          createScale();
+          setTemperature(state.temperature, false);
+        });
+        resizeObserver.observe(root);
+      }
+    })();
+  </script>
+</div>
+
