@@ -1,0 +1,502 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.optics.mirror.plane.interactive",
+  "name": "平面镜反射（交互式）",
+  "nameEn": "Plane Mirror Reflection (Interactive)",
+  "category": "physics/optics",
+  "version": "2.0.0",
+  "viewport": { "w": 480, "h": 360 },
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 360, "min": 240, "max": 600, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "stroke",        "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "mirrorColor",   "type": "color",  "default": "#78909c", "desc": "镜面颜色" },
+    { "key": "mirrorBack",    "type": "color",  "default": "#455a64", "desc": "镜背涂层颜色" },
+    { "key": "normalColor",   "type": "color",  "default": "#4caf50", "desc": "法线颜色" },
+    { "key": "incidentColor", "type": "color",  "default": "#ff9800", "desc": "入射光颜色" },
+    { "key": "reflectColor",  "type": "color",  "default": "#ff9800", "desc": "反射光颜色" },
+    { "key": "virtualColor",  "type": "color",  "default": "#81d4fa", "desc": "虚像光路颜色" },
+    { "key": "rayWidth",      "type": "number", "default": 2.2, "min": 0.5, "max": 5, "desc": "光线粗细" },
+    { "key": "objectColor",   "type": "color",  "default": "#e53935", "desc": "物体颜色" },
+    { "key": "imageColor",    "type": "color",  "default": "#1e88e5", "desc": "虚像颜色" },
+    { "key": "initAngle",     "type": "number", "default": 40, "min": 5, "max": 80, "desc": "初始入射角（度）" },
+    { "key": "objectDist",    "type": "number", "default": 100, "min": 40, "max": 200, "desc": "物体到镜面距离（viewBox 单位）" },
+    { "key": "objectHeight",  "type": "number", "default": 50, "min": 20, "max": 80, "desc": "物体高度（viewBox 单位）" },
+    { "key": "showLabels",    "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示角度标注" },
+    { "key": "showVirtual",   "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示虚像和虚像光路" },
+    { "key": "showData",      "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示数据面板" },
+    { "key": "accent",        "type": "color",  "default": "#1565c0", "desc": "强调色（标注文字）" },
+    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+  ],
+  "cssVars": {
+    "size":          "--cmp-size",
+    "stroke":        "--cmp-stroke",
+    "strokeWidth":   "--cmp-stroke-width",
+    "mirrorColor":   "--cmp-mirror",
+    "mirrorBack":    "--cmp-mirror-back",
+    "normalColor":   "--cmp-normal",
+    "incidentColor": "--cmp-incident",
+    "reflectColor":  "--cmp-reflect",
+    "virtualColor":  "--cmp-virtual",
+    "rayWidth":      "--cmp-ray-width",
+    "objectColor":   "--cmp-object",
+    "imageColor":    "--cmp-image",
+    "accent":        "--cmp-accent",
+    "glow":          "--cmp-glow"
+  },
+  "tags": ["optics", "mirror", "plane-mirror", "reflection", "law-of-reflection", "interactive", "draggable"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.optics.mirror.plane.interactive" role="img" aria-label="平面镜反射（交互式）">
+    <style>
+      .cmp[data-cmp-id="phy.optics.mirror.plane.interactive"] {
+        --h: var(--cmp-size, 360px);
+        display: inline-block;
+        width: calc(var(--h) * 1.333);
+        height: var(--h);
+        filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0))
+                rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+        user-select: none;
+        touch-action: none;
+      }
+      .cmp[data-cmp-id="phy.optics.mirror.plane.interactive"] svg {
+        width: 100%; height: 100%; display: block; overflow: visible;
+      }
+      .cmp[data-cmp-id="phy.optics.mirror.plane.interactive"] .pmr__drag {
+        cursor: pointer;
+      }
+      .cmp[data-cmp-id="phy.optics.mirror.plane.interactive"] .pmr__label {
+        font-family: 'Times New Roman', serif;
+        font-style: italic;
+        font-weight: 700;
+      }
+      .cmp[data-cmp-id="phy.optics.mirror.plane.interactive"] .pmr__data {
+        font-family: 'Courier New', Courier, monospace;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+      .cmp[data-cmp-id="phy.optics.mirror.plane.interactive"] .pmr__desc {
+        font-family: Arial, 'Microsoft YaHei', sans-serif;
+        font-weight: 600;
+      }
+    </style>
+  
+    <svg viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <marker id="pmr__ah-in" viewBox="0 0 8 6" refX="7" refY="3"
+                markerWidth="7" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L8,3 L0,6 Z" fill="var(--cmp-incident, #ff9800)"/>
+        </marker>
+        <marker id="pmr__ah-out" viewBox="0 0 8 6" refX="7" refY="3"
+                markerWidth="7" markerHeight="5" orient="auto-start-reverse">
+          <path d="M0,0 L8,3 L0,6 Z" fill="var(--cmp-reflect, #ff9800)"/>
+        </marker>
+        <pattern id="pmr__hatch" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="6" stroke="var(--cmp-mirror-back, #455a64)" stroke-width="1.5" opacity="0.5"/>
+        </pattern>
+      </defs>
+  
+      <!-- ═══ 1. 平面镜 ═══ -->
+      <rect x="240" y="60" width="10" height="240" fill="url(#pmr__hatch)"/>
+      <line x1="240" y1="60" x2="240" y2="300"
+            stroke="var(--cmp-mirror, #78909c)" stroke-width="3" stroke-linecap="round"/>
+  
+      <!-- ═══ 2. 法线 ═══ -->
+      <line class="pmr__normal"
+            stroke="var(--cmp-normal, #4caf50)" stroke-width="1.2"
+            stroke-dasharray="5,3" opacity="0.7"/>
+  
+      <!-- ═══ 3. 入射光 ═══ -->
+      <line class="pmr__ray-in"
+            stroke="var(--cmp-incident, #ff9800)" stroke-width="var(--cmp-ray-width, 2.2)"
+            marker-end="url(#pmr__ah-in)"/>
+  
+      <!-- ═══ 4. 反射光 ═══ -->
+      <line class="pmr__ray-out"
+            stroke="var(--cmp-reflect, #ff9800)" stroke-width="var(--cmp-ray-width, 2.2)"
+            marker-end="url(#pmr__ah-out)"/>
+  
+      <!-- ═══ 5. 虚像延长线 ═══ -->
+      <line class="pmr__ray-virtual"
+            stroke="var(--cmp-virtual, #81d4fa)" stroke-width="var(--cmp-ray-width, 2.2)"
+            stroke-dasharray="6,4" opacity="0"/>
+  
+      <!-- ═══ 6. 角度弧和标注 ═══ -->
+      <path class="pmr__arc-in" fill="none"
+            stroke="var(--cmp-incident, #ff9800)" stroke-width="1.3"/>
+      <text class="pmr__arc-in-text pmr__label" font-size="12"
+            fill="var(--cmp-incident, #ff9800)" text-anchor="middle"></text>
+      <path class="pmr__arc-out" fill="none"
+            stroke="var(--cmp-reflect, #ff9800)" stroke-width="1.3"/>
+      <text class="pmr__arc-out-text pmr__label" font-size="12"
+            fill="var(--cmp-reflect, #ff9800)" text-anchor="middle"></text>
+  
+      <!-- ═══ 7. 物体 ═══ -->
+      <g class="pmr__obj-group">
+        <line class="pmr__obj-line" stroke="var(--cmp-object, #e53935)" stroke-width="3" stroke-linecap="round"/>
+        <polygon class="pmr__obj-arrow" fill="var(--cmp-object, #e53935)"/>
+      </g>
+  
+      <!-- ═══ 8. 虚像 ═══ -->
+      <g class="pmr__img-group">
+        <line class="pmr__img-line" stroke="var(--cmp-image, #1e88e5)" stroke-width="2.5"
+              stroke-dasharray="4,3" stroke-linecap="round"/>
+        <polygon class="pmr__img-arrow" fill="var(--cmp-image, #1e88e5)" opacity="0.6"/>
+      </g>
+  
+      <!-- ═══ 9. 物距/像距标注 ═══ -->
+      <g class="pmr__dist-labels">
+        <line class="pmr__dist-obj-line" stroke="var(--cmp-accent, #1565c0)" stroke-width="1" stroke-dasharray="3,2"/>
+        <text class="pmr__dist-obj-text pmr__desc" font-size="11" fill="var(--cmp-accent, #1565c0)" text-anchor="middle"></text>
+        <line class="pmr__dist-img-line" stroke="var(--cmp-accent, #1565c0)" stroke-width="1" stroke-dasharray="3,2"/>
+        <text class="pmr__dist-img-text pmr__desc" font-size="11" fill="var(--cmp-accent, #1565c0)" text-anchor="middle"></text>
+      </g>
+  
+      <!-- ═══ 10. 拖拽控制点 ═══ -->
+      <g class="pmr__drag">
+        <circle class="pmr__drag-dot" r="8" fill="var(--cmp-incident, #ff9800)" opacity="0.25"/>
+        <circle class="pmr__drag-dot-inner" r="4" fill="var(--cmp-incident, #ff9800)" opacity="0.7"/>
+        <rect class="pmr__drag-hit" fill="transparent" cursor="pointer"/>
+      </g>
+  
+      <!-- ═══ 11. 数据面板 ═══ -->
+      <g class="pmr__panel">
+        <rect class="pmr__panel-bg" x="8" y="6" rx="4" width="195" height="62"
+              fill="rgba(255,255,255,0.9)" stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+        <text class="pmr__data pmr__data-angle" x="16" y="24" font-size="11" fill="var(--cmp-stroke, #333)"></text>
+        <text class="pmr__data pmr__data-dist"  x="16" y="40" font-size="11" fill="var(--cmp-stroke, #333)"></text>
+        <text class="pmr__desc pmr__data-law"   x="16" y="58" font-size="10.5" fill="var(--cmp-accent, #1565c0)"></text>
+      </g>
+    </svg>
+  
+    <script>
+    (function() {
+      var script = document.currentScript;
+      if (!script) return;
+      var root = script.parentElement;
+      if (!root || root.getAttribute('data-cmp-id') !== 'phy.optics.mirror.plane.interactive') return;
+  
+      var svg = root.querySelector('svg');
+      if (!svg) return;
+  
+      /* ─── 参数 ─── */
+      var P = {};
+      try {
+        var raw = root.getAttribute('data-props');
+        if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+      } catch(e) {}
+  
+      var initAngle = Number(P.initAngle) || 40;
+      initAngle = Math.max(5, Math.min(80, initAngle));
+      var objDist = Number(P.objectDist) || 100;
+      objDist = Math.max(40, Math.min(200, objDist));
+      var objH = Number(P.objectHeight) || 50;
+      objH = Math.max(20, Math.min(80, objH));
+      var showLabels  = (P.showLabels !== 'off');
+      var showVirtual = (P.showVirtual !== 'off');
+      var showData    = (P.showData !== 'off');
+  
+      /* ─── 坐标系说明 ─── */
+      /*
+       *  SVG viewBox: 480×360, x→右正, y→下正
+       *
+       *  镜面: 竖直线 x = MX = 240, y: 60→300
+       *  入射点 P = (MX, PY) = (240, 180)
+       *
+       *  法线: 水平，通过P，垂直于镜面
+       *
+       *  入射光从左上方射到 P:
+       *    光源位置 = (MX - L·cosθ,  PY - L·sinθ)
+       *    这在SVG中是左上方 ✓ (x减小=左, y减小=上)
+       *
+       *  反射光从 P 射向左下方:
+       *    终点 = (MX - L·cosθ,  PY + L·sinθ)
+       *    这在SVG中是左下方 ✓ (x减小=左, y增大=下)
+       *
+       *  虚像延长线从 P 射向右上方（反射光反向穿入镜后）:
+       *    终点 = (MX + L·cosθ,  PY - L·sinθ)
+       *    这在SVG中是右上方 ✓
+       *
+       *  ─── 角度弧（关键！！） ───
+       *
+       *  所有弧都以 P 为圆心，半径 R
+       *
+       *  三个参考方向的端点坐标（在弧上）:
+       *    法线向左:   N  = (MX - R,       PY)
+       *    来光方向:   I  = (MX - R·cosθ,  PY - R·sinθ)   ← 在N的右上方
+       *    反射去向:   O  = (MX - R·cosθ,  PY + R·sinθ)   ← 在N的右下方
+       *
+       *  θ=40°, R=35 时的具体数值:
+       *    N = (205, 180)
+       *    I = (213.2, 157.5)   ← 在 N 的右上方
+       *    O = (213.2, 202.5)   ← 在 N 的右下方
+       *
+       *  入射角弧: 从 N 到 I，走短弧（经过左上方）
+       *    N→I: I在N的右上方
+       *    SVG arc sweep-flag:
+       *      sweep=0 → 逆时针：从N(205,180)逆时针到I(213,157)
+       *        逆时针 = 从N向下→向右→向上→到I = 大弧（经过右侧和下方）❌
+       *      sweep=1 → 顺时针：从N(205,180)顺时针到I(213,157)
+       *        顺时针 = 从N向上→到I = 短弧（经过左上方）✅
+       *
+       *  反射角弧: 从 N 到 O，走短弧（经过左下方）
+       *    N→O: O在N的右下方
+       *    SVG arc sweep-flag:
+       *      sweep=0 → 逆时针：从N(205,180)逆时针到O(213,202)
+       *        逆时针 = 从N向上→向右→向下→到O = 大弧 ❌
+       *      sweep=1 → 顺时针：从N(205,180)顺时针到O(213,202)
+       *        顺时针 = 从N向下→到O = 短弧 ✅
+       *
+       *  错了！再想：
+       *    sweep=1 从 N 顺时针：N在最左边(205,180)，顺时针先向上
+       *      → 上方(左上) → 到 I(213,157) ← 这是短弧 ✅
+       *    sweep=0 从 N 逆时针：先向下
+       *      → 下方 → 右方 → 上方 → 到 I ← 这是大弧 ❌
+       *
+       *  所以入射角弧 N→I 用 sweep=1 ✅
+       *
+       *    sweep=1 从 N 顺时针到 O(213,202)：先向上 → 右上 → 右 → 右下 → O
+       *      这是大弧 ❌
+       *    sweep=0 从 N 逆时针到 O(213,202)：先向下 → O
+       *      这是短弧 ✅
+       *
+       *  所以反射角弧 N→O 用 sweep=0 ✅
+       *
+       *  总结:
+       *    入射角弧 (N→I, 上方): sweep=1
+       *    反射角弧 (N→O, 下方): sweep=0
+       */
+  
+      var MX = 240, PY = 180;
+      var VB_W = 480, VB_H = 360;
+      var angle = initAngle;
+      var DEG = Math.PI / 180;
+      var RAY_LEN = 200;
+  
+      /* ─── DOM ─── */
+      function q(c) { return root.querySelector('.pmr__' + c); }
+      var normal = q('normal');
+      var rayIn = q('ray-in'), rayOut = q('ray-out'), rayVirt = q('ray-virtual');
+      var arcIn = q('arc-in'), arcInTxt = q('arc-in-text');
+      var arcOut = q('arc-out'), arcOutTxt = q('arc-out-text');
+      var objLine = q('obj-line'), objArrow = q('obj-arrow');
+      var imgLine = q('img-line'), imgArrow = q('img-arrow'), imgGroup = q('img-group');
+      var distObjLine = q('dist-obj-line'), distObjText = q('dist-obj-text');
+      var distImgLine = q('dist-img-line'), distImgText = q('dist-img-text');
+      var dragDot = q('drag-dot'), dragDotIn = q('drag-dot-inner'), dragHit = q('drag-hit');
+      var dataAngle = q('data-angle'), dataDist = q('data-dist'), dataLaw = q('data-law');
+      var panel = q('panel');
+  
+      if (!showVirtual && imgGroup) imgGroup.setAttribute('opacity', '0');
+      if (!showData && panel) panel.setAttribute('opacity', '0');
+  
+      /* ─── 工具 ─── */
+      function setL(el, x1, y1, x2, y2) {
+        if (!el) return;
+        el.setAttribute('x1', x1); el.setAttribute('y1', y1);
+        el.setAttribute('x2', x2); el.setAttribute('y2', y2);
+      }
+  
+      /* ─── 渲染 ─── */
+      function render() {
+        var th = angle * DEG;
+        var cosA = Math.cos(th), sinA = Math.sin(th);
+  
+        /* ── 1. 法线 ── */
+        setL(normal, MX - 160, PY, MX + 50, PY);
+  
+        /* ── 2. 入射光：光源(左上) → P ── */
+        var srcX = MX - RAY_LEN * cosA;
+        var srcY = PY - RAY_LEN * sinA;
+        /* 箭头在 P 处，留 8px 间距 */
+        setL(rayIn, srcX, srcY, MX - 8 * cosA, PY - 8 * sinA);
+  
+        /* ── 3. 反射光：P → 左下方 ── */
+        var refX = MX - RAY_LEN * cosA;
+        var refY = PY + RAY_LEN * sinA;
+        setL(rayOut, MX, PY, refX, refY);
+  
+        /* ── 4. 虚像延长线：P → 右上方 ── */
+        if (showVirtual && rayVirt) {
+          rayVirt.setAttribute('opacity', '0.5');
+          setL(rayVirt, MX, PY, MX + RAY_LEN * cosA, PY - RAY_LEN * sinA);
+        }
+  
+        /* ── 5. 角度弧 ── */
+        if (showLabels) {
+          var R = 35;
+  
+          /* 弧上三个端点（SVG 坐标）*/
+          var nX = MX - R;            /* 法线方向(向左) */
+          var nY = PY;
+          var iX = MX - R * cosA;     /* 来光方向(左上) */
+          var iY = PY - R * sinA;
+          var oX = MX - R * cosA;     /* 反射去向(左下) */
+          var oY = PY + R * sinA;
+  
+          /* 入射角弧: N → I, sweep=1 (顺时针，短弧在上方) */
+          if (arcIn) {
+            arcIn.setAttribute('d',
+              'M' + nX.toFixed(1) + ',' + nY.toFixed(1) +
+              ' A' + R + ',' + R + ' 0 0,1 ' +
+              iX.toFixed(1) + ',' + iY.toFixed(1));
+          }
+  
+          /* 入射角标注：弧中点外侧 */
+          if (arcInTxt) {
+            var halfTh = th / 2;
+            var tR = R + 16;
+            /* 弧中点方向：法线和来光的角平分线方向(左偏上) */
+            var tX = MX - tR * Math.cos(halfTh);
+            var tY = PY - tR * Math.sin(halfTh);
+            arcInTxt.setAttribute('x', tX.toFixed(1));
+            arcInTxt.setAttribute('y', (tY + 4).toFixed(1));
+            arcInTxt.textContent = 'θ₁=' + Math.round(angle) + '°';
+          }
+  
+          /* 反射角弧: N → O, sweep=0 (逆时针，短弧在下方) */
+          if (arcOut) {
+            arcOut.setAttribute('d',
+              'M' + nX.toFixed(1) + ',' + nY.toFixed(1) +
+              ' A' + R + ',' + R + ' 0 0,0 ' +
+              oX.toFixed(1) + ',' + oY.toFixed(1));
+          }
+  
+          /* 反射角标注 */
+          if (arcOutTxt) {
+            var tR2 = R + 16;
+            var tX2 = MX - tR2 * Math.cos(halfTh);
+            var tY2 = PY + tR2 * Math.sin(halfTh);
+            arcOutTxt.setAttribute('x', tX2.toFixed(1));
+            arcOutTxt.setAttribute('y', (tY2 + 4).toFixed(1));
+            arcOutTxt.textContent = 'θ₂=' + Math.round(angle) + '°';
+          }
+        } else {
+          if (arcIn) arcIn.setAttribute('d', '');
+          if (arcOut) arcOut.setAttribute('d', '');
+          if (arcInTxt) arcInTxt.textContent = '';
+          if (arcOutTxt) arcOutTxt.textContent = '';
+        }
+  
+        /* ── 6. 物体 ── */
+        var objX = MX - objDist;
+        /* 物体与像的底端应精确落在法线上（y = PY），
+         * 这样物距/像距就是沿法线方向的水平距离，更符合课本画法。 */
+        var objBaseY = PY;
+        var objTopY = objBaseY - objH;
+        if (objLine) setL(objLine, objX, objBaseY, objX, objTopY + 8);
+        if (objArrow) {
+          objArrow.setAttribute('points',
+            (objX - 5) + ',' + (objTopY + 10) + ' ' +
+            objX + ',' + objTopY + ' ' +
+            (objX + 5) + ',' + (objTopY + 10));
+        }
+  
+        /* ── 7. 虚像 ── */
+        if (showVirtual) {
+          var imgX = MX + objDist;
+          if (imgGroup) imgGroup.setAttribute('opacity', '1');
+          if (imgLine) {
+            setL(imgLine, imgX, objBaseY, imgX, objTopY + 8);
+            imgLine.setAttribute('stroke-dasharray', '4,3');
+          }
+          if (imgArrow) {
+            imgArrow.setAttribute('points',
+              (imgX - 5) + ',' + (objTopY + 10) + ' ' +
+              imgX + ',' + objTopY + ' ' +
+              (imgX + 5) + ',' + (objTopY + 10));
+          }
+          var labelY = objBaseY + 22;
+          if (distObjLine) setL(distObjLine, objX, labelY, MX, labelY);
+          if (distObjText) {
+            distObjText.setAttribute('x', (objX + MX) / 2);
+            distObjText.setAttribute('y', labelY + 14);
+            distObjText.textContent = '物距 d';
+          }
+          if (distImgLine) setL(distImgLine, MX, labelY, imgX, labelY);
+          if (distImgText) {
+            distImgText.setAttribute('x', (MX + imgX) / 2);
+            distImgText.setAttribute('y', labelY + 14);
+            distImgText.textContent = '像距 d′=d';
+          }
+        }
+  
+        /* ── 8. 拖拽点（在入射光中点处） ── */
+        var ctrlX = MX - (RAY_LEN * 0.5) * cosA;
+        var ctrlY = PY - (RAY_LEN * 0.5) * sinA;
+        if (dragDot) { dragDot.setAttribute('cx', ctrlX); dragDot.setAttribute('cy', ctrlY); }
+        if (dragDotIn) { dragDotIn.setAttribute('cx', ctrlX); dragDotIn.setAttribute('cy', ctrlY); }
+        if (dragHit) {
+          dragHit.setAttribute('x', ctrlX - 22); dragHit.setAttribute('y', ctrlY - 22);
+          dragHit.setAttribute('width', 44); dragHit.setAttribute('height', 44);
+        }
+  
+        /* ── 9. 数据面板 ── */
+        if (showData) {
+          if (dataAngle) dataAngle.textContent = '入射角 θ₁ = ' + Math.round(angle) + '°   反射角 θ₂ = ' + Math.round(angle) + '°';
+          if (dataDist) dataDist.textContent = '物距 = 像距（等大、等距、左右对称）';
+          if (dataLaw) dataLaw.textContent = '反射定律：θ₁ = θ₂（入射角 = 反射角）';
+        }
+  
+        root.setAttribute('aria-label',
+          '平面镜反射，入射角 ' + Math.round(angle) + '°，反射角 ' + Math.round(angle) + '°');
+      }
+  
+      render();
+  
+      /* ─── 拖拽 ─── */
+      var dragging = false;
+  
+      function getAngleFromMouse(clientX, clientY) {
+        var rect = svg.getBoundingClientRect();
+        var svgX = (clientX - rect.left) / (rect.width / VB_W);
+        var svgY = (clientY - rect.top) / (rect.height / VB_H);
+        var dx = svgX - MX;
+        var dy = svgY - PY;
+        /* 只响应左半平面（物体侧） */
+        if (dx >= 0) return angle;
+        var a = Math.atan2(Math.abs(dy), Math.abs(dx)) / DEG;
+        return Math.max(5, Math.min(80, a));
+      }
+  
+      function onDown(e) {
+        e.preventDefault(); dragging = true;
+        document.addEventListener('mousemove', onMove, { passive: false });
+        document.addEventListener('mouseup', onUp);
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onUp);
+      }
+      function onMove(e) {
+        if (!dragging) return; e.preventDefault();
+        var pt = e.touches ? e.touches[0] : e;
+        angle = getAngleFromMouse(pt.clientX, pt.clientY);
+        render();
+      }
+      function onUp() {
+        dragging = false;
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onUp);
+      }
+  
+      var dragTarget = root.querySelector('.pmr__drag');
+      if (dragTarget) {
+        dragTarget.addEventListener('mousedown', onDown, { passive: false });
+        dragTarget.addEventListener('touchstart', onDown, { passive: false });
+      }
+  
+      window.addEventListener('beforeunload', function() {
+        if (dragTarget) {
+          dragTarget.removeEventListener('mousedown', onDown);
+          dragTarget.removeEventListener('touchstart', onDown);
+        }
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        document.removeEventListener('touchmove', onMove);
+        document.removeEventListener('touchend', onUp);
+      });
+    })();
+    </script>
+  </div>

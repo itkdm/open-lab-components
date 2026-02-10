@@ -1,0 +1,410 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.lever.interactive",
+  "name": "杠杆（交互式）",
+  "nameEn": "Lever (Interactive)",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 320 },
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 320, "min": 240, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",        "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+
+    { "key": "beamColor",     "type": "color",  "default": "#8d6e63", "desc": "杠杆横梁颜色" },
+    { "key": "fulcrumColor",  "type": "color",  "default": "#616161", "desc": "支点颜色" },
+    { "key": "forceColor1",   "type": "color",  "default": "#e53935", "desc": "动力颜色" },
+    { "key": "forceColor2",   "type": "color",  "default": "#1e88e5", "desc": "阻力颜色" },
+    { "key": "armColor",      "type": "color",  "default": "#4caf50", "desc": "力臂标注颜色" },
+    { "key": "weightColor",   "type": "color",  "default": "#ff9800", "desc": "砝码颜色" },
+
+    { "key": "beamLen",       "type": "number", "default": 360, "min": 200, "max": 440, "desc": "横梁总长度" },
+    { "key": "f1",            "type": "number", "default": 2, "min": 0.5, "max": 10, "desc": "动力（N）" },
+    { "key": "l1",            "type": "number", "default": 0.6, "min": 0.1, "max": 0.9, "desc": "动力臂（占半梁比）" },
+    { "key": "f2",            "type": "number", "default": 3, "min": 0.5, "max": 10, "desc": "阻力（N）" },
+    { "key": "l2",            "type": "number", "default": 0.4, "min": 0.1, "max": 0.9, "desc": "阻力臂（占半梁比）" },
+
+    { "key": "showLabels",    "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "力臂标注" },
+    { "key": "showData",      "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "数据面板" },
+
+    { "key": "accent",        "type": "color",  "default": "#1565c0", "desc": "强调色" },
+    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "beamColor": "--cmp-beam", "fulcrumColor": "--cmp-fulcrum",
+    "forceColor1": "--cmp-f1", "forceColor2": "--cmp-f2",
+    "armColor": "--cmp-arm", "weightColor": "--cmp-weight",
+    "accent": "--cmp-accent", "glow": "--cmp-glow"
+  },
+  "tags": ["lever","mechanics","force","torque","fulcrum","interactive","draggable"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.lever.interactive" role="img" aria-label="杠杆（交互式）">
+    <style>
+      .cmp[data-cmp-id="phy.mechanics.lever.interactive"]{
+        --h:var(--cmp-size,320px);display:inline-block;width:calc(var(--h)*1.5);height:var(--h);
+        filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,214,102,calc(.8*var(--cmp-glow,0))));
+        user-select:none;touch-action:none;
+      }
+      .cmp[data-cmp-id="phy.mechanics.lever.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+      .cmp[data-cmp-id="phy.mechanics.lever.interactive"] .lvr__drag{cursor:ew-resize}
+      .cmp[data-cmp-id="phy.mechanics.lever.interactive"] .lvr__label{font-family:'Times New Roman',serif;font-style:italic;font-weight:700}
+      .cmp[data-cmp-id="phy.mechanics.lever.interactive"] .lvr__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+      .cmp[data-cmp-id="phy.mechanics.lever.interactive"] .lvr__desc{font-family:Arial,'Microsoft YaHei',sans-serif;font-weight:600}
+    </style>
+  
+    <svg viewBox="0 0 480 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <marker id="lvr__ah-f1" viewBox="0 0 8 6" refX="1" refY="3" markerWidth="7" markerHeight="5" orient="auto-start-reverse">
+          <path d="M8,0 L0,3 L8,6 Z" fill="var(--cmp-f1,#e53935)"/>
+        </marker>
+        <marker id="lvr__ah-f2" viewBox="0 0 8 6" refX="1" refY="3" markerWidth="7" markerHeight="5" orient="auto-start-reverse">
+          <path d="M8,0 L0,3 L8,6 Z" fill="var(--cmp-f2,#1e88e5)"/>
+        </marker>
+      </defs>
+  
+      <!-- 地面 -->
+      <line x1="40" y1="270" x2="440" y2="270" stroke="var(--cmp-stroke,#333)" stroke-width="1" stroke-dasharray="6,3" opacity=".3"/>
+  
+      <!-- 支点三角形 -->
+      <polygon class="lvr__fulcrum" fill="var(--cmp-fulcrum,#616161)"/>
+  
+      <!-- 横梁 -->
+      <line class="lvr__beam" stroke="var(--cmp-beam,#8d6e63)" stroke-width="6" stroke-linecap="round"/>
+  
+      <!-- 刻度线 -->
+      <g class="lvr__ticks"></g>
+  
+      <!-- 动力箭头 F1 (向下) -->
+      <line class="lvr__f1-arrow" stroke="var(--cmp-f1,#e53935)" stroke-width="2.5" marker-start="url(#lvr__ah-f1)"/>
+      <text class="lvr__f1-text lvr__label" font-size="13" fill="var(--cmp-f1,#e53935)" text-anchor="middle"></text>
+  
+      <!-- 阻力箭头 F2 (向下) -->
+      <line class="lvr__f2-arrow" stroke="var(--cmp-f2,#1e88e5)" stroke-width="2.5" marker-start="url(#lvr__ah-f2)"/>
+      <text class="lvr__f2-text lvr__label" font-size="13" fill="var(--cmp-f2,#1e88e5)" text-anchor="middle"></text>
+  
+      <!-- 左侧砝码 -->
+      <g class="lvr__w1-g">
+        <rect class="lvr__w1" rx="2" fill="var(--cmp-weight,#ff9800)"/>
+        <line class="lvr__w1-wire" stroke="var(--cmp-stroke,#333)" stroke-width="1"/>
+      </g>
+  
+      <!-- 右侧砝码 -->
+      <g class="lvr__w2-g">
+        <rect class="lvr__w2" rx="2" fill="var(--cmp-f2,#1e88e5)" opacity=".7"/>
+        <line class="lvr__w2-wire" stroke="var(--cmp-stroke,#333)" stroke-width="1"/>
+      </g>
+  
+      <!-- 力臂标注 L1 -->
+      <line class="lvr__l1-line" stroke="var(--cmp-arm,#4caf50)" stroke-width="1.5"/>
+      <line class="lvr__l1-cap1" stroke="var(--cmp-arm,#4caf50)" stroke-width="1.5"/>
+      <line class="lvr__l1-cap2" stroke="var(--cmp-arm,#4caf50)" stroke-width="1.5"/>
+      <text class="lvr__l1-text lvr__label" font-size="12" fill="var(--cmp-arm,#4caf50)" text-anchor="middle"></text>
+  
+      <!-- 力臂标注 L2 -->
+      <line class="lvr__l2-line" stroke="var(--cmp-arm,#4caf50)" stroke-width="1.5"/>
+      <line class="lvr__l2-cap1" stroke="var(--cmp-arm,#4caf50)" stroke-width="1.5"/>
+      <line class="lvr__l2-cap2" stroke="var(--cmp-arm,#4caf50)" stroke-width="1.5"/>
+      <text class="lvr__l2-text lvr__label" font-size="12" fill="var(--cmp-arm,#4caf50)" text-anchor="middle"></text>
+  
+      <!-- 支点标注 O -->
+      <text class="lvr__o-text lvr__label" font-size="13" fill="var(--cmp-fulcrum,#616161)" text-anchor="middle"></text>
+  
+      <!-- 拖拽手柄 F1 -->
+      <g class="lvr__drag lvr__drag1">
+        <circle class="lvr__dh1-bg" r="10" fill="var(--cmp-f1,#e53935)" opacity=".15"/>
+        <circle class="lvr__dh1" r="5" fill="var(--cmp-f1,#e53935)" opacity=".5"/>
+        <rect class="lvr__dh1-hit" fill="transparent" cursor="ew-resize"/>
+      </g>
+  
+      <!-- 拖拽手柄 F2 -->
+      <g class="lvr__drag lvr__drag2">
+        <circle class="lvr__dh2-bg" r="10" fill="var(--cmp-f2,#1e88e5)" opacity=".15"/>
+        <circle class="lvr__dh2" r="5" fill="var(--cmp-f2,#1e88e5)" opacity=".5"/>
+        <rect class="lvr__dh2-hit" fill="transparent" cursor="ew-resize"/>
+      </g>
+  
+      <!-- 平衡指示 -->
+      <text class="lvr__balance lvr__desc" font-size="14" text-anchor="middle" y="30"></text>
+  
+      <!-- 数据面板 -->
+      <g class="lvr__panel">
+        <rect x="8" y="6" rx="4" width="200" height="78"
+              fill="rgba(255,255,255,.92)" stroke="var(--cmp-stroke,#333)" stroke-width=".8"/>
+        <text class="lvr__data lvr__pd1" x="16" y="23" font-size="11" fill="var(--cmp-stroke,#333)"></text>
+        <text class="lvr__data lvr__pd2" x="16" y="38" font-size="11" fill="var(--cmp-stroke,#333)"></text>
+        <text class="lvr__data lvr__pd3" x="16" y="53" font-size="11" fill="var(--cmp-stroke,#333)"></text>
+        <text class="lvr__desc lvr__pd4" x="16" y="72" font-size="10.5" fill="var(--cmp-accent,#1565c0)"></text>
+      </g>
+    </svg>
+  
+    <script>
+    (function(){
+      var sc=document.currentScript;if(!sc)return;
+      var root=sc.parentElement;
+      if(!root||root.getAttribute('data-cmp-id')!=='phy.mechanics.lever.interactive')return;
+      var svg=root.querySelector('svg');if(!svg)return;
+  
+      var P={};
+      try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+  
+      var showLabels=(P.showLabels!=='off');
+      var showData=(P.showData!=='off');
+      var beamLen=Math.max(200,Math.min(440,Number(P.beamLen)||360));
+  
+      /* 力和力臂 */
+      var f1=Math.max(0.5,Math.min(10,Number(P.f1)||2));
+      var f2=Math.max(0.5,Math.min(10,Number(P.f2)||3));
+      var l1Ratio=Math.max(0.1,Math.min(0.9,Number(P.l1)||0.6));
+      var l2Ratio=Math.max(0.1,Math.min(0.9,Number(P.l2)||0.4));
+  
+      var VB_W=480, VB_H=320;
+      var FX=240, FY=200;         /* 支点位置 */
+      var HALF=beamLen/2;         /* 半梁长度 */
+      var GROUND_Y=270;
+      var FULCRUM_H=40;           /* 支点三角高度 */
+  
+      function q(c){return root.querySelector('.lvr__'+c)}
+      var el={};
+      ['fulcrum','beam','ticks',
+       'f1-arrow','f1-text','f2-arrow','f2-text',
+       'w1','w1-wire','w2','w2-wire',
+       'l1-line','l1-cap1','l1-cap2','l1-text',
+       'l2-line','l2-cap1','l2-cap2','l2-text',
+       'o-text','balance',
+       'dh1-bg','dh1','dh1-hit','dh2-bg','dh2','dh2-hit',
+       'pd1','pd2','pd3','pd4','panel'
+      ].forEach(function(k){el[k]=q(k)});
+  
+      if(!showData&&el['panel'])el['panel'].setAttribute('opacity','0');
+  
+      function setL(e,x1,y1,x2,y2){
+        if(!e)return;
+        e.setAttribute('x1',x1);e.setAttribute('y1',y1);
+        e.setAttribute('x2',x2);e.setAttribute('y2',y2);
+      }
+  
+      /* ─── 绘制刻度（一次性） ─── */
+      var ticksG=el['ticks'];
+      if(ticksG){
+        ticksG.innerHTML='';
+        var nTicks=10;
+        for(var i=-nTicks;i<=nTicks;i++){
+          var tx=FX+i*(HALF/nTicks);
+          var line=document.createElementNS('http://www.w3.org/2000/svg','line');
+          line.setAttribute('x1',tx);line.setAttribute('x2',tx);
+          line.setAttribute('y1',FY-2);line.setAttribute('y2',FY+2);
+          line.setAttribute('stroke','var(--cmp-stroke,#333)');
+          line.setAttribute('stroke-width',i===0?'0':'0.8');
+          line.setAttribute('opacity','0.4');
+          ticksG.appendChild(line);
+        }
+      }
+  
+      /* ─── 渲染 ─── */
+      function render(){
+        /* 力作用点位置（沿横梁） */
+        var p1x=FX-l1Ratio*HALF;  /* 动力点（左侧） */
+        var p2x=FX+l2Ratio*HALF;  /* 阻力点（右侧） */
+  
+        /* 计算倾斜角：力矩差 → 倾斜 */
+        var torque1=f1*l1Ratio*HALF;  /* 动力矩（左侧向下） */
+        var torque2=f2*l2Ratio*HALF;  /* 阻力矩（右侧向下） */
+        var diff=torque1-torque2;
+        /* 倾斜角（弧度），限制最大15° */
+        var maxTilt=15*Math.PI/180;
+        var tilt=0;
+        var maxTorque=Math.max(torque1,torque2,1);
+        tilt=Math.min(maxTilt,Math.max(-maxTilt, (diff/maxTorque)*maxTilt));
+        /* 正值=左侧力矩大，左端下沉 */
+  
+        var cosT=Math.cos(tilt), sinT=Math.sin(tilt);
+  
+        /* 横梁两端坐标 */
+        var lx=FX-HALF*cosT, ly=FY+HALF*sinT;  /* 左端 */
+        var rx=FX+HALF*cosT, ry=FY-HALF*sinT;  /* 右端 */
+  
+        /* 横梁 */
+        setL(el['beam'],lx,ly,rx,ry);
+  
+        /* 支点三角形 */
+        if(el['fulcrum']){
+          el['fulcrum'].setAttribute('points',
+            FX+','+(FY+4)+' '+(FX-18)+','+GROUND_Y+' '+(FX+18)+','+GROUND_Y);
+        }
+  
+        /* 力作用点在倾斜横梁上的实际坐标 */
+        var f1x=FX-l1Ratio*HALF*cosT;
+        var f1y=FY+l1Ratio*HALF*sinT;
+        var f2x=FX+l2Ratio*HALF*cosT;
+        var f2y=FY-l2Ratio*HALF*sinT;
+  
+        /* 力箭头（都指向下方，长度正比于力的大小） */
+        var arrowScale=8;
+        var f1Len=f1*arrowScale;
+        var f2Len=f2*arrowScale;
+  
+        /* F1 向下箭头：从 (f1x, f1y - f1Len) 到 (f1x, f1y) */
+        /* marker-start → 箭头在起点，所以起点在上方（箭头朝下） */
+        setL(el['f1-arrow'], f1x, f1y-f1Len-8, f1x, f1y-4);
+        if(el['f1-text']){
+          el['f1-text'].setAttribute('x',f1x);
+          el['f1-text'].setAttribute('y',f1y-f1Len-14);
+          el['f1-text'].textContent='F₁='+f1.toFixed(1)+'N';
+        }
+  
+        /* F2 向下箭头 */
+        setL(el['f2-arrow'], f2x, f2y-f2Len-8, f2x, f2y-4);
+        if(el['f2-text']){
+          el['f2-text'].setAttribute('x',f2x);
+          el['f2-text'].setAttribute('y',f2y-f2Len-14);
+          el['f2-text'].textContent='F₂='+f2.toFixed(1)+'N';
+        }
+  
+        /* 砝码 */
+        var ww=20, wh1=f1*5+8, wh2=f2*5+8;
+        if(el['w1']){
+          el['w1'].setAttribute('x',f1x-ww/2);el['w1'].setAttribute('y',f1y+2);
+          el['w1'].setAttribute('width',ww);el['w1'].setAttribute('height',wh1);
+        }
+        setL(el['w1-wire'],f1x,f1y,f1x,f1y+2);
+  
+        if(el['w2']){
+          el['w2'].setAttribute('x',f2x-ww/2);el['w2'].setAttribute('y',f2y+2);
+          el['w2'].setAttribute('width',ww);el['w2'].setAttribute('height',wh2);
+        }
+        setL(el['w2-wire'],f2x,f2y,f2x,f2y+2);
+  
+        /* 力臂标注 */
+        if(showLabels){
+          var armY=FY+30;
+  
+          /* L1: 从支点到 F1 作用点（水平投影） */
+          setL(el['l1-line'], FX, armY, f1x, armY);
+          setL(el['l1-cap1'], FX, armY-4, FX, armY+4);
+          setL(el['l1-cap2'], f1x, armY-4, f1x, armY+4);
+          if(el['l1-text']){
+            el['l1-text'].setAttribute('x',(FX+f1x)/2);
+            el['l1-text'].setAttribute('y',armY+16);
+            el['l1-text'].textContent='L₁';
+          }
+  
+          /* L2 */
+          setL(el['l2-line'], FX, armY, f2x, armY);
+          setL(el['l2-cap1'], FX, armY-4, FX, armY+4);
+          setL(el['l2-cap2'], f2x, armY-4, f2x, armY+4);
+          if(el['l2-text']){
+            el['l2-text'].setAttribute('x',(FX+f2x)/2);
+            el['l2-text'].setAttribute('y',armY+16);
+            el['l2-text'].textContent='L₂';
+          }
+        }
+  
+        /* 支点 O 标注 */
+        if(el['o-text']){
+          el['o-text'].setAttribute('x',FX);
+          el['o-text'].setAttribute('y',GROUND_Y+14);
+          el['o-text'].textContent='O (支点)';
+        }
+  
+        /* 平衡指示 */
+        if(el['balance']){
+          el['balance'].setAttribute('x',FX);
+          var ratio=torque1/(torque2||0.001);
+          if(Math.abs(ratio-1)<0.05){
+            el['balance'].textContent='⚖️ 平衡！F₁·L₁ = F₂·L₂';
+            el['balance'].setAttribute('fill','var(--cmp-arm,#4caf50)');
+          }else if(torque1>torque2){
+            el['balance'].textContent='⬇ 左侧力矩较大，左端下沉';
+            el['balance'].setAttribute('fill','var(--cmp-f1,#e53935)');
+          }else{
+            el['balance'].textContent='⬇ 右侧力矩较大，右端下沉';
+            el['balance'].setAttribute('fill','var(--cmp-f2,#1e88e5)');
+          }
+        }
+  
+        /* 拖拽手柄 */
+        if(el['dh1-bg']){el['dh1-bg'].setAttribute('cx',f1x);el['dh1-bg'].setAttribute('cy',f1y);}
+        if(el['dh1']){el['dh1'].setAttribute('cx',f1x);el['dh1'].setAttribute('cy',f1y);}
+        if(el['dh1-hit']){
+          el['dh1-hit'].setAttribute('x',f1x-18);el['dh1-hit'].setAttribute('y',f1y-18);
+          el['dh1-hit'].setAttribute('width',36);el['dh1-hit'].setAttribute('height',36);
+        }
+        if(el['dh2-bg']){el['dh2-bg'].setAttribute('cx',f2x);el['dh2-bg'].setAttribute('cy',f2y);}
+        if(el['dh2']){el['dh2'].setAttribute('cx',f2x);el['dh2'].setAttribute('cy',f2y);}
+        if(el['dh2-hit']){
+          el['dh2-hit'].setAttribute('x',f2x-18);el['dh2-hit'].setAttribute('y',f2y-18);
+          el['dh2-hit'].setAttribute('width',36);el['dh2-hit'].setAttribute('height',36);
+        }
+  
+        /* 数据面板 */
+        if(showData){
+          if(el['pd1'])el['pd1'].textContent='F₁='+f1.toFixed(1)+'N  L₁='+(l1Ratio*10).toFixed(1)+'格';
+          if(el['pd2'])el['pd2'].textContent='F₂='+f2.toFixed(1)+'N  L₂='+(l2Ratio*10).toFixed(1)+'格';
+          if(el['pd3'])el['pd3'].textContent='F₁·L₁='+(f1*l1Ratio*10).toFixed(1)+'   F₂·L₂='+(f2*l2Ratio*10).toFixed(1);
+          if(el['pd4'])el['pd4'].textContent='杠杆原理：F₁·L₁ = F₂·L₂';
+        }
+  
+        root.setAttribute('aria-label',
+          '杠杆 F₁='+f1.toFixed(1)+'N L₁='+(l1Ratio*10).toFixed(1)+
+          ' F₂='+f2.toFixed(1)+'N L₂='+(l2Ratio*10).toFixed(1));
+      }
+  
+      render();
+  
+      /* ─── 拖拽 ─── */
+      var dragging=0; /* 0=无, 1=拖F1, 2=拖F2 */
+  
+      function svgX(cx){
+        var rect=svg.getBoundingClientRect();
+        return (cx-rect.left)/(rect.width/VB_W);
+      }
+  
+      function onD1(e){e.preventDefault();dragging=1;bindDoc();}
+      function onD2(e){e.preventDefault();dragging=2;bindDoc();}
+  
+      function bindDoc(){
+        document.addEventListener('mousemove',onM,{passive:false});
+        document.addEventListener('mouseup',onU);
+        document.addEventListener('touchmove',onM,{passive:false});
+        document.addEventListener('touchend',onU);
+      }
+      function onM(e){
+        if(!dragging)return;e.preventDefault();
+        var pt=e.touches?e.touches[0]:e;
+        var sx=svgX(pt.clientX);
+        if(dragging===1){
+          /* F1 在左侧，sx < FX */
+          var d=FX-sx;
+          l1Ratio=Math.max(0.1,Math.min(0.9, d/HALF));
+        }else{
+          /* F2 在右侧，sx > FX */
+          var d2=sx-FX;
+          l2Ratio=Math.max(0.1,Math.min(0.9, d2/HALF));
+        }
+        render();
+      }
+      function onU(){
+        dragging=0;
+        document.removeEventListener('mousemove',onM);
+        document.removeEventListener('mouseup',onU);
+        document.removeEventListener('touchmove',onM);
+        document.removeEventListener('touchend',onU);
+      }
+  
+      var d1=root.querySelector('.lvr__drag1');
+      var d2=root.querySelector('.lvr__drag2');
+      if(d1){d1.addEventListener('mousedown',onD1,{passive:false});d1.addEventListener('touchstart',onD1,{passive:false});}
+      if(d2){d2.addEventListener('mousedown',onD2,{passive:false});d2.addEventListener('touchstart',onD2,{passive:false});}
+  
+      window.addEventListener('beforeunload',function(){
+        if(d1){d1.removeEventListener('mousedown',onD1);d1.removeEventListener('touchstart',onD1);}
+        if(d2){d2.removeEventListener('mousedown',onD2);d2.removeEventListener('touchstart',onD2);}
+        document.removeEventListener('mousemove',onM);document.removeEventListener('mouseup',onU);
+        document.removeEventListener('touchmove',onM);document.removeEventListener('touchend',onU);
+      });
+    })();
+    </script>
+  </div>
