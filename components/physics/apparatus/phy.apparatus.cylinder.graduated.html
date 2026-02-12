@@ -1,0 +1,381 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.cylinder.graduated",
+  "name": "量筒（刻度）",
+  "nameEn": "Graduated Cylinder",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 120, "h": 360 },
+  "props": [
+    { "key": "height", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "量筒总高度" },
+    { "key": "width", "type": "number(px)", "default": 120, "min": 60, "max": 240, "desc": "量筒区域宽度（含刻度）" },
+    { "key": "maxVolume", "type": "number", "default": 100, "min": 10, "max": 2000, "desc": "最大量程（mL）" },
+    { "key": "volume", "type": "number", "default": 60, "min": 0, "max": 2000, "desc": "当前液面体积（mL）" },
+    { "key": "liquidColor", "type": "color", "default": "rgba(30,136,229,0.45)", "desc": "液体颜色" },
+    { "key": "glassFill", "type": "color", "default": "rgba(245,250,255,0.85)", "desc": "玻璃筒体填充色" },
+    { "key": "glassStroke", "type": "color", "default": "#90a4ae", "desc": "玻璃筒体描边色" },
+    { "key": "scaleColor", "type": "color", "default": "#37474f", "desc": "主刻度线颜色" },
+    { "key": "scaleMinorColor", "type": "color", "default": "#78909c", "desc": "次刻度线颜色" },
+    { "key": "labelColor", "type": "color", "default": "#263238", "desc": "数字刻度文字颜色" }
+  ],
+  "cssVars": {
+    "height": "--cmp-height",
+    "width": "--cmp-width",
+    "maxVolume": "--cmp-max-volume",
+    "volume": "--cmp-volume",
+    "liquidColor": "--cmp-liquid-color",
+    "glassFill": "--cmp-glass-fill",
+    "glassStroke": "--cmp-glass-stroke",
+    "scaleColor": "--cmp-scale-color",
+    "scaleMinorColor": "--cmp-scale-minor-color",
+    "labelColor": "--cmp-label-color"
+  },
+  "tags": ["cylinder", "graduated", "measurement", "volume", "apparatus", "labware"]
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.cylinder.graduated" role="img" aria-label="量筒（刻度）">
+    <style>
+      .cmp[data-cmp-id="phy.apparatus.cylinder.graduated"] {
+        --height: var(--cmp-height, 360px);
+        --width: var(--cmp-width, 120px);
+  
+        --max-volume: var(--cmp-max-volume, 100);
+        --volume: var(--cmp-volume, 60);
+  
+        --liquid-color: var(--cmp-liquid-color, rgba(30,136,229,0.45));
+        --glass-fill: var(--cmp-glass-fill, rgba(245,250,255,0.85));
+        --glass-stroke: var(--cmp-glass-stroke, #90a4ae);
+        --scale-color: var(--cmp-scale-color, #37474f);
+        --scale-minor-color: var(--cmp-scale-minor-color, #78909c);
+        --label-color: var(--cmp-label-color, #263238);
+  
+        box-sizing: border-box;
+        display: inline-block;
+        width: var(--width);
+        height: var(--height);
+        user-select: none;
+      }
+  
+      .cmp[data-cmp-id="phy.apparatus.cylinder.graduated"] svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+        overflow: visible;
+      }
+  
+      .cmp[data-cmp-id="phy.apparatus.cylinder.graduated"] .gc__interact {
+        cursor: ns-resize;
+      }
+    </style>
+  
+    <svg viewBox="0 0 120 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <!-- 玻璃筒体渐变 -->
+        <linearGradient id="gc__glass" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0"    stop-color="rgba(255,255,255,0.92)"/>
+          <stop offset="0.18" stop-color="var(--cmp-glass-fill, rgba(245,250,255,0.85))"/>
+          <stop offset="0.65" stop-color="var(--cmp-glass-fill, rgba(245,250,255,0.85))"/>
+          <stop offset="1"    stop-color="rgba(200,210,218,0.7)"/>
+        </linearGradient>
+  
+        <!-- 液体渐变 -->
+        <linearGradient id="gc__liquid" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0"    stop-color="var(--cmp-liquid-color, rgba(30,136,229,0.45))"/>
+          <stop offset="0.35" stop-color="var(--cmp-liquid-color, rgba(30,136,229,0.45))"/>
+          <stop offset="1"    stop-color="rgba(30,136,229,0.28)"/>
+        </linearGradient>
+  
+        <!-- 玻璃高光 -->
+        <linearGradient id="gc__glare" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0"    stop-color="rgba(255,255,255,0)"/>
+          <stop offset="0.3"  stop-color="rgba(255,255,255,0.6)"/>
+          <stop offset="0.5"  stop-color="rgba(255,255,255,0.15)"/>
+          <stop offset="1"    stop-color="rgba(255,255,255,0)"/>
+        </linearGradient>
+      </defs>
+  
+      <!-- 底座 -->
+      <rect class="gc__base" x="28" y="318" width="64" height="12" rx="3" ry="3"
+            fill="var(--cmp-glass-fill, rgba(245,250,255,0.85))"
+            stroke="var(--cmp-glass-stroke, #90a4ae)" stroke-width="1.2"/>
+      <rect x="30" y="320" width="60" height="3" rx="1" fill="rgba(255,255,255,0.5)"/>
+  
+      <!-- 筒体（微锥形 trapezoid → 用 path） -->
+      <path class="gc__body"
+            d="M38 318 L36 40 Q36 32 44 30 L76 30 Q84 32 84 40 L82 318 Z"
+            fill="url(#gc__glass)"
+            stroke="var(--cmp-glass-stroke, #90a4ae)" stroke-width="1.3"
+            stroke-linejoin="round"/>
+  
+      <!-- 倒液嘴 (spout) -->
+      <path class="gc__spout"
+            d="M36 40 L32 28 Q30 24 34 24 L44 30"
+            fill="var(--cmp-glass-fill, rgba(245,250,255,0.85))"
+            stroke="var(--cmp-glass-stroke, #90a4ae)" stroke-width="1.2"
+            stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M84 40 L88 28 Q90 24 86 24 L76 30"
+            fill="var(--cmp-glass-fill, rgba(245,250,255,0.85))"
+            stroke="var(--cmp-glass-stroke, #90a4ae)" stroke-width="1.2"
+            stroke-linejoin="round" stroke-linecap="round"/>
+  
+      <!-- 液体 (由JS动态更新) -->
+      <path class="gc__liquid" fill="url(#gc__liquid)" stroke="none"/>
+  
+      <!-- 弯月面 (meniscus, 由JS动态更新) -->
+      <path class="gc__meniscus" fill="none"
+            stroke="var(--cmp-liquid-color, rgba(30,136,229,0.45))"
+            stroke-width="1.5" stroke-linecap="round"/>
+  
+      <!-- 刻度线组 (由JS动态生成) -->
+      <g class="gc__ticks"></g>
+  
+      <!-- 玻璃高光条 -->
+      <rect x="44" y="34" width="8" height="280" rx="4"
+            fill="url(#gc__glare)" opacity="0.7" pointer-events="none"/>
+      <rect x="72" y="38" width="4" height="276" rx="2"
+            fill="rgba(255,255,255,0.25)" pointer-events="none"/>
+  
+      <!-- 交互区域（透明覆盖层） -->
+      <rect class="gc__interact" x="34" y="28" width="52" height="294"
+            fill="transparent" stroke="none"/>
+  
+      <!-- 读数文字 -->
+      <text class="gc__reading" x="60" y="348" text-anchor="middle"
+            font-size="11" font-weight="700"
+            fill="var(--cmp-label-color, #263238)"
+            font-family="'DIN Alternate', 'Arial Narrow', 'Segoe UI', sans-serif">60 mL</text>
+    </svg>
+  
+    <script>
+    (() => {
+      const script = document.currentScript;
+      if (!script) return;
+      const root = script.closest('[data-cmp-id="phy.apparatus.cylinder.graduated"]');
+      if (!root) return;
+  
+      const svgNS = 'http://www.w3.org/2000/svg';
+      const interactEl = root.querySelector('.gc__interact');
+      const liquidEl = root.querySelector('.gc__liquid');
+      const meniscusEl = root.querySelector('.gc__meniscus');
+      const ticksG = root.querySelector('.gc__ticks');
+      const readingEl = root.querySelector('.gc__reading');
+  
+      if (!interactEl || !liquidEl || !meniscusEl || !ticksG || !readingEl) return;
+  
+      /* ---- 工具函数 ---- */
+      const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+      const parseNum = (raw, fb) => { const n = parseFloat(raw); return Number.isFinite(n) ? n : fb; };
+      const isMultiple = (v, step) => Math.abs(v / step - Math.round(v / step)) < 1e-6;
+      const formatVol = (v) => {
+        const r = Math.round(v * 10) / 10;
+        return Number.isInteger(r) ? String(r) : r.toFixed(1);
+      };
+  
+      /* ---- 布局常量 (SVG viewBox 坐标系) ---- */
+      const BODY_TOP = 34;      /* 刻度区域顶部 Y（筒口内侧） */
+      const BODY_BOT = 316;     /* 刻度区域底部 Y（底座上方） */
+      const BODY_H = BODY_BOT - BODY_TOP;
+  
+      /* 筒体左右边缘（微锥形 → 随 Y 插值） */
+      const bodyLeft = (y) => 36 + (38 - 36) * ((y - 40) / (318 - 40));
+      const bodyRight = (y) => 84 + (82 - 84) * ((y - 40) / (318 - 40));
+  
+      /* ---- 状态 ---- */
+      const state = { maxVol: 100, volume: 60 };
+  
+      /* ---- 从 CSS 变量读取配置 ---- */
+      function syncConfig() {
+        const cs = getComputedStyle(root);
+        const maxV = parseNum(cs.getPropertyValue('--cmp-max-volume'), 100);
+        state.maxVol = maxV > 0 ? maxV : 100;
+        state.volume = clamp(parseNum(cs.getPropertyValue('--cmp-volume'), state.volume), 0, state.maxVol);
+      }
+  
+      /* ---- 自动选择刻度步长 ---- */
+      function chooseSteps(maxV) {
+        /* 目标：主刻度 5~12 条之间 */
+        const niceSteps = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000];
+        let major = 10;
+        for (let i = 0; i < niceSteps.length; i++) {
+          const count = maxV / niceSteps[i];
+          if (count >= 4 && count <= 12) { major = niceSteps[i]; break; }
+          if (count < 4 && i > 0) { major = niceSteps[i - 1]; break; }
+        }
+        /* minor 步长：major 的 1/5 或 1/10 */
+        let minor = major / 10;
+        if (major <= 5) minor = major / 5;
+        if (minor < 1 && maxV >= 50) minor = 1;
+        if (minor < 0.1) minor = major / 5;
+        const medium = major / 2;
+        return { major: major, medium: medium, minor: minor };
+      }
+  
+      /* ---- 刻度 Y 坐标（volume → Y） ---- */
+      function volToY(v) {
+        return BODY_BOT - (v / state.maxVol) * BODY_H;
+      }
+  
+      /* ---- 绘制刻度 ---- */
+      function createScale() {
+        ticksG.innerHTML = '';
+        const frag = document.createDocumentFragment();
+        const steps = chooseSteps(state.maxVol);
+        const minorStep = steps.minor;
+        const eps = minorStep / 1000;
+  
+        for (let v = 0; v <= state.maxVol + eps; v += minorStep) {
+          const rv = Math.round(v * 1000) / 1000;
+          if (rv > state.maxVol + eps) break;
+          const y = volToY(rv);
+          if (y < BODY_TOP || y > BODY_BOT) continue;
+  
+          const isMajor = isMultiple(rv, steps.major);
+          const isMedium = !isMajor && isMultiple(rv, steps.medium);
+  
+          const lx = bodyLeft(y);
+          const tickLen = isMajor ? 14 : (isMedium ? 10 : 6);
+          const sw = isMajor ? 1.3 : (isMedium ? 0.9 : 0.6);
+          const color = isMajor ? 'var(--cmp-scale-color, #37474f)' :
+                        (isMedium ? 'var(--cmp-scale-color, #37474f)' :
+                         'var(--cmp-scale-minor-color, #78909c)');
+  
+          const line = document.createElementNS(svgNS, 'line');
+          line.setAttribute('x1', lx.toFixed(1));
+          line.setAttribute('x2', (lx + tickLen).toFixed(1));
+          line.setAttribute('y1', y.toFixed(1));
+          line.setAttribute('y2', y.toFixed(1));
+          line.setAttribute('stroke', color);
+          line.setAttribute('stroke-width', sw);
+          line.setAttribute('stroke-linecap', 'round');
+          frag.appendChild(line);
+  
+          if (isMajor && rv > 0) {
+            const txt = document.createElementNS(svgNS, 'text');
+            txt.setAttribute('x', (lx + tickLen + 4).toFixed(1));
+            txt.setAttribute('y', (y + 3.5).toFixed(1));
+            txt.setAttribute('font-size', '8');
+            txt.setAttribute('font-weight', '600');
+            txt.setAttribute('fill', 'var(--cmp-label-color, #263238)');
+            txt.setAttribute('font-family', "'DIN Alternate', 'Arial Narrow', 'Segoe UI', sans-serif");
+            txt.textContent = formatVol(rv);
+            frag.appendChild(txt);
+          }
+        }
+  
+        ticksG.appendChild(frag);
+      }
+  
+      /* ---- 绘制液体 + 弯月面 ---- */
+      function renderLiquid() {
+        const ratio = clamp(state.volume / state.maxVol, 0, 1);
+        if (ratio <= 0) {
+          liquidEl.setAttribute('d', '');
+          meniscusEl.setAttribute('d', '');
+          return;
+        }
+  
+        const surfY = volToY(state.volume);
+        const botY = BODY_BOT;
+  
+        /* 筒体边缘坐标 */
+        const sL = bodyLeft(surfY);
+        const sR = bodyRight(surfY);
+        const bL = bodyLeft(botY);
+        const bR = bodyRight(botY);
+  
+        /* 弯月面凹陷深度（4~8px，随筒宽缩放） */
+        const meniscusDepth = clamp((sR - sL) * 0.12, 3, 10);
+  
+        /* 液体路径：从底部左 → 底部右 → 右壁到液面 → 弯月面（凹弧）→ 左壁到底部 */
+        const liquidD = [
+          `M${bL.toFixed(1)} ${botY}`,
+          `L${bR.toFixed(1)} ${botY}`,
+          `L${sR.toFixed(1)} ${surfY.toFixed(1)}`,
+          `Q${((sL + sR) / 2).toFixed(1)} ${(surfY + meniscusDepth).toFixed(1)} ${sL.toFixed(1)} ${surfY.toFixed(1)}`,
+          'Z'
+        ].join(' ');
+        liquidEl.setAttribute('d', liquidD);
+  
+        /* 弯月面弧线（仅描边，更突出弧形效果） */
+        const meniscusD = [
+          `M${sL.toFixed(1)} ${surfY.toFixed(1)}`,
+          `Q${((sL + sR) / 2).toFixed(1)} ${(surfY + meniscusDepth).toFixed(1)} ${sR.toFixed(1)} ${surfY.toFixed(1)}`
+        ].join(' ');
+        meniscusEl.setAttribute('d', meniscusD);
+      }
+  
+      /* ---- 设置液面 ---- */
+      function setVolume(nextVol, emit) {
+        const v = clamp(Math.round(nextVol), 0, state.maxVol);
+        state.volume = v;
+  
+        root.style.setProperty('--cmp-volume', String(v));
+        renderLiquid();
+  
+        readingEl.textContent = formatVol(v) + ' mL';
+        root.setAttribute('aria-label', '量筒（刻度），当前 ' + formatVol(v) + ' mL');
+  
+        if (emit) {
+          root.dispatchEvent(new CustomEvent('cmp-volume-change', {
+            detail: { volume: v },
+            bubbles: true
+          }));
+        }
+      }
+  
+      /* ---- pointer 交互 ---- */
+      function volFromPointer(clientY) {
+        const svg = root.querySelector('svg');
+        if (!svg) return state.volume;
+        const rect = svg.getBoundingClientRect();
+        /* 将客户端坐标映射到 SVG viewBox 坐标 */
+        const svgY = ((clientY - rect.top) / rect.height) * 360;
+        const clampedY = clamp(svgY, BODY_TOP, BODY_BOT);
+        const ratio = (BODY_BOT - clampedY) / BODY_H;
+        return ratio * state.maxVol;
+      }
+  
+      let activePtr = null;
+  
+      function onDown(e) {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        activePtr = e.pointerId;
+        if (interactEl.setPointerCapture) interactEl.setPointerCapture(activePtr);
+        setVolume(volFromPointer(e.clientY), true);
+      }
+      function onMove(e) {
+        if (activePtr !== e.pointerId) return;
+        setVolume(volFromPointer(e.clientY), true);
+      }
+      function onUp(e) {
+        if (activePtr !== e.pointerId) return;
+        if (interactEl.releasePointerCapture && interactEl.hasPointerCapture(activePtr)) {
+          interactEl.releasePointerCapture(activePtr);
+        }
+        activePtr = null;
+      }
+  
+      interactEl.addEventListener('pointerdown', onDown);
+      interactEl.addEventListener('pointermove', onMove);
+      interactEl.addEventListener('pointerup', onUp);
+      interactEl.addEventListener('pointercancel', onUp);
+      interactEl.style.touchAction = 'none';
+  
+      /* ---- 初始化 ---- */
+      syncConfig();
+      createScale();
+      setVolume(state.volume, false);
+  
+      /* ---- 响应尺寸变化 ---- */
+      if (typeof ResizeObserver !== 'undefined') {
+        const ro = new ResizeObserver(() => {
+          syncConfig();
+          createScale();
+          setVolume(state.volume, false);
+        });
+        ro.observe(root);
+      }
+    })();
+    </script>
+  </div>

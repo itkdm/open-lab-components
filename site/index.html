@@ -770,7 +770,6 @@
     function render() {
       const grid = document.getElementById('grid');
       const moreBtn = document.getElementById('moreBtn');
-      const MAX_DISPLAY = 16; // 首页最多显示16个组件
       
       if (!Array.isArray(registry) || registry.length === 0) {
         grid.innerHTML = `
@@ -785,8 +784,8 @@
         return;
       }
 
-      // 只显示前16个组件
-      const displayItems = registry.slice(0, MAX_DISPLAY);
+      // 首页不限制数量：展示全部组件
+      const displayItems = registry;
       
       grid.innerHTML = displayItems.map(c => {
         const categoryPath = c.category.replace('/', '/');
