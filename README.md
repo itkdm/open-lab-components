@@ -16,7 +16,7 @@
 
 ## 📦 组件列表
 
-当前包含 **9 个物理实验组件**，涵盖以下分类：
+Registry currently includes **28 components** (Math + Physics). Example components are listed below:
 
 ### 物理器材 (Physics Apparatus)
 - 💡 **灯泡** (`phy.apparatus.bulb.basic`) - 基础灯泡组件
@@ -302,11 +302,18 @@ npm run dev:site
 
 ## 📝 更新日志
 
-### v0.1.0 (2025-01-08)
-- ✨ 初始版本发布
-- 🎯 支持 9 个物理实验组件（包含物理器材 5 个、电路元件 4 个）
-- 📦 完整的构建和验证工具链
-- 📚 组件展示站和文档系统
+### v0.1.0 (Initial release)
+- Initial release
+- Complete build and validation toolchain
+- Component showcase and documentation system
+
+### Documentation status (as of 2026-02-14)
+- Registry currently includes 28 components:
+  - `math/clock`: 1
+  - `physics/apparatus`: 14
+  - `physics/circuit`: 9
+  - `physics/mechanics`: 1
+  - `physics/optics`: 3
 
 ## 🙏 致谢
 

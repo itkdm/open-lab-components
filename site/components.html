@@ -786,7 +786,7 @@
         select.appendChild(option);
       });
       
-      select.addEventListener('change', filter);
+      select.onchange = filter;
     }
 
     document.getElementById('sortFilter').addEventListener('change', (e) => {

@@ -16,7 +16,7 @@ English | [中文](./README.md)
 
 ## 📦 Component List
 
-Currently includes **9 physics experiment components**, covering the following categories:
+The registry currently includes **28 components** (Math + Physics). Below are some example components:
 
 ### Physics Apparatus
 - 💡 **Light Bulb** (`phy.apparatus.bulb.basic`) - Basic light bulb component
@@ -298,11 +298,18 @@ This project is licensed under the [MIT License](./LICENSE).
 
 ## 📝 Changelog
 
-### v0.1.0 (2025-01-08)
-- ✨ Initial release
-- 🎯 Support for 9 physics experiment components (5 physics apparatus, 4 circuit components)
-- 📦 Complete build and validation toolchain
-- 📚 Component showcase and documentation system
+### v0.1.0 (Initial release)
+- Initial release
+- Complete build and validation toolchain
+- Component showcase and documentation system
+
+### Documentation status (as of 2026-02-14)
+- Registry currently includes 28 components:
+  - `math/clock`: 1
+  - `physics/apparatus`: 14
+  - `physics/circuit`: 9
+  - `physics/mechanics`: 1
+  - `physics/optics`: 3
 
 ## 🙏 Acknowledgments
 
