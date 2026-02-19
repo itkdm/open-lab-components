@@ -35,7 +35,27 @@
     "rotatable": "--cmp-rotatable",
     "glow": "--cmp-glow"
   },
-  "tags": ["protractor", "angle", "measurement", "geometry", "interactive", "draggable"]
+  "tags": ["protractor", "angle", "measurement", "geometry", "interactive", "draggable"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "rotate | drag",
+      "values": {
+        "angle": "number(deg) — 当前旋转角度",
+        "x": "number(px) — 拖拽时的 left 坐标",
+        "y": "number(px) — 拖拽时的 top 坐标"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "rotate | drag",
+      "values": {
+        "angle": "number(deg) — 最终旋转角度",
+        "x": "number(px) — 最终 left 坐标",
+        "y": "number(px) — 最终 top 坐标"
+      }
+    }
+  ]
 }-->
 <div class="cmp" data-cmp-id="phy.apparatus.protractor.interactive" role="img" aria-label="量角器（交互式）">
     <svg class="cmp__svg" viewBox="0 0 960 480" aria-hidden="true">
@@ -283,6 +303,18 @@
     let initialRotation = 0;
     let initialAngle = 0;
 
+    function emitCmp(name, type) {
+        var vals = { angle: Math.round(getCurrentRotation() * 100) / 100 };
+        if (type === 'drag') {
+            vals.x = parseFloat(root.style.left) || 0;
+            vals.y = parseFloat(root.style.top) || 0;
+        }
+        root.dispatchEvent(new CustomEvent(name, {
+            bubbles: true, composed: true,
+            detail: { id: root.getAttribute('data-cmp-id'), type: type, values: vals }
+        }));
+    }
+
     function getCurrentRotation() {
         const rotate = parseNumber("--cmp-rotate") || 0;
         return rotate;
@@ -346,30 +378,34 @@
             e.preventDefault();
             const dx = e.clientX - dragStart.x;
             const dy = e.clientY - dragStart.y;
-            
+
             const currentLeft = root.offsetLeft || 0;
             const currentTop = root.offsetTop || 0;
-            
+
             root.style.position = "absolute";
             root.style.left = (currentLeft + dx) + "px";
             root.style.top = (currentTop + dy) + "px";
-            
+
             dragStart = { x: e.clientX, y: e.clientY };
+            emitCmp('cmp:change', 'drag');
         } else if (isRotating) {
             e.preventDefault();
             const local = clientToLocal(e);
             const currentAngle = getAngleFromCenter(local);
             const deltaAngle = currentAngle - initialAngle;
             setRotation(initialRotation + deltaAngle);
+            emitCmp('cmp:change', 'rotate');
         }
     }
 
     function onPointerUp(e) {
         if (isDragging || isRotating) {
             e.preventDefault();
+            var type = isDragging ? 'drag' : 'rotate';
             isDragging = false;
             isRotating = false;
             root.classList.remove("cmp--selected");
+            emitCmp('cmp:changeend', type);
         }
     }
 

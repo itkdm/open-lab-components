@@ -45,7 +45,11 @@
     "accent":        "--cmp-accent",
     "glow":          "--cmp-glow"
   },
-  "tags": ["optics", "mirror", "plane-mirror", "reflection", "law-of-reflection", "interactive", "draggable"]
+  "tags": ["optics", "mirror", "plane-mirror", "reflection", "law-of-reflection", "interactive", "draggable"],
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "angle": "number(deg) — 入射角", "objectDist": "number — 物距" } },
+    { "name": "cmp:changeend", "type": "slide", "values": { "angle": "number(deg) — 入射角", "objectDist": "number — 物距" } }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.optics.mirror.plane.interactive" role="img" aria-label="平面镜反射（交互式）">
@@ -445,6 +449,18 @@
   
       render();
   
+      /* ─── 事件派发 ─── */
+      function emitCmp(name) {
+        root.dispatchEvent(new CustomEvent(name, {
+          bubbles: true, composed: true,
+          detail: {
+            id: root.getAttribute('data-cmp-id'),
+            type: 'slide',
+            values: { angle: angle, objectDist: objDist }
+          }
+        }));
+      }
+
       /* ─── 拖拽 ─── */
       var dragging = false;
   
@@ -472,9 +488,11 @@
         var pt = e.touches ? e.touches[0] : e;
         angle = getAngleFromMouse(pt.clientX, pt.clientY);
         render();
+        emitCmp('cmp:change');
       }
       function onUp() {
         dragging = false;
+        emitCmp('cmp:changeend');
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
         document.removeEventListener('touchmove', onMove);

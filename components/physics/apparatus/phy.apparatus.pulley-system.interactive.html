@@ -41,7 +41,11 @@
     "accent":       "--cmp-accent",
     "glow":         "--cmp-glow"
   },
-  "tags": ["pulley", "pulley-system", "compound-pulley", "simple-machine", "mechanics", "interactive", "draggable"]
+  "tags": ["pulley", "pulley-system", "compound-pulley", "simple-machine", "mechanics", "interactive", "draggable"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "ratio": "number(0-1) — 拉绳比例", "force": "number(N) — 拉力" } },
+    { "name": "cmp:changeend", "type": "adjust", "values": { "ratio": "number(0-1) — 拉绳比例", "force": "number(N) — 拉力" } }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.pulley-system.interactive" role="img" aria-label="滑轮组（交互式）">
@@ -465,8 +469,17 @@
           '，施力 ' + force.toFixed(2) + ' N（3段绳承重，省力 1/3）');
       }
   
+      function emitPulley(name) {
+        var massKg_ = (massUnit === 'kg') ? loadMass : loadMass / 1000;
+        var force_ = massKg_ * 9.8 / 3;
+        root.dispatchEvent(new CustomEvent(name, {
+          bubbles: true, composed: true,
+          detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust', values: { ratio: Math.round(ratio * 100) / 100, force: Math.round(force_ * 100) / 100 } }
+        }));
+      }
+
       render();
-  
+
       /* ─── 拖拽 ─── */
       var dragging = false;
       var startClientY = 0, startRatio = 0;
@@ -492,6 +505,7 @@
         var newRatio = startRatio + dy / (MOV_TRAVEL * 3);
         ratio = Math.max(0, Math.min(1, newRatio));
         render();
+        emitPulley('cmp:change');
       }
       function onUp() {
         dragging = false;
@@ -499,6 +513,7 @@
         document.removeEventListener('mouseup',   onUp);
         document.removeEventListener('touchmove', onMove);
         document.removeEventListener('touchend',  onUp);
+        emitPulley('cmp:changeend');
       }
   
       var handle = root.querySelector('.ps__handle');

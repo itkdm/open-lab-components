@@ -38,7 +38,31 @@
     "armColor": "--cmp-arm", "weightColor": "--cmp-weight",
     "accent": "--cmp-accent", "glow": "--cmp-glow"
   },
-  "tags": ["lever","mechanics","force","torque","fulcrum","interactive","draggable"]
+  "tags": ["lever","mechanics","force","torque","fulcrum","interactive","draggable"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "l1": "number(0-1) — 动力臂占半梁比",
+        "l2": "number(0-1) — 阻力臂占半梁比",
+        "torque1": "number — 动力矩 F₁·L₁",
+        "torque2": "number — 阻力矩 F₂·L₂",
+        "balanced": "boolean — 是否平衡"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "adjust",
+      "values": {
+        "l1": "number(0-1) — 动力臂占半梁比",
+        "l2": "number(0-1) — 阻力臂占半梁比",
+        "torque1": "number — 动力矩 F₁·L₁",
+        "torque2": "number — 阻力矩 F₂·L₂",
+        "balanced": "boolean — 是否平衡"
+      }
+    }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.lever.interactive" role="img" aria-label="杠杆（交互式）">
@@ -353,7 +377,19 @@
       }
   
       render();
-  
+
+      /* ─── 事件派发 ─── */
+      function getLeverValues(){
+        var t1=f1*l1Ratio*10, t2=f2*l2Ratio*10;
+        return {l1:Math.round(l1Ratio*100)/100, l2:Math.round(l2Ratio*100)/100,
+                torque1:Math.round(t1*10)/10, torque2:Math.round(t2*10)/10,
+                balanced:Math.abs(t1-t2)<0.05*Math.max(t1,t2,1)};
+      }
+      function emitLever(name){
+        root.dispatchEvent(new CustomEvent(name,{bubbles:true,composed:true,
+          detail:{id:root.getAttribute('data-cmp-id'),type:'adjust',values:getLeverValues()}}));
+      }
+
       /* ─── 拖拽 ─── */
       var dragging=0; /* 0=无, 1=拖F1, 2=拖F2 */
   
@@ -385,6 +421,7 @@
           l2Ratio=Math.max(0.1,Math.min(0.9, d2/HALF));
         }
         render();
+        emitLever('cmp:change');
       }
       function onU(){
         dragging=0;
@@ -392,6 +429,7 @@
         document.removeEventListener('mouseup',onU);
         document.removeEventListener('touchmove',onM);
         document.removeEventListener('touchend',onU);
+        emitLever('cmp:changeend');
       }
   
       var d1=root.querySelector('.lvr__drag1');

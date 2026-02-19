@@ -38,7 +38,23 @@
     "accent":       "--cmp-accent",
     "glow":         "--cmp-glow"
   },
-  "tags": ["spring-scale", "dynamometer", "force", "apparatus", "measurement", "interactive", "draggable"]
+  "tags": ["spring-scale", "dynamometer", "force", "apparatus", "measurement", "interactive", "draggable"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "force": "number(N) — 当前力值"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "force": "number(N) — 最终力值"
+      }
+    }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.spring-scale.interactive" role="img" aria-label="弹簧测力计（交互式）">
@@ -269,6 +285,13 @@
     /* ---- 初始渲染 ---- */
     render(curF);
 
+    function emitForce(name) {
+        root.dispatchEvent(new CustomEvent(name, {
+            bubbles: true, composed: true,
+            detail: { id: root.getAttribute('data-cmp-id'), type: 'slide', values: { force: Math.round(curF * 100) / 100 } }
+        }));
+    }
+
     /* ---- 拖拽交互 ---- */
     let dragging = false;
     let startY = 0, startForce = 0;
@@ -299,10 +322,12 @@
       const dForce = (dy / scale) / WIN_H * maxF;
       curF = Math.max(0, Math.min(maxF, startForce + dForce));
       render(curF);
+      emitForce('cmp:change');
     }
 
     function onEnd() {
       dragging = false;
+      emitForce('cmp:changeend');
       document.removeEventListener('mousemove', onMove);
       document.removeEventListener('mouseup', onEnd);
       document.removeEventListener('touchmove', onMove);

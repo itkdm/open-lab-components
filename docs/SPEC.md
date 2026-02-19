@@ -179,6 +179,15 @@ Manifest 顶层字段（v1）：
 3. JS 只能查询/操作自己的根节点内部 DOM。
 4. 禁止网络请求；禁止读取/写入宿主敏感数据；禁止永久运行的定时器。
 
+### 6.3 交互事件协议（建议）
+
+交互组件应通过 `CustomEvent` 通知宿主状态变化，详见 [`docs/EVENT.md`](./EVENT.md)。
+
+- 事件名：`cmp:change`（过程中持续触发）、`cmp:changeend`（交互结束时触发一次）
+- 事件必须 `bubbles: true, composed: true`
+- `detail` 结构：`{ id, type, values }`
+- Manifest 中应声明 `events` 字段描述组件支持的事件
+
 建议模式：
 
 ```html

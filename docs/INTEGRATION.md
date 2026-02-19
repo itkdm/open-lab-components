@@ -315,62 +315,122 @@ beaker.setAttribute('data-props', JSON.stringify({
 
 ## 7. 监听交互事件
 
-当前组件库的交互组件（量角器、杠杆、滑动变阻器等）通过直接操作 DOM 实现交互，暂未定义统一的自定义事件协议。以下是几种获取交互状态的方式：
+交互组件在用户操作时通过标准 `CustomEvent` 通知宿主。完整协议见 [`EVENT.md`](./EVENT.md)。
 
-### 7.1 监听 DOM 属性变化
+### 7.1 事件类型
 
-交互组件在操作后会更新 `aria-label` 或内部元素的属性。可以用 `MutationObserver` 捕获：
+| 事件名 | 触发时机 | 说明 |
+|--------|---------|------|
+| `cmp:change` | 交互过程中持续触发 | 拖拽/旋转/滑动时每帧触发 |
+| `cmp:changeend` | 交互结束时触发一次 | 松开鼠标/手指时触发 |
+
+事件 `detail` 结构：
 
 ```js
+{
+  id: "phy.rheostat.slide.interactive",  // 组件 ID
+  type: "slide",                          // 交互类型：slide | drag | rotate | toggle | adjust
+  values: { ratio: 0.65, resistance: 13 } // 组件特定的数值
+}
+```
+
+### 7.2 基础监听
+
+```js
+// 监听单个组件
 const rheostat = document.querySelector('[data-cmp-id="phy.rheostat.slide.interactive"]');
 
-const observer = new MutationObserver(mutations => {
-  for (const m of mutations) {
-    if (m.attributeName === 'aria-label') {
-      console.log('状态变化:', rheostat.getAttribute('aria-label'));
-    }
-  }
+rheostat.addEventListener('cmp:change', e => {
+  console.log('滑动中:', e.detail.values);
+  // → { ratio: 0.65, resistance: 13 }
 });
 
-observer.observe(rheostat, { attributes: true, subtree: true });
+rheostat.addEventListener('cmp:changeend', e => {
+  console.log('滑动结束:', e.detail.values);
+});
 ```
 
-### 7.2 轮询内部状态
+### 7.3 事件代理（推荐）
 
-对于需要精确数值的场景，可以读取组件内部元素的状态：
+由于事件设置了 `bubbles: true`，可以在容器上统一监听所有组件：
 
 ```js
-// 示例：读取滑动变阻器的当前位置
-const slider = rheostat.querySelector('.rhe__slider');
-// 具体属性取决于组件实现，建议查看组件源码
+document.getElementById('lab-container').addEventListener('cmp:change', e => {
+  const { id, type, values } = e.detail;
+  console.log(`[${id}] ${type}:`, values);
+});
 ```
 
-### 7.3 包装为自定义事件（推荐做法）
+### 7.4 在 React 中监听
 
-如果你需要统一的事件接口，可以在宿主层包装：
+```jsx
+function LabComponent({ html, style, onChange, onChangeEnd }) {
+  const containerRef = useRef(null);
 
-```js
-function watchComponent(cmpElement, callback) {
-  const observer = new MutationObserver(() => {
-    callback({
-      id: cmpElement.getAttribute('data-cmp-id'),
-      label: cmpElement.getAttribute('aria-label'),
-      props: cmpElement.getAttribute('data-props')
-    });
-  });
-  observer.observe(cmpElement, {
-    attributes: true,
-    attributeFilter: ['aria-label', 'data-props', 'style'],
-    subtree: true
-  });
-  return () => observer.disconnect();
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    // ... 加载组件 HTML（见第 3 节）...
+
+    const handleChange = e => onChange?.(e.detail);
+    const handleEnd = e => onChangeEnd?.(e.detail);
+    el.addEventListener('cmp:change', handleChange);
+    el.addEventListener('cmp:changeend', handleEnd);
+    return () => {
+      el.removeEventListener('cmp:change', handleChange);
+      el.removeEventListener('cmp:changeend', handleEnd);
+    };
+  }, [html, onChange, onChangeEnd]);
+
+  return <div ref={containerRef} />;
 }
-
-// 使用
-const cleanup = watchComponent(rheostat, state => {
-  console.log('组件状态更新:', state);
-});
 ```
+
+### 7.5 在 Vue 中监听
+
+```vue
+<template>
+  <div ref="container"></div>
+</template>
+
+<script setup>
+import { ref, onMounted, onUnmounted } from 'vue';
+
+const emit = defineEmits(['change', 'changeend']);
+const container = ref(null);
+
+function onCmpChange(e) { emit('change', e.detail); }
+function onCmpEnd(e) { emit('changeend', e.detail); }
+
+onMounted(() => {
+  container.value.addEventListener('cmp:change', onCmpChange);
+  container.value.addEventListener('cmp:changeend', onCmpEnd);
+});
+onUnmounted(() => {
+  container.value?.removeEventListener('cmp:change', onCmpChange);
+  container.value?.removeEventListener('cmp:changeend', onCmpEnd);
+});
+</script>
+```
+
+### 7.6 各组件事件 values 速查
+
+| 组件 | type | values 字段 |
+|------|------|------------|
+| 滑动变阻器 | `slide` | `ratio`, `resistance` |
+| 量角器 | `rotate` / `drag` | `angle`, `x`, `y` |
+| 杠杆 | `adjust` | `leftDist`, `rightDist`, `leftMass`, `rightMass`, `balanced` |
+| 温度计 | `slide` | `temperature` |
+| 弹簧测力计 | `slide` | `force` |
+| 秒表 | `toggle` | `running`, `elapsed` |
+| 凸透镜 | `drag` | `objectDist`, `imageDist` |
+| 平面镜 | `drag` | `angle`, `objectDist` |
+| 折射演示 | `drag` | `angle` |
+| 定滑轮 | `adjust` | `ratio`, `force` |
+| 动滑轮 | `adjust` | `ratio`, `force` |
+| 滑轮组 | `adjust` | `ratio`, `force` |
+
+> 完整字段说明见 [`EVENT.md`](./EVENT.md)。
 
 ---
 

@@ -15,7 +15,17 @@
     "size": "--cmp-size",
     "accent": "--cmp-accent"
   },
-  "tags": ["timer", "apparatus", "interactive", "measurement"]
+  "tags": ["timer", "apparatus", "interactive", "measurement"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "running": "boolean — 是否正在计时",
+        "elapsed": "number(ms) — 已计时间（毫秒）"
+      }
+    }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.timer.interactive" role="img" aria-label="计时器（交互式）">
@@ -146,6 +156,13 @@
           }
         }
 
+        function emitTimer() {
+            root.dispatchEvent(new CustomEvent('cmp:change', {
+                bubbles: true, composed: true,
+                detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle', values: { running: !!timerInterval, elapsed: elapsedTime } }
+            }));
+        }
+
         function start() {
           if (timerInterval) return;
           startTime = Date.now() - elapsedTime;
@@ -156,6 +173,7 @@
           if (iconPlay) iconPlay.style.display = 'none';
           if (iconPause) iconPause.style.display = 'block';
           if (btnToggle) btnToggle.setAttribute('aria-label', '暂停计时');
+          emitTimer();
         }
 
         function stop() {
@@ -166,6 +184,7 @@
           if (iconPlay) iconPlay.style.display = 'block';
           if (iconPause) iconPause.style.display = 'none';
           if (btnToggle) btnToggle.setAttribute('aria-label', '开始计时');
+          emitTimer();
         }
 
         if (btnToggle) {
@@ -180,6 +199,7 @@
             stop();
             elapsedTime = 0;
             updateDisplay();
+            emitTimer();
           });
         }
 

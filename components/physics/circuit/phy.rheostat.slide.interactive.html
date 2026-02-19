@@ -40,7 +40,25 @@
     "baseColor":   "--cmp-base",
     "glow":        "--cmp-glow"
   },
-  "tags": ["rheostat", "variable-resistor", "slider", "circuit", "interactive"]
+  "tags": ["rheostat", "variable-resistor", "slider", "circuit", "interactive"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "position": "number(0-1) — 滑块位置（0=最左，1=最右）",
+        "resistance": "number(Ω) — 当前电阻值"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "position": "number(0-1) — 滑块位置",
+        "resistance": "number(Ω) — 当前电阻值"
+      }
+    }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.rheostat.slide.interactive" role="img" aria-label="滑动变阻器 50Ω">
@@ -403,6 +421,23 @@
             '滑动变阻器 ' + maxR + 'Ω，当前 ' + currentR + 'Ω');
     }
 
+    /* ── 事件派发 ── */
+    function getValues() {
+        return { position: Math.round(pos * 100) / 100, resistance: Math.round(pos * maxR * 10) / 10 };
+    }
+    function emitChange() {
+        root.dispatchEvent(new CustomEvent('cmp:change', {
+            bubbles: true, composed: true,
+            detail: { id: root.getAttribute('data-cmp-id'), type: 'slide', values: getValues() }
+        }));
+    }
+    function emitChangeEnd() {
+        root.dispatchEvent(new CustomEvent('cmp:changeend', {
+            bubbles: true, composed: true,
+            detail: { id: root.getAttribute('data-cmp-id'), type: 'slide', values: getValues() }
+        }));
+    }
+
     /* 初始化 */
     update();
 
@@ -444,6 +479,7 @@
         const x = Math.max(RAIL_LEFT, Math.min(RAIL_RIGHT, pt.x));
         pos = (x - RAIL_LEFT) / (RAIL_RIGHT - RAIL_LEFT);
         update();
+        emitChange();
     }
 
     function onUp(e) {
@@ -453,6 +489,7 @@
         if (e.pointerId !== undefined) {
             try { svg.releasePointerCapture(e.pointerId); } catch (ex) { /* ignore */ }
         }
+        emitChangeEnd();
     }
 
     /* 事件绑定 */

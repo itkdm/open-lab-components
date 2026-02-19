@@ -33,7 +33,23 @@
     "scaleMinorColor": "--cmp-scale-minor-color",
     "labelColor": "--cmp-label-color"
   },
-  "tags": ["thermometer", "temperature", "apparatus", "interactive", "measurement"]
+  "tags": ["thermometer", "temperature", "apparatus", "interactive", "measurement"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "temperature": "number(°C) — 当前温度"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "temperature": "number(°C) — 最终温度"
+      }
+    }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.thermometer.interactive" role="img" aria-label="温度计（交互式）">
@@ -346,6 +362,10 @@
             detail: { temperature: clamped },
             bubbles: true
           }));
+          root.dispatchEvent(new CustomEvent('cmp:change', {
+            bubbles: true, composed: true,
+            detail: { id: root.getAttribute('data-cmp-id'), type: 'slide', values: { temperature: clamped } }
+          }));
         }
       }
 
@@ -442,6 +462,10 @@
         if (measureArea.releasePointerCapture && measureArea.hasPointerCapture(activePointerId)) {
           measureArea.releasePointerCapture(activePointerId);
         }
+        root.dispatchEvent(new CustomEvent('cmp:changeend', {
+            bubbles: true, composed: true,
+            detail: { id: root.getAttribute('data-cmp-id'), type: 'slide', values: { temperature: state.temperature } }
+        }));
         activePointerId = null;
       }
 

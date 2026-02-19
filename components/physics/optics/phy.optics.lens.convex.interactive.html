@@ -48,7 +48,11 @@
     "accent":       "--cmp-accent",
     "glow":         "--cmp-glow"
   },
-  "tags": ["optics", "lens", "convex-lens", "imaging", "refraction", "interactive", "draggable"]
+  "tags": ["optics", "lens", "convex-lens", "imaging", "refraction", "interactive", "draggable"],
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "objectDist": "number — 物距 u", "imageDist": "number — 像距 v" } },
+    { "name": "cmp:changeend", "type": "slide", "values": { "objectDist": "number — 物距 u", "imageDist": "number — 像距 v" } }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.optics.lens.convex.interactive" role="img" aria-label="凸透镜成像（交互式）">
@@ -500,6 +504,19 @@
       initMarkers();
       render();
   
+      /* ─── 事件派发 ─── */
+      function emitCmp(name) {
+        var vCalc = (Math.abs(u - f) < 0.5) ? Infinity : u * f / (u - f);
+        root.dispatchEvent(new CustomEvent(name, {
+          bubbles: true, composed: true,
+          detail: {
+            id: root.getAttribute('data-cmp-id'),
+            type: 'slide',
+            values: { objectDist: u, imageDist: vCalc }
+          }
+        }));
+      }
+
       /* ─── 拖拽物体（水平移动改变物距） ─── */
       var dragging = false;
       var startClientX = 0, startU = 0;
@@ -527,9 +544,11 @@
         var newU = startU - dx;
         u = Math.max(15, Math.min(300, newU));
         render();
+        emitCmp('cmp:change');
       }
       function onUp() {
         dragging = false;
+        emitCmp('cmp:changeend');
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup',   onUp);
         document.removeEventListener('touchmove', onMove);

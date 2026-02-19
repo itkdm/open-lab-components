@@ -43,7 +43,11 @@
     "accent":       "--cmp-accent",
     "glow":         "--cmp-glow"
   },
-  "tags": ["pulley", "fixed-pulley", "simple-machine", "mechanics", "interactive", "draggable"]
+  "tags": ["pulley", "fixed-pulley", "simple-machine", "mechanics", "interactive", "draggable"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "ratio": "number(0-1) — 拉绳比例", "force": "number(N) — 拉力" } },
+    { "name": "cmp:changeend", "type": "adjust", "values": { "ratio": "number(0-1) — 拉绳比例", "force": "number(N) — 拉力" } }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.pulley-fixed.interactive" role="img" aria-label="定滑轮（交互式）">
@@ -370,8 +374,17 @@
           '，施力 ' + force.toFixed(2) + ' N');
       }
   
+      function emitPulley(name) {
+        var massKg_ = (massUnit === 'kg') ? loadMass : loadMass / 1000;
+        var force_ = massKg_ * 9.8;
+        root.dispatchEvent(new CustomEvent(name, {
+          bubbles: true, composed: true,
+          detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust', values: { ratio: Math.round(ratio * 100) / 100, force: Math.round(force_ * 100) / 100 } }
+        }));
+      }
+
       render();
-  
+
       /* ─── 拖拽 ─── */
       var dragging = false;
       var startClientY = 0, startRatio = 0;
@@ -396,6 +409,7 @@
         var dy = (pt.clientY - startClientY) / scale;
         ratio = Math.max(0, Math.min(1, startRatio + dy / TRAVEL));
         render();
+        emitPulley('cmp:change');
       }
       function onUp() {
         dragging = false;
@@ -403,6 +417,7 @@
         document.removeEventListener('mouseup',   onUp);
         document.removeEventListener('touchmove', onMove);
         document.removeEventListener('touchend',  onUp);
+        emitPulley('cmp:changeend');
       }
   
       var handle = root.querySelector('.ipl__handle');

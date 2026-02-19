@@ -43,7 +43,11 @@
     "reflectColor": "--cmp-reflect", "rayWidth": "--cmp-ray-width",
     "accent": "--cmp-accent", "glow": "--cmp-glow"
   },
-  "tags": ["optics","refraction","snell-law","light","interactive","draggable"]
+  "tags": ["optics","refraction","snell-law","light","interactive","draggable"],
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "angle": "number(deg) — 入射角" } },
+    { "name": "cmp:changeend", "type": "slide", "values": { "angle": "number(deg) — 入射角" } }
+  ]
 }
 -->
 <div class="cmp" data-cmp-id="phy.optics.refraction.interactive" role="img" aria-label="光的折射（交互式）">
@@ -364,6 +368,18 @@
   
       render();
   
+      /* ─── 事件派发 ─── */
+      function emitCmp(name){
+        root.dispatchEvent(new CustomEvent(name,{
+          bubbles:true, composed:true,
+          detail:{
+            id:root.getAttribute('data-cmp-id'),
+            type:'slide',
+            values:{ angle:angle }
+          }
+        }));
+      }
+
       /* ─── 拖拽 ─── */
       var dragging=false;
   
@@ -391,9 +407,11 @@
         var pt=e.touches?e.touches[0]:e;
         angle=calcAngle(pt.clientX,pt.clientY);
         render();
+        emitCmp('cmp:change');
       }
       function onU(){
         dragging=false;
+        emitCmp('cmp:changeend');
         document.removeEventListener('mousemove',onM);
         document.removeEventListener('mouseup',onU);
         document.removeEventListener('touchmove',onM);
