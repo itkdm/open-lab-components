@@ -1,0 +1,135 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.coordinate.cartesian.basic",
+  "name": "坐标系",
+  "nameEn": "Cartesian Coordinate",
+  "category": "math/coordinate",
+  "version": "1.0.0",
+  "viewport": { "w": 220, "h": 220 },
+  "tags": ["math", "coordinate", "cartesian", "axis", "grid"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 220, "min": 150, "max": 400, "desc": "组件尺寸" },
+    { "key": "xMin", "type": "number", "default": -5, "desc": "X轴最小值" },
+    { "key": "xMax", "type": "number", "default": 5, "desc": "X轴最大值" },
+    { "key": "yMin", "type": "number", "default": -5, "desc": "Y轴最小值" },
+    { "key": "yMax", "type": "number", "default": 5, "desc": "Y轴最大值" },
+    { "key": "axisColor", "type": "color", "default": "#333", "desc": "坐标轴颜色" },
+    { "key": "gridColor", "type": "color", "default": "#e0e0e0", "desc": "网格颜色" },
+    { "key": "showGrid", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "显示网格" },
+    { "key": "showNumbers", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "显示刻度数字" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "axisColor": "--cmp-axis",
+    "gridColor": "--cmp-grid"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="math.coordinate.cartesian.basic" role="img" aria-label="坐标系">
+  <svg class="coord__svg" viewBox="0 0 220 220" aria-hidden="true">
+    <defs>
+      <marker id="coord-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="var(--cmp-axis, #333)"/>
+      </marker>
+    </defs>
+    <g class="coord__grid"></g>
+    <g class="coord__axes"></g>
+    <g class="coord__ticks"></g>
+    <g class="coord__numbers"></g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "math.coordinate.cartesian.basic") return;
+
+  const svg = root.querySelector(".coord__svg");
+  const gridG = root.querySelector(".coord__grid");
+  const axesG = root.querySelector(".coord__axes");
+  const ticksG = root.querySelector(".coord__ticks");
+  const numsG = root.querySelector(".coord__numbers");
+
+  let props = {};
+  try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+
+  const xMin = props.xMin ?? -5, xMax = props.xMax ?? 5;
+  const yMin = props.yMin ?? -5, yMax = props.yMax ?? 5;
+  const showGrid = props.showGrid !== "off";
+  const showNums = props.showNumbers !== "off";
+
+  const pad = 25, w = 220 - 2 * pad, h = 220 - 2 * pad;
+  const ox = pad + (-xMin / (xMax - xMin)) * w;
+  const oy = pad + (yMax / (yMax - yMin)) * h;
+
+  const toX = v => pad + ((v - xMin) / (xMax - xMin)) * w;
+  const toY = v => pad + ((yMax - v) / (yMax - yMin)) * h;
+
+  // 网格和刻度
+  for (let i = Math.ceil(xMin); i <= Math.floor(xMax); i++) {
+    const x = toX(i);
+    if (showGrid && i !== 0) {
+      const gl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      gl.setAttribute("x1", x); gl.setAttribute("x2", x);
+      gl.setAttribute("y1", pad); gl.setAttribute("y2", 220 - pad);
+      gl.setAttribute("stroke", "var(--cmp-grid, #e0e0e0)"); gl.setAttribute("stroke-width", "0.5");
+      gridG.appendChild(gl);
+    }
+    const tk = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    tk.setAttribute("x1", x); tk.setAttribute("x2", x);
+    tk.setAttribute("y1", oy - 3); tk.setAttribute("y2", oy + 3);
+    tk.setAttribute("stroke", "var(--cmp-axis, #333)"); tk.setAttribute("stroke-width", "1");
+    ticksG.appendChild(tk);
+    if (showNums && i !== 0) {
+      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      txt.setAttribute("x", x); txt.setAttribute("y", oy + 14);
+      txt.setAttribute("text-anchor", "middle"); txt.setAttribute("font-size", "10");
+      txt.setAttribute("fill", "var(--cmp-axis, #333)"); txt.textContent = i;
+      numsG.appendChild(txt);
+    }
+  }
+  for (let i = Math.ceil(yMin); i <= Math.floor(yMax); i++) {
+    const y = toY(i);
+    if (showGrid && i !== 0) {
+      const gl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      gl.setAttribute("x1", pad); gl.setAttribute("x2", 220 - pad);
+      gl.setAttribute("y1", y); gl.setAttribute("y2", y);
+      gl.setAttribute("stroke", "var(--cmp-grid, #e0e0e0)"); gl.setAttribute("stroke-width", "0.5");
+      gridG.appendChild(gl);
+    }
+    const tk = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    tk.setAttribute("x1", ox - 3); tk.setAttribute("x2", ox + 3);
+    tk.setAttribute("y1", y); tk.setAttribute("y2", y);
+    tk.setAttribute("stroke", "var(--cmp-axis, #333)"); tk.setAttribute("stroke-width", "1");
+    ticksG.appendChild(tk);
+    if (showNums && i !== 0) {
+      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      txt.setAttribute("x", ox - 8); txt.setAttribute("y", y + 3);
+      txt.setAttribute("text-anchor", "end"); txt.setAttribute("font-size", "10");
+      txt.setAttribute("fill", "var(--cmp-axis, #333)"); txt.textContent = i;
+      numsG.appendChild(txt);
+    }
+  }
+
+  // 坐标轴
+  axesG.innerHTML = `
+    <line x1="${pad-5}" y1="${oy}" x2="${220-pad+10}" y2="${oy}" stroke="var(--cmp-axis,#333)" stroke-width="1.5" marker-end="url(#coord-arrow)"/>
+    <line x1="${ox}" y1="${220-pad+5}" x2="${ox}" y2="${pad-10}" stroke="var(--cmp-axis,#333)" stroke-width="1.5" marker-end="url(#coord-arrow)"/>
+    <text x="${220-pad+12}" y="${oy+4}" font-size="12" font-style="italic" fill="var(--cmp-axis,#333)">x</text>
+    <text x="${ox+6}" y="${pad-12}" font-size="12" font-style="italic" fill="var(--cmp-axis,#333)">y</text>
+    <text x="${ox-6}" y="${oy+12}" font-size="10" fill="var(--cmp-axis,#333)">O</text>
+  `;
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="math.coordinate.cartesian.basic"] {
+  width: var(--cmp-size, 220px);
+  height: var(--cmp-size, 220px);
+  display: inline-block;
+}
+.cmp[data-cmp-id="math.coordinate.cartesian.basic"] .coord__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>

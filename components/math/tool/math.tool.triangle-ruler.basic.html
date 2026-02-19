@@ -1,0 +1,133 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.tool.triangle-ruler.basic",
+  "name": "三角尺",
+  "nameEn": "Triangle Ruler",
+  "category": "math/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 180 },
+  "tags": ["math", "ruler", "triangle", "measurement", "geometry"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 150, "max": 500, "desc": "组件宽度" },
+    { "key": "type", "type": "enum", "default": "45", "enum": ["45", "60"], "desc": "三角尺类型(45°或60°)" },
+    { "key": "rotate", "type": "number(deg)", "default": 0, "desc": "旋转角度" },
+    { "key": "opacity", "type": "number(0-1)", "default": 0.9, "desc": "透明度" },
+    { "key": "fill", "type": "color", "default": "rgba(200,230,255,0.3)", "desc": "填充色" },
+    { "key": "stroke", "type": "color", "default": "#1976d2", "desc": "描边颜色" },
+    { "key": "scaleColor", "type": "color", "default": "#1565c0", "desc": "刻度颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "rotate": "--cmp-rotate",
+    "opacity": "--cmp-opacity",
+    "fill": "--cmp-fill",
+    "stroke": "--cmp-stroke",
+    "scaleColor": "--cmp-scale-color"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="math.tool.triangle-ruler.basic" role="img" aria-label="三角尺">
+  <svg class="tr__svg" viewBox="0 0 300 180" aria-hidden="true">
+    <defs>
+      <linearGradient id="tr-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:var(--cmp-fill, rgba(200,230,255,0.4))"/>
+        <stop offset="100%" style="stop-color:var(--cmp-fill, rgba(200,230,255,0.2))"/>
+      </linearGradient>
+    </defs>
+    <!-- 三角形主体 -->
+    <polygon class="tr__body" points="10,170 290,170 10,10" fill="url(#tr-grad)" stroke="var(--cmp-stroke, #1976d2)" stroke-width="2"/>
+    <!-- 内部镂空 -->
+    <polygon class="tr__hole" points="40,150 200,150 40,50" fill="white" fill-opacity="0.5" stroke="var(--cmp-stroke, #1976d2)" stroke-width="1" opacity="0.5"/>
+    <!-- 刻度容器 -->
+    <g class="tr__scales"></g>
+    <!-- 角度标记 -->
+    <g class="tr__angles"></g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "math.tool.triangle-ruler.basic") return;
+
+  const scalesG = root.querySelector(".tr__scales");
+  const anglesG = root.querySelector(".tr__angles");
+  if (!scalesG || !anglesG) return;
+
+  // 底边刻度 (0-14cm)
+  for (let i = 0; i <= 14; i++) {
+    const x = 10 + i * 20;
+    const isMajor = i % 5 === 0;
+    const len = isMajor ? 12 : 6;
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", x); line.setAttribute("x2", x);
+    line.setAttribute("y1", 170); line.setAttribute("y2", 170 - len);
+    line.setAttribute("stroke", "var(--cmp-scale-color, #1565c0)");
+    line.setAttribute("stroke-width", isMajor ? "1.5" : "1");
+    scalesG.appendChild(line);
+
+    if (isMajor && i > 0) {
+      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      txt.setAttribute("x", x); txt.setAttribute("y", 155);
+      txt.setAttribute("text-anchor", "middle"); txt.setAttribute("font-size", "10");
+      txt.setAttribute("fill", "var(--cmp-scale-color, #1565c0)");
+      txt.textContent = i;
+      scalesG.appendChild(txt);
+    }
+  }
+
+  // 0刻度数字单独放在左下角顶点
+  const zeroTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  zeroTxt.setAttribute("x", 5); zeroTxt.setAttribute("y", 178);
+  zeroTxt.setAttribute("text-anchor", "start"); zeroTxt.setAttribute("font-size", "10");
+  zeroTxt.setAttribute("fill", "var(--cmp-scale-color, #1565c0)");
+  zeroTxt.textContent = "0";
+  scalesG.appendChild(zeroTxt);
+
+  // 竖边刻度 (从下往上，0在底部与底边共用)
+  for (let i = 1; i <= 8; i++) {
+    const y = 170 - i * 20;
+    const isMajor = i % 5 === 0;
+    const len = isMajor ? 12 : 6;
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", 10); line.setAttribute("x2", 10 + len);
+    line.setAttribute("y1", y); line.setAttribute("y2", y);
+    line.setAttribute("stroke", "var(--cmp-scale-color, #1565c0)");
+    line.setAttribute("stroke-width", isMajor ? "1.5" : "1");
+    scalesG.appendChild(line);
+
+    if (isMajor) {
+      const txt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      txt.setAttribute("x", 26); txt.setAttribute("y", y + 3);
+      txt.setAttribute("text-anchor", "middle"); txt.setAttribute("font-size", "10");
+      txt.setAttribute("fill", "var(--cmp-scale-color, #1565c0)");
+      txt.textContent = i;
+      scalesG.appendChild(txt);
+    }
+  }
+
+  // 角度标记
+  anglesG.innerHTML = `
+    <path d="M18,158 L18,162 L22,162" fill="none" stroke="var(--cmp-scale-color,#1565c0)" stroke-width="1"/>
+    <text x="26" y="148" font-size="9" fill="var(--cmp-scale-color,#1565c0)">90°</text>
+    <text x="18" y="28" font-size="9" fill="var(--cmp-scale-color,#1565c0)">45°</text>
+    <text x="260" y="162" font-size="9" fill="var(--cmp-scale-color,#1565c0)">45°</text>
+  `;
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="math.tool.triangle-ruler.basic"] {
+  width: var(--cmp-size, 300px);
+  height: calc(var(--cmp-size, 300px) * 0.6);
+  display: inline-block;
+  opacity: var(--cmp-opacity, 0.9);
+  transform: rotate(var(--cmp-rotate, 0deg));
+}
+.cmp[data-cmp-id="math.tool.triangle-ruler.basic"] .tr__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>

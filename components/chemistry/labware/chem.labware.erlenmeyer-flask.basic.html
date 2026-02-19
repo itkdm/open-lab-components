@@ -1,0 +1,115 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.erlenmeyer-flask.basic",
+  "name": "锥形瓶",
+  "nameEn": "Erlenmeyer Flask",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 120, "h": 160 },
+  "tags": ["chemistry", "labware", "flask", "erlenmeyer", "volume"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 160, "min": 100, "max": 280, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.4, "min": 0, "max": 1, "desc": "液面高度占比" },
+    { "key": "liquidColor", "type": "color", "default": "#4db6ac", "desc": "液体颜色" },
+    { "key": "glassTint", "type": "color", "default": "rgba(226, 242, 255, 0.55)", "desc": "玻璃底色" },
+    { "key": "stroke", "type": "color", "default": "#2f4f5f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number(px)", "default": 2, "min": 1, "max": 4, "desc": "描边宽度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "liquidLevel": "--cmp-liquid-level",
+    "liquidColor": "--cmp-liquid-color",
+    "glassTint": "--cmp-glass-tint",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.erlenmeyer-flask.basic" role="img" aria-label="锥形瓶">
+  <svg class="ef__svg" viewBox="0 0 120 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <clipPath id="ef-body-clip">
+        <path d="M20,145 Q20,155 30,155 L90,155 Q100,155 100,145 L100,140 L70,50 L70,20 Q70,15 65,15 L55,15 Q50,15 50,20 L50,50 L20,140 Z"/>
+      </clipPath>
+      <linearGradient id="ef-glass-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.45)"/>
+        <stop offset="20%" stop-color="var(--cmp-glass-tint, rgba(226,242,255,0.55))"/>
+        <stop offset="80%" stop-color="var(--cmp-glass-tint, rgba(226,242,255,0.55))"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0.2)"/>
+      </linearGradient>
+      <linearGradient id="ef-liquid-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%" stop-color="rgba(0,0,0,0.2)"/>
+        <stop offset="60%" stop-color="rgba(0,0,0,0.03)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0.24)"/>
+      </linearGradient>
+    </defs>
+    <!-- 瓶身背景 -->
+    <path class="ef__body-bg" d="M20,145 Q20,155 30,155 L90,155 Q100,155 100,145 L100,140 L70,50 L70,20 Q70,15 65,15 L55,15 Q50,15 50,20 L50,50 L20,140 Z" fill="url(#ef-glass-grad)"/>
+    <!-- 液体 -->
+    <g clip-path="url(#ef-body-clip)">
+      <rect class="ef__liquid" x="0" y="60" width="120" height="100" fill="var(--cmp-liquid-color, #4db6ac)"/>
+      <rect class="ef__liquid-overlay" x="0" y="60" width="120" height="100" fill="url(#ef-liquid-grad)"/>
+    </g>
+    <!-- 液面 -->
+    <ellipse class="ef__surface" cx="60" cy="60" rx="30" ry="4" fill="rgba(255,255,255,0.5)"/>
+    <!-- 瓶身轮廓 -->
+    <path class="ef__outline" d="M20,145 Q20,155 30,155 L90,155 Q100,155 100,145 L100,140 L70,50 L70,20 Q70,15 65,15 L55,15 Q50,15 50,20 L50,50 L20,140 Z" fill="none" stroke="var(--cmp-stroke, #2f4f5f)" stroke-width="var(--cmp-stroke-width, 2)"/>
+    <!-- 瓶口 -->
+    <ellipse class="ef__mouth" cx="60" cy="15" rx="10" ry="4" fill="var(--cmp-glass-tint, rgba(226,242,255,0.55))" stroke="var(--cmp-stroke, #2f4f5f)" stroke-width="var(--cmp-stroke-width, 2)"/>
+    <!-- 高光 -->
+    <path class="ef__shine" d="M28,140 L52,55 L52,75 L25,145 Q24,148 28,140" fill="rgba(255,255,255,0.35)"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.erlenmeyer-flask.basic") return;
+
+  const liquid = root.querySelector(".ef__liquid");
+  const overlay = root.querySelector(".ef__liquid-overlay");
+  const surface = root.querySelector(".ef__surface");
+  if (!liquid || !surface) return;
+
+  function update() {
+    const style = getComputedStyle(root);
+    let level = parseFloat(style.getPropertyValue("--cmp-liquid-level")) || 0.4;
+    level = Math.max(0, Math.min(1, level));
+
+    // 液面位置：底部155，顶部50（瓶颈处）
+    const bottom = 155, top = 50;
+    const y = bottom - level * (bottom - top);
+    const h = bottom - y;
+
+    liquid.setAttribute("y", y);
+    liquid.setAttribute("height", h);
+    overlay.setAttribute("y", y);
+    overlay.setAttribute("height", h);
+
+    // 液面椭圆位置和宽度（锥形瓶越往上越窄）
+    const widthRatio = 1 - level * 0.7;
+    surface.setAttribute("cy", y);
+    surface.setAttribute("rx", 30 * widthRatio);
+    surface.style.display = level > 0 ? "" : "none";
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.erlenmeyer-flask.basic"] {
+  width: calc(var(--cmp-size, 160px) * 0.75);
+  height: var(--cmp-size, 160px);
+  display: inline-block;
+}
+
+.cmp[data-cmp-id="chem.labware.erlenmeyer-flask.basic"] .ef__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+</style>

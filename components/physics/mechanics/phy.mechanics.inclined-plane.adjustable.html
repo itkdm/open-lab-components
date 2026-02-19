@@ -1,0 +1,92 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.inclined-plane.adjustable",
+  "name": "斜面（可调节）",
+  "nameEn": "Adjustable Inclined Plane",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 110 },
+  "tags": ["physics", "mechanics", "inclined-plane", "adjustable"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 160, "min": 100, "max": 240, "desc": "组件宽度" },
+    { "key": "angle", "type": "number", "default": 30, "min": 10, "max": 60, "desc": "倾斜角度" },
+    { "key": "boardColor", "type": "color", "default": "#a1887f", "desc": "板面颜色" },
+    { "key": "frameColor", "type": "color", "default": "#546e7a", "desc": "支架颜色" },
+    { "key": "stroke", "type": "color", "default": "#37474f", "desc": "描边颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "angle": "--cmp-angle",
+    "boardColor": "--cmp-board",
+    "frameColor": "--cmp-frame",
+    "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.inclined-plane.adjustable" role="img" aria-label="斜面（可调节）">
+  <svg class="ipa__svg" viewBox="0 0 160 110" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 底座 -->
+    <rect x="10" y="98" width="140" height="8" rx="2" fill="var(--cmp-frame, #546e7a)" stroke="var(--cmp-stroke, #37474f)" stroke-width="1.5"/>
+    <!-- 支架立柱 -->
+    <rect x="130" y="40" width="8" height="60" fill="var(--cmp-frame, #546e7a)" stroke="var(--cmp-stroke, #37474f)" stroke-width="1"/>
+    <!-- 支架孔位 -->
+    <circle cx="134" cy="50" r="2" fill="#263238"/>
+    <circle cx="134" cy="62" r="2" fill="#263238"/>
+    <circle cx="134" cy="74" r="2" fill="#263238"/>
+    <circle cx="134" cy="86" r="2" fill="#263238"/>
+    <!-- 斜面板 -->
+    <polygon class="ipa__board" fill="var(--cmp-board, #a1887f)" stroke="var(--cmp-stroke, #37474f)" stroke-width="1.5" stroke-linejoin="round"/>
+    <!-- 固定销 -->
+    <circle class="ipa__pin" r="4" fill="#ff7043" stroke="var(--cmp-stroke, #37474f)" stroke-width="1"/>
+    <!-- 铰链 -->
+    <circle cx="18" cy="95" r="5" fill="var(--cmp-frame, #546e7a)" stroke="var(--cmp-stroke, #37474f)" stroke-width="1"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.mechanics.inclined-plane.adjustable") return;
+
+  const board = root.querySelector(".ipa__board");
+  const pin = root.querySelector(".ipa__pin");
+  if (!board || !pin) return;
+
+  function update() {
+    const style = getComputedStyle(root);
+    let angle = parseFloat(style.getPropertyValue("--cmp-angle")) || 30;
+    angle = Math.max(10, Math.min(60, angle));
+
+    const rad = angle * Math.PI / 180;
+    const hx = 18, hy = 95; // 铰链位置
+    const sx = 130; // 支架x位置
+    const thick = 10;
+
+    // 板面长度 = 铰链到支架的水平距离 / cos(angle)
+    const len = (sx - hx) / Math.cos(rad);
+    const ex = hx + len * Math.cos(rad);
+    const ey = hy - len * Math.sin(rad);
+    const dy = thick * Math.cos(rad);
+
+    board.setAttribute("points", `${hx},${hy-5} ${ex},${ey} ${ex},${ey+dy} ${hx},${hy+5}`);
+    pin.setAttribute("cx", ex + 4);
+    pin.setAttribute("cy", ey + dy/2);
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.mechanics.inclined-plane.adjustable"] {
+  width: var(--cmp-size, 160px);
+  height: calc(var(--cmp-size, 160px) * 0.69);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.mechanics.inclined-plane.adjustable"] .ipa__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>

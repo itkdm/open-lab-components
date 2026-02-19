@@ -1,0 +1,392 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.beaker.graduated.basic",
+  "name": "烧杯（刻度）",
+  "nameEn": "Graduated Beaker",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 140, "h": 180 },
+  "tags": ["chemistry", "labware", "beaker", "graduated", "volume"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 180, "min": 120, "max": 320, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.45, "min": 0, "max": 1, "desc": "液面高度占比" },
+    { "key": "scaleMin", "type": "number", "default": 0, "desc": "刻度最小值" },
+    { "key": "scaleMax", "type": "number", "default": 200, "desc": "刻度最大值" },
+    { "key": "majorStep", "type": "number", "default": 50, "min": 1, "desc": "主刻度间隔" },
+    { "key": "minorStep", "type": "number", "default": 10, "min": 1, "desc": "次刻度间隔" },
+    { "key": "liquidColor", "type": "color", "default": "#4db6ac", "desc": "液体颜色" },
+    { "key": "glassTint", "type": "color", "default": "rgba(226, 242, 255, 0.55)", "desc": "玻璃底色" },
+    { "key": "stroke", "type": "color", "default": "#2f4f5f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number(px)", "default": 2, "min": 1, "max": 5, "desc": "描边宽度" },
+    { "key": "markColor", "type": "color", "default": "rgba(47, 79, 95, 0.45)", "desc": "刻度线颜色" },
+    { "key": "highlight", "type": "number(0-1)", "default": 0.35, "min": 0, "max": 1, "desc": "高光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "liquidLevel": "--cmp-liquid-level",
+    "scaleMin": "--cmp-scale-min",
+    "scaleMax": "--cmp-scale-max",
+    "majorStep": "--cmp-scale-major-step",
+    "minorStep": "--cmp-scale-minor-step",
+    "liquidColor": "--cmp-liquid-color",
+    "glassTint": "--cmp-glass-tint",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "markColor": "--cmp-mark-color",
+    "highlight": "--cmp-highlight"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.beaker.graduated.basic" role="img" aria-label="烧杯（刻度）">
+  <div class="bk__beaker" aria-hidden="true">
+    <div class="bk__body">
+      <div class="bk__liquid">
+        <div class="bk__surface"></div>
+      </div>
+      <svg class="bk__scale" viewBox="0 0 120 248" preserveAspectRatio="none" aria-hidden="true">
+        <g class="bk__scale-layer"></g>
+      </svg>
+      <div class="bk__readout">0 mL</div>
+      <div class="bk__shine"></div>
+    </div>
+    <div class="bk__lip"></div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const root = document.currentScript?.previousElementSibling;
+    if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.beaker.graduated.basic") return;
+
+    const NS = "http://www.w3.org/2000/svg";
+    const scaleLayer = root.querySelector(".bk__scale-layer");
+    const readout = root.querySelector(".bk__readout");
+    const liquidEl = root.querySelector(".bk__liquid");
+    if (!scaleLayer || !readout) return;
+
+    function parseDataProps() {
+      const raw = root.getAttribute("data-props");
+      if (!raw) return {};
+      try {
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === "object" ? parsed : {};
+      } catch (e) {
+        return {};
+      }
+    }
+
+    function readNumber(props, key, cssVarName, fallback) {
+      if (Number.isFinite(Number(props[key]))) return Number(props[key]);
+      const cssRaw = getComputedStyle(root).getPropertyValue(cssVarName).trim();
+      const cssVal = Number.parseFloat(cssRaw);
+      return Number.isFinite(cssVal) ? cssVal : fallback;
+    }
+
+    function decimalsOf(value) {
+      const s = String(value);
+      if (!s.includes(".")) return 0;
+      return s.split(".")[1].replace(/0+$/, "").length;
+    }
+
+    function formatValue(value, places) {
+      if (!Number.isFinite(value)) return "";
+      if (places <= 0) return String(Math.round(value));
+      return String(Number(value.toFixed(places)));
+    }
+
+    function near(value, target, eps) {
+      return Math.abs(value - target) <= eps;
+    }
+
+    function classifyTick(value, min, max, majorStep, eps) {
+      if (near(value, min, eps) || near(value, max, eps)) return "major";
+      const delta = value - min;
+      const majorRem = ((delta % majorStep) + majorStep) % majorStep;
+      if (near(majorRem, 0, eps) || near(majorRem, majorStep, eps)) return "major";
+      const half = majorStep / 2;
+      if (half > eps && (near(majorRem, half, eps) || near(majorRem, majorStep - half, eps))) return "mid";
+      return "minor";
+    }
+
+    function renderScale() {
+      const props = parseDataProps();
+
+      let min = readNumber(props, "scaleMin", "--cmp-scale-min", 0);
+      let max = readNumber(props, "scaleMax", "--cmp-scale-max", 200);
+      let majorStep = readNumber(props, "majorStep", "--cmp-scale-major-step", 50);
+      let minorStep = readNumber(props, "minorStep", "--cmp-scale-minor-step", 10);
+
+      if (!Number.isFinite(min)) min = 0;
+      if (!Number.isFinite(max)) max = 200;
+      if (max <= min) max = min + 1;
+      if (!Number.isFinite(majorStep) || majorStep <= 0) majorStep = (max - min) / 4;
+      if (!Number.isFinite(minorStep) || minorStep <= 0) minorStep = majorStep / 5;
+      if (minorStep <= 0) minorStep = 1;
+      if (majorStep < minorStep) majorStep = minorStep;
+
+      const range = max - min;
+      const maxTicks = 120;
+      if (range / minorStep > maxTicks) {
+        minorStep = range / maxTicks;
+      }
+
+      const yTop = 1;
+      const yBottom = 247;
+      const xRight = 110;
+      const xText = 30;
+      const lenMajor = 76;
+      const lenMid = 58;
+      const lenMinor = 44;
+      const eps = Math.max(minorStep * 0.02, 1e-6);
+
+      scaleLayer.innerHTML = "";
+
+      const unit = document.createElementNS(NS, "text");
+      unit.setAttribute("class", "bk__scale-unit");
+      unit.setAttribute("x", String(xText));
+      unit.setAttribute("y", "12");
+      unit.textContent = "mL";
+      scaleLayer.appendChild(unit);
+
+      const values = [];
+      values.push(min);
+      for (let v = min + minorStep; v < max - eps; v += minorStep) {
+        values.push(v);
+      }
+      if (!near(values[values.length - 1], max, eps)) values.push(max);
+
+      const decimalPlaces = Math.min(
+        4,
+        Math.max(decimalsOf(min), decimalsOf(max), decimalsOf(majorStep), decimalsOf(minorStep))
+      );
+      const valuePlaces = Math.min(3, Math.max(decimalPlaces, 1));
+
+      for (const value of values) {
+        const ratio = (value - min) / range;
+        const y = yBottom - ratio * (yBottom - yTop);
+        const tickType = classifyTick(value, min, max, majorStep, eps);
+
+        let x1 = xRight - lenMinor;
+        if (tickType === "major") x1 = xRight - lenMajor;
+        if (tickType === "mid") x1 = xRight - lenMid;
+
+        const line = document.createElementNS(NS, "line");
+        line.setAttribute("class", `bk__tick bk__tick--${tickType}`);
+        line.setAttribute("x1", String(x1));
+        line.setAttribute("x2", String(xRight));
+        line.setAttribute("y1", String(y));
+        line.setAttribute("y2", String(y));
+        scaleLayer.appendChild(line);
+
+        if (tickType === "major") {
+          const text = document.createElementNS(NS, "text");
+          text.setAttribute("class", "bk__scale-num");
+          text.setAttribute("x", String(xText));
+          let textY = y;
+          if (near(value, max, eps)) textY = y + 7;
+          if (near(value, min, eps)) textY = y - 7;
+          text.setAttribute("y", String(textY));
+          text.textContent = formatValue(value, decimalPlaces);
+          scaleLayer.appendChild(text);
+        }
+      }
+
+      let liquidLevel = readNumber(props, "liquidLevel", "--cmp-liquid-level", 0.45);
+      if (!Number.isFinite(liquidLevel)) liquidLevel = 0.45;
+      liquidLevel = Math.max(0, Math.min(1, liquidLevel));
+      if (liquidEl) liquidEl.style.height = `${liquidLevel * 100}%`;
+
+      const currentValue = min + liquidLevel * range;
+      const currentY = yBottom - liquidLevel * (yBottom - yTop);
+      const currentText = `${formatValue(currentValue, valuePlaces)} mL`;
+
+      const currentLine = document.createElementNS(NS, "line");
+      currentLine.setAttribute("class", "bk__current-line");
+      currentLine.setAttribute("x1", "76");
+      currentLine.setAttribute("x2", String(xRight));
+      currentLine.setAttribute("y1", String(currentY));
+      currentLine.setAttribute("y2", String(currentY));
+      scaleLayer.appendChild(currentLine);
+
+      readout.textContent = currentText;
+      root.setAttribute("aria-label", `烧杯（刻度），当前 ${currentText}`);
+    }
+
+    renderScale();
+
+    const observer = new MutationObserver(() => renderScale());
+    observer.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+
+    window.addEventListener("beforeunload", () => observer.disconnect(), { once: true });
+  })();
+</script>
+
+<style>
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] {
+    width: calc(var(--cmp-size, 180px) * 0.72);
+    height: var(--cmp-size, 180px);
+    display: inline-block;
+    position: relative;
+    transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__beaker {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__body {
+    position: absolute;
+    left: 14%;
+    right: 14%;
+    top: 16%;
+    bottom: 10%;
+    border-left: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #2f4f5f);
+    border-right: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #2f4f5f);
+    border-bottom: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #2f4f5f);
+    border-radius: 0 0 12% 12%;
+    overflow: hidden;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.45) 0%,
+      var(--cmp-glass-tint, rgba(226, 242, 255, 0.55)) 20%,
+      var(--cmp-glass-tint, rgba(226, 242, 255, 0.55)) 80%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__liquid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(clamp(0, var(--cmp-liquid-level, 0.45), 1) * 100%);
+    background:
+      linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.03) 58%,
+        rgba(255, 255, 255, 0.24) 100%
+      ),
+      var(--cmp-liquid-color, #4db6ac);
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__surface {
+    position: absolute;
+    left: -3%;
+    right: -3%;
+    top: 0;
+    height: 11%;
+    transform: translateY(-50%);
+    border-radius: 999px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__scale {
+    position: absolute;
+    top: 0;
+    left: auto;
+    right: 3%;
+    width: 48%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__tick {
+    stroke: var(--cmp-mark-color, rgba(47, 79, 95, 0.45));
+    stroke-linecap: round;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__tick--major {
+    stroke-width: 2.05;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__tick--mid {
+    stroke-width: 1.45;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__tick--minor {
+    stroke-width: 1;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__scale-num,
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__scale-unit {
+    fill: var(--cmp-mark-color, rgba(47, 79, 95, 0.45));
+    text-anchor: end;
+    font-family: "DIN Alternate", "Arial Narrow", "Segoe UI", sans-serif;
+    font-weight: 600;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__scale-num {
+    font-size: 10px;
+    dominant-baseline: middle;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__scale-unit {
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    dominant-baseline: middle;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__current-line {
+    stroke: var(--cmp-liquid-color, #4db6ac);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    opacity: 0.95;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__readout {
+    position: absolute;
+    left: 8%;
+    top: 10%;
+    min-width: 30%;
+    padding: 2px 6px;
+    border-radius: 999px;
+    box-sizing: border-box;
+    color: var(--cmp-stroke, #2f4f5f);
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(47, 79, 95, 0.35);
+    font: 700 calc(var(--cmp-size, 180px) * 0.06) / 1.2 "DIN Alternate", "Arial Narrow", "Segoe UI", sans-serif;
+    letter-spacing: 0.02em;
+    text-align: center;
+    user-select: none;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__shine {
+    position: absolute;
+    left: 8%;
+    top: 9%;
+    bottom: 12%;
+    width: 16%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, clamp(0, var(--cmp-highlight, 0.35), 1)) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
+  }
+
+  .cmp[data-cmp-id="chem.labware.beaker.graduated.basic"] .bk__lip {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    top: 10%;
+    height: 10%;
+    border: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #2f4f5f);
+    border-radius: 999px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.75) 0%,
+      var(--cmp-glass-tint, rgba(226, 242, 255, 0.55)) 100%
+    );
+    box-sizing: border-box;
+  }
+
+</style>

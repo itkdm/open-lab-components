@@ -1,0 +1,77 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.cart.basic",
+  "name": "小车",
+  "nameEn": "Cart",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 120, "h": 60 },
+  "tags": ["physics", "mechanics", "cart", "motion", "friction"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 120, "min": 80, "max": 200, "desc": "组件宽度" },
+    { "key": "bodyColor", "type": "color", "default": "#5c6bc0", "desc": "车身颜色" },
+    { "key": "wheelColor", "type": "color", "default": "#37474f", "desc": "车轮颜色" },
+    { "key": "stroke", "type": "color", "default": "#263238", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边宽度" },
+    { "key": "hookVisible", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "显示挂钩" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "wheelColor": "--cmp-wheel",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.cart.basic" role="img" aria-label="小车">
+  <svg class="cart__svg" viewBox="0 0 120 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 车身 -->
+    <rect class="cart__body" x="15" y="12" width="90" height="28" rx="4"
+          fill="var(--cmp-body, #5c6bc0)" stroke="var(--cmp-stroke, #263238)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 车身高光 -->
+    <rect class="cart__highlight" x="18" y="15" width="84" height="8" rx="2" fill="rgba(255,255,255,0.25)"/>
+    <!-- 前挂钩 -->
+    <path class="cart__hook cart__hook-front" d="M105,26 L115,26 L115,30 L112,30" fill="none"
+          stroke="var(--cmp-stroke, #263238)" stroke-width="var(--cmp-stroke-width, 1.5)" stroke-linecap="round"/>
+    <!-- 后挂钩 -->
+    <path class="cart__hook cart__hook-rear" d="M15,26 L5,26 L5,30 L8,30" fill="none"
+          stroke="var(--cmp-stroke, #263238)" stroke-width="var(--cmp-stroke-width, 1.5)" stroke-linecap="round"/>
+    <!-- 左轮 -->
+    <circle class="cart__wheel" cx="35" cy="48" r="10" fill="var(--cmp-wheel, #37474f)" stroke="var(--cmp-stroke, #263238)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <circle class="cart__axle" cx="35" cy="48" r="3" fill="#90a4ae"/>
+    <!-- 右轮 -->
+    <circle class="cart__wheel" cx="85" cy="48" r="10" fill="var(--cmp-wheel, #37474f)" stroke="var(--cmp-stroke, #263238)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <circle class="cart__axle" cx="85" cy="48" r="3" fill="#90a4ae"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.mechanics.cart.basic") return;
+
+  const hooks = root.querySelectorAll(".cart__hook");
+  let raw = root.getAttribute("data-props");
+  let props = {};
+  try { if (raw) props = JSON.parse(raw) || {}; } catch (e)
+
+  const hookVisible = props.hookVisible !== "off";
+  hooks.forEach(h => h.style.display = hookVisible ? "" : "none");
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.mechanics.cart.basic"] {
+  width: var(--cmp-size, 120px);
+  height: calc(var(--cmp-size, 120px) * 0.5);
+  display: inline-block;
+}
+
+.cmp[data-cmp-id="phy.mechanics.cart.basic"] .cart__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+</style>

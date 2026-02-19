@@ -1,0 +1,158 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.test-tube.basic",
+  "name": "试管（基础）",
+  "nameEn": "Test Tube (Basic)",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 90, "h": 220 },
+  "tags": ["chemistry", "labware", "test-tube", "glassware", "liquid"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 220, "min": 140, "max": 360, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.35, "min": 0, "max": 1, "desc": "液位占比" },
+    { "key": "liquidColor", "type": "color", "default": "#66c7cf", "desc": "液体颜色" },
+    { "key": "glassTint", "type": "color", "default": "rgba(230, 243, 255, 0.58)", "desc": "玻璃底色" },
+    { "key": "stroke", "type": "color", "default": "#35586a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number(px)", "default": 2, "min": 1, "max": 5, "desc": "描边宽度" },
+    { "key": "markColor", "type": "color", "default": "rgba(53, 88, 106, 0.45)", "desc": "刻度线颜色" },
+    { "key": "highlight", "type": "number(0-1)", "default": 0.35, "min": 0, "max": 1, "desc": "高光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "liquidLevel": "--cmp-liquid-level",
+    "liquidColor": "--cmp-liquid-color",
+    "glassTint": "--cmp-glass-tint",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "markColor": "--cmp-mark-color",
+    "highlight": "--cmp-highlight"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.test-tube.basic" role="img" aria-label="试管（基础）">
+  <div class="tt__tube" aria-hidden="true">
+    <div class="tt__rim"></div>
+    <div class="tt__body">
+      <div class="tt__liquid">
+        <div class="tt__surface"></div>
+      </div>
+      <div class="tt__marks"></div>
+      <div class="tt__gloss"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] {
+    width: calc(var(--cmp-size, 220px) * 0.42);
+    height: var(--cmp-size, 220px);
+    display: inline-block;
+    position: relative;
+    transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+  }
+
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] .tt__tube {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] .tt__rim {
+    position: absolute;
+    left: 20%;
+    right: 20%;
+    top: 2%;
+    height: 10%;
+    border: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #35586a);
+    border-radius: 999px;
+    box-sizing: border-box;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.82) 0%,
+      var(--cmp-glass-tint, rgba(230, 243, 255, 0.58)) 100%
+    );
+  }
+
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] .tt__body {
+    position: absolute;
+    left: 24%;
+    right: 24%;
+    top: 8%;
+    bottom: 2%;
+    border-left: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #35586a);
+    border-right: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #35586a);
+    border-bottom: var(--cmp-stroke-width, 2px) solid var(--cmp-stroke, #35586a);
+    border-radius: 0 0 46% 46%;
+    overflow: hidden;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.55) 0%,
+      var(--cmp-glass-tint, rgba(230, 243, 255, 0.58)) 18%,
+      var(--cmp-glass-tint, rgba(230, 243, 255, 0.58)) 82%,
+      rgba(255, 255, 255, 0.25) 100%
+    );
+  }
+
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] .tt__liquid {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(clamp(0, var(--cmp-liquid-level, 0.35), 1) * 96%);
+    background:
+      linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.2) 0%,
+        rgba(0, 0, 0, 0.03) 58%,
+        rgba(255, 255, 255, 0.24) 100%
+      ),
+      var(--cmp-liquid-color, #66c7cf);
+  }
+
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] .tt__surface {
+    position: absolute;
+    left: -4%;
+    right: -4%;
+    top: 0;
+    height: 7%;
+    transform: translateY(-50%);
+    border-radius: 999px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.62) 0%,
+      rgba(255, 255, 255, 0.1) 100%
+    );
+  }
+
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] .tt__marks {
+    position: absolute;
+    top: 8%;
+    right: 6%;
+    bottom: 8%;
+    width: 30%;
+    background:
+      repeating-linear-gradient(
+        to top,
+        var(--cmp-mark-color, rgba(53, 88, 106, 0.45)) 0,
+        var(--cmp-mark-color, rgba(53, 88, 106, 0.45)) 1.4px,
+        transparent 1.4px,
+        transparent 10px
+      );
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  .cmp[data-cmp-id="chem.labware.test-tube.basic"] .tt__gloss {
+    position: absolute;
+    left: 8%;
+    top: 8%;
+    bottom: 8%;
+    width: 20%;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, clamp(0, var(--cmp-highlight, 0.35), 1)) 0%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    pointer-events: none;
+  }
+</style>

@@ -1,0 +1,98 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.stand.basic",
+  "name": "铁架台",
+  "nameEn": "Lab Stand",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 180 },
+  "tags": ["chemistry", "labware", "stand", "support", "clamp"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 180, "min": 120, "max": 280, "desc": "组件高度" },
+    { "key": "metalColor", "type": "color", "default": "#546e7a", "desc": "金属颜色" },
+    { "key": "baseColor", "type": "color", "default": "#37474f", "desc": "底座颜色" },
+    { "key": "clampColor", "type": "color", "default": "#78909c", "desc": "铁夹颜色" },
+    { "key": "stroke", "type": "color", "default": "#263238", "desc": "描边颜色" },
+    { "key": "clampPos", "type": "number(0-1)", "default": 0.4, "min": 0.1, "max": 0.85, "desc": "铁夹位置" },
+    { "key": "ringPos", "type": "number(0-1)", "default": 0.7, "min": 0.15, "max": 0.9, "desc": "铁圈位置" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "metalColor": "--cmp-metal",
+    "baseColor": "--cmp-base",
+    "clampColor": "--cmp-clamp",
+    "stroke": "--cmp-stroke",
+    "clampPos": "--cmp-clamp-pos",
+    "ringPos": "--cmp-ring-pos"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.stand.basic" role="img" aria-label="铁架台">
+  <svg class="stand__svg" viewBox="0 0 100 180" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 底座 -->
+    <rect class="stand__base" x="10" y="168" width="80" height="10" rx="2"
+          fill="var(--cmp-base, #37474f)" stroke="var(--cmp-stroke, #263238)" stroke-width="1.5"/>
+    <!-- 立杆 -->
+    <rect class="stand__pole" x="46" y="12" width="8" height="158"
+          fill="var(--cmp-metal, #546e7a)" stroke="var(--cmp-stroke, #263238)" stroke-width="1.5"/>
+    <!-- 立杆高光 -->
+    <rect x="47" y="14" width="2" height="154" fill="rgba(255,255,255,0.2)"/>
+    <!-- 铁圈 -->
+    <g class="stand__ring">
+      <ellipse cx="70" cy="54" rx="22" ry="6" fill="none" stroke="var(--cmp-metal, #546e7a)" stroke-width="4"/>
+      <rect x="52" y="50" width="12" height="8" fill="var(--cmp-clamp, #78909c)" stroke="var(--cmp-stroke, #263238)" stroke-width="1"/>
+    </g>
+    <!-- 铁夹 -->
+    <g class="stand__clamp">
+      <rect x="52" y="106" width="12" height="14" rx="1" fill="var(--cmp-clamp, #78909c)" stroke="var(--cmp-stroke, #263238)" stroke-width="1"/>
+      <path d="M64,110 L78,106 L78,118 L64,114" fill="var(--cmp-clamp, #78909c)" stroke="var(--cmp-stroke, #263238)" stroke-width="1"/>
+      <path d="M78,108 L88,108 M78,116 L88,116" stroke="var(--cmp-stroke, #263238)" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.stand.basic") return;
+
+  const ring = root.querySelector(".stand__ring");
+  const clamp = root.querySelector(".stand__clamp");
+  if (!ring || !clamp) return;
+
+  function update() {
+    const style = getComputedStyle(root);
+    let ringPos = parseFloat(style.getPropertyValue("--cmp-ring-pos")) || 0.7;
+    let clampPos = parseFloat(style.getPropertyValue("--cmp-clamp-pos")) || 0.4;
+    ringPos = Math.max(0.15, Math.min(0.9, ringPos));
+    clampPos = Math.max(0.1, Math.min(0.85, clampPos));
+
+    const poleTop = 12, poleBottom = 168;
+    const range = poleBottom - poleTop;
+    const ringY = poleTop + (1 - ringPos) * range;
+    const clampY = poleTop + (1 - clampPos) * range;
+
+    ring.setAttribute("transform", `translate(0, ${ringY - 54})`);
+    clamp.setAttribute("transform", `translate(0, ${clampY - 113})`);
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.stand.basic"] {
+  width: calc(var(--cmp-size, 180px) * 0.56);
+  height: var(--cmp-size, 180px);
+  display: inline-block;
+}
+
+.cmp[data-cmp-id="chem.labware.stand.basic"] .stand__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+</style>

@@ -1,0 +1,84 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.alcohol-lamp.basic",
+  "name": "酒精灯",
+  "nameEn": "Alcohol Lamp",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 120 },
+  "tags": ["chemistry", "labware", "lamp", "heat", "flame"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 120, "min": 80, "max": 200, "desc": "组件高度" },
+    { "key": "alcoholLevel", "type": "number(0-1)", "default": 0.5, "min": 0, "max": 0.8, "desc": "酒精液面" },
+    { "key": "alcoholColor", "type": "color", "default": "#b3e5fc", "desc": "酒精颜色" },
+    { "key": "flameOn", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "火焰开关" },
+    { "key": "stroke", "type": "color", "default": "#8b7355", "desc": "描边颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "alcoholLevel": "--cmp-alcohol-level",
+    "alcoholColor": "--cmp-alcohol",
+    "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.alcohol-lamp.basic" role="img" aria-label="酒精灯">
+  <svg class="lamp__svg" viewBox="0 0 100 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 火焰 -->
+    <path class="lamp__flame" d="M50,5 Q58,18 55,28 Q52,22 50,25 Q48,22 45,28 Q42,18 50,5" fill="#ffa726"/>
+    <!-- 灯芯（露出部分） -->
+    <rect x="48" y="28" width="4" height="10" fill="#8b7355"/>
+    <!-- 灯芯座 -->
+    <path d="M42,38 L42,44 Q42,48 50,48 Q58,48 58,44 L58,38 Q58,36 50,36 Q42,36 42,38" fill="#7a6548" stroke="var(--cmp-stroke, #8b7355)" stroke-width="1.5"/>
+    <!-- 瓶盖边缘 -->
+    <ellipse cx="50" cy="52" rx="22" ry="5" fill="none" stroke="var(--cmp-stroke, #8b7355)" stroke-width="2"/>
+    <!-- 玻璃瓶身 -->
+    <path class="lamp__body" d="M28,52 Q15,65 15,85 Q15,110 50,110 Q85,110 85,85 Q85,65 72,52" fill="rgba(255,255,255,0.3)" stroke="var(--cmp-stroke, #8b7355)" stroke-width="2"/>
+    <!-- 酒精 -->
+    <path class="lamp__alcohol" d="M22,75 Q18,90 50,95 Q82,90 78,75 Q75,65 50,68 Q25,65 22,75" fill="var(--cmp-alcohol, #b3e5fc)"/>
+    <!-- 灯芯（浸入部分） -->
+    <path class="lamp__wick" d="M50,48 L50,70 Q48,80 52,88 Q50,85 48,88" fill="none" stroke="#8b7355" stroke-width="2" stroke-linecap="round"/>
+    <!-- 高光 -->
+    <path d="M30,60 Q28,75 32,85" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.alcohol-lamp.basic") return;
+
+  const flame = root.querySelector(".lamp__flame");
+  let raw = root.getAttribute("data-props");
+  let props = {};
+  try { if (raw) props = JSON.parse(raw) || {}; } catch (e) {}
+
+  const flameOn = props.flameOn !== "off";
+  if (flame) flame.style.display = flameOn ? "" : "none";
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.alcohol-lamp.basic"] {
+  width: calc(var(--cmp-size, 120px) * 0.83);
+  height: var(--cmp-size, 120px);
+  display: inline-block;
+}
+
+.cmp[data-cmp-id="chem.labware.alcohol-lamp.basic"] .lamp__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cmp[data-cmp-id="chem.labware.alcohol-lamp.basic"] .lamp__flame {
+  animation: lamp-flicker 0.3s ease-in-out infinite alternate;
+  transform-origin: 50px 28px;
+}
+
+@keyframes lamp-flicker {
+  0% { transform: scale(1, 1); }
+  100% { transform: scale(1.05, 1.1); }
+}
+</style>

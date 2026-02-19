@@ -1,0 +1,57 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.inclined-plane.graduated",
+  "name": "斜面（带刻度）",
+  "nameEn": "Graduated Inclined Plane",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 100 },
+  "tags": ["physics", "mechanics", "inclined-plane", "graduated", "measurement"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 160, "min": 100, "max": 240, "desc": "组件宽度" },
+    { "key": "surfaceColor", "type": "color", "default": "#eceff1", "desc": "斜面颜色" },
+    { "key": "stroke", "type": "color", "default": "#455a64", "desc": "描边颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "surfaceColor": "--cmp-surface",
+    "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.inclined-plane.graduated" role="img" aria-label="斜面（带刻度）">
+  <svg class="ipg__svg" viewBox="0 0 160 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 斜面主体 -->
+    <polygon points="10,90 150,90 150,30" fill="var(--cmp-surface, #eceff1)" stroke="var(--cmp-stroke, #455a64)" stroke-width="2"/>
+    <!-- 刻度线 -->
+    <g stroke="var(--cmp-stroke, #455a64)" stroke-width="0.8">
+      <line x1="38" y1="90" x2="150" y2="52"/>
+      <line x1="66" y1="90" x2="150" y2="64"/>
+      <line x1="94" y1="90" x2="150" y2="76"/>
+      <line x1="122" y1="90" x2="150" y2="83"/>
+    </g>
+    <!-- 刻度数字 -->
+    <g font-size="8" fill="var(--cmp-stroke, #455a64)" font-family="Arial">
+      <text x="32" y="88">0</text>
+      <text x="58" y="88">10</text>
+      <text x="86" y="88">20</text>
+      <text x="114" y="88">30</text>
+      <text x="140" y="88">40</text>
+    </g>
+    <!-- 角度弧 -->
+    <path d="M30,90 A20,20 0 0,0 45,80" fill="none" stroke="var(--cmp-stroke, #455a64)" stroke-width="1"/>
+    <text x="48" y="82" font-size="9" fill="var(--cmp-stroke, #455a64)">θ</text>
+  </svg>
+</div>
+
+<style>
+.cmp[data-cmp-id="phy.mechanics.inclined-plane.graduated"] {
+  width: var(--cmp-size, 160px);
+  height: calc(var(--cmp-size, 160px) * 0.625);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.mechanics.inclined-plane.graduated"] .ipg__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>
