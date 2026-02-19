@@ -1,0 +1,227 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.electromagnet.interactive",
+  "name": "电磁铁（交互式）",
+  "nameEn": "Electromagnet (Interactive)",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 260, "h": 180 },
+  "tags": ["electromagnet", "magnet", "coil", "circuit", "interactive", "magnetic-field"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 180, "min": 120, "max": 400, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "coilColor",  "type": "color",  "default": "#b87333", "desc": "线圈颜色（铜色）" },
+    { "key": "coreColor",  "type": "color",  "default": "#666666", "desc": "铁芯颜色" },
+    { "key": "fieldColor", "type": "color",  "default": "#2196f3", "desc": "磁力线颜色" },
+    { "key": "nailColor",  "type": "color",  "default": "#888888", "desc": "铁钉颜色" },
+    { "key": "wireColor",  "type": "color",  "default": "#d32f2f", "desc": "导线颜色" },
+    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
+    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "powered",    "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "初始通电状态" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "coilColor":  "--cmp-coil",
+    "coreColor":  "--cmp-core",
+    "fieldColor": "--cmp-field",
+    "nailColor":  "--cmp-nail",
+    "wireColor":  "--cmp-wire",
+    "stroke":     "--cmp-stroke",
+    "strokeWidth":"--cmp-stroke-width",
+    "glow":       "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "powered": "boolean — 是否通电" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.electromagnet.interactive" role="img" aria-label="电磁铁（断电）">
+  <style>
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"] {
+      --h: var(--cmp-size, 180px);
+      display: inline-block;
+      width: calc(var(--h) * 1.444);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"] .em__btn {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"] .em__field-line {
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"] .em__nail {
+      transition: transform 0.5s ease;
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"][data-powered="on"] .em__field-line {
+      opacity: 0.6;
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"][data-powered="on"] .em__nail-1 {
+      transform: translate(-18px, 0);
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"][data-powered="on"] .em__nail-2 {
+      transform: translate(-22px, 4px);
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"][data-powered="on"] .em__nail-3 {
+      transform: translate(-16px, -3px);
+    }
+    .cmp[data-cmp-id="phy.circuit.electromagnet.interactive"] .em__indicator {
+      transition: fill 0.3s ease;
+    }
+  </style>
+
+  <svg viewBox="0 0 260 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="em__core-g" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#999"/>
+        <stop offset="0.5" stop-color="var(--cmp-core, #666)"/>
+        <stop offset="1"   stop-color="#444"/>
+      </linearGradient>
+      <linearGradient id="em__coil-g" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#d4956a"/>
+        <stop offset="0.5" stop-color="var(--cmp-coil, #b87333)"/>
+        <stop offset="1"   stop-color="#8b5e2a"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 导线（从电池到线圈） -->
+    <path d="M20,150 L20,100 L55,100" fill="none"
+          stroke="var(--cmp-wire, #d32f2f)" stroke-width="3" stroke-linecap="round"/>
+    <path d="M20,150 L20,160 L200,160 L200,100 L175,100" fill="none"
+          stroke="var(--cmp-wire, #d32f2f)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- 铁芯 -->
+    <rect x="60" y="78" width="110" height="24" rx="4"
+          fill="url(#em__core-g)"
+          stroke="var(--cmp-stroke, #222)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+
+    <!-- 线圈（一系列椭圆弧模拟绕线） -->
+    <g stroke="url(#em__coil-g)" stroke-width="3.5" fill="none" stroke-linecap="round">
+      <ellipse cx="80"  cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+      <ellipse cx="90"  cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+      <ellipse cx="100" cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+      <ellipse cx="110" cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+      <ellipse cx="120" cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+      <ellipse cx="130" cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+      <ellipse cx="140" cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+      <ellipse cx="150" cy="90" rx="6" ry="18" stroke-dasharray="0 28 28 0"/>
+    </g>
+    <!-- 线圈前面部分（覆盖铁芯） -->
+    <g stroke="url(#em__coil-g)" stroke-width="3.5" fill="none" stroke-linecap="round">
+      <ellipse cx="80"  cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+      <ellipse cx="90"  cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+      <ellipse cx="100" cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+      <ellipse cx="110" cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+      <ellipse cx="120" cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+      <ellipse cx="130" cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+      <ellipse cx="140" cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+      <ellipse cx="150" cy="90" rx="6" ry="18" stroke-dasharray="28 28"/>
+    </g>
+
+    <!-- N/S 极标注 -->
+    <text x="55" y="95" text-anchor="middle" font-size="14" font-weight="700"
+          fill="var(--cmp-field, #2196f3)" font-family="Arial, sans-serif">N</text>
+    <text x="175" y="95" text-anchor="middle" font-size="14" font-weight="700"
+          fill="#f44336" font-family="Arial, sans-serif">S</text>
+
+    <!-- 磁力线（通电后显示） -->
+    <g class="em__field-line" fill="none" stroke="var(--cmp-field, #2196f3)" stroke-width="1.2">
+      <path d="M55,90 C30,60 30,30 115,20 C200,10 200,60 175,90" stroke-dasharray="4,3"/>
+      <path d="M55,90 C20,70 20,120 115,130 C210,140 210,70 175,90" stroke-dasharray="4,3"/>
+      <path d="M55,90 C35,50 35,15 115,8 C195,1 195,50 175,90" stroke-dasharray="4,3"/>
+      <!-- 箭头 -->
+      <polygon fill="var(--cmp-field, #2196f3)" points="42,55 50,60 44,65" opacity="0.7"/>
+      <polygon fill="var(--cmp-field, #2196f3)" points="42,105 50,110 44,115" opacity="0.7"/>
+    </g>
+
+    <!-- 铁钉（通电后被吸引） -->
+    <g class="em__nail em__nail-1">
+      <rect x="30" y="84" width="16" height="3" rx="1"
+            fill="var(--cmp-nail, #888)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="0.8"/>
+      <circle cx="29" cy="85.5" r="1.8" fill="var(--cmp-nail, #888)"
+              stroke="var(--cmp-stroke, #222)" stroke-width="0.6"/>
+    </g>
+    <g class="em__nail em__nail-2">
+      <rect x="26" y="92" width="14" height="3" rx="1"
+            fill="var(--cmp-nail, #888)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="0.8"/>
+      <circle cx="25" cy="93.5" r="1.8" fill="var(--cmp-nail, #888)"
+              stroke="var(--cmp-stroke, #222)" stroke-width="0.6"/>
+    </g>
+    <g class="em__nail em__nail-3">
+      <rect x="32" y="76" width="13" height="3" rx="1"
+            fill="var(--cmp-nail, #888)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="0.8"/>
+      <circle cx="31" cy="77.5" r="1.8" fill="var(--cmp-nail, #888)"
+              stroke="var(--cmp-stroke, #222)" stroke-width="0.6"/>
+    </g>
+
+    <!-- 通断电按钮 -->
+    <g class="em__btn">
+      <rect x="5" y="140" width="30" height="20" rx="4"
+            fill="#e0e0e0" stroke="var(--cmp-stroke, #222)" stroke-width="1.2"/>
+      <circle class="em__indicator" cx="20" cy="150" r="5" fill="#999"/>
+      <rect x="5" y="140" width="30" height="20" rx="4"
+            fill="transparent"/>
+    </g>
+    <text x="20" y="172" text-anchor="middle" font-size="8"
+          fill="var(--cmp-stroke, #222)" font-family="Arial, sans-serif">ON/OFF</text>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.circuit.electromagnet.interactive') return;
+
+  /* ── 参数 ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var powered = (P.powered === 'on');
+
+  /* ── DOM ── */
+  var indicator = root.querySelector('.em__indicator');
+  var btn = root.querySelector('.em__btn');
+
+  function applyState() {
+    root.setAttribute('data-powered', powered ? 'on' : 'off');
+    if (indicator) indicator.setAttribute('fill', powered ? '#4caf50' : '#999');
+    root.setAttribute('aria-label', '电磁铁（' + (powered ? '通电' : '断电') + '）');
+  }
+
+  function emitCmp() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'toggle',
+        values: { powered: powered }
+      }
+    }));
+  }
+
+  applyState();
+
+  if (btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      powered = !powered;
+      applyState();
+      emitCmp();
+    });
+  }
+})();
+</script>

@@ -1,0 +1,115 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.bulb-holder.basic",
+  "name": "小灯泡底座",
+  "nameEn": "Bulb Holder",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 80 },
+  "tags": ["bulb", "holder", "socket", "lamp", "circuit", "static"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 80,  "min": 48, "max": 200, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "baseColor",   "type": "color",  "default": "#3e2723", "desc": "底座颜色（胶木）" },
+    { "key": "metalColor",  "type": "color",  "default": "#b0b0b0", "desc": "金属片颜色" },
+    { "key": "screwColor",  "type": "color",  "default": "#888888", "desc": "接线柱颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#1a1a1a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "baseColor":   "--cmp-base",
+    "metalColor":  "--cmp-metal",
+    "screwColor":  "--cmp-screw",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.bulb-holder.basic" role="img" aria-label="小灯泡底座">
+  <svg viewBox="0 0 100 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="bh__base" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#5d4037"/>
+        <stop offset="0.5" stop-color="var(--cmp-base, #3e2723)"/>
+        <stop offset="1"   stop-color="#2c1a12"/>
+      </linearGradient>
+      <linearGradient id="bh__metal" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#d0d0d0"/>
+        <stop offset="0.5" stop-color="var(--cmp-metal, #b0b0b0)"/>
+        <stop offset="1"   stop-color="#808080"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 底座主体（胶木方块） -->
+    <rect x="15" y="40" width="70" height="30" rx="3"
+          fill="url(#bh__base)"
+          stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+
+    <!-- 底座顶面高光 -->
+    <rect x="17" y="42" width="66" height="4" rx="1.5"
+          fill="rgba(255,255,255,0.12)"/>
+
+    <!-- 灯座螺口（中央圆筒） -->
+    <rect x="38" y="24" width="24" height="20" rx="2"
+          fill="url(#bh__metal)"
+          stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 螺纹 -->
+    <g stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="0.6" opacity="0.4">
+      <line x1="38" y1="28" x2="62" y2="28"/>
+      <line x1="38" y1="32" x2="62" y2="32"/>
+      <line x1="38" y1="36" x2="62" y2="36"/>
+      <line x1="38" y1="40" x2="62" y2="40"/>
+    </g>
+
+    <!-- 底部触点 -->
+    <circle cx="50" cy="22" r="4"
+            fill="var(--cmp-metal, #b0b0b0)"
+            stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="1"/>
+
+    <!-- 左接线柱 -->
+    <g>
+      <rect x="18" y="44" width="10" height="12" rx="2"
+            fill="var(--cmp-screw, #888)"
+            stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="1"/>
+      <circle cx="23" cy="48" r="3"
+              fill="var(--cmp-screw, #888)"
+              stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="0.8"/>
+      <line x1="21" y1="48" x2="25" y2="48" stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="0.7"/>
+      <line x1="23" y1="46" x2="23" y2="50" stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="0.7"/>
+    </g>
+
+    <!-- 右接线柱 -->
+    <g>
+      <rect x="72" y="44" width="10" height="12" rx="2"
+            fill="var(--cmp-screw, #888)"
+            stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="1"/>
+      <circle cx="77" cy="48" r="3"
+              fill="var(--cmp-screw, #888)"
+              stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="0.8"/>
+      <line x1="75" y1="48" x2="79" y2="48" stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="0.7"/>
+      <line x1="77" y1="46" x2="77" y2="50" stroke="var(--cmp-stroke, #1a1a1a)" stroke-width="0.7"/>
+    </g>
+
+    <!-- 金属弹片（连接螺口到接线柱） -->
+    <path d="M28,50 L38,44" fill="none"
+          stroke="var(--cmp-metal, #b0b0b0)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M72,50 L62,44" fill="none"
+          stroke="var(--cmp-metal, #b0b0b0)" stroke-width="2" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<style>
+  .cmp[data-cmp-id="phy.circuit.bulb-holder.basic"] {
+    height: var(--cmp-size, 80px);
+    width: calc(var(--cmp-size, 80px) * 1.25);
+    display: inline-block;
+    filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+            rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+  }
+  .cmp[data-cmp-id="phy.circuit.bulb-holder.basic"] svg {
+    width: 100%; height: 100%; display: block;
+  }
+</style>

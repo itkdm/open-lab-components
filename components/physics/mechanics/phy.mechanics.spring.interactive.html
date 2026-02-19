@@ -1,0 +1,289 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.spring.interactive",
+  "name": "弹簧（交互式）",
+  "nameEn": "Spring (Interactive)",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 100 },
+  "tags": ["spring", "elastic", "hooke", "mechanics", "interactive", "draggable"],
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 100, "min": 60, "max": 240, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "springColor",  "type": "color",  "default": "#555555", "desc": "弹簧颜色" },
+    { "key": "wallColor",    "type": "color",  "default": "#666666", "desc": "固定墙颜色" },
+    { "key": "handleColor",  "type": "color",  "default": "#e53935", "desc": "拖拽手柄颜色" },
+    { "key": "stroke",       "type": "color",  "default": "#222222", "desc": "描边颜色" },
+    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "accent",       "type": "color",  "default": "#1565c0", "desc": "强调色（力值文字）" },
+    { "key": "k",            "type": "number", "default": 100, "min": 10, "max": 500, "desc": "弹簧劲度系数(N/m)" },
+    { "key": "naturalLen",   "type": "number", "default": 80,  "min": 40, "max": 120, "desc": "自然长度(viewBox单位)" },
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":         "--cmp-size",
+    "springColor":  "--cmp-spring",
+    "wallColor":    "--cmp-wall",
+    "handleColor":  "--cmp-handle",
+    "stroke":       "--cmp-stroke",
+    "strokeWidth":  "--cmp-stroke-width",
+    "accent":       "--cmp-accent",
+    "glow":         "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change",    "type": "drag", "values": { "extension": "number — 形变量(viewBox单位)", "force": "number(N) — 弹力" } },
+    { "name": "cmp:changeend", "type": "drag", "values": { "extension": "number — 形变量(viewBox单位)", "force": "number(N) — 弹力" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.spring.interactive" role="img" aria-label="弹簧（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.mechanics.spring.interactive"] {
+      --h: var(--cmp-size, 100px);
+      display: inline-block;
+      width: calc(var(--h) * 2);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.mechanics.spring.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.mechanics.spring.interactive"] .sp__handle {
+      cursor: ew-resize;
+    }
+    .cmp[data-cmp-id="phy.mechanics.spring.interactive"] .sp__force-text {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+
+  <svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="sp__wall-g" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="#888"/>
+        <stop offset="0.5" stop-color="var(--cmp-wall, #666)"/>
+        <stop offset="1"   stop-color="#444"/>
+      </linearGradient>
+      <linearGradient id="sp__spring-g" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#888"/>
+        <stop offset="0.5" stop-color="var(--cmp-spring, #555)"/>
+        <stop offset="1"   stop-color="#333"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 固定墙 -->
+    <rect x="0" y="20" width="14" height="60" rx="2"
+          fill="url(#sp__wall-g)"
+          stroke="var(--cmp-stroke, #222)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 墙面斜线纹理 -->
+    <g stroke="var(--cmp-stroke, #222)" stroke-width="0.6" opacity="0.3">
+      <line x1="2" y1="28" x2="12" y2="22"/>
+      <line x1="2" y1="38" x2="12" y2="32"/>
+      <line x1="2" y1="48" x2="12" y2="42"/>
+      <line x1="2" y1="58" x2="12" y2="52"/>
+      <line x1="2" y1="68" x2="12" y2="62"/>
+      <line x1="2" y1="78" x2="12" y2="72"/>
+    </g>
+
+    <!-- 弹簧 -->
+    <path class="sp__coil" fill="none"
+          stroke="url(#sp__spring-g)" stroke-width="3"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 拖拽手柄 -->
+    <g class="sp__handle">
+      <rect class="sp__handle-rect" width="12" height="30" rx="3"
+            fill="var(--cmp-handle, #e53935)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+      <!-- 手柄纹路 -->
+      <g class="sp__handle-lines" stroke="rgba(255,255,255,0.3)" stroke-width="1">
+        <line x1="0" y1="0" x2="0" y2="0"/>
+        <line x1="0" y1="0" x2="0" y2="0"/>
+      </g>
+      <!-- 拖拽热区 -->
+      <rect class="sp__hit" width="30" height="50" fill="transparent" cursor="ew-resize"/>
+    </g>
+
+    <!-- 力值文字 -->
+    <text class="sp__force-text" text-anchor="middle"
+          font-size="10" fill="var(--cmp-accent, #1565c0)">0.00 N</text>
+
+    <!-- 形变量标注 -->
+    <g class="sp__ext-label" opacity="0.7">
+      <line class="sp__ext-line" stroke="var(--cmp-accent, #1565c0)" stroke-width="1" stroke-dasharray="3,2"/>
+      <text class="sp__ext-text" text-anchor="middle" font-size="8"
+            fill="var(--cmp-accent, #1565c0)" font-family="Arial, sans-serif"></text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.mechanics.spring.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 参数 ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var k = Math.max(10, Number(P.k) || 100);
+  var natLen = Math.max(40, Math.min(120, Number(P.naturalLen) || 80));
+  var WALL_RIGHT = 14;
+  var MIN_LEN = 20;
+  var MAX_LEN = 170;
+  var CY = 50;
+
+  var endX = WALL_RIGHT + natLen; /* 当前弹簧末端 x */
+
+  /* ── DOM ── */
+  var coil = root.querySelector('.sp__coil');
+  var handleG = root.querySelector('.sp__handle');
+  var handleRect = root.querySelector('.sp__handle-rect');
+  var handleLines = root.querySelector('.sp__handle-lines');
+  var hitRect = root.querySelector('.sp__hit');
+  var forceTxt = root.querySelector('.sp__force-text');
+  var extLine = root.querySelector('.sp__ext-line');
+  var extText = root.querySelector('.sp__ext-text');
+
+  /* ── 渲染 ── */
+  function render() {
+    var len = endX - WALL_RIGHT;
+    var coils = 10;
+    var amp = Math.min(14, len / coils * 0.8);
+
+    /* 弹簧路径 */
+    var d = 'M' + WALL_RIGHT + ' ' + CY;
+    for (var i = 0; i < coils; i++) {
+      var x0 = WALL_RIGHT + ((i + 0.25) / coils) * len;
+      var x1 = WALL_RIGHT + ((i + 0.75) / coils) * len;
+      var dir = (i % 2 === 0) ? -1 : 1;
+      d += ' L' + x0.toFixed(1) + ' ' + (CY + dir * amp).toFixed(1);
+      d += ' L' + x1.toFixed(1) + ' ' + (CY - dir * amp).toFixed(1);
+    }
+    d += ' L' + endX.toFixed(1) + ' ' + CY;
+    if (coil) coil.setAttribute('d', d);
+
+    /* 手柄 */
+    if (handleRect) {
+      handleRect.setAttribute('x', (endX - 6).toFixed(1));
+      handleRect.setAttribute('y', (CY - 15).toFixed(1));
+    }
+    if (handleLines) {
+      var lines = handleLines.querySelectorAll('line');
+      if (lines[0]) {
+        lines[0].setAttribute('x1', (endX - 2).toFixed(1));
+        lines[0].setAttribute('x2', (endX - 2).toFixed(1));
+        lines[0].setAttribute('y1', (CY - 8).toFixed(1));
+        lines[0].setAttribute('y2', (CY + 8).toFixed(1));
+      }
+      if (lines[1]) {
+        lines[1].setAttribute('x1', (endX + 2).toFixed(1));
+        lines[1].setAttribute('x2', (endX + 2).toFixed(1));
+        lines[1].setAttribute('y1', (CY - 8).toFixed(1));
+        lines[1].setAttribute('y2', (CY + 8).toFixed(1));
+      }
+    }
+    if (hitRect) {
+      hitRect.setAttribute('x', (endX - 15).toFixed(1));
+      hitRect.setAttribute('y', (CY - 25).toFixed(1));
+    }
+
+    /* 物理量 */
+    var ext = len - natLen; /* 形变量（正=拉伸，负=压缩） */
+    var force = Math.abs(ext) * k / natLen; /* 简化：F = k * |Δx| / L0 */
+
+    if (forceTxt) {
+      forceTxt.textContent = force.toFixed(2) + ' N';
+      forceTxt.setAttribute('x', (endX).toFixed(1));
+      forceTxt.setAttribute('y', (CY + 32).toFixed(1));
+    }
+
+    /* 形变量标注线 */
+    var natEndX = WALL_RIGHT + natLen;
+    if (extLine) {
+      extLine.setAttribute('x1', natEndX.toFixed(1));
+      extLine.setAttribute('y1', (CY - 20).toFixed(1));
+      extLine.setAttribute('x2', endX.toFixed(1));
+      extLine.setAttribute('y2', (CY - 20).toFixed(1));
+    }
+    if (extText) {
+      var label = ext >= 0 ? 'Δx=' + ext.toFixed(0) : 'Δx=' + ext.toFixed(0);
+      extText.textContent = Math.abs(ext) > 2 ? label : '';
+      extText.setAttribute('x', ((natEndX + endX) / 2).toFixed(1));
+      extText.setAttribute('y', (CY - 24).toFixed(1));
+    }
+
+    root.setAttribute('aria-label',
+      '弹簧，形变量 ' + ext.toFixed(1) + '，弹力 ' + force.toFixed(2) + ' N');
+  }
+
+  render();
+
+  /* ── 事件 ── */
+  function getValues() {
+    var len = endX - WALL_RIGHT;
+    var ext = len - natLen;
+    var force = Math.abs(ext) * k / natLen;
+    return { extension: Math.round(ext * 10) / 10, force: Math.round(force * 100) / 100 };
+  }
+
+  function emitCmp(name) {
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'drag', values: getValues() }
+    }));
+  }
+
+  /* ── 拖拽 ── */
+  var dragging = false;
+
+  function svgPt(cx, cy) {
+    var pt = svg.createSVGPoint();
+    pt.x = cx; pt.y = cy;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  function onDown(e) {
+    e.preventDefault();
+    dragging = true;
+    if (e.pointerId !== undefined) svg.setPointerCapture(e.pointerId);
+  }
+
+  if (hitRect) hitRect.addEventListener('pointerdown', onDown);
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pt = svgPt(e.clientX, e.clientY);
+    if (!pt) return;
+    endX = Math.max(WALL_RIGHT + MIN_LEN, Math.min(WALL_RIGHT + MAX_LEN, pt.x));
+    render();
+    emitCmp('cmp:change');
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!dragging) return;
+    dragging = false;
+    if (e.pointerId !== undefined) {
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+    }
+    emitCmp('cmp:changeend');
+  });
+
+  svg.addEventListener('pointercancel', function() { dragging = false; });
+})();
+</script>

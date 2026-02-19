@@ -1,0 +1,278 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.wave.transverse.interactive",
+  "name": "横波演示（交互式）",
+  "nameEn": "Transverse Wave (Interactive)",
+  "category": "physics/wave",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 140 },
+  "tags": ["wave", "transverse", "mechanics", "interactive", "frequency", "amplitude"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 140, "min": 80, "max": 300, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "waveColor",  "type": "color",  "default": "#1565c0", "desc": "波形颜色" },
+    { "key": "dotColor",   "type": "color",  "default": "#e53935", "desc": "质点颜色" },
+    { "key": "axisColor",  "type": "color",  "default": "#999999", "desc": "轴线颜色" },
+    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
+    { "key": "accent",     "type": "color",  "default": "#1565c0", "desc": "标注颜色" },
+    { "key": "frequency",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "频率(Hz)" },
+    { "key": "amplitude",  "type": "number", "default": 35,  "min": 10, "max": 55, "desc": "振幅(viewBox单位)" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":      "--cmp-size",
+    "waveColor": "--cmp-wave",
+    "dotColor":  "--cmp-dot",
+    "axisColor": "--cmp-axis",
+    "stroke":    "--cmp-stroke",
+    "accent":    "--cmp-accent",
+    "glow":      "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "frequency": "number(Hz)", "amplitude": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.wave.transverse.interactive" role="img" aria-label="横波演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.wave.transverse.interactive"] {
+      --h: var(--cmp-size, 140px);
+      display: inline-block;
+      width: calc(var(--h) * 2.143);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.wave.transverse.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.wave.transverse.interactive"] .tw__slider {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="phy.wave.transverse.interactive"] .tw__info {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+
+  <svg viewBox="0 0 300 140" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- 平衡轴 -->
+    <line x1="20" y1="70" x2="280" y2="70"
+          stroke="var(--cmp-axis, #999)" stroke-width="0.8" stroke-dasharray="4,3"/>
+
+    <!-- 波形路径 -->
+    <path class="tw__wave" fill="none"
+          stroke="var(--cmp-wave, #1565c0)" stroke-width="2.5" stroke-linecap="round"/>
+
+    <!-- 质点 -->
+    <g class="tw__dots"></g>
+
+    <!-- 振幅标注 -->
+    <g class="tw__amp-label" opacity="0.6">
+      <line x1="26" y1="70" x2="26" y2="35" stroke="var(--cmp-accent, #1565c0)" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="14" y="52" font-size="8" fill="var(--cmp-accent, #1565c0)" font-family="Arial, sans-serif">A</text>
+    </g>
+
+    <!-- 频率滑块 -->
+    <g class="tw__slider tw__freq-slider" transform="translate(40,125)">
+      <text x="-16" y="4" font-size="7" fill="var(--cmp-stroke, #222)" font-family="Arial, sans-serif">f</text>
+      <rect x="0" y="-2" width="80" height="4" rx="2" fill="#ddd"/>
+      <circle class="tw__freq-knob" cx="40" cy="0" r="6" fill="var(--cmp-accent, #1565c0)" stroke="#fff" stroke-width="1.5"/>
+    </g>
+
+    <!-- 振幅滑块 -->
+    <g class="tw__slider tw__amp-slider" transform="translate(170,125)">
+      <text x="-16" y="4" font-size="7" fill="var(--cmp-stroke, #222)" font-family="Arial, sans-serif">A</text>
+      <rect x="0" y="-2" width="80" height="4" rx="2" fill="#ddd"/>
+      <circle class="tw__amp-knob" cx="40" cy="0" r="6" fill="var(--cmp-dot, #e53935)" stroke="#fff" stroke-width="1.5"/>
+    </g>
+
+    <!-- 信息文字 -->
+    <text class="tw__info" x="280" y="132" text-anchor="end"
+          font-size="8" fill="var(--cmp-accent, #1565c0)"></text>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.wave.transverse.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 参数 ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var freq = Math.max(0.5, Math.min(4, Number(P.frequency) || 1.5));
+  var amp  = Math.max(10, Math.min(55, Number(P.amplitude) || 35));
+  var CY = 70;
+  var X_START = 20, X_END = 280;
+  var NUM_DOTS = 20;
+
+  /* ── DOM ── */
+  var wavePath = root.querySelector('.tw__wave');
+  var dotsG = root.querySelector('.tw__dots');
+  var freqKnob = root.querySelector('.tw__freq-knob');
+  var ampKnob = root.querySelector('.tw__amp-knob');
+  var infoTxt = root.querySelector('.tw__info');
+  var ampLine = root.querySelector('.tw__amp-label line');
+
+  var phase = 0;
+  var animId = null;
+  var running = false;
+
+  function render() {
+    /* 波形 */
+    var d = '';
+    var step = (X_END - X_START) / 100;
+    for (var i = 0; i <= 100; i++) {
+      var x = X_START + i * step;
+      var y = CY - amp * Math.sin(2 * Math.PI * freq * (i / 100) * 2 + phase);
+      d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
+    }
+    if (wavePath) wavePath.setAttribute('d', d);
+
+    /* 质点 */
+    if (dotsG) {
+      while (dotsG.children.length > NUM_DOTS) dotsG.removeChild(dotsG.lastChild);
+      for (var j = 0; j < NUM_DOTS; j++) {
+        var t = j / (NUM_DOTS - 1);
+        var dx = X_START + t * (X_END - X_START);
+        var dy = CY - amp * Math.sin(2 * Math.PI * freq * t * 2 + phase);
+        var dot;
+        if (j < dotsG.children.length) {
+          dot = dotsG.children[j];
+        } else {
+          dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('r', '3.5');
+          dot.setAttribute('fill', 'var(--cmp-dot, #e53935)');
+          dotsG.appendChild(dot);
+        }
+        dot.setAttribute('cx', dx.toFixed(1));
+        dot.setAttribute('cy', dy.toFixed(1));
+      }
+    }
+
+    /* 振幅标注线 */
+    if (ampLine) {
+      ampLine.setAttribute('y2', (CY - amp).toFixed(1));
+    }
+
+    /* 信息 */
+    if (infoTxt) {
+      infoTxt.textContent = 'f=' + freq.toFixed(1) + 'Hz  A=' + amp.toFixed(0);
+    }
+
+    /* 滑块位置 */
+    if (freqKnob) {
+      var fx = ((freq - 0.5) / 3.5) * 80;
+      freqKnob.setAttribute('cx', fx.toFixed(1));
+    }
+    if (ampKnob) {
+      var ax = ((amp - 10) / 45) * 80;
+      ampKnob.setAttribute('cx', ax.toFixed(1));
+    }
+  }
+
+  function animate(ts) {
+    phase += 0.05;
+    render();
+    if (running) animId = requestAnimationFrame(animate);
+  }
+
+  function startAnim() {
+    if (running) return;
+    running = true;
+    animId = requestAnimationFrame(animate);
+  }
+
+  function stopAnim() {
+    running = false;
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+  }
+
+  render();
+  startAnim();
+
+  /* 5秒后自动停止，避免永久定时器 */
+  var autoStop = setTimeout(function() { stopAnim(); }, 5000);
+
+  /* 点击波形区域重新启动动画 */
+  svg.addEventListener('click', function(e) {
+    if (e.target.closest('.tw__slider')) return;
+    clearTimeout(autoStop);
+    if (!running) {
+      startAnim();
+      autoStop = setTimeout(function() { stopAnim(); }, 5000);
+    }
+  });
+
+  /* ── 事件 ── */
+  function emitCmp(name) {
+    root.dispatchEvent(new CustomEvent(name || 'cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'adjust',
+        values: { frequency: Math.round(freq * 10) / 10, amplitude: Math.round(amp) }
+      }
+    }));
+  }
+
+  /* ── 滑块拖拽 ── */
+  var draggingSlider = null; /* 'freq' | 'amp' */
+
+  function svgPt(cx, cy) {
+    var pt = svg.createSVGPoint();
+    pt.x = cx; pt.y = cy;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  freqKnob.addEventListener('pointerdown', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    draggingSlider = 'freq';
+    svg.setPointerCapture(e.pointerId);
+  });
+  ampKnob.addEventListener('pointerdown', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    draggingSlider = 'amp';
+    svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!draggingSlider) return;
+    e.preventDefault();
+    var pt = svgPt(e.clientX, e.clientY);
+    if (!pt) return;
+
+    if (draggingSlider === 'freq') {
+      var fx = Math.max(0, Math.min(80, pt.x - 40));
+      freq = 0.5 + (fx / 80) * 3.5;
+    } else {
+      var ax = Math.max(0, Math.min(80, pt.x - 170));
+      amp = 10 + (ax / 80) * 45;
+    }
+    if (!running) render();
+    emitCmp('cmp:change');
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!draggingSlider) return;
+    draggingSlider = null;
+    try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+    emitCmp('cmp:changeend');
+  });
+})();
+</script>

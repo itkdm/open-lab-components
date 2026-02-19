@@ -1,0 +1,200 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.magnet.bar.interactive",
+  "name": "条形磁铁（交互式）",
+  "nameEn": "Bar Magnet (Interactive)",
+  "category": "physics/magnet",
+  "version": "1.0.0",
+  "viewport": { "w": 240, "h": 180 },
+  "tags": ["magnet", "bar-magnet", "magnetic-field", "NS-pole", "interactive", "draggable"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 180, "min": 100, "max": 360, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "northColor", "type": "color",  "default": "#f44336", "desc": "N极颜色" },
+    { "key": "southColor", "type": "color",  "default": "#2196f3", "desc": "S极颜色" },
+    { "key": "fieldColor", "type": "color",  "default": "#666666", "desc": "磁力线颜色" },
+    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
+    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "showField",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示磁力线" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "northColor": "--cmp-north",
+    "southColor": "--cmp-south",
+    "fieldColor": "--cmp-field",
+    "stroke":     "--cmp-stroke",
+    "strokeWidth":"--cmp-stroke-width",
+    "glow":       "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change",    "type": "drag", "values": { "x": "number", "y": "number" } },
+    { "name": "cmp:changeend", "type": "drag", "values": { "x": "number", "y": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.magnet.bar.interactive" role="img" aria-label="条形磁铁（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.magnet.bar.interactive"] {
+      --h: var(--cmp-size, 180px);
+      display: inline-block;
+      width: calc(var(--h) * 1.333);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.magnet.bar.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.magnet.bar.interactive"] .mg__body {
+      cursor: grab;
+    }
+    .cmp[data-cmp-id="phy.magnet.bar.interactive"] .mg__body:active {
+      cursor: grabbing;
+    }
+  </style>
+
+  <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="mg__north" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#ff8a80"/>
+        <stop offset="0.5" stop-color="var(--cmp-north, #f44336)"/>
+        <stop offset="1"   stop-color="#c62828"/>
+      </linearGradient>
+      <linearGradient id="mg__south" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="#90caf9"/>
+        <stop offset="0.5" stop-color="var(--cmp-south, #2196f3)"/>
+        <stop offset="1"   stop-color="#1565c0"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 磁力线 -->
+    <g class="mg__field" fill="none" stroke="var(--cmp-field, #666)" stroke-width="0.8" opacity="0.5">
+      <!-- 外部磁力线（N→S弧线） -->
+      <path d="M60,90 C60,40 180,40 180,90" stroke-dasharray="4,3"/>
+      <path d="M60,90 C60,20 180,20 180,90" stroke-dasharray="4,3"/>
+      <path d="M60,90 C60,0 180,0 180,90" stroke-dasharray="4,3"/>
+      <path d="M60,90 C60,140 180,140 180,90" stroke-dasharray="4,3"/>
+      <path d="M60,90 C60,160 180,160 180,90" stroke-dasharray="4,3"/>
+      <path d="M60,90 C60,180 180,180 180,90" stroke-dasharray="4,3"/>
+      <!-- 箭头（N极出发方向） -->
+      <polygon fill="var(--cmp-field, #666)" points="56,55 64,50 60,60" opacity="0.6"/>
+      <polygon fill="var(--cmp-field, #666)" points="56,125 64,130 60,120" opacity="0.6"/>
+      <polygon fill="var(--cmp-field, #666)" points="176,55 184,60 180,50" opacity="0.6"/>
+      <polygon fill="var(--cmp-field, #666)" points="176,125 184,120 180,130" opacity="0.6"/>
+    </g>
+
+    <!-- 磁铁主体（可拖拽） -->
+    <g class="mg__body">
+      <!-- N极 -->
+      <rect x="60" y="76" width="60" height="28" rx="3"
+            fill="url(#mg__north)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+      <text x="90" y="95" text-anchor="middle" font-size="16" font-weight="700"
+            fill="#fff" font-family="Arial, sans-serif">N</text>
+
+      <!-- S极 -->
+      <rect x="120" y="76" width="60" height="28" rx="3"
+            fill="url(#mg__south)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+      <text x="150" y="95" text-anchor="middle" font-size="16" font-weight="700"
+            fill="#fff" font-family="Arial, sans-serif">S</text>
+
+      <!-- 分界线 -->
+      <line x1="120" y1="76" x2="120" y2="104"
+            stroke="var(--cmp-stroke, #222)" stroke-width="1"/>
+
+      <!-- 拖拽热区 -->
+      <rect x="55" y="70" width="130" height="40" fill="transparent"/>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.magnet.bar.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 参数 ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var showField = P.showField !== 'off';
+  var fieldG = root.querySelector('.mg__field');
+  if (fieldG) fieldG.style.display = showField ? '' : 'none';
+
+  var body = root.querySelector('.mg__body');
+  if (!body) return;
+
+  var offsetX = 0, offsetY = 0;
+  var dragging = false;
+
+  function emitCmp(name) {
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'drag',
+        values: { x: Math.round(offsetX), y: Math.round(offsetY) }
+      }
+    }));
+  }
+
+  function svgPt(cx, cy) {
+    var pt = svg.createSVGPoint();
+    pt.x = cx; pt.y = cy;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  var startSvgX, startSvgY, startOffX, startOffY;
+
+  body.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    dragging = true;
+    var pt = svgPt(e.clientX, e.clientY);
+    if (pt) { startSvgX = pt.x; startSvgY = pt.y; }
+    startOffX = offsetX; startOffY = offsetY;
+    if (e.pointerId !== undefined) svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pt = svgPt(e.clientX, e.clientY);
+    if (!pt) return;
+    offsetX = startOffX + (pt.x - startSvgX);
+    offsetY = startOffY + (pt.y - startSvgY);
+    /* 限制范围 */
+    offsetX = Math.max(-50, Math.min(50, offsetX));
+    offsetY = Math.max(-60, Math.min(60, offsetY));
+    body.setAttribute('transform', 'translate(' + offsetX.toFixed(1) + ',' + offsetY.toFixed(1) + ')');
+    if (fieldG && showField) {
+      fieldG.setAttribute('transform', 'translate(' + offsetX.toFixed(1) + ',' + offsetY.toFixed(1) + ')');
+    }
+    emitCmp('cmp:change');
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!dragging) return;
+    dragging = false;
+    if (e.pointerId !== undefined) {
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+    }
+    emitCmp('cmp:changeend');
+  });
+
+  svg.addEventListener('pointercancel', function() { dragging = false; });
+})();
+</script>

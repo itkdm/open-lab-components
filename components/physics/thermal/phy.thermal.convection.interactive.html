@@ -1,0 +1,307 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.thermal.convection.interactive",
+  "name": "对流演示（交互式）",
+  "nameEn": "Convection Demo (Interactive)",
+  "category": "physics/thermal",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 200 },
+  "tags": ["thermal", "convection", "heat", "particle", "interactive"],
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
+    { "key": "liquidColor",   "type": "color",  "default": "rgba(66,165,245,0.3)", "desc": "液体颜色" },
+    { "key": "particleColor", "type": "color",  "default": "#e53935", "desc": "粒子颜色" },
+    { "key": "flameColor",    "type": "color",  "default": "#ff9800", "desc": "火焰颜色" },
+    { "key": "stroke",        "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":          "--cmp-size",
+    "liquidColor":   "--cmp-liquid",
+    "particleColor": "--cmp-particle",
+    "flameColor":    "--cmp-flame",
+    "stroke":        "--cmp-stroke",
+    "strokeWidth":   "--cmp-stroke-width",
+    "glow":          "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "heating": "boolean — 是否加热中" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.thermal.convection.interactive" role="img" aria-label="对流演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.thermal.convection.interactive"] {
+      --h: var(--cmp-size, 200px);
+      display: inline-block;
+      width: calc(var(--h) * 0.8);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.thermal.convection.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.thermal.convection.interactive"] .tc__flame-btn {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="phy.thermal.convection.interactive"] .tc__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-weight: 600;
+      pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <clipPath id="tc__beaker-clip">
+        <rect x="30" y="30" width="100" height="120" rx="6"/>
+      </clipPath>
+    </defs>
+
+    <!-- Beaker body -->
+    <rect x="30" y="30" width="100" height="120" rx="6"
+          fill="var(--cmp-liquid, rgba(66,165,245,0.3))"
+          stroke="var(--cmp-stroke, #333)"
+          stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- Beaker rim -->
+    <line x1="28" y1="30" x2="36" y2="22"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)" stroke-linecap="round"/>
+    <line x1="132" y1="30" x2="124" y2="22"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)" stroke-linecap="round"/>
+
+    <!-- Particles (clipped to beaker) -->
+    <g class="tc__particles" clip-path="url(#tc__beaker-clip)"></g>
+
+    <!-- Flame group (clickable) -->
+    <g class="tc__flame-btn">
+      <!-- Hit area -->
+      <rect x="55" y="155" width="50" height="40" fill="transparent"/>
+      <!-- Flame shapes -->
+      <g class="tc__flame" opacity="0.35">
+        <ellipse cx="80" cy="170" rx="12" ry="18"
+                 fill="var(--cmp-flame, #ff9800)" opacity="0.9"/>
+        <ellipse cx="80" cy="168" rx="7" ry="12"
+                 fill="#ffeb3b" opacity="0.8"/>
+        <ellipse cx="80" cy="166" rx="3" ry="7"
+                 fill="#fff9c4" opacity="0.9"/>
+      </g>
+    </g>
+
+    <!-- Status label -->
+    <text class="tc__label tc__status" x="80" y="198" text-anchor="middle"
+          font-size="9" fill="var(--cmp-stroke, #333)">点击火焰加热</text>
+  </svg>
+
+  <script>
+  (function() {
+    var script = document.currentScript;
+    if (!script) return;
+    var root = script.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'phy.thermal.convection.interactive') return;
+
+    var svg = root.querySelector('svg');
+    if (!svg) return;
+
+    /* ── Props ── */
+    var P = {};
+    try {
+      var raw = root.getAttribute('data-props');
+      if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+    } catch(e) {}
+
+    /* ── State ── */
+    var heating = false;
+    var animId = null;
+
+    /* ── DOM refs ── */
+    var flameG = root.querySelector('.tc__flame');
+    var flameBtn = root.querySelector('.tc__flame-btn');
+    var particlesG = root.querySelector('.tc__particles');
+    var statusTxt = root.querySelector('.tc__status');
+
+    /* ── Beaker bounds (viewBox coords) ── */
+    var BX = 30, BY = 30, BW = 100, BH = 120;
+    var CX = BX + BW / 2;  /* 80 */
+    var NUM_PARTICLES = 15;
+
+    /* ── Particle state ── */
+    var particles = [];
+    for (var i = 0; i < NUM_PARTICLES; i++) {
+      particles.push({
+        x: BX + 10 + Math.random() * (BW - 20),
+        y: BY + 10 + Math.random() * (BH - 20),
+        vx: 0,
+        vy: 0,
+        el: null
+      });
+    }
+
+    /* Create SVG circles for particles */
+    for (var j = 0; j < NUM_PARTICLES; j++) {
+      var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      c.setAttribute('r', '3');
+      c.setAttribute('fill', 'var(--cmp-particle, #e53935)');
+      c.setAttribute('opacity', '0.85');
+      c.setAttribute('cx', particles[j].x.toFixed(1));
+      c.setAttribute('cy', particles[j].y.toFixed(1));
+      particlesG.appendChild(c);
+      particles[j].el = c;
+    }
+
+    /* ── Convection flow field ── */
+    function convectionForce(px, py) {
+      /* Normalized position within beaker */
+      var nx = (px - BX) / BW;          /* 0..1 left to right */
+      var ny = (py - BY) / BH;          /* 0..1 top to bottom */
+      var cx_norm = nx - 0.5;           /* -0.5..0.5 from center */
+
+      var fx = 0, fy = 0;
+
+      /* Center column: rise (negative vy = upward in SVG) */
+      if (Math.abs(cx_norm) < 0.2) {
+        fy = -0.35;
+        fx = cx_norm * 0.1;
+      }
+      /* Left side: sink down */
+      else if (cx_norm < -0.2) {
+        fy = 0.25;
+        fx = 0.15;
+      }
+      /* Right side: sink down */
+      else {
+        fy = 0.25;
+        fx = -0.15;
+      }
+
+      /* Top: push outward */
+      if (ny < 0.2) {
+        fx += cx_norm * 0.4;
+        fy += 0.1;
+      }
+      /* Bottom: push toward center */
+      if (ny > 0.8) {
+        fx += -cx_norm * 0.4;
+        fy -= 0.1;
+      }
+
+      return { x: fx, y: fy };
+    }
+
+    /* ── Settle particles (gravity + damping when heat off) ── */
+    var settled = false;
+
+    function updateParticles() {
+      var allSlow = true;
+      for (var i = 0; i < NUM_PARTICLES; i++) {
+        var p = particles[i];
+
+        if (heating) {
+          var f = convectionForce(p.x, p.y);
+          p.vx += f.x * 0.12;
+          p.vy += f.y * 0.12;
+          /* Damping */
+          p.vx *= 0.94;
+          p.vy *= 0.94;
+        } else {
+          /* Slow down and settle to bottom */
+          p.vx *= 0.92;
+          p.vy *= 0.92;
+          /* Gentle gravity */
+          p.vy += 0.02;
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        /* Clamp to beaker bounds with bounce */
+        var margin = 4;
+        if (p.x < BX + margin) { p.x = BX + margin; p.vx = Math.abs(p.vx) * 0.3; }
+        if (p.x > BX + BW - margin) { p.x = BX + BW - margin; p.vx = -Math.abs(p.vx) * 0.3; }
+        if (p.y < BY + margin) { p.y = BY + margin; p.vy = Math.abs(p.vy) * 0.3; }
+        if (p.y > BY + BH - margin) { p.y = BY + BH - margin; p.vy = -Math.abs(p.vy) * 0.1; }
+
+        /* Check if particle is still moving */
+        if (Math.abs(p.vx) > 0.02 || Math.abs(p.vy) > 0.02) {
+          allSlow = false;
+        }
+
+        p.el.setAttribute('cx', p.x.toFixed(1));
+        p.el.setAttribute('cy', p.y.toFixed(1));
+      }
+
+      return allSlow;
+    }
+
+    /* ── Animation loop ── */
+    function tick() {
+      var allSettled = updateParticles();
+
+      if (!heating && allSettled) {
+        /* Particles have settled, stop animating */
+        settled = true;
+        animId = null;
+        return;
+      }
+
+      animId = requestAnimationFrame(tick);
+    }
+
+    function startAnim() {
+      if (animId) return;
+      settled = false;
+      animId = requestAnimationFrame(tick);
+    }
+
+    function stopAnim() {
+      /* Don't cancel immediately -- let particles settle */
+      /* The tick loop will stop itself when settled */
+    }
+
+    /* ── Toggle heating ── */
+    function toggleHeat() {
+      heating = !heating;
+
+      if (flameG) {
+        flameG.setAttribute('opacity', heating ? '1' : '0.35');
+      }
+      if (statusTxt) {
+        statusTxt.textContent = heating ? '加热中…' : '点击火焰加热';
+      }
+
+      root.setAttribute('aria-label',
+        heating ? '对流演示（交互式）— 加热中' : '对流演示（交互式）');
+
+      /* Dispatch event */
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          id: root.getAttribute('data-cmp-id'),
+          type: 'toggle',
+          values: { heating: heating }
+        }
+      }));
+
+      if (heating) {
+        startAnim();
+      } else {
+        /* Animation continues until particles settle */
+        if (!animId) startAnim();
+      }
+    }
+
+    /* ── Click handler ── */
+    if (flameBtn) {
+      flameBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        toggleHeat();
+      });
+    }
+  })();
+  </script>
+</div>

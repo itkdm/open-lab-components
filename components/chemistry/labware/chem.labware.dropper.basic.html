@@ -1,0 +1,179 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.dropper.basic",
+  "name": "胶头滴管",
+  "nameEn": "Dropper",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 60, "h": 200 },
+  "tags": ["dropper", "pipette", "labware", "chemistry", "interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 360, "desc": "组件高度" },
+    { "key": "bulbColor",   "type": "color",  "default": "#e57373", "desc": "胶头颜色" },
+    { "key": "tubeColor",   "type": "color",  "default": "rgba(200,230,255,0.6)", "desc": "玻璃管颜色" },
+    { "key": "liquidColor", "type": "color",  "default": "#42a5f5", "desc": "液体颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "bulbColor":   "--cmp-bulb",
+    "tubeColor":   "--cmp-tube",
+    "liquidColor": "--cmp-liquid",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "squeezing": "boolean — 是否挤压中" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.dropper.basic" role="img" aria-label="胶头滴管">
+  <style>
+    .cmp[data-cmp-id="chem.labware.dropper.basic"] {
+      --h: var(--cmp-size, 200px);
+      display: inline-block;
+      width: calc(var(--h) * 0.3);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.dropper.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="chem.labware.dropper.basic"] .dr__bulb-area {
+      cursor: pointer;
+    }
+  </style>
+
+  <svg viewBox="0 0 60 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="dr__tube-g" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="rgba(255,255,255,0.5)"/>
+        <stop offset="0.3" stop-color="var(--cmp-tube, rgba(200,230,255,0.6))"/>
+        <stop offset="0.7" stop-color="var(--cmp-tube, rgba(200,230,255,0.6))"/>
+        <stop offset="1"   stop-color="rgba(255,255,255,0.3)"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 胶头 -->
+    <g class="dr__bulb-area">
+      <ellipse class="dr__bulb" cx="30" cy="30" rx="16" ry="24"
+               fill="var(--cmp-bulb, #e57373)"
+               stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+      <!-- 胶头高光 -->
+      <ellipse cx="24" cy="22" rx="5" ry="10" fill="rgba(255,255,255,0.25)" transform="rotate(-10,24,22)"/>
+    </g>
+
+    <!-- 胶头与管连接处 -->
+    <rect x="24" y="50" width="12" height="8" rx="2"
+          fill="#bbb" stroke="var(--cmp-stroke, #333)" stroke-width="1"/>
+
+    <!-- 玻璃管 -->
+    <rect x="25" y="56" width="10" height="110" rx="1"
+          fill="url(#dr__tube-g)"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+
+    <!-- 管内液体 -->
+    <rect class="dr__liquid" x="26.5" y="90" width="7" height="74" rx="0.5"
+          fill="var(--cmp-liquid, #42a5f5)" opacity="0.7"/>
+
+    <!-- 管口（尖端） -->
+    <path d="M25,166 L30,180 L35,166" fill="url(#dr__tube-g)"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"
+          stroke-linejoin="round"/>
+
+    <!-- 液滴（隐藏，挤压时显示） -->
+    <ellipse class="dr__drop" cx="30" cy="186" rx="3" ry="4"
+             fill="var(--cmp-liquid, #42a5f5)" opacity="0"/>
+
+    <!-- 玻璃管高光 -->
+    <rect x="26" y="58" width="2.5" height="106" rx="1"
+          fill="rgba(255,255,255,0.35)" pointer-events="none"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.dropper.basic') return;
+
+  var bulbArea = root.querySelector('.dr__bulb-area');
+  var bulb = root.querySelector('.dr__bulb');
+  var liquid = root.querySelector('.dr__liquid');
+  var drop = root.querySelector('.dr__drop');
+  if (!bulbArea || !bulb) return;
+
+  var squeezing = false;
+  var animId = null;
+
+  function emitCmp() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle', values: { squeezing: squeezing } }
+    }));
+  }
+
+  function squeeze() {
+    squeezing = true;
+    /* 压扁胶头 */
+    bulb.setAttribute('ry', '18');
+    bulb.setAttribute('rx', '20');
+    /* 液体下降 */
+    if (liquid) {
+      liquid.setAttribute('y', '100');
+      liquid.setAttribute('height', '64');
+    }
+    /* 液滴出现并下落 */
+    if (drop) {
+      drop.setAttribute('opacity', '0.8');
+      var startY = 186;
+      var startTime = null;
+      function animDrop(ts) {
+        if (!startTime) startTime = ts;
+        var elapsed = ts - startTime;
+        var y = startY + elapsed * 0.08;
+        drop.setAttribute('cy', y.toFixed(1));
+        if (y < 210) {
+          animId = requestAnimationFrame(animDrop);
+        } else {
+          drop.setAttribute('opacity', '0');
+          drop.setAttribute('cy', '186');
+          animId = null;
+        }
+      }
+      if (animId) cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(animDrop);
+    }
+    emitCmp();
+  }
+
+  function release() {
+    squeezing = false;
+    bulb.setAttribute('ry', '24');
+    bulb.setAttribute('rx', '16');
+    if (liquid) {
+      liquid.setAttribute('y', '90');
+      liquid.setAttribute('height', '74');
+    }
+    emitCmp();
+  }
+
+  bulbArea.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    squeeze();
+  });
+  bulbArea.addEventListener('pointerup', function(e) {
+    release();
+  });
+  bulbArea.addEventListener('pointerleave', function(e) {
+    if (squeezing) release();
+  });
+})();
+</script>

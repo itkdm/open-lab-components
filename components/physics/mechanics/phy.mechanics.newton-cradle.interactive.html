@@ -1,0 +1,322 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.newton-cradle.interactive",
+  "name": "牛顿摆（交互式）",
+  "nameEn": "Newton's Cradle (Interactive)",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 180 },
+  "tags": ["newton","cradle","pendulum","momentum","mechanics","interactive","collision"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 480, "desc": "组件高度" },
+    { "key": "ballColor",   "type": "color",  "default": "#b0bec5", "desc": "钢球颜色" },
+    { "key": "frameColor",  "type": "color",  "default": "#555555", "desc": "框架颜色" },
+    { "key": "stringColor", "type": "color",  "default": "#333333", "desc": "悬线颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#222222", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "ballColor":   "--cmp-ball",
+    "frameColor":  "--cmp-frame",
+    "stringColor": "--cmp-string",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  },
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "angle": "number(deg) — 当前摆球角度"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "drag",
+      "values": {
+        "angle": "number(deg) — 释放时摆球角度"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.newton-cradle.interactive" role="img" aria-label="牛顿摆（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.mechanics.newton-cradle.interactive"]{
+      --h:var(--cmp-size,200px);
+      display:inline-block;
+      width:calc(var(--h) * 200 / 180);
+      height:var(--h);
+      filter:drop-shadow(0 0 calc(6px*var(--cmp-glow,0)) rgba(255,214,102,calc(.8*var(--cmp-glow,0))));
+      user-select:none;
+      touch-action:none;
+    }
+    .cmp[data-cmp-id="phy.mechanics.newton-cradle.interactive"] svg{
+      width:100%;height:100%;display:block;overflow:visible;
+    }
+    .cmp[data-cmp-id="phy.mechanics.newton-cradle.interactive"] .nc__drag{
+      cursor:grab;
+    }
+    .cmp[data-cmp-id="phy.mechanics.newton-cradle.interactive"] .nc__drag:active{
+      cursor:grabbing;
+    }
+  </style>
+
+  <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="nc__ball-g" cx="0.35" cy="0.35" r="0.65">
+        <stop offset="0" stop-color="#e0e0e0"/>
+        <stop offset="0.6" stop-color="var(--cmp-ball,#b0bec5)"/>
+        <stop offset="1" stop-color="#78909c"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 框架：顶部横梁 -->
+    <line x1="40" y1="20" x2="160" y2="20"
+          stroke="var(--cmp-frame,#555)" stroke-width="4" stroke-linecap="round"/>
+    <!-- 框架：左立柱 -->
+    <line x1="40" y1="20" x2="40" y2="170"
+          stroke="var(--cmp-frame,#555)" stroke-width="3" stroke-linecap="round"/>
+    <!-- 框架：右立柱 -->
+    <line x1="160" y1="20" x2="160" y2="170"
+          stroke="var(--cmp-frame,#555)" stroke-width="3" stroke-linecap="round"/>
+    <!-- 框架：底座 -->
+    <line x1="30" y1="170" x2="170" y2="170"
+          stroke="var(--cmp-frame,#555)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- 悬线和钢球（5个），由JS动态更新 -->
+    <g class="nc__balls">
+      <g class="nc__ball-group" data-idx="0">
+        <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+                stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
+      </g>
+      <g class="nc__ball-group" data-idx="1">
+        <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+                stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
+      </g>
+      <g class="nc__ball-group" data-idx="2">
+        <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+                stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
+      </g>
+      <g class="nc__ball-group" data-idx="3">
+        <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+                stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
+      </g>
+      <g class="nc__ball-group" data-idx="4">
+        <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+                stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
+      </g>
+    </g>
+
+    <!-- 拖拽热区（覆盖在最左球上） -->
+    <circle class="nc__drag" r="16" fill="transparent"/>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.mechanics.newton-cradle.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    /* ── 常量 ── */
+    var NUM=5;
+    var STRING_LEN=110;
+    var BALL_R=10;
+    var SPACING=BALL_R*2+1;
+    var TOP_Y=20;
+    var CENTER_X=100;
+    var GRAVITY=9.81;
+    var DAMPING=0.998;
+    var STOP_THRESHOLD=0.001;
+
+    /* 每个球的悬挂点 x */
+    var anchorX=[];
+    var startX=(CENTER_X-((NUM-1)*SPACING)/2);
+    for(var i=0;i<NUM;i++) anchorX.push(startX+i*SPACING);
+
+    /* ── DOM refs ── */
+    var groups=root.querySelectorAll('.nc__ball-group');
+    var strings=[];var balls=[];
+    for(var i=0;i<groups.length;i++){
+      strings.push(groups[i].querySelector('.nc__string'));
+      balls.push(groups[i].querySelector('.nc__ball'));
+    }
+    var dragHit=root.querySelector('.nc__drag');
+
+    /* ── 状态：每个球的角度（弧度）和角速度 ── */
+    var angles=new Array(NUM);
+    var angVels=new Array(NUM);
+    for(var i=0;i<NUM;i++){angles[i]=0;angVels[i]=0;}
+
+    var animId=null;
+    var dragging=false;
+    var lastTime=0;
+
+    /* ── 渲染 ── */
+    function render(){
+      for(var i=0;i<NUM;i++){
+        var ax=anchorX[i];
+        var bx=ax+Math.sin(angles[i])*STRING_LEN;
+        var by=TOP_Y+Math.cos(angles[i])*STRING_LEN;
+        if(strings[i]){
+          strings[i].setAttribute('x1',ax);
+          strings[i].setAttribute('y1',TOP_Y);
+          strings[i].setAttribute('x2',bx);
+          strings[i].setAttribute('y2',by);
+        }
+        if(balls[i]){
+          balls[i].setAttribute('cx',bx);
+          balls[i].setAttribute('cy',by);
+        }
+      }
+      /* 拖拽热区跟随最左球 */
+      if(dragHit){
+        var lx=anchorX[0]+Math.sin(angles[0])*STRING_LEN;
+        var ly=TOP_Y+Math.cos(angles[0])*STRING_LEN;
+        dragHit.setAttribute('cx',lx);
+        dragHit.setAttribute('cy',ly);
+      }
+    }
+
+    render();
+
+    /* ── 事件派发 ── */
+    function emitCmp(name,angleDeg){
+      root.dispatchEvent(new CustomEvent(name,{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'drag',
+          values:{angle:Math.round(angleDeg*100)/100}
+        }
+      }));
+    }
+
+    /* ── 物理模拟 ── */
+    function step(dt){
+      if(dt>0.05) dt=0.05;
+      var omega2=GRAVITY/STRING_LEN;
+
+      for(var i=0;i<NUM;i++){
+        if(i===0&&dragging) continue;
+        /* 简谐近似：alpha = -(g/L)*sin(theta) */
+        var alpha=-omega2*Math.sin(angles[i]);
+        angVels[i]+=alpha*dt;
+        angVels[i]*=DAMPING;
+        angles[i]+=angVels[i]*dt;
+      }
+
+      /* 碰撞检测：相邻球接触时传递动量 */
+      for(var i=0;i<NUM-1;i++){
+        var x1=anchorX[i]+Math.sin(angles[i])*STRING_LEN;
+        var x2=anchorX[i+1]+Math.sin(angles[i+1])*STRING_LEN;
+        var dist=x2-x1;
+        if(dist<BALL_R*2){
+          /* 弹性碰撞：交换速度 */
+          var tmp=angVels[i];
+          angVels[i]=angVels[i+1];
+          angVels[i+1]=tmp;
+          /* 分离球体防止重叠 */
+          var overlap=BALL_R*2-dist;
+          angles[i]-=overlap/(2*STRING_LEN);
+          angles[i+1]+=overlap/(2*STRING_LEN);
+        }
+      }
+    }
+
+    function isMoving(){
+      for(var i=0;i<NUM;i++){
+        if(Math.abs(angles[i])>STOP_THRESHOLD||Math.abs(angVels[i])>STOP_THRESHOLD) return true;
+      }
+      return false;
+    }
+
+    function animate(ts){
+      if(!lastTime) lastTime=ts;
+      var dt=(ts-lastTime)/1000;
+      lastTime=ts;
+
+      step(dt);
+      render();
+
+      if(dragging||isMoving()){
+        animId=requestAnimationFrame(animate);
+      }else{
+        /* 停止动画，归零 */
+        animId=null;
+        lastTime=0;
+        for(var i=0;i<NUM;i++){angles[i]=0;angVels[i]=0;}
+        render();
+      }
+    }
+
+    function startAnim(){
+      if(animId) return;
+      lastTime=0;
+      animId=requestAnimationFrame(animate);
+    }
+
+    /* ── 拖拽交互（最左球） ── */
+    function svgPt(cx,cy){
+      var pt=svg.createSVGPoint();
+      pt.x=cx;pt.y=cy;
+      var ctm=svg.getScreenCTM();
+      if(!ctm) return null;
+      return pt.matrixTransform(ctm.inverse());
+    }
+
+    function onDown(e){
+      e.preventDefault();
+      dragging=true;
+      angVels[0]=0;
+      if(e.pointerId!==undefined) svg.setPointerCapture(e.pointerId);
+      startAnim();
+    }
+
+    function onMove(e){
+      if(!dragging) return;
+      e.preventDefault();
+      var pt=svgPt(e.clientX,e.clientY);
+      if(!pt) return;
+      var dx=pt.x-anchorX[0];
+      var dy=pt.y-TOP_Y;
+      var a=Math.atan2(dx,dy);
+      /* 限制拖拽角度：只允许向左拉（负角度），最大60度 */
+      var maxA=60*Math.PI/180;
+      if(a>0) a=0;
+      if(a<-maxA) a=-maxA;
+      angles[0]=a;
+      angVels[0]=0;
+      render();
+      emitCmp('cmp:change',a*180/Math.PI);
+    }
+
+    function onUp(e){
+      if(!dragging) return;
+      dragging=false;
+      if(e.pointerId!==undefined){
+        try{svg.releasePointerCapture(e.pointerId);}catch(ex){}
+      }
+      emitCmp('cmp:changeend',angles[0]*180/Math.PI);
+      /* 动画继续由 animate 循环驱动直到停止 */
+    }
+
+    if(dragHit){
+      dragHit.addEventListener('pointerdown',onDown);
+    }
+    svg.addEventListener('pointermove',onMove);
+    svg.addEventListener('pointerup',onUp);
+    svg.addEventListener('pointercancel',function(){dragging=false;});
+  })();
+  </script>
+</div>

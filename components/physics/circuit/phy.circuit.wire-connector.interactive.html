@@ -1,0 +1,272 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.wire-connector.interactive",
+  "name": "导线连接器（交互式）",
+  "nameEn": "Wire Connector (Interactive)",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 120 },
+  "tags": ["wire", "connector", "terminal", "circuit", "interactive", "draggable"],
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 120, "min": 60,  "max": 300, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "wireColor",     "type": "color",  "default": "#d32f2f", "desc": "导线绝缘皮颜色" },
+    { "key": "wireWidth",     "type": "number", "default": 5,   "min": 2, "max": 10, "desc": "导线粗细" },
+    { "key": "coreColor",     "type": "color",  "default": "#b87333", "desc": "铜芯颜色" },
+    { "key": "terminalColor", "type": "color",  "default": "#555555", "desc": "接线柱颜色" },
+    { "key": "screwColor",    "type": "color",  "default": "#888888", "desc": "螺丝颜色" },
+    { "key": "stroke",        "type": "color",  "default": "#222222", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "ax",            "type": "number", "default": 50,  "min": 10, "max": 290, "desc": "A端X坐标" },
+    { "key": "ay",            "type": "number", "default": 60,  "min": 10, "max": 110, "desc": "A端Y坐标" },
+    { "key": "bx",            "type": "number", "default": 250, "min": 10, "max": 290, "desc": "B端X坐标" },
+    { "key": "by",            "type": "number", "default": 60,  "min": 10, "max": 110, "desc": "B端Y坐标" },
+    { "key": "sag",           "type": "number(0-1)", "default": 0.3, "min": 0, "max": 1, "desc": "导线下垂程度" },
+    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":          "--cmp-size",
+    "wireColor":     "--cmp-wire-color",
+    "wireWidth":     "--cmp-wire-width",
+    "coreColor":     "--cmp-core-color",
+    "terminalColor": "--cmp-terminal",
+    "screwColor":    "--cmp-screw",
+    "stroke":        "--cmp-stroke",
+    "strokeWidth":   "--cmp-stroke-width",
+    "glow":          "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change",    "type": "drag", "values": { "ax": "number — A端X", "ay": "number — A端Y", "bx": "number — B端X", "by": "number — B端Y" } },
+    { "name": "cmp:changeend", "type": "drag", "values": { "ax": "number — A端X", "ay": "number — A端Y", "bx": "number — B端X", "by": "number — B端Y" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.wire-connector.interactive" role="img" aria-label="导线连接器（交互式）">
+  <svg viewBox="0 0 300 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="wc__term" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="var(--cmp-screw, #888)"/>
+        <stop offset="0.5" stop-color="var(--cmp-terminal, #555)"/>
+        <stop offset="1"   stop-color="#333"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 导线 -->
+    <path class="wc__cable" fill="none"
+          stroke="var(--cmp-wire-color, #d32f2f)"
+          stroke-width="var(--cmp-wire-width, 5)"
+          stroke-linecap="round"/>
+    <!-- 铜芯高光 -->
+    <path class="wc__core" fill="none"
+          stroke="var(--cmp-core-color, #b87333)"
+          stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
+
+    <!-- A端接线柱 -->
+    <g class="wc__term-a" cursor="grab">
+      <!-- 底座 -->
+      <rect class="wc__base-a" width="20" height="14" rx="3"
+            fill="var(--cmp-terminal, #555)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+      <!-- 螺丝 -->
+      <circle class="wc__screw-a" r="5"
+              fill="url(#wc__term)"
+              stroke="var(--cmp-stroke, #222)" stroke-width="1"/>
+      <!-- 螺丝十字 -->
+      <g class="wc__cross-a" stroke="var(--cmp-stroke, #222)" stroke-width="0.8" stroke-linecap="round">
+        <line x1="-3" y1="0" x2="3" y2="0"/>
+        <line x1="0" y1="-3" x2="0" y2="3"/>
+      </g>
+      <!-- 铜芯露出 -->
+      <rect class="wc__exposed-a" width="8" height="4" rx="1"
+            fill="var(--cmp-core-color, #b87333)"/>
+      <!-- 拖拽热区 -->
+      <circle r="18" fill="transparent" class="wc__hit"/>
+    </g>
+
+    <!-- B端接线柱 -->
+    <g class="wc__term-b" cursor="grab">
+      <rect class="wc__base-b" width="20" height="14" rx="3"
+            fill="var(--cmp-terminal, #555)"
+            stroke="var(--cmp-stroke, #222)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+      <circle class="wc__screw-b" r="5"
+              fill="url(#wc__term)"
+              stroke="var(--cmp-stroke, #222)" stroke-width="1"/>
+      <g class="wc__cross-b" stroke="var(--cmp-stroke, #222)" stroke-width="0.8" stroke-linecap="round">
+        <line x1="-3" y1="0" x2="3" y2="0"/>
+        <line x1="0" y1="-3" x2="0" y2="3"/>
+      </g>
+      <rect class="wc__exposed-b" width="8" height="4" rx="1"
+            fill="var(--cmp-core-color, #b87333)"/>
+      <circle r="18" fill="transparent" class="wc__hit"/>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .cmp[data-cmp-id="phy.circuit.wire-connector.interactive"] {
+    height: var(--cmp-size, 120px);
+    width: calc(var(--cmp-size, 120px) * 2.5);
+    display: inline-block;
+    filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+            rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+    user-select: none;
+    touch-action: none;
+  }
+  .cmp[data-cmp-id="phy.circuit.wire-connector.interactive"] svg {
+    width: 100%; height: 100%; display: block; overflow: visible;
+  }
+  .cmp[data-cmp-id="phy.circuit.wire-connector.interactive"] .wc__hit {
+    cursor: grab;
+  }
+  .cmp[data-cmp-id="phy.circuit.wire-connector.interactive"] .wc__hit:active {
+    cursor: grabbing;
+  }
+</style>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  while (root && root.tagName === 'STYLE') root = root.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.circuit.wire-connector.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 参数 ── */
+  var DEF = { ax: 50, ay: 60, bx: 250, by: 60, sag: 0.3 };
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var ax = Number(P.ax) || DEF.ax;
+  var ay = Number(P.ay) || DEF.ay;
+  var bx = Number(P.bx) || DEF.bx;
+  var by = Number(P.by) || DEF.by;
+  var sag = Math.max(0, Math.min(1, Number(P.sag) || DEF.sag));
+
+  /* ── DOM ── */
+  var cable = root.querySelector('.wc__cable');
+  var core  = root.querySelector('.wc__core');
+  var termA = root.querySelector('.wc__term-a');
+  var termB = root.querySelector('.wc__term-b');
+
+  /* ── 贝塞尔曲线 ── */
+  function buildPath(x1, y1, x2, y2) {
+    var dx = x2 - x1, dy = y2 - y1;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var sagPx = dist * sag * 0.5;
+    var mx = (x1 + x2) / 2;
+    var my = (y1 + y2) / 2 + sagPx;
+    var off = dist * 0.12;
+    return 'M' + x1 + ' ' + y1 +
+           ' C' + (mx - off) + ' ' + my +
+           ' ' + (mx + off) + ' ' + my +
+           ' ' + x2 + ' ' + y2;
+  }
+
+  /* ── 渲染 ── */
+  function render() {
+    /* 导线出发点偏移（从接线柱侧面出发） */
+    var wireAx = ax + 14, wireAy = ay;
+    var wireBx = bx - 14, wireBy = by;
+    var d = buildPath(wireAx, wireAy, wireBx, wireBy);
+    if (cable) cable.setAttribute('d', d);
+    if (core) core.setAttribute('d', d);
+
+    /* A端接线柱 */
+    if (termA) {
+      termA.querySelector('.wc__base-a').setAttribute('x', ax - 10);
+      termA.querySelector('.wc__base-a').setAttribute('y', ay - 7);
+      termA.querySelector('.wc__screw-a').setAttribute('cx', ax);
+      termA.querySelector('.wc__screw-a').setAttribute('cy', ay - 12);
+      termA.querySelector('.wc__cross-a').setAttribute('transform', 'translate(' + ax + ',' + (ay - 12) + ')');
+      termA.querySelector('.wc__exposed-a').setAttribute('x', ax + 6);
+      termA.querySelector('.wc__exposed-a').setAttribute('y', ay - 2);
+      termA.querySelector('.wc__hit').setAttribute('cx', ax);
+      termA.querySelector('.wc__hit').setAttribute('cy', ay);
+    }
+
+    /* B端接线柱 */
+    if (termB) {
+      termB.querySelector('.wc__base-b').setAttribute('x', bx - 10);
+      termB.querySelector('.wc__base-b').setAttribute('y', by - 7);
+      termB.querySelector('.wc__screw-b').setAttribute('cx', bx);
+      termB.querySelector('.wc__screw-b').setAttribute('cy', by - 12);
+      termB.querySelector('.wc__cross-b').setAttribute('transform', 'translate(' + bx + ',' + (by - 12) + ')');
+      termB.querySelector('.wc__exposed-b').setAttribute('x', bx - 14);
+      termB.querySelector('.wc__exposed-b').setAttribute('y', by - 2);
+      termB.querySelector('.wc__hit').setAttribute('cx', bx);
+      termB.querySelector('.wc__hit').setAttribute('cy', by);
+    }
+
+    root.setAttribute('aria-label',
+      '导线连接器，A端(' + Math.round(ax) + ',' + Math.round(ay) +
+      ') → B端(' + Math.round(bx) + ',' + Math.round(by) + ')');
+  }
+
+  render();
+
+  /* ── 事件 ── */
+  function emitCmp(name) {
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'drag',
+        values: { ax: Math.round(ax), ay: Math.round(ay), bx: Math.round(bx), by: Math.round(by) }
+      }
+    }));
+  }
+
+  /* ── 拖拽 ── */
+  var dragging = null; /* 'a' | 'b' */
+
+  function svgPt(cx, cy) {
+    var pt = svg.createSVGPoint();
+    pt.x = cx; pt.y = cy;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  function onDown(e, which) {
+    e.preventDefault();
+    e.stopPropagation();
+    dragging = which;
+    if (e.pointerId !== undefined) svg.setPointerCapture(e.pointerId);
+  }
+
+  var hitA = termA ? termA.querySelector('.wc__hit') : null;
+  var hitB = termB ? termB.querySelector('.wc__hit') : null;
+  if (hitA) hitA.addEventListener('pointerdown', function(e) { onDown(e, 'a'); });
+  if (hitB) hitB.addEventListener('pointerdown', function(e) { onDown(e, 'b'); });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pt = svgPt(e.clientX, e.clientY);
+    if (!pt) return;
+    var nx = Math.max(15, Math.min(285, pt.x));
+    var ny = Math.max(15, Math.min(105, pt.y));
+    if (dragging === 'a') { ax = nx; ay = ny; }
+    else { bx = nx; by = ny; }
+    render();
+    emitCmp('cmp:change');
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!dragging) return;
+    dragging = null;
+    if (e.pointerId !== undefined) {
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+    }
+    emitCmp('cmp:changeend');
+  });
+
+  svg.addEventListener('pointercancel', function() { dragging = null; });
+})();
+</script>

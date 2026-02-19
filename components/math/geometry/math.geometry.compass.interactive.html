@@ -1,0 +1,335 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.compass.interactive",
+  "name": "圆规（交互式）",
+  "nameEn": "Compass (Interactive)",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 200 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 200, "min": 100, "max": 600, "desc": "组件尺寸" },
+    { "key": "metalColor", "type": "color", "default": "#888888", "desc": "金属部件颜色" },
+    { "key": "pencilColor", "type": "color", "default": "#ffb74d", "desc": "铅笔腿颜色" },
+    { "key": "arcColor", "type": "color", "default": "#1565c0", "desc": "圆弧颜色" },
+    { "key": "stroke", "type": "color", "default": "#555555", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边宽度" },
+    { "key": "accent", "type": "color", "default": "#d32f2f", "desc": "半径文字颜色" },
+    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "metalColor": "--cmp-metal-color",
+    "pencilColor": "--cmp-pencil-color",
+    "arcColor": "--cmp-arc-color",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["compass", "geometry", "circle", "radius", "interactive", "math", "drawing"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "radius": "number(px) — 当前半径",
+        "angle": "number(deg) — 两腿张开角度"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "drag",
+      "values": {
+        "radius": "number(px) — 最终半径",
+        "angle": "number(deg) — 最终张开角度"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.compass.interactive" role="img" aria-label="圆规（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] {
+      --size: var(--cmp-size, 200px);
+      --metal-color: var(--cmp-metal-color, #888888);
+      --pencil-color: var(--cmp-pencil-color, #ffb74d);
+      --arc-color: var(--cmp-arc-color, #1565c0);
+      --stroke-color: var(--cmp-stroke, #555555);
+      --stroke-w: var(--cmp-stroke-width, 1.5);
+      --accent-color: var(--cmp-accent, #d32f2f);
+      --glow-val: var(--cmp-glow, 0);
+
+      display: inline-block;
+      width: var(--size);
+      height: var(--size);
+      user-select: none;
+      touch-action: none;
+      filter: drop-shadow(0 0 calc(12px * var(--glow-val)) rgba(21, 101, 194, calc(0.5 * var(--glow-val))));
+    }
+
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cmp__handle {
+      cursor: grab;
+    }
+
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cmp__handle:active {
+      cursor: grabbing;
+    }
+
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cmp__radius-text {
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      font-weight: bold;
+      pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 200 200" aria-hidden="true">
+    <defs>
+      <linearGradient id="cmp-compass-metal-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#aaa" />
+        <stop offset="50%" stop-color="#ddd" />
+        <stop offset="100%" stop-color="#999" />
+      </linearGradient>
+    </defs>
+
+    <!-- 圆弧 -->
+    <circle class="cmp__arc" cx="0" cy="0" r="0" fill="none" stroke-dasharray="4 3" stroke-width="1.5" opacity="0.6" />
+
+    <!-- 针腿 -->
+    <line class="cmp__needle-leg" x1="100" y1="30" x2="100" y2="30" stroke-width="3" stroke-linecap="round" />
+
+    <!-- 铅笔腿 -->
+    <line class="cmp__pencil-leg" x1="100" y1="30" x2="100" y2="30" stroke-width="3" stroke-linecap="round" />
+
+    <!-- 针尖 -->
+    <circle class="cmp__needle-tip" cx="0" cy="0" r="2" />
+
+    <!-- 铅笔尖 -->
+    <polygon class="cmp__pencil-tip" points="0,0 0,0 0,0" />
+
+    <!-- 铅笔尖芯 -->
+    <line class="cmp__pencil-core" x1="0" y1="0" x2="0" y2="0" stroke-width="1.5" stroke-linecap="round" />
+
+    <!-- 铰接点 -->
+    <circle class="cmp__pivot" cx="100" cy="30" r="5" />
+    <circle class="cmp__pivot-inner" cx="100" cy="30" r="2.5" fill="#ccc" stroke="none" />
+
+    <!-- 拖拽手柄 -->
+    <circle class="cmp__handle" cx="0" cy="0" r="8" fill="transparent" stroke="none" />
+
+    <!-- 半径文字 -->
+    <text class="cmp__radius-text" x="0" y="0" text-anchor="middle"></text>
+  </svg>
+
+  <script>
+    (function () {
+      var root = document.currentScript.closest('[data-cmp-id="math.geometry.compass.interactive"]');
+      if (!root) return;
+
+      var svg = root.querySelector('svg');
+      if (!svg) return;
+
+      var arcEl = svg.querySelector('.cmp__arc');
+      var needleLeg = svg.querySelector('.cmp__needle-leg');
+      var pencilLeg = svg.querySelector('.cmp__pencil-leg');
+      var needleTip = svg.querySelector('.cmp__needle-tip');
+      var pencilTip = svg.querySelector('.cmp__pencil-tip');
+      var pencilCore = svg.querySelector('.cmp__pencil-core');
+      var handle = svg.querySelector('.cmp__handle');
+      var radiusText = svg.querySelector('.cmp__radius-text');
+
+      /* --- geometry constants --- */
+      var PIVOT_X = 100;
+      var PIVOT_Y = 30;
+      var LEG_LEN = 130;
+      var MIN_ANGLE = 8;
+      var MAX_ANGLE = 70;
+
+      /* --- state --- */
+      var halfAngle = 25; /* degrees, half the opening angle */
+
+      function degToRad(d) { return d * Math.PI / 180; }
+
+      function calcLegEnd(angleDeg, side) {
+        /* side: -1 = left (needle), +1 = right (pencil) */
+        var rad = degToRad(angleDeg * side);
+        return {
+          x: PIVOT_X + LEG_LEN * Math.sin(rad),
+          y: PIVOT_Y + LEG_LEN * Math.cos(rad)
+        };
+      }
+
+      function render() {
+        var cs = getComputedStyle(root);
+        var metalColor = cs.getPropertyValue('--metal-color').trim() || '#888888';
+        var pencilColor = cs.getPropertyValue('--pencil-color').trim() || '#ffb74d';
+        var arcColor = cs.getPropertyValue('--arc-color').trim() || '#1565c0';
+        var strokeColor = cs.getPropertyValue('--stroke-color').trim() || '#555555';
+        var strokeW = parseFloat(cs.getPropertyValue('--stroke-w')) || 1.5;
+        var accentColor = cs.getPropertyValue('--accent-color').trim() || '#d32f2f';
+
+        var needleEnd = calcLegEnd(halfAngle, -1);
+        var pencilEnd = calcLegEnd(halfAngle, 1);
+
+        /* radius = horizontal distance between the two leg tips at the bottom */
+        var dx = pencilEnd.x - needleEnd.x;
+        var dy = pencilEnd.y - needleEnd.y;
+        var radius = Math.sqrt(dx * dx + dy * dy) / 2;
+
+        /* needle leg */
+        needleLeg.setAttribute('x1', PIVOT_X);
+        needleLeg.setAttribute('y1', PIVOT_Y);
+        needleLeg.setAttribute('x2', needleEnd.x);
+        needleLeg.setAttribute('y2', needleEnd.y);
+        needleLeg.setAttribute('stroke', metalColor);
+
+        /* pencil leg */
+        pencilLeg.setAttribute('x1', PIVOT_X);
+        pencilLeg.setAttribute('y1', PIVOT_Y);
+        pencilLeg.setAttribute('x2', pencilEnd.x);
+        pencilLeg.setAttribute('y2', pencilEnd.y);
+        pencilLeg.setAttribute('stroke', pencilColor);
+
+        /* needle tip (small dark triangle at bottom of needle leg) */
+        needleTip.setAttribute('cx', needleEnd.x);
+        needleTip.setAttribute('cy', needleEnd.y);
+        needleTip.setAttribute('fill', strokeColor);
+
+        /* pencil tip (triangle) */
+        var tipLen = 8;
+        var tipHalf = 3;
+        var pAngleRad = degToRad(-halfAngle);
+        var pDirX = Math.sin(pAngleRad);
+        var pDirY = Math.cos(pAngleRad);
+        var pPerpX = pDirY;
+        var pPerpY = -pDirX;
+        var tipBottom = { x: pencilEnd.x + pDirX * tipLen, y: pencilEnd.y + pDirY * tipLen };
+        var tipLeft = { x: pencilEnd.x - pPerpX * tipHalf, y: pencilEnd.y - pPerpY * tipHalf };
+        var tipRight = { x: pencilEnd.x + pPerpX * tipHalf, y: pencilEnd.y + pPerpY * tipHalf };
+        pencilTip.setAttribute('points',
+          tipLeft.x + ',' + tipLeft.y + ' ' +
+          tipBottom.x + ',' + tipBottom.y + ' ' +
+          tipRight.x + ',' + tipRight.y
+        );
+        pencilTip.setAttribute('fill', pencilColor);
+        pencilTip.setAttribute('stroke', strokeColor);
+        pencilTip.setAttribute('stroke-width', strokeW * 0.5);
+
+        /* pencil core (dark line at very tip) */
+        var coreStart = { x: pencilEnd.x + pDirX * (tipLen * 0.5), y: pencilEnd.y + pDirY * (tipLen * 0.5) };
+        pencilCore.setAttribute('x1', coreStart.x);
+        pencilCore.setAttribute('y1', coreStart.y);
+        pencilCore.setAttribute('x2', tipBottom.x);
+        pencilCore.setAttribute('y2', tipBottom.y);
+        pencilCore.setAttribute('stroke', '#333');
+
+        /* arc: centered at needle tip, radius = distance to pencil tip */
+        var arcRadius = Math.sqrt(
+          Math.pow(pencilEnd.x - needleEnd.x, 2) +
+          Math.pow(pencilEnd.y - needleEnd.y, 2)
+        );
+        arcEl.setAttribute('cx', needleEnd.x);
+        arcEl.setAttribute('cy', needleEnd.y);
+        arcEl.setAttribute('r', arcRadius);
+        arcEl.setAttribute('stroke', arcColor);
+
+        /* pivot */
+        var pivotEl = svg.querySelector('.cmp__pivot');
+        pivotEl.setAttribute('fill', metalColor);
+        pivotEl.setAttribute('stroke', strokeColor);
+        pivotEl.setAttribute('stroke-width', strokeW);
+
+        /* drag handle at pencil end */
+        handle.setAttribute('cx', pencilEnd.x);
+        handle.setAttribute('cy', pencilEnd.y);
+
+        /* radius text */
+        var midX = (needleEnd.x + pencilEnd.x) / 2;
+        var midY = Math.max(needleEnd.y, pencilEnd.y) + 16;
+        if (midY > 195) midY = 195;
+        radiusText.setAttribute('x', midX);
+        radiusText.setAttribute('y', midY);
+        radiusText.setAttribute('fill', accentColor);
+        radiusText.textContent = 'r = ' + Math.round(radius);
+      }
+
+      function getValues() {
+        var needleEnd = calcLegEnd(halfAngle, -1);
+        var pencilEnd = calcLegEnd(halfAngle, 1);
+        var arcRadius = Math.sqrt(
+          Math.pow(pencilEnd.x - needleEnd.x, 2) +
+          Math.pow(pencilEnd.y - needleEnd.y, 2)
+        );
+        return {
+          radius: Math.round(arcRadius * 100) / 100,
+          angle: Math.round(halfAngle * 2 * 100) / 100
+        };
+      }
+
+      function emitChange(name) {
+        root.dispatchEvent(new CustomEvent(name, {
+          bubbles: true,
+          composed: true,
+          detail: {
+            id: root.getAttribute('data-cmp-id'),
+            type: 'drag',
+            values: getValues()
+          }
+        }));
+      }
+
+      /* --- pointer interaction --- */
+      var dragging = false;
+
+      function svgPoint(clientX, clientY) {
+        var pt = svg.createSVGPoint();
+        pt.x = clientX;
+        pt.y = clientY;
+        return pt.matrixTransform(svg.getScreenCTM().inverse());
+      }
+
+      function onPointerDown(e) {
+        e.preventDefault();
+        dragging = true;
+        try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+
+      function onPointerMove(e) {
+        if (!dragging) return;
+        e.preventDefault();
+        var p = svgPoint(e.clientX, e.clientY);
+        /* compute angle from pivot to pointer */
+        var dx = p.x - PIVOT_X;
+        var dy = p.y - PIVOT_Y;
+        var angle = Math.atan2(dx, dy) * 180 / Math.PI;
+        /* clamp */
+        if (angle < MIN_ANGLE) angle = MIN_ANGLE;
+        if (angle > MAX_ANGLE) angle = MAX_ANGLE;
+        halfAngle = angle;
+        render();
+        emitChange('cmp:change');
+      }
+
+      function onPointerUp(e) {
+        if (!dragging) return;
+        dragging = false;
+        emitChange('cmp:changeend');
+      }
+
+      handle.addEventListener('pointerdown', onPointerDown, { passive: false });
+      root.addEventListener('pointermove', onPointerMove, { passive: false });
+      root.addEventListener('pointerup', onPointerUp, { passive: false });
+      root.addEventListener('pointercancel', onPointerUp, { passive: false });
+
+      /* initial render */
+      render();
+    })();
+  </script>
+</div>

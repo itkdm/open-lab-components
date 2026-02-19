@@ -1,0 +1,422 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.friction-demo.interactive",
+  "name": "摩擦力演示台（交互式）",
+  "nameEn": "Friction Demo (Interactive)",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 280, "h": 120 },
+  "tags": ["friction", "mechanics", "force", "interactive", "draggable", "surface"],
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 120, "min": 60, "max": 360, "desc": "组件高度" },
+    { "key": "mass",         "type": "number",     "default": 1,   "min": 0.1, "max": 20, "desc": "物块质量(kg)" },
+    { "key": "mu",           "type": "number(0-1)", "default": 0.3, "min": 0, "max": 1, "desc": "摩擦系数" },
+    { "key": "surfaceColor", "type": "color",  "default": "#8d6e63", "desc": "粗糙面颜色" },
+    { "key": "blockColor",   "type": "color",  "default": "#ffb74d", "desc": "木块颜色" },
+    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "accent",       "type": "color",  "default": "#1565c0", "desc": "强调色（力值文字）" },
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":         "--cmp-size",
+    "surfaceColor": "--cmp-surface",
+    "blockColor":   "--cmp-block",
+    "stroke":       "--cmp-stroke",
+    "strokeWidth":  "--cmp-stroke-width",
+    "accent":       "--cmp-accent",
+    "glow":         "--cmp-glow"
+  },
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "displacement": "number — 位移量(viewBox单位)",
+        "friction": "number(N) — 摩擦力"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "drag",
+      "values": {
+        "displacement": "number — 位移量(viewBox单位)",
+        "friction": "number(N) — 摩擦力"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.friction-demo.interactive" role="img" aria-label="摩擦力演示台（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.mechanics.friction-demo.interactive"] {
+      --h: var(--cmp-size, 120px);
+      display: inline-block;
+      width: calc(var(--h) * 280 / 120);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.mechanics.friction-demo.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.mechanics.friction-demo.interactive"] .fd__handle {
+      cursor: ew-resize;
+    }
+    .cmp[data-cmp-id="phy.mechanics.friction-demo.interactive"] .fd__force-text {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .cmp[data-cmp-id="phy.mechanics.friction-demo.interactive"] .fd__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-weight: 600;
+    }
+  </style>
+
+  <svg viewBox="0 0 280 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 粗糙面纹理 -->
+      <pattern id="fd__rough" width="6" height="6" patternUnits="userSpaceOnUse">
+        <rect width="6" height="6" fill="var(--cmp-surface, #8d6e63)"/>
+        <circle cx="1" cy="2" r="0.6" fill="rgba(0,0,0,0.15)"/>
+        <circle cx="4" cy="5" r="0.5" fill="rgba(0,0,0,0.12)"/>
+        <circle cx="3" cy="1" r="0.4" fill="rgba(255,255,255,0.1)"/>
+        <circle cx="5" cy="3" r="0.5" fill="rgba(0,0,0,0.1)"/>
+      </pattern>
+      <!-- 木纹纹理 -->
+      <pattern id="fd__wood" width="40" height="30" patternUnits="userSpaceOnUse">
+        <rect width="40" height="30" fill="var(--cmp-block, #ffb74d)"/>
+        <line x1="0" y1="6" x2="40" y2="6" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
+        <line x1="0" y1="14" x2="40" y2="13" stroke="rgba(0,0,0,0.06)" stroke-width="0.8"/>
+        <line x1="0" y1="22" x2="40" y2="23" stroke="rgba(0,0,0,0.07)" stroke-width="0.8"/>
+      </pattern>
+    </defs>
+
+    <!-- 粗糙水平面 -->
+    <rect class="fd__surface" x="10" y="80" width="260" height="20" rx="2"
+          fill="url(#fd__rough)"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 粗糙面底部斜线纹理 -->
+    <g stroke="var(--cmp-stroke, #333)" stroke-width="0.5" opacity="0.25">
+      <line x1="15" y1="100" x2="22" y2="105"/>
+      <line x1="30" y1="100" x2="37" y2="105"/>
+      <line x1="45" y1="100" x2="52" y2="105"/>
+      <line x1="60" y1="100" x2="67" y2="105"/>
+      <line x1="75" y1="100" x2="82" y2="105"/>
+      <line x1="90" y1="100" x2="97" y2="105"/>
+      <line x1="105" y1="100" x2="112" y2="105"/>
+      <line x1="120" y1="100" x2="127" y2="105"/>
+      <line x1="135" y1="100" x2="142" y2="105"/>
+      <line x1="150" y1="100" x2="157" y2="105"/>
+      <line x1="165" y1="100" x2="172" y2="105"/>
+      <line x1="180" y1="100" x2="187" y2="105"/>
+      <line x1="195" y1="100" x2="202" y2="105"/>
+      <line x1="210" y1="100" x2="217" y2="105"/>
+      <line x1="225" y1="100" x2="232" y2="105"/>
+      <line x1="240" y1="100" x2="247" y2="105"/>
+      <line x1="255" y1="100" x2="262" y2="105"/>
+    </g>
+
+    <!-- 木块 -->
+    <rect class="fd__block" width="44" height="30" rx="2"
+          fill="url(#fd__wood)"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 木块上的 m 标注 -->
+    <text class="fd__mass-text fd__label" text-anchor="middle"
+          font-size="9" fill="var(--cmp-stroke, #333)"></text>
+
+    <!-- 弹簧秤线（从木块右侧到拖拽手柄） -->
+    <line class="fd__spring-line"
+          stroke="var(--cmp-stroke, #333)" stroke-width="1.5" stroke-dasharray="4,2"/>
+
+    <!-- 弹簧秤刻度壳体 -->
+    <g class="fd__scale-body">
+      <rect class="fd__scale-rect" width="28" height="14" rx="3"
+            fill="rgba(255,255,255,0.92)"
+            stroke="var(--cmp-accent, #1565c0)" stroke-width="1"/>
+      <text class="fd__scale-text fd__force-text" text-anchor="middle"
+            font-size="8" fill="var(--cmp-accent, #1565c0)"></text>
+    </g>
+
+    <!-- 拖拽手柄 -->
+    <g class="fd__handle">
+      <circle class="fd__handle-bg" r="9" fill="var(--cmp-accent, #1565c0)" opacity="0.15"/>
+      <circle class="fd__handle-dot" r="5" fill="var(--cmp-accent, #1565c0)" opacity="0.6"/>
+      <line class="fd__handle-grip1" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+      <line class="fd__handle-grip2" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+      <!-- 拖拽热区 -->
+      <rect class="fd__hit" width="30" height="40" fill="transparent" cursor="ew-resize"/>
+    </g>
+
+    <!-- 摩擦力箭头（向左，阻碍运动） -->
+    <line class="fd__friction-arrow"
+          stroke="#e53935" stroke-width="2" marker-end="none"/>
+    <polygon class="fd__friction-head" fill="#e53935"/>
+    <text class="fd__friction-text fd__force-text" text-anchor="middle"
+          font-size="8" fill="#e53935"></text>
+
+    <!-- 力值显示 -->
+    <text class="fd__force-display fd__force-text" text-anchor="middle"
+          font-size="10" fill="var(--cmp-accent, #1565c0)"></text>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.mechanics.friction-demo.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 参数 ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var mass = Math.max(0.1, Math.min(20, Number(P.mass) || 1));
+  var mu = Math.max(0, Math.min(1, Number(P.mu) || 0.3));
+  var G = 9.8;
+  var frictionForce = mu * mass * G;
+
+  /* ── 布局常量 ── */
+  var SURFACE_Y = 80;
+  var BLOCK_W = 44;
+  var BLOCK_H = 30;
+  var BLOCK_Y = SURFACE_Y - BLOCK_H;
+  var BLOCK_CY = BLOCK_Y + BLOCK_H / 2;
+  var MIN_X = 30;
+  var MAX_X = 230;
+  var INIT_X = 60;
+
+  var blockX = INIT_X;
+  var handleX = blockX + BLOCK_W + 40;
+  var dragging = false;
+  var pulling = false;
+
+  /* ── DOM ── */
+  var block = root.querySelector('.fd__block');
+  var massTxt = root.querySelector('.fd__mass-text');
+  var springLine = root.querySelector('.fd__spring-line');
+  var scaleRect = root.querySelector('.fd__scale-rect');
+  var scaleTxt = root.querySelector('.fd__scale-text');
+  var handleBg = root.querySelector('.fd__handle-bg');
+  var handleDot = root.querySelector('.fd__handle-dot');
+  var grip1 = root.querySelector('.fd__handle-grip1');
+  var grip2 = root.querySelector('.fd__handle-grip2');
+  var hitRect = root.querySelector('.fd__hit');
+  var fArrow = root.querySelector('.fd__friction-arrow');
+  var fHead = root.querySelector('.fd__friction-head');
+  var fText = root.querySelector('.fd__friction-text');
+  var forceDisplay = root.querySelector('.fd__force-display');
+
+  /* ── 渲染 ── */
+  function render() {
+    /* 木块位置 */
+    if (block) {
+      block.setAttribute('x', blockX);
+      block.setAttribute('y', BLOCK_Y);
+    }
+    if (massTxt) {
+      massTxt.setAttribute('x', blockX + BLOCK_W / 2);
+      massTxt.setAttribute('y', BLOCK_Y + BLOCK_H / 2 + 3);
+      massTxt.textContent = mass.toFixed(1) + 'kg';
+    }
+
+    /* 弹簧秤连线 */
+    var springStartX = blockX + BLOCK_W;
+    if (springLine) {
+      springLine.setAttribute('x1', springStartX);
+      springLine.setAttribute('y1', BLOCK_CY);
+      springLine.setAttribute('x2', handleX);
+      springLine.setAttribute('y2', BLOCK_CY);
+    }
+
+    /* 弹簧秤刻度壳体（在连线中间） */
+    var scaleMidX = (springStartX + handleX) / 2;
+    if (scaleRect) {
+      scaleRect.setAttribute('x', scaleMidX - 14);
+      scaleRect.setAttribute('y', BLOCK_CY - 7);
+    }
+    if (scaleTxt) {
+      scaleTxt.setAttribute('x', scaleMidX);
+      scaleTxt.setAttribute('y', BLOCK_CY + 3);
+    }
+
+    /* 拖拽手柄 */
+    if (handleBg) {
+      handleBg.setAttribute('cx', handleX);
+      handleBg.setAttribute('cy', BLOCK_CY);
+    }
+    if (handleDot) {
+      handleDot.setAttribute('cx', handleX);
+      handleDot.setAttribute('cy', BLOCK_CY);
+    }
+    if (grip1) {
+      grip1.setAttribute('x1', handleX - 2); grip1.setAttribute('x2', handleX - 2);
+      grip1.setAttribute('y1', BLOCK_CY - 3); grip1.setAttribute('y2', BLOCK_CY + 3);
+    }
+    if (grip2) {
+      grip2.setAttribute('x1', handleX + 2); grip2.setAttribute('x2', handleX + 2);
+      grip2.setAttribute('y1', BLOCK_CY - 3); grip2.setAttribute('y2', BLOCK_CY + 3);
+    }
+    if (hitRect) {
+      hitRect.setAttribute('x', handleX - 15);
+      hitRect.setAttribute('y', BLOCK_CY - 20);
+    }
+
+    /* 计算拉力（弹簧秤读数） */
+    var stretch = handleX - (blockX + BLOCK_W);
+    var pullForce = Math.max(0, stretch - 40) * 0.15;
+    var displayFriction = 0;
+    var displacement = blockX - INIT_X;
+
+    if (pulling && pullForce > 0) {
+      /* 拉力超过最大静摩擦力时，木块跟随移动 */
+      if (pullForce >= frictionForce) {
+        displayFriction = frictionForce;
+      } else {
+        displayFriction = pullForce;
+      }
+    }
+
+    /* 弹簧秤读数 */
+    if (scaleTxt) {
+      scaleTxt.textContent = pullForce.toFixed(1) + 'N';
+    }
+
+    /* 摩擦力箭头（向左，在木块底部） */
+    var arrowY = SURFACE_Y + 10;
+    var arrowLen = Math.min(30, displayFriction * 5);
+    if (displayFriction > 0.01) {
+      var arrowStartX = blockX + BLOCK_W / 2 + arrowLen / 2;
+      var arrowEndX = blockX + BLOCK_W / 2 - arrowLen / 2;
+      if (fArrow) {
+        fArrow.setAttribute('x1', arrowStartX);
+        fArrow.setAttribute('y1', arrowY);
+        fArrow.setAttribute('x2', arrowEndX + 4);
+        fArrow.setAttribute('y2', arrowY);
+        fArrow.setAttribute('opacity', '1');
+      }
+      if (fHead) {
+        fHead.setAttribute('points',
+          (arrowEndX) + ',' + arrowY + ' ' +
+          (arrowEndX + 5) + ',' + (arrowY - 3) + ' ' +
+          (arrowEndX + 5) + ',' + (arrowY + 3));
+        fHead.setAttribute('opacity', '1');
+      }
+      if (fText) {
+        fText.setAttribute('x', blockX + BLOCK_W / 2);
+        fText.setAttribute('y', arrowY + 12);
+        fText.textContent = 'f=' + displayFriction.toFixed(2) + 'N';
+        fText.setAttribute('opacity', '1');
+      }
+    } else {
+      if (fArrow) fArrow.setAttribute('opacity', '0');
+      if (fHead) fHead.setAttribute('opacity', '0');
+      if (fText) fText.setAttribute('opacity', '0');
+    }
+
+    /* 顶部力值显示 */
+    if (forceDisplay) {
+      forceDisplay.setAttribute('x', 140);
+      forceDisplay.setAttribute('y', 15);
+      forceDisplay.textContent = 'F=' + pullForce.toFixed(2) + 'N   f=' + displayFriction.toFixed(2) + 'N   \u03BC=' + mu;
+    }
+
+    root.setAttribute('aria-label',
+      '摩擦力演示台，位移 ' + displacement.toFixed(1) +
+      '，摩擦力 ' + displayFriction.toFixed(2) + ' N');
+  }
+
+  render();
+
+  /* ── 事件 ── */
+  function getValues() {
+    var displacement = Math.round((blockX - INIT_X) * 10) / 10;
+    var stretch = handleX - (blockX + BLOCK_W);
+    var pullForce = Math.max(0, stretch - 40) * 0.15;
+    var friction = pulling && pullForce > 0
+      ? Math.min(pullForce, frictionForce)
+      : 0;
+    return {
+      displacement: displacement,
+      friction: Math.round(friction * 100) / 100
+    };
+  }
+
+  function emitCmp(name) {
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'drag', values: getValues() }
+    }));
+  }
+
+  /* ── 拖拽 ── */
+  function svgPt(cx, cy) {
+    var pt = svg.createSVGPoint();
+    pt.x = cx; pt.y = cy;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  function onDown(e) {
+    e.preventDefault();
+    dragging = true;
+    pulling = true;
+    if (e.pointerId !== undefined) svg.setPointerCapture(e.pointerId);
+  }
+
+  if (hitRect) hitRect.addEventListener('pointerdown', onDown);
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var pt = svgPt(e.clientX, e.clientY);
+    if (!pt) return;
+
+    handleX = Math.max(blockX + BLOCK_W + 20, Math.min(270, pt.x));
+
+    /* 计算拉力 */
+    var stretch = handleX - (blockX + BLOCK_W);
+    var pullForce = Math.max(0, stretch - 40) * 0.15;
+
+    /* 如果拉力超过摩擦力，木块跟随 */
+    if (pullForce >= frictionForce) {
+      var excess = pullForce - frictionForce;
+      var newBlockX = handleX - BLOCK_W - 40 - frictionForce / 0.15;
+      newBlockX = Math.max(MIN_X, Math.min(MAX_X - BLOCK_W, newBlockX));
+      blockX = newBlockX;
+    }
+
+    render();
+    emitCmp('cmp:change');
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!dragging) return;
+    dragging = false;
+    pulling = false;
+    if (e.pointerId !== undefined) {
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+    }
+    emitCmp('cmp:changeend');
+    render();
+  });
+
+  svg.addEventListener('pointercancel', function() {
+    dragging = false;
+    pulling = false;
+    render();
+  });
+})();
+</script>

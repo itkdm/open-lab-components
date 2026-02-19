@@ -1,0 +1,322 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.model.molecule.ball-stick",
+  "name": "分子模型（球棍）",
+  "nameEn": "Molecule Model (Ball-Stick)",
+  "category": "chemistry/model",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 200 },
+  "tags": ["molecule", "ball-stick", "model", "chemistry", "interactive", "H2O", "CO2", "CH4"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 200, "min": 120, "max": 400, "desc": "组件尺寸（正方形）" },
+    { "key": "molecule",   "type": "enum",   "default": "H2O", "enum": ["H2O","CO2","CH4","O2","N2","NaCl"], "desc": "分子类型" },
+    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
+    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "bondColor",  "type": "color",  "default": "#666666", "desc": "化学键颜色" },
+    { "key": "accent",     "type": "color",  "default": "#1565c0", "desc": "标注文字颜色" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "stroke":     "--cmp-stroke",
+    "strokeWidth":"--cmp-stroke-width",
+    "bondColor":  "--cmp-bond",
+    "accent":     "--cmp-accent",
+    "glow":       "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change",    "type": "rotate", "values": { "angleX": "number(deg)", "angleY": "number(deg)" } },
+    { "name": "cmp:changeend", "type": "rotate", "values": { "angleX": "number(deg)", "angleY": "number(deg)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.model.molecule.ball-stick" role="img" aria-label="分子模型（球棍）— H₂O">
+  <style>
+    .cmp[data-cmp-id="chem.model.molecule.ball-stick"] {
+      --s: var(--cmp-size, 200px);
+      display: inline-block;
+      width: var(--s);
+      height: var(--s);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="chem.model.molecule.ball-stick"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="chem.model.molecule.ball-stick"] .mol__label {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .cmp[data-cmp-id="chem.model.molecule.ball-stick"] .mol__formula {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+    }
+  </style>
+
+  <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="mol__gO" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0" stop-color="#ff8a80"/>
+        <stop offset="1" stop-color="#d32f2f"/>
+      </radialGradient>
+      <radialGradient id="mol__gH" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0" stop-color="#ffffff"/>
+        <stop offset="1" stop-color="#e0e0e0"/>
+      </radialGradient>
+      <radialGradient id="mol__gC" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0" stop-color="#666"/>
+        <stop offset="1" stop-color="#222"/>
+      </radialGradient>
+      <radialGradient id="mol__gN" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0" stop-color="#90caf9"/>
+        <stop offset="1" stop-color="#1565c0"/>
+      </radialGradient>
+      <radialGradient id="mol__gNa" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0" stop-color="#ce93d8"/>
+        <stop offset="1" stop-color="#7b1fa2"/>
+      </radialGradient>
+      <radialGradient id="mol__gCl" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0" stop-color="#a5d6a7"/>
+        <stop offset="1" stop-color="#2e7d32"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 动态内容由 JS 渲染 -->
+    <g class="mol__bonds"></g>
+    <g class="mol__atoms"></g>
+
+    <!-- 分子式标注 -->
+    <text class="mol__formula" x="100" y="192" text-anchor="middle"
+          font-size="14" fill="var(--cmp-accent, #1565c0)"></text>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.model.molecule.ball-stick') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 参数 ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var molType = P.molecule || 'H2O';
+
+  /* ── 分子数据库 ── */
+  /* 每个原子: { el, x, y, z, r, grad, label }
+     每个键:   [atomIdx1, atomIdx2, order] */
+  var MOLECULES = {
+    H2O: {
+      formula: 'H₂O',
+      atoms: [
+        { el: 'O', x: 0, y: 0, z: 0, r: 18, grad: 'mol__gO', label: 'O', labelColor: '#fff' },
+        { el: 'H', x: -35, y: -28, z: 10, r: 12, grad: 'mol__gH', label: 'H', labelColor: '#333' },
+        { el: 'H', x: 35, y: -28, z: -10, r: 12, grad: 'mol__gH', label: 'H', labelColor: '#333' }
+      ],
+      bonds: [[0,1,1],[0,2,1]]
+    },
+    CO2: {
+      formula: 'CO₂',
+      atoms: [
+        { el: 'C', x: 0, y: 0, z: 0, r: 16, grad: 'mol__gC', label: 'C', labelColor: '#fff' },
+        { el: 'O', x: -45, y: 0, z: 5, r: 18, grad: 'mol__gO', label: 'O', labelColor: '#fff' },
+        { el: 'O', x: 45, y: 0, z: -5, r: 18, grad: 'mol__gO', label: 'O', labelColor: '#fff' }
+      ],
+      bonds: [[0,1,2],[0,2,2]]
+    },
+    CH4: {
+      formula: 'CH₄',
+      atoms: [
+        { el: 'C', x: 0, y: 0, z: 0, r: 16, grad: 'mol__gC', label: 'C', labelColor: '#fff' },
+        { el: 'H', x: -30, y: -30, z: 20, r: 11, grad: 'mol__gH', label: 'H', labelColor: '#333' },
+        { el: 'H', x: 30, y: -30, z: -20, r: 11, grad: 'mol__gH', label: 'H', labelColor: '#333' },
+        { el: 'H', x: -30, y: 30, z: -20, r: 11, grad: 'mol__gH', label: 'H', labelColor: '#333' },
+        { el: 'H', x: 30, y: 30, z: 20, r: 11, grad: 'mol__gH', label: 'H', labelColor: '#333' }
+      ],
+      bonds: [[0,1,1],[0,2,1],[0,3,1],[0,4,1]]
+    },
+    O2: {
+      formula: 'O₂',
+      atoms: [
+        { el: 'O', x: -25, y: 0, z: 5, r: 18, grad: 'mol__gO', label: 'O', labelColor: '#fff' },
+        { el: 'O', x: 25, y: 0, z: -5, r: 18, grad: 'mol__gO', label: 'O', labelColor: '#fff' }
+      ],
+      bonds: [[0,1,2]]
+    },
+    N2: {
+      formula: 'N₂',
+      atoms: [
+        { el: 'N', x: -25, y: 0, z: 5, r: 17, grad: 'mol__gN', label: 'N', labelColor: '#fff' },
+        { el: 'N', x: 25, y: 0, z: -5, r: 17, grad: 'mol__gN', label: 'N', labelColor: '#fff' }
+      ],
+      bonds: [[0,1,3]]
+    },
+    NaCl: {
+      formula: 'NaCl',
+      atoms: [
+        { el: 'Na', x: -25, y: 0, z: 0, r: 20, grad: 'mol__gNa', label: 'Na', labelColor: '#fff' },
+        { el: 'Cl', x: 30, y: 0, z: 0, r: 22, grad: 'mol__gCl', label: 'Cl', labelColor: '#fff' }
+      ],
+      bonds: [[0,1,1]]
+    }
+  };
+
+  var mol = MOLECULES[molType] || MOLECULES.H2O;
+  var CX = 100, CY = 88;
+
+  /* ── 3D 旋转 ── */
+  var angleX = 0, angleY = 0;
+
+  function rotatePoint(x, y, z) {
+    /* Y轴旋转 */
+    var cosY = Math.cos(angleY), sinY = Math.sin(angleY);
+    var x1 = x * cosY + z * sinY;
+    var z1 = -x * sinY + z * cosY;
+    /* X轴旋转 */
+    var cosX = Math.cos(angleX), sinX = Math.sin(angleX);
+    var y1 = y * cosX - z1 * sinX;
+    var z2 = y * sinX + z1 * cosX;
+    return { x: x1, y: y1, z: z2 };
+  }
+
+  /* ── DOM ── */
+  var bondsG = root.querySelector('.mol__bonds');
+  var atomsG = root.querySelector('.mol__atoms');
+  var formulaEl = root.querySelector('.mol__formula');
+
+  if (formulaEl) formulaEl.textContent = mol.formula;
+
+  function render() {
+    /* 计算旋转后的坐标 */
+    var projected = mol.atoms.map(function(a) {
+      var p = rotatePoint(a.x, a.y, a.z);
+      return { px: CX + p.x, py: CY + p.y, pz: p.z, r: a.r, grad: a.grad, label: a.label, labelColor: a.labelColor };
+    });
+
+    /* 清空 */
+    bondsG.innerHTML = '';
+    atomsG.innerHTML = '';
+
+    /* 绘制键 */
+    mol.bonds.forEach(function(b) {
+      var a1 = projected[b[0]], a2 = projected[b[1]];
+      var order = b[2] || 1;
+      var dx = a2.px - a1.px, dy = a2.py - a1.py;
+      var len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var nx = -dy / len, ny = dx / len;
+
+      for (var i = 0; i < order; i++) {
+        var offset = (i - (order - 1) / 2) * 4;
+        var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', (a1.px + nx * offset).toFixed(1));
+        line.setAttribute('y1', (a1.py + ny * offset).toFixed(1));
+        line.setAttribute('x2', (a2.px + nx * offset).toFixed(1));
+        line.setAttribute('y2', (a2.py + ny * offset).toFixed(1));
+        line.setAttribute('stroke', 'var(--cmp-bond, #666)');
+        line.setAttribute('stroke-width', '4');
+        line.setAttribute('stroke-linecap', 'round');
+        bondsG.appendChild(line);
+      }
+    });
+
+    /* 按 z 排序（远的先画） */
+    var indices = projected.map(function(_, i) { return i; });
+    indices.sort(function(a, b) { return projected[a].pz - projected[b].pz; });
+
+    indices.forEach(function(i) {
+      var a = projected[i];
+      /* 根据 z 深度调整大小 */
+      var scale = 1 + a.pz * 0.003;
+      var r = a.r * scale;
+
+      var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', a.px.toFixed(1));
+      circle.setAttribute('cy', a.py.toFixed(1));
+      circle.setAttribute('r', r.toFixed(1));
+      circle.setAttribute('fill', 'url(#' + a.grad + ')');
+      circle.setAttribute('stroke', 'var(--cmp-stroke, #222)');
+      circle.setAttribute('stroke-width', 'var(--cmp-stroke-width, 1.5)');
+      atomsG.appendChild(circle);
+
+      /* 元素标签 */
+      var txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      txt.setAttribute('x', a.px.toFixed(1));
+      txt.setAttribute('y', (a.py + 4).toFixed(1));
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('font-size', String(Math.max(8, r * 0.7)));
+      txt.setAttribute('fill', a.labelColor);
+      txt.setAttribute('class', 'mol__label');
+      txt.textContent = a.label;
+      atomsG.appendChild(txt);
+    });
+
+    root.setAttribute('aria-label', '分子模型（球棍）— ' + mol.formula);
+  }
+
+  render();
+
+  /* ── 事件 ── */
+  function emitCmp(name) {
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'rotate',
+        values: {
+          angleX: Math.round(angleX * 180 / Math.PI * 10) / 10,
+          angleY: Math.round(angleY * 180 / Math.PI * 10) / 10
+        }
+      }
+    }));
+  }
+
+  /* ── 拖拽旋转 ── */
+  var dragging = false;
+  var lastX = 0, lastY = 0;
+
+  svg.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    dragging = true;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    if (e.pointerId !== undefined) svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    var dx = e.clientX - lastX;
+    var dy = e.clientY - lastY;
+    lastX = e.clientX;
+    lastY = e.clientY;
+
+    angleY += dx * 0.01;
+    angleX += dy * 0.01;
+    render();
+    emitCmp('cmp:change');
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!dragging) return;
+    dragging = false;
+    if (e.pointerId !== undefined) {
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+    }
+    emitCmp('cmp:changeend');
+  });
+
+  svg.addEventListener('pointercancel', function() { dragging = false; });
+})();
+</script>
