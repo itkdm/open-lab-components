@@ -69,6 +69,16 @@ function checkCssIsolation(styleText) {
   return errs;
 }
 
+function isValidId(value) {
+  // lower-case letters, digits, dot and dash; must start/end with alnum
+  return /^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$/.test(value);
+}
+
+function isValidCategory(value) {
+  // exactly two segments: subject/domain
+  return /^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/.test(value);
+}
+
 function main() {
   const root = projectRootFrom(__dirname);
   const componentsDir = path.join(root, "components");
@@ -95,6 +105,12 @@ function main() {
     if (!manifest.id || typeof manifest.id !== "string") {
       errors.push({ filePath, message: "manifest.id missing or not string" });
     } else {
+      if (!isValidId(manifest.id)) {
+        errors.push({
+          filePath,
+          message: 'manifest.id must match ^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$'
+        });
+      }
       if (seenId.has(manifest.id)) {
         errors.push({
           filePath,
@@ -103,6 +119,14 @@ function main() {
       } else {
         seenId.set(manifest.id, filePath);
       }
+    }
+    if (!manifest.category || typeof manifest.category !== "string") {
+      errors.push({ filePath, message: "manifest.category missing or not string" });
+    } else if (!isValidCategory(manifest.category)) {
+      errors.push({
+        filePath,
+        message: 'manifest.category must be "subject/domain" using lower-case letters, digits, and "-"'
+      });
     }
 
     // basic forbidden checks
@@ -151,11 +175,16 @@ function main() {
   }
 
   if (errors.length) {
+    console.error(`\nValidation failed with ${errors.length} error(s):`);
+    for (const err of errors) {
+      const location = err.filePath ? ` in ${path.relative(root, err.filePath)}` : "";
+      console.error(`${location ? location + ":" : ""} ${err.message}`);
+    }
+    console.error(""); // trailing newline for readability
     process.exitCode = 1;
     return;
   }
 }
 
 main();
-
 

@@ -16,6 +16,7 @@ const { spawn } = require('child_process');
 const ROOT = path.resolve(__dirname, '../../');
 const SITE_DIR = path.join(ROOT, 'site');
 const PORT = process.env.PORT || 3000;
+const ROOT_EXPOSED_DIRS = new Set(['components', 'registry', 'docs']);
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -60,6 +61,19 @@ function serveFile(filePath, res) {
     'Cache-Control': 'no-cache',
   });
   res.end(content);
+}
+
+function resolveServablePath(filePath) {
+  const sitePath = path.join(SITE_DIR, filePath);
+  if (fs.existsSync(sitePath)) return sitePath;
+
+  const firstSegment = filePath.split(/[\\/]/)[0];
+  if (!ROOT_EXPOSED_DIRS.has(firstSegment)) return null;
+
+  const rootPath = path.join(ROOT, filePath);
+  if (fs.existsSync(rootPath)) return rootPath;
+
+  return null;
 }
 
 let building = false;
@@ -130,10 +144,12 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // 优先从 site/ 查找，然后回退到根目录（用于 components/ registry/）
-  let fullPath = path.join(SITE_DIR, filePath);
-  if (!fs.existsSync(fullPath)) {
-    fullPath = path.join(ROOT, filePath);
+  // 优先从 site/ 查找；根目录仅允许暴露白名单目录
+  const fullPath = resolveServablePath(filePath);
+  if (!fullPath) {
+    res.writeHead(404, { 'Content-Type': 'text/plain' });
+    res.end('404 Not Found');
+    return;
   }
 
   serveFile(fullPath, res);
@@ -156,6 +172,7 @@ for (const dir of watchTargets) {
       runBuild();
     });
   } catch (e) {
-    // ignore watch errors
+    // fs.watch recursive is not supported on all platforms (e.g. Linux)
+    console.warn(`[dev-site] Watch disabled for ${dir}: ${e.message}`);
   }
 }

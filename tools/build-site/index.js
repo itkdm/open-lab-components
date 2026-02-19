@@ -5,7 +5,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const { walkHtmlFiles } = require('../_lib/walk');
 
 const ROOT = path.resolve(__dirname, '../../');
 const SITE_SRC = path.join(ROOT, 'site');
