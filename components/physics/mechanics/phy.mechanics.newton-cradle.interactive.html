@@ -68,7 +68,7 @@
 
   <svg viewBox="0 0 200 180" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
-      <radialGradient id="nc__ball-g" cx="0.35" cy="0.35" r="0.65">
+      <radialGradient class="nc__ball-g" cx="0.35" cy="0.35" r="0.65">
         <stop offset="0" stop-color="#e0e0e0"/>
         <stop offset="0.6" stop-color="var(--cmp-ball,#b0bec5)"/>
         <stop offset="1" stop-color="#78909c"/>
@@ -92,27 +92,27 @@
     <g class="nc__balls">
       <g class="nc__ball-group" data-idx="0">
         <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
-        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+        <circle class="nc__ball" r="10"
                 stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
       </g>
       <g class="nc__ball-group" data-idx="1">
         <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
-        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+        <circle class="nc__ball" r="10"
                 stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
       </g>
       <g class="nc__ball-group" data-idx="2">
         <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
-        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+        <circle class="nc__ball" r="10"
                 stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
       </g>
       <g class="nc__ball-group" data-idx="3">
         <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
-        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+        <circle class="nc__ball" r="10"
                 stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
       </g>
       <g class="nc__ball-group" data-idx="4">
         <line class="nc__string" stroke="var(--cmp-string,#333)" stroke-width="var(--cmp-stroke-width,1.2)"/>
-        <circle class="nc__ball" r="10" fill="url(#nc__ball-g)"
+        <circle class="nc__ball" r="10"
                 stroke="var(--cmp-stroke,#222)" stroke-width="0.5"/>
       </g>
     </g>
@@ -128,15 +128,23 @@
     if(!root||root.getAttribute('data-cmp-id')!=='phy.mechanics.newton-cradle.interactive')return;
     var svg=root.querySelector('svg');if(!svg)return;
 
+    /* ── 唯一 ID（多实例安全） ── */
+    var uid='nc_'+Math.random().toString(36).slice(2,8);
+    var grad=svg.querySelector('.nc__ball-g');
+    if(grad) grad.setAttribute('id',uid+'_bg');
+    var allBalls=root.querySelectorAll('.nc__ball');
+    for(var i=0;i<allBalls.length;i++) allBalls[i].setAttribute('fill','url(#'+uid+'_bg)');
+
     /* ── 常量 ── */
     var NUM=5;
-    var STRING_LEN=110;
+    var STRING_LEN=110;       /* viewBox 绘制长度 */
+    var PHYS_LEN=0.2;         /* 物理绳长(m)，用于计算角加速度 */
     var BALL_R=10;
     var SPACING=BALL_R*2+1;
     var TOP_Y=20;
     var CENTER_X=100;
     var GRAVITY=9.81;
-    var DAMPING=0.998;
+    var DAMPING_RATE=3.0;     /* 阻尼系数(1/s)，与帧率无关 */
     var STOP_THRESHOLD=0.001;
 
     /* 每个球的悬挂点 x */
@@ -205,14 +213,15 @@
     /* ── 物理模拟 ── */
     function step(dt){
       if(dt>0.05) dt=0.05;
-      var omega2=GRAVITY/STRING_LEN;
+      var omega2=GRAVITY/PHYS_LEN;
+      var dampFactor=Math.exp(-DAMPING_RATE*dt);
 
       for(var i=0;i<NUM;i++){
         if(i===0&&dragging) continue;
         /* 简谐近似：alpha = -(g/L)*sin(theta) */
         var alpha=-omega2*Math.sin(angles[i]);
         angVels[i]+=alpha*dt;
-        angVels[i]*=DAMPING;
+        angVels[i]*=dampFactor;
         angles[i]+=angVels[i]*dt;
       }
 

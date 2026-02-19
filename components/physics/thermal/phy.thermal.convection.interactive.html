@@ -58,7 +58,7 @@
 
   <svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
-      <clipPath id="tc__beaker-clip">
+      <clipPath class="tc__beaker-clip">
         <rect x="30" y="30" width="100" height="120" rx="6"/>
       </clipPath>
     </defs>
@@ -75,7 +75,7 @@
           stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)" stroke-linecap="round"/>
 
     <!-- Particles (clipped to beaker) -->
-    <g class="tc__particles" clip-path="url(#tc__beaker-clip)"></g>
+    <g class="tc__particles"></g>
 
     <!-- Flame group (clickable) -->
     <g class="tc__flame-btn">
@@ -96,212 +96,207 @@
     <text class="tc__label tc__status" x="80" y="198" text-anchor="middle"
           font-size="9" fill="var(--cmp-stroke, #333)">点击火焰加热</text>
   </svg>
+</div>
 
-  <script>
-  (function() {
-    var script = document.currentScript;
-    if (!script) return;
-    var root = script.parentElement;
-    if (!root || root.getAttribute('data-cmp-id') !== 'phy.thermal.convection.interactive') return;
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.thermal.convection.interactive') return;
 
-    var svg = root.querySelector('svg');
-    if (!svg) return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
 
-    /* ── Props ── */
-    var P = {};
-    try {
-      var raw = root.getAttribute('data-props');
-      if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
-    } catch(e) {}
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'tc_' + Math.random().toString(36).slice(2, 8);
+  var clipEl = svg.querySelector('.tc__beaker-clip');
+  if (clipEl) clipEl.setAttribute('id', uid + '_clip');
+  var particlesG = root.querySelector('.tc__particles');
+  if (particlesG) particlesG.setAttribute('clip-path', 'url(#' + uid + '_clip)');
 
-    /* ── State ── */
-    var heating = false;
-    var animId = null;
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
 
-    /* ── DOM refs ── */
-    var flameG = root.querySelector('.tc__flame');
-    var flameBtn = root.querySelector('.tc__flame-btn');
-    var particlesG = root.querySelector('.tc__particles');
-    var statusTxt = root.querySelector('.tc__status');
+  /* ── State ── */
+  var heating = false;
+  var animId = null;
+  var lastTime = 0;
 
-    /* ── Beaker bounds (viewBox coords) ── */
-    var BX = 30, BY = 30, BW = 100, BH = 120;
-    var CX = BX + BW / 2;  /* 80 */
-    var NUM_PARTICLES = 15;
+  /* ── DOM refs ── */
+  var flameG = root.querySelector('.tc__flame');
+  var flameBtn = root.querySelector('.tc__flame-btn');
+  var statusTxt = root.querySelector('.tc__status');
 
-    /* ── Particle state ── */
-    var particles = [];
+  /* ── Beaker bounds (viewBox coords) ── */
+  var BX = 30, BY = 30, BW = 100, BH = 120;
+  var NUM_PARTICLES = 15;
+
+  /* ── Particle state ── */
+  var particles = [];
+  for (var i = 0; i < NUM_PARTICLES; i++) {
+    particles.push({
+      x: BX + 10 + Math.random() * (BW - 20),
+      y: BY + 10 + Math.random() * (BH - 20),
+      vx: 0,
+      vy: 0,
+      el: null
+    });
+  }
+
+  /* Create SVG circles for particles */
+  for (var j = 0; j < NUM_PARTICLES; j++) {
+    var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', '3');
+    c.setAttribute('fill', 'var(--cmp-particle, #e53935)');
+    c.setAttribute('opacity', '0.85');
+    c.setAttribute('cx', particles[j].x.toFixed(1));
+    c.setAttribute('cy', particles[j].y.toFixed(1));
+    particlesG.appendChild(c);
+    particles[j].el = c;
+  }
+
+  /* ── Convection flow field ── */
+  function convectionForce(px, py) {
+    var nx = (px - BX) / BW;
+    var ny = (py - BY) / BH;
+    var cx_norm = nx - 0.5;
+
+    var fx = 0, fy = 0;
+
+    if (Math.abs(cx_norm) < 0.2) {
+      fy = -0.35;
+      fx = cx_norm * 0.1;
+    } else if (cx_norm < -0.2) {
+      fy = 0.25;
+      fx = 0.15;
+    } else {
+      fy = 0.25;
+      fx = -0.15;
+    }
+
+    if (ny < 0.2) {
+      fx += cx_norm * 0.4;
+      fy += 0.1;
+    }
+    if (ny > 0.8) {
+      fx += -cx_norm * 0.4;
+      fy -= 0.1;
+    }
+
+    return { x: fx, y: fy };
+  }
+
+  /* ── Update particles with dt ── */
+  var settled = false;
+  var FORCE_SCALE = 7;
+  var DAMP_HEAT = 4;
+  var DAMP_COOL = 5;
+  var GRAVITY_SETTLE = 1.2;
+
+  function updateParticles(dt) {
+    if (dt > 0.05) dt = 0.05;
+    var allSlow = true;
+
     for (var i = 0; i < NUM_PARTICLES; i++) {
-      particles.push({
-        x: BX + 10 + Math.random() * (BW - 20),
-        y: BY + 10 + Math.random() * (BH - 20),
-        vx: 0,
-        vy: 0,
-        el: null
-      });
-    }
-
-    /* Create SVG circles for particles */
-    for (var j = 0; j < NUM_PARTICLES; j++) {
-      var c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-      c.setAttribute('r', '3');
-      c.setAttribute('fill', 'var(--cmp-particle, #e53935)');
-      c.setAttribute('opacity', '0.85');
-      c.setAttribute('cx', particles[j].x.toFixed(1));
-      c.setAttribute('cy', particles[j].y.toFixed(1));
-      particlesG.appendChild(c);
-      particles[j].el = c;
-    }
-
-    /* ── Convection flow field ── */
-    function convectionForce(px, py) {
-      /* Normalized position within beaker */
-      var nx = (px - BX) / BW;          /* 0..1 left to right */
-      var ny = (py - BY) / BH;          /* 0..1 top to bottom */
-      var cx_norm = nx - 0.5;           /* -0.5..0.5 from center */
-
-      var fx = 0, fy = 0;
-
-      /* Center column: rise (negative vy = upward in SVG) */
-      if (Math.abs(cx_norm) < 0.2) {
-        fy = -0.35;
-        fx = cx_norm * 0.1;
-      }
-      /* Left side: sink down */
-      else if (cx_norm < -0.2) {
-        fy = 0.25;
-        fx = 0.15;
-      }
-      /* Right side: sink down */
-      else {
-        fy = 0.25;
-        fx = -0.15;
-      }
-
-      /* Top: push outward */
-      if (ny < 0.2) {
-        fx += cx_norm * 0.4;
-        fy += 0.1;
-      }
-      /* Bottom: push toward center */
-      if (ny > 0.8) {
-        fx += -cx_norm * 0.4;
-        fy -= 0.1;
-      }
-
-      return { x: fx, y: fy };
-    }
-
-    /* ── Settle particles (gravity + damping when heat off) ── */
-    var settled = false;
-
-    function updateParticles() {
-      var allSlow = true;
-      for (var i = 0; i < NUM_PARTICLES; i++) {
-        var p = particles[i];
-
-        if (heating) {
-          var f = convectionForce(p.x, p.y);
-          p.vx += f.x * 0.12;
-          p.vy += f.y * 0.12;
-          /* Damping */
-          p.vx *= 0.94;
-          p.vy *= 0.94;
-        } else {
-          /* Slow down and settle to bottom */
-          p.vx *= 0.92;
-          p.vy *= 0.92;
-          /* Gentle gravity */
-          p.vy += 0.02;
-        }
-
-        p.x += p.vx;
-        p.y += p.vy;
-
-        /* Clamp to beaker bounds with bounce */
-        var margin = 4;
-        if (p.x < BX + margin) { p.x = BX + margin; p.vx = Math.abs(p.vx) * 0.3; }
-        if (p.x > BX + BW - margin) { p.x = BX + BW - margin; p.vx = -Math.abs(p.vx) * 0.3; }
-        if (p.y < BY + margin) { p.y = BY + margin; p.vy = Math.abs(p.vy) * 0.3; }
-        if (p.y > BY + BH - margin) { p.y = BY + BH - margin; p.vy = -Math.abs(p.vy) * 0.1; }
-
-        /* Check if particle is still moving */
-        if (Math.abs(p.vx) > 0.02 || Math.abs(p.vy) > 0.02) {
-          allSlow = false;
-        }
-
-        p.el.setAttribute('cx', p.x.toFixed(1));
-        p.el.setAttribute('cy', p.y.toFixed(1));
-      }
-
-      return allSlow;
-    }
-
-    /* ── Animation loop ── */
-    function tick() {
-      var allSettled = updateParticles();
-
-      if (!heating && allSettled) {
-        /* Particles have settled, stop animating */
-        settled = true;
-        animId = null;
-        return;
-      }
-
-      animId = requestAnimationFrame(tick);
-    }
-
-    function startAnim() {
-      if (animId) return;
-      settled = false;
-      animId = requestAnimationFrame(tick);
-    }
-
-    function stopAnim() {
-      /* Don't cancel immediately -- let particles settle */
-      /* The tick loop will stop itself when settled */
-    }
-
-    /* ── Toggle heating ── */
-    function toggleHeat() {
-      heating = !heating;
-
-      if (flameG) {
-        flameG.setAttribute('opacity', heating ? '1' : '0.35');
-      }
-      if (statusTxt) {
-        statusTxt.textContent = heating ? '加热中…' : '点击火焰加热';
-      }
-
-      root.setAttribute('aria-label',
-        heating ? '对流演示（交互式）— 加热中' : '对流演示（交互式）');
-
-      /* Dispatch event */
-      root.dispatchEvent(new CustomEvent('cmp:change', {
-        bubbles: true,
-        composed: true,
-        detail: {
-          id: root.getAttribute('data-cmp-id'),
-          type: 'toggle',
-          values: { heating: heating }
-        }
-      }));
+      var p = particles[i];
 
       if (heating) {
-        startAnim();
+        var f = convectionForce(p.x, p.y);
+        p.vx += f.x * FORCE_SCALE * dt;
+        p.vy += f.y * FORCE_SCALE * dt;
+        var damp = Math.exp(-DAMP_HEAT * dt);
+        p.vx *= damp;
+        p.vy *= damp;
       } else {
-        /* Animation continues until particles settle */
-        if (!animId) startAnim();
+        var damp2 = Math.exp(-DAMP_COOL * dt);
+        p.vx *= damp2;
+        p.vy *= damp2;
+        p.vy += GRAVITY_SETTLE * dt;
       }
+
+      p.x += p.vx * dt * 60;
+      p.y += p.vy * dt * 60;
+
+      var margin = 4;
+      if (p.x < BX + margin) { p.x = BX + margin; p.vx = Math.abs(p.vx) * 0.3; }
+      if (p.x > BX + BW - margin) { p.x = BX + BW - margin; p.vx = -Math.abs(p.vx) * 0.3; }
+      if (p.y < BY + margin) { p.y = BY + margin; p.vy = Math.abs(p.vy) * 0.3; }
+      if (p.y > BY + BH - margin) { p.y = BY + BH - margin; p.vy = 0; }
+
+      if (Math.abs(p.vx) > 0.02 || Math.abs(p.vy) > 0.02) {
+        allSlow = false;
+      }
+
+      p.el.setAttribute('cx', p.x.toFixed(1));
+      p.el.setAttribute('cy', p.y.toFixed(1));
     }
 
-    /* ── Click handler ── */
-    if (flameBtn) {
-      flameBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        toggleHeat();
-      });
+    return allSlow;
+  }
+
+  /* ── Animation loop ── */
+  function tick(ts) {
+    if (!lastTime) lastTime = ts;
+    var dt = (ts - lastTime) / 1000;
+    lastTime = ts;
+
+    var allSettled = updateParticles(dt);
+
+    if (!heating && allSettled) {
+      settled = true;
+      animId = null;
+      lastTime = 0;
+      return;
     }
-  })();
-  </script>
-</div>
+
+    animId = requestAnimationFrame(tick);
+  }
+
+  function startAnim() {
+    if (animId) return;
+    settled = false;
+    lastTime = 0;
+    animId = requestAnimationFrame(tick);
+  }
+
+  /* ── Toggle heating ── */
+  function toggleHeat() {
+    heating = !heating;
+
+    if (flameG) {
+      flameG.setAttribute('opacity', heating ? '1' : '0.35');
+    }
+    if (statusTxt) {
+      statusTxt.textContent = heating ? '加热中…' : '点击火焰加热';
+    }
+
+    root.setAttribute('aria-label',
+      heating ? '对流演示（交互式）— 加热中' : '对流演示（交互式）');
+
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'toggle',
+        values: { heating: heating }
+      }
+    }));
+
+    startAnim();
+  }
+
+  /* ── Click handler ── */
+  if (flameBtn) {
+    flameBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      toggleHeat();
+    });
+  }
+})();
+</script>

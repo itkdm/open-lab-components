@@ -80,15 +80,19 @@
 
   <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <defs>
-      <linearGradient id="pd__sponge-g" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient class="pd__sponge-g" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="var(--cmp-sponge, #fff176)"/>
-        <stop offset="1" stop-color="#f9a825"/>
+        <stop offset="1" stop-color="var(--cmp-sponge, #fff176)" stop-opacity="0.55"/>
       </linearGradient>
-      <linearGradient id="pd__brick-g" x1="0" y1="0" x2="0" y2="1">
+      <linearGradient class="pd__brick-g" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0" stop-color="var(--cmp-brick, #c62828)" stop-opacity="0.8"/>
         <stop offset="0.5" stop-color="var(--cmp-brick, #c62828)"/>
-        <stop offset="1" stop-color="#7f0000"/>
+        <stop offset="1" stop-color="var(--cmp-brick, #c62828)" stop-opacity="0.45"/>
       </linearGradient>
+      <marker class="pd__arr" viewBox="0 0 6 6" refX="3" refY="3"
+              markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M0,0 L6,3 L0,6 Z" fill="var(--cmp-accent, #1565c0)"/>
+      </marker>
     </defs>
 
     <!-- 地面线 -->
@@ -97,7 +101,6 @@
 
     <!-- 海绵 -->
     <rect class="pd__sponge" rx="3"
-          fill="url(#pd__sponge-g)"
           stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
 
     <!-- 海绵纹理（小孔） -->
@@ -107,7 +110,6 @@
     <!-- 砖块（可点击切换） -->
     <g class="pd__brick">
       <rect class="pd__brick-rect" rx="2"
-            fill="url(#pd__brick-g)"
             stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
       <!-- 砖块纹理线 -->
       <g class="pd__brick-lines" stroke="rgba(0,0,0,0.15)" stroke-width="0.5">
@@ -118,7 +120,7 @@
     <g class="pd__area-mark" opacity="0.6">
       <line class="pd__area-l" stroke="var(--cmp-accent, #1565c0)" stroke-width="1"/>
       <line class="pd__area-r" stroke="var(--cmp-accent, #1565c0)" stroke-width="1"/>
-      <line class="pd__area-m" stroke="var(--cmp-accent, #1565c0)" stroke-width="1" marker-start="url(#pd__arr)" marker-end="url(#pd__arr)"/>
+      <line class="pd__area-m" stroke="var(--cmp-accent, #1565c0)" stroke-width="1"/>
     </g>
 
     <!-- 方向按钮组 -->
@@ -165,6 +167,25 @@
 
   var svg = root.querySelector('svg');
   if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'pd_' + Math.random().toString(36).slice(2, 8);
+  var spongeGrad = svg.querySelector('.pd__sponge-g');
+  var brickGrad  = svg.querySelector('.pd__brick-g');
+  var arrMarker  = svg.querySelector('.pd__arr');
+  if (spongeGrad) spongeGrad.setAttribute('id', uid + '_sg');
+  if (brickGrad)  brickGrad.setAttribute('id', uid + '_bg');
+  if (arrMarker)  arrMarker.setAttribute('id', uid + '_ar');
+
+  var spongeEl = root.querySelector('.pd__sponge');
+  var brickRectEl = root.querySelector('.pd__brick-rect');
+  var areaMLine = root.querySelector('.pd__area-m');
+  if (spongeEl)    spongeEl.setAttribute('fill', 'url(#' + uid + '_sg)');
+  if (brickRectEl) brickRectEl.setAttribute('fill', 'url(#' + uid + '_bg)');
+  if (areaMLine) {
+    areaMLine.setAttribute('marker-start', 'url(#' + uid + '_ar)');
+    areaMLine.setAttribute('marker-end',   'url(#' + uid + '_ar)');
+  }
 
   /* ── 参数 ── */
   var P = {};
@@ -215,6 +236,9 @@
   var btnFlat = root.querySelector('.pd__btn-flat');
   var btnSide = root.querySelector('.pd__btn-side');
   var btnUpright = root.querySelector('.pd__btn-upright');
+  var areaL = root.querySelector('.pd__area-l');
+  var areaR = root.querySelector('.pd__area-r');
+  var areaM = root.querySelector('.pd__area-m');
 
   function updateBtnHighlight() {
     var btns = [btnFlat, btnSide, btnUpright];
@@ -249,7 +273,7 @@
 
     /* 海绵纹理点 */
     if (spongeDots) {
-      spongeDots.innerHTML = '';
+      while (spongeDots.lastChild) spongeDots.removeChild(spongeDots.lastChild);
       var dotRows = Math.max(1, Math.floor(spongeH / 6));
       var dotCols = 8;
       for (var r = 0; r < dotRows; r++) {
@@ -281,7 +305,7 @@
 
     /* 砖块纹理线 */
     if (brickLines) {
-      brickLines.innerHTML = '';
+      while (brickLines.lastChild) brickLines.removeChild(brickLines.lastChild);
       /* 水平线 */
       var hLines = Math.max(0, Math.floor(bh / 10) - 1);
       for (var i = 1; i <= hLines; i++) {
@@ -295,6 +319,28 @@
         line.setAttribute('stroke-width', '0.5');
         brickLines.appendChild(line);
       }
+    }
+
+    /* 接触面积标注线 */
+    var markY = spongeY + 2;
+    var tickH = 5;
+    if (areaL) {
+      areaL.setAttribute('x1', bx.toFixed(1));
+      areaL.setAttribute('y1', (markY - tickH).toFixed(1));
+      areaL.setAttribute('x2', bx.toFixed(1));
+      areaL.setAttribute('y2', (markY + tickH).toFixed(1));
+    }
+    if (areaR) {
+      areaR.setAttribute('x1', (bx + bw).toFixed(1));
+      areaR.setAttribute('y1', (markY - tickH).toFixed(1));
+      areaR.setAttribute('x2', (bx + bw).toFixed(1));
+      areaR.setAttribute('y2', (markY + tickH).toFixed(1));
+    }
+    if (areaM) {
+      areaM.setAttribute('x1', bx.toFixed(1));
+      areaM.setAttribute('y1', markY.toFixed(1));
+      areaM.setAttribute('x2', (bx + bw).toFixed(1));
+      areaM.setAttribute('y2', markY.toFixed(1));
     }
 
     /* 数据文字 */
