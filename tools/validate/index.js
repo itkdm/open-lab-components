@@ -7,8 +7,14 @@ const { walkDir } = require("../_lib/walk");
 const { extractManifest } = require("../_lib/manifest");
 const { projectRootFrom } = require("../_lib/paths");
 
+const SEMVER_RE = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
+
 function isElementNode(n) {
   return n && n.nodeName && n.tagName;
+}
+
+function isNonEmptyString(v) {
+  return typeof v === "string" && v.trim().length > 0;
 }
 
 function getAttr(node, name) {
@@ -102,6 +108,7 @@ function main() {
     if (manifest.schema !== "cmp-manifest/v1") {
       errors.push({ filePath, message: `manifest.schema must be "cmp-manifest/v1" (got "${manifest.schema}")` });
     }
+
     if (!manifest.id || typeof manifest.id !== "string") {
       errors.push({ filePath, message: "manifest.id missing or not string" });
     } else {
@@ -120,13 +127,21 @@ function main() {
         seenId.set(manifest.id, filePath);
       }
     }
-    if (!manifest.category || typeof manifest.category !== "string") {
-      errors.push({ filePath, message: "manifest.category missing or not string" });
+    if (!isNonEmptyString(manifest.name)) {
+      errors.push({ filePath, message: "manifest.name missing or not non-empty string" });
+    }
+    if (!isNonEmptyString(manifest.category)) {
+      errors.push({ filePath, message: "manifest.category missing or not non-empty string" });
     } else if (!isValidCategory(manifest.category)) {
       errors.push({
         filePath,
         message: 'manifest.category must be "subject/domain" using lower-case letters, digits, and "-"'
       });
+    }
+    if (!isNonEmptyString(manifest.version)) {
+      errors.push({ filePath, message: "manifest.version missing or not non-empty string" });
+    } else if (!SEMVER_RE.test(manifest.version)) {
+      errors.push({ filePath, message: `manifest.version must be valid SemVer (got "${manifest.version}")` });
     }
 
     // basic forbidden checks
@@ -175,12 +190,11 @@ function main() {
   }
 
   if (errors.length) {
-    console.error(`\nValidation failed with ${errors.length} error(s):`);
+    console.error(`Validation failed with ${errors.length} error(s):`);
     for (const err of errors) {
-      const location = err.filePath ? ` in ${path.relative(root, err.filePath)}` : "";
-      console.error(`${location ? location + ":" : ""} ${err.message}`);
+      const rel = path.relative(root, err.filePath).split(path.sep).join("/");
+      console.error(`- ${rel}: ${err.message}`);
     }
-    console.error(""); // trailing newline for readability
     process.exitCode = 1;
     return;
   }

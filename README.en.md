@@ -16,7 +16,7 @@ English | [中文](./README.md)
 
 ## 📦 Component List
 
-The registry currently includes **28 components** (Math + Physics). Below are some example components:
+The repository currently includes **28 components** (source of truth: `registry/registry.json`). A few examples are listed below:
 
 ### Physics Apparatus
 - 💡 **Light Bulb** (`phy.apparatus.bulb.basic`) - Basic light bulb component
@@ -53,7 +53,7 @@ npm install
 1. Find the component file you need in the `components/` directory
 2. Copy the entire file content
 3. Paste it into your HTML page
-4. Configure parameters via CSS variables or `data-props` attribute
+4. Configure parameters via CSS variables (`data-props` must be parsed by host-side logic)
 
 ```html
 <!DOCTYPE html>
@@ -82,7 +82,7 @@ npm install
 <div class="cmp" 
      data-cmp-id="phy.resistor.axial.basic"
      data-props='{"size": 100, "body": "#caa070", "stroke": "#111827"}'>
-    <!-- Component will automatically parse data-props and apply configuration -->
+    <!-- Component fragments do not auto-parse data-props; host code should map it to CSS variables -->
 </div>
 ```
 

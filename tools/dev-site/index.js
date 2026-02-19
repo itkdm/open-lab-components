@@ -3,7 +3,7 @@
  * 开发服务器：启动本地预览（无热重载）
  *
  * 功能：
- * 1. 提供 site/ 与项目根目录的静态文件服务
+ * 1. 提供 site/ 与白名单目录（components/registry/docs）的静态文件服务
  * 2. 监听 components/** 变更，自动重建 registry
  */
 
@@ -16,7 +16,7 @@ const { spawn } = require('child_process');
 const ROOT = path.resolve(__dirname, '../../');
 const SITE_DIR = path.join(ROOT, 'site');
 const PORT = process.env.PORT || 3000;
-const ROOT_EXPOSED_DIRS = new Set(['components', 'registry', 'docs']);
+const ROOT_ALLOWED_PREFIXES = ['components/', 'registry/', 'docs/'];
 
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
@@ -63,16 +63,38 @@ function serveFile(filePath, res) {
   res.end(content);
 }
 
-function resolveServablePath(filePath) {
-  const sitePath = path.join(SITE_DIR, filePath);
+function normalizeRequestPath(pathname) {
+  let decoded;
+  try {
+    decoded = decodeURIComponent(pathname || '/');
+  } catch (e) {
+    return null;
+  }
+
+  const withoutLeadingSlash = decoded.replace(/^\/+/, '');
+  const withDefault = withoutLeadingSlash || 'index.html';
+  const slashNormalized = withDefault.replace(/\\/g, '/');
+  const normalized = path.posix.normalize(slashNormalized);
+
+  if (
+    normalized === '..' ||
+    normalized.startsWith('../') ||
+    normalized.includes('/../') ||
+    path.posix.isAbsolute(normalized)
+  ) {
+    return null;
+  }
+  return normalized;
+}
+
+function isAllowedRootPath(relPath) {
+  return ROOT_ALLOWED_PREFIXES.some((prefix) => relPath === prefix.slice(0, -1) || relPath.startsWith(prefix));
+}
+
+function resolveFilePath(relPath) {
+  const sitePath = path.join(SITE_DIR, relPath);
   if (fs.existsSync(sitePath)) return sitePath;
-
-  const firstSegment = filePath.split(/[\\/]/)[0];
-  if (!ROOT_EXPOSED_DIRS.has(firstSegment)) return null;
-
-  const rootPath = path.join(ROOT, filePath);
-  if (fs.existsSync(rootPath)) return rootPath;
-
+  if (isAllowedRootPath(relPath)) return path.join(ROOT, relPath);
   return null;
 }
 
@@ -125,27 +147,15 @@ function runBuild() {
 
 const server = http.createServer((req, res) => {
   const url = new URL(req.url, `http://localhost:${PORT}`);
-  const start = Date.now();
-
-  let filePath = url.pathname;
-
-  // 默认 index.html
-  if (filePath === '/') {
-    filePath = '/index.html';
-  }
-
-  // 移除开头的 /
-  filePath = filePath.slice(1);
-
-  // 安全：不允许 .. 路径
-  if (filePath.includes('..')) {
+  const relPath = normalizeRequestPath(url.pathname);
+  if (!relPath) {
     res.writeHead(403, { 'Content-Type': 'text/plain' });
     res.end('403 Forbidden');
     return;
   }
 
-  // 优先从 site/ 查找；根目录仅允许暴露白名单目录
-  const fullPath = resolveServablePath(filePath);
+  // 优先从 site/ 查找，再按白名单回退到仓库根目录
+  const fullPath = resolveFilePath(relPath);
   if (!fullPath) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.end('404 Not Found');

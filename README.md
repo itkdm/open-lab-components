@@ -16,7 +16,7 @@
 
 ## 📦 组件列表
 
-Registry currently includes **28 components** (Math + Physics). Example components are listed below:
+当前仓库已收录 **28 个组件**（以 `registry/registry.json` 为准），下方列出部分示例：
 
 ### 物理器材 (Physics Apparatus)
 - 💡 **灯泡** (`phy.apparatus.bulb.basic`) - 基础灯泡组件
@@ -53,7 +53,7 @@ npm install
 1. 从 `components/` 目录中找到需要的组件文件
 2. 复制整个文件内容
 3. 粘贴到你的 HTML 页面中
-4. 通过 CSS 变量或 `data-props` 属性配置参数
+4. 通过 CSS 变量配置参数（`data-props` 需由宿主脚本解析后再映射）
 
 ```html
 <!DOCTYPE html>
@@ -82,7 +82,7 @@ npm install
 <div class="cmp" 
      data-cmp-id="phy.resistor.axial.basic"
      data-props='{"size": 100, "body": "#caa070", "stroke": "#111827"}'>
-    <!-- 组件会自动解析 data-props 并应用配置 -->
+    <!-- 组件片段默认不会自动解析 data-props；需宿主脚本将其映射到 CSS 变量 -->
 </div>
 ```
 
