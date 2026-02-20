@@ -1,0 +1,450 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.magnet.field-lines.interactive",
+  "name": "磁感线演示（交互式）",
+  "nameEn": "Magnetic Field Lines Demo (Interactive)",
+  "category": "physics/magnet",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 240 },
+  "tags": ["magnet", "magnetic-field", "field-lines", "iron-filings", "interactive"],
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 240, "min": 140, "max": 480, "desc": "组件高度" },
+    { "key": "northColor",   "type": "color",  "default": "#e53935", "desc": "N极颜色" },
+    { "key": "southColor",   "type": "color",  "default": "#1e88e5", "desc": "S极颜色" },
+    { "key": "filingColor",  "type": "color",  "default": "#555555", "desc": "铁粉颜色" },
+    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth",  "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showButtons",  "type": "boolean", "default": false, "desc": "显示撒铁粉/重置按钮" },
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "northColor":  "--cmp-north",
+    "southColor":  "--cmp-south",
+    "filingColor": "--cmp-filing",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  },
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "sprinkled": "boolean — 铁粉是否已撒",
+        "filingCount": "number — 铁粉数量"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.magnet.field-lines.interactive" role="img" aria-label="磁感线演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.magnet.field-lines.interactive"] {
+      --h: var(--cmp-size, 240px);
+      display: inline-block;
+      width: calc(var(--h) * 320 / 240);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.magnet.field-lines.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.magnet.field-lines.interactive"] .mf__btn {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="phy.magnet.field-lines.interactive"] .mf__btn:hover rect {
+      fill-opacity: 0.18;
+    }
+    .cmp[data-cmp-id="phy.magnet.field-lines.interactive"] .mf__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .cmp[data-cmp-id="phy.magnet.field-lines.interactive"] .mf__info {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+    .cmp[data-cmp-id="phy.magnet.field-lines.interactive"] .mf__pole-label {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="mf__north-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.8"/>
+        <stop offset="0.5" stop-color="var(--cmp-north, #e53935)"/>
+        <stop offset="1" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.6"/>
+      </linearGradient>
+      <linearGradient class="mf__south-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.8"/>
+        <stop offset="0.5" stop-color="var(--cmp-south, #1e88e5)"/>
+        <stop offset="1" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.6"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 铁粉层（JS 动态填充） -->
+    <g class="mf__filings"></g>
+
+    <!-- 磁铁（纸下方，半透明轮廓表示在纸下面） -->
+    <g class="mf__magnet" opacity="0.85">
+      <!-- N极 -->
+      <rect class="mf__n-rect" x="100" y="108" width="60" height="24" rx="2"
+            stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+      <text class="mf__pole-label" x="130" y="125" text-anchor="middle"
+            font-size="14" fill="#fff">N</text>
+      <!-- S极 -->
+      <rect class="mf__s-rect" x="160" y="108" width="60" height="24" rx="2"
+            stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+      <text class="mf__pole-label" x="190" y="125" text-anchor="middle"
+            font-size="14" fill="#fff">S</text>
+      <!-- 分界线 -->
+      <line x1="160" y1="108" x2="160" y2="132"
+            stroke="var(--cmp-stroke, #333)" stroke-width="0.8" opacity="0.6"/>
+    </g>
+
+    <!-- 按钮组（默认隐藏，showButtons=true 时显示） -->
+    <g class="mf__buttons" display="none">
+      <g class="mf__btn mf__sprinkle-btn" transform="translate(60, 232)">
+        <rect x="-36" y="-10" width="72" height="20" rx="4"
+              fill="var(--cmp-north, #e53935)" fill-opacity="0.1"
+              stroke="var(--cmp-north, #e53935)" stroke-width="0.8"/>
+        <text class="mf__label" text-anchor="middle" y="4" font-size="9"
+              fill="var(--cmp-north, #e53935)">撒铁粉</text>
+      </g>
+      <g class="mf__btn mf__reset-btn" transform="translate(260, 232)">
+        <rect x="-24" y="-10" width="48" height="20" rx="4"
+              fill="var(--cmp-stroke, #333)" fill-opacity="0.06"
+              stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+        <text class="mf__label" text-anchor="middle" y="4" font-size="9"
+              fill="var(--cmp-stroke, #333)">重置</text>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.magnet.field-lines.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'mf_' + Math.random().toString(36).slice(2, 8);
+  var nGrad = svg.querySelector('.mf__north-grad');
+  var sGrad = svg.querySelector('.mf__south-grad');
+  if (nGrad) nGrad.setAttribute('id', uid + '_ng');
+  if (sGrad) sGrad.setAttribute('id', uid + '_sg');
+  var nRect = root.querySelector('.mf__n-rect');
+  var sRect = root.querySelector('.mf__s-rect');
+  if (nRect) nRect.setAttribute('fill', 'url(#' + uid + '_ng)');
+  if (sRect) sRect.setAttribute('fill', 'url(#' + uid + '_sg)');
+
+  /* ── DOM 引用 ── */
+  var filingsG = root.querySelector('.mf__filings');
+  var sprinkleBtn = root.querySelector('.mf__sprinkle-btn');
+  var resetBtn = root.querySelector('.mf__reset-btn');
+  var buttonsG = root.querySelector('.mf__buttons');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  /* showButtons: 默认隐藏，设为 true 时显示 */
+  if (buttonsG && (P.showButtons === true || P.showButtons === 'true')) {
+    buttonsG.setAttribute('display', '');
+  }
+
+  /* ── 磁铁参数（viewBox 坐标） ── */
+  var MAGNET_X1 = 100; /* N极左边 */
+  var MAGNET_X2 = 220; /* S极右边 */
+  var MAGNET_CY = 120; /* 磁铁中心 y */
+  /* 磁荷放在磁铁两端（不是极面中心），这样场线从端点发出 */
+  var N_POS = { x: MAGNET_X1, y: MAGNET_CY }; /* N极端点 */
+  var S_POS = { x: MAGNET_X2, y: MAGNET_CY }; /* S极端点 */
+
+  /* 可用区域（整个 viewBox） */
+  var PX = 4, PY = 4, PW = 312, PH = 232;
+
+  /* ── 磁场计算（偶极子模型） ── */
+  /* 用两个磁荷模拟：+m 在 N极，-m 在 S极 */
+  function fieldAt(px, py) {
+    var bx = 0, by = 0;
+
+    /* N极（正磁荷）：场从 N 向外 */
+    var dnx = px - N_POS.x;
+    var dny = py - N_POS.y;
+    var rn2 = dnx * dnx + dny * dny;
+    var rn = Math.sqrt(rn2);
+    if (rn < 5) rn = 5;
+    rn2 = rn * rn;
+    var fn = 1200 / rn2;
+    bx += fn * dnx / rn;
+    by += fn * dny / rn;
+
+    /* S极（负磁荷）：场指向 S */
+    var dsx = px - S_POS.x;
+    var dsy = py - S_POS.y;
+    var rs2 = dsx * dsx + dsy * dsy;
+    var rs = Math.sqrt(rs2);
+    if (rs < 5) rs = 5;
+    rs2 = rs * rs;
+    var fs = 1200 / rs2;
+    bx -= fs * dsx / rs;
+    by -= fs * dsy / rs;
+
+    return { x: bx, y: by };
+  }
+
+  /* ── 铁粉生成 ── */
+  var FILING_COUNT = 350;
+  var sprinkled = false;
+  var animId = null;
+  var lastTime = 0;
+  var filings = [];
+
+  function isInsideMagnet(px, py) {
+    return px > MAGNET_X1 - 2 && px < MAGNET_X2 + 2 &&
+           py > MAGNET_CY - 14 && py < MAGNET_CY + 14;
+  }
+
+  function createFilings() {
+    filings = [];
+    for (var i = 0; i < FILING_COUNT; i++) {
+      var fx, fy;
+      /* 分布策略：两端最密，弧线区域次之，远处稀疏 */
+      var zone = Math.random();
+      if (zone < 0.35) {
+        /* 磁铁两端外侧（最高密度区） */
+        var pole = Math.random() < 0.5 ? N_POS : S_POS;
+        var side = (pole === N_POS) ? -1 : 1; /* N极向左扩散，S极向右扩散 */
+        var ang = (Math.random() - 0.5) * Math.PI * 1.4; /* 扇形展开 */
+        var dist = 6 + Math.random() * 55;
+        fx = pole.x + Math.cos(ang) * dist * side + Math.sin(ang) * dist * 0.3;
+        fy = pole.y + Math.sin(ang) * dist;
+      } else if (zone < 0.65) {
+        /* 磁铁上下方弧线区域（中密度） */
+        var t = Math.random();
+        var arcX = MAGNET_X1 + t * (MAGNET_X2 - MAGNET_X1);
+        var vertSign = Math.random() < 0.5 ? -1 : 1;
+        var arcDist = 18 + Math.random() * 65;
+        fx = arcX + (Math.random() - 0.5) * 20;
+        fy = MAGNET_CY + vertSign * arcDist;
+      } else {
+        /* 全区域随机（低密度） */
+        fx = PX + Math.random() * PW;
+        fy = PY + Math.random() * PH;
+      }
+
+      /* 限制在区域内 */
+      fx = Math.max(PX + 2, Math.min(PX + PW - 2, fx));
+      fy = Math.max(PY + 2, Math.min(PY + PH - 2, fy));
+
+      /* 跳过磁铁内部 */
+      if (isInsideMagnet(fx, fy)) {
+        i--;
+        continue;
+      }
+
+      /* 计算场方向 → 铁粉朝向 */
+      var b = fieldAt(fx, fy);
+      var bMag = Math.sqrt(b.x * b.x + b.y * b.y);
+      var angle = Math.atan2(b.y, b.x);
+
+      /* 铁粉长度随场强变化 */
+      var strength = Math.min(1, bMag / 1.5);
+      var len = 2.5 + strength * 4;
+
+      /* 初始散落位置：在目标位置附近随机偏移（模拟铁粉从空中撒下） */
+      var scatterDist = 15 + Math.random() * 30;
+      var scatterAng = Math.random() * Math.PI * 2;
+      var startX = fx + Math.cos(scatterAng) * scatterDist;
+      var startY = fy + Math.sin(scatterAng) * scatterDist;
+      startX = Math.max(PX + 2, Math.min(PX + PW - 2, startX));
+      startY = Math.max(PY + 2, Math.min(PY + PH - 2, startY));
+
+      /* 每个铁粉有不同的延迟，产生波浪式效果 */
+      var delay = Math.random() * 0.5;
+
+      filings.push({
+        x: fx, y: fy,             /* 目标位置 */
+        startX: startX,           /* 初始散落位置 */
+        startY: startY,
+        angle: angle,
+        len: len,
+        strength: strength,
+        targetAngle: angle,
+        startAngle: Math.random() * Math.PI * 2, /* 初始随机朝向 */
+        delay: delay,
+        el: null
+      });
+    }
+  }
+
+  function createFilingElements() {
+    for (var i = 0; i < filings.length; i++) {
+      var f = filings[i];
+      var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      var halfLen = f.len / 2;
+      var cos = Math.cos(f.startAngle);
+      var sin = Math.sin(f.startAngle);
+      line.setAttribute('x1', (f.startX - cos * halfLen).toFixed(1));
+      line.setAttribute('y1', (f.startY - sin * halfLen).toFixed(1));
+      line.setAttribute('x2', (f.startX + cos * halfLen).toFixed(1));
+      line.setAttribute('y2', (f.startY + sin * halfLen).toFixed(1));
+      line.setAttribute('stroke', 'var(--cmp-filing, #555)');
+      line.setAttribute('stroke-width', (0.6 + f.strength * 0.8).toFixed(2));
+      line.setAttribute('stroke-linecap', 'round');
+      line.setAttribute('opacity', '0');
+      filingsG.appendChild(line);
+      f.el = line;
+    }
+  }
+
+  /* ── 动画 ── */
+  /*
+   * 阶段1 (0→0.4s)：铁粉出现，散落在随机位置，随机朝向
+   * 阶段2 (0.4→3.0s)：铁粉同时移动到目标位置 + 旋转对齐磁场方向
+   * 阶段3：完成，铁粉永久保留直到重置
+   */
+  var APPEAR_DUR = 0.4;
+  var MOVE_DUR = 2.6;
+  var TOTAL_DUR = APPEAR_DUR + MOVE_DUR;
+  var animElapsed = 0;
+
+  function smoothstep(t) {
+    return t * t * (3 - 2 * t);
+  }
+
+  function renderFiling(f, t) {
+    /* t: 全局动画时间(s) */
+    var localT = t - f.delay;
+
+    /* 出现 */
+    var appearT = Math.max(0, Math.min(1, localT / APPEAR_DUR));
+    var finalOpacity = 0.5 + f.strength * 0.5;
+    var opacity = appearT * finalOpacity;
+
+    /* 移动+旋转（出现后开始） */
+    var moveT = Math.max(0, Math.min(1, (localT - APPEAR_DUR * 0.5) / MOVE_DUR));
+    var ease = smoothstep(moveT);
+
+    /* 位置插值 */
+    var cx = f.startX + (f.x - f.startX) * ease;
+    var cy = f.startY + (f.y - f.startY) * ease;
+
+    /* 角度插值（最短路径，铁粉无极性） */
+    var diff = f.targetAngle - f.startAngle;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    if (diff > Math.PI / 2) diff -= Math.PI;
+    if (diff < -Math.PI / 2) diff += Math.PI;
+    var angle = f.startAngle + diff * ease;
+
+    var halfLen = f.len / 2;
+    var cos = Math.cos(angle);
+    var sin = Math.sin(angle);
+    f.el.setAttribute('x1', (cx - cos * halfLen).toFixed(1));
+    f.el.setAttribute('y1', (cy - sin * halfLen).toFixed(1));
+    f.el.setAttribute('x2', (cx + cos * halfLen).toFixed(1));
+    f.el.setAttribute('y2', (cy + sin * halfLen).toFixed(1));
+    f.el.setAttribute('opacity', opacity.toFixed(2));
+  }
+
+  function tick(ts) {
+    if (!lastTime) lastTime = ts;
+    var dt = (ts - lastTime) / 1000;
+    lastTime = ts;
+    if (dt > 0.05) dt = 0.05;
+
+    animElapsed += dt;
+
+    for (var i = 0; i < filings.length; i++) {
+      renderFiling(filings[i], animElapsed);
+    }
+
+    /* 最大延迟 0.5s + 总时长，所有铁粉都完成后停止 */
+    if (animElapsed < TOTAL_DUR + 0.6) {
+      animId = requestAnimationFrame(tick);
+    } else {
+      animId = null;
+      lastTime = 0;
+    }
+  }
+
+  function startAnim() {
+    if (animId) return;
+    lastTime = 0;
+    animId = requestAnimationFrame(tick);
+  }
+
+  /* ── 撒铁粉 ── */
+  function sprinkle() {
+    if (sprinkled) return;
+    sprinkled = true;
+
+    createFilings();
+    createFilingElements();
+
+    animElapsed = 0;
+    startAnim();
+    emitChange();
+  }
+
+  /* ── 重置 ── */
+  function resetAll() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+    sprinkled = false;
+    animElapsed = 0;
+    lastTime = 0;
+    filings = [];
+    while (filingsG.lastChild) filingsG.removeChild(filingsG.lastChild);
+    emitChange();
+  }
+
+  /* ── 事件 ── */
+  function emitChange() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'toggle',
+        values: { sprinkled: sprinkled, filingCount: filings.length }
+      }
+    }));
+  }
+
+  /* ── 绑定 ── */
+  if (sprinkleBtn) {
+    sprinkleBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (!sprinkled) sprinkle();
+    });
+  }
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      resetAll();
+      sprinkle();
+    });
+  }
+
+  /* 自动撒铁粉 */
+  sprinkle();
+})();
+</script>

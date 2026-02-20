@@ -1,0 +1,200 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.test-tube-rack.basic",
+  "name": "试管架",
+  "nameEn": "Test Tube Rack",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 160 },
+  "tags": ["chemistry", "labware", "test-tube-rack", "rack", "holder", "wood"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件宽度" },
+    { "key": "woodColor",  "type": "color",  "default": "#a1887f", "desc": "木材颜色" },
+    { "key": "darkWood",   "type": "color",  "default": "#795548", "desc": "木材深色" },
+    { "key": "stroke",     "type": "color",  "default": "#4e342e", "desc": "描边颜色" },
+    { "key": "strokeWidth","type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "slots",      "type": "number", "default": 6, "min": 3, "max": 8, "desc": "孔位数量" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "woodColor":  "--cmp-wood",
+    "darkWood":   "--cmp-dark-wood",
+    "stroke":     "--cmp-stroke",
+    "strokeWidth":"--cmp-stroke-width",
+    "glow":       "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.test-tube-rack.basic" role="img" aria-label="试管架">
+  <style>
+    .cmp[data-cmp-id="chem.labware.test-tube-rack.basic"] {
+      --w: var(--cmp-size, 200px);
+      display: inline-block;
+      width: var(--w);
+      height: calc(var(--w) * 160 / 200);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.test-tube-rack.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 木材主渐变 -->
+      <linearGradient class="tr__wood-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-wood, #a1887f)" stop-opacity="0.85"/>
+        <stop offset="0.3" stop-color="var(--cmp-wood, #a1887f)"/>
+        <stop offset="0.7" stop-color="var(--cmp-dark-wood, #795548)" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="var(--cmp-dark-wood, #795548)"/>
+      </linearGradient>
+      <!-- 横梁正面渐变 -->
+      <linearGradient class="tr__bar-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-wood, #a1887f)"/>
+        <stop offset="0.5" stop-color="var(--cmp-dark-wood, #795548)" stop-opacity="0.85"/>
+        <stop offset="1" stop-color="var(--cmp-dark-wood, #795548)"/>
+      </linearGradient>
+      <!-- 立柱渐变 -->
+      <linearGradient class="tr__post-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--cmp-dark-wood, #795548)"/>
+        <stop offset="0.3" stop-color="var(--cmp-wood, #a1887f)"/>
+        <stop offset="0.7" stop-color="var(--cmp-wood, #a1887f)"/>
+        <stop offset="1" stop-color="var(--cmp-dark-wood, #795548)"/>
+      </linearGradient>
+    </defs>
+
+    <!--
+      试管架结构（viewBox 200×160）：
+      - 底座横梁 y=140~152
+      - 两根立柱 x=28/172, y=32~140
+      - 上横梁 y=32~44（带圆孔）
+      - 下横梁 y=85~97（带圆孔）
+      - 孔位由 JS 根据 slots 数量动态生成
+    -->
+
+    <!-- ===== 底座 ===== -->
+    <rect class="tr__base" x="12" y="140" width="176" height="12" rx="2"
+          stroke="var(--cmp-stroke, #4e342e)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+    <!-- 底座正面厚度 -->
+    <rect x="12" y="148" width="176" height="6" rx="1"
+          fill="var(--cmp-dark-wood, #795548)" opacity="0.4"
+          stroke="var(--cmp-stroke, #4e342e)" stroke-width="0.6"/>
+    <!-- 底座高光 -->
+    <line x1="18" y1="143" x2="182" y2="143"
+          stroke="#fff" stroke-width="0.8" opacity="0.15" stroke-linecap="round"/>
+
+    <!-- ===== 左立柱 ===== -->
+    <rect class="tr__left-post" x="25" y="32" width="10" height="108" rx="1.5"
+          stroke="var(--cmp-stroke, #4e342e)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+    <!-- ===== 右立柱 ===== -->
+    <rect class="tr__right-post" x="165" y="32" width="10" height="108" rx="1.5"
+          stroke="var(--cmp-stroke, #4e342e)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+
+    <!-- ===== 上横梁 ===== -->
+    <rect class="tr__top-bar" x="25" y="32" width="150" height="12" rx="1.5"
+          stroke="var(--cmp-stroke, #4e342e)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+    <!-- 上横梁高光 -->
+    <line x1="32" y1="35" x2="168" y2="35"
+          stroke="#fff" stroke-width="0.6" opacity="0.12" stroke-linecap="round"/>
+
+    <!-- ===== 下横梁 ===== -->
+    <rect class="tr__bot-bar" x="25" y="85" width="150" height="12" rx="1.5"
+          stroke="var(--cmp-stroke, #4e342e)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+    <!-- 下横梁高光 -->
+    <line x1="32" y1="88" x2="168" y2="88"
+          stroke="#fff" stroke-width="0.6" opacity="0.12" stroke-linecap="round"/>
+
+    <!-- 孔位（由 JS 动态生成） -->
+    <g class="tr__holes-top"></g>
+    <g class="tr__holes-bot"></g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.test-tube-rack.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'tr_' + Math.random().toString(36).slice(2, 8);
+
+  var woodGrad = svg.querySelector('.tr__wood-grad');
+  var barGrad = svg.querySelector('.tr__bar-grad');
+  var postGrad = svg.querySelector('.tr__post-grad');
+  if (woodGrad) woodGrad.setAttribute('id', uid + '_wg');
+  if (barGrad) barGrad.setAttribute('id', uid + '_bg');
+  if (postGrad) postGrad.setAttribute('id', uid + '_pg');
+
+  /* 填色绑定 */
+  var base = root.querySelector('.tr__base');
+  var topBar = root.querySelector('.tr__top-bar');
+  var botBar = root.querySelector('.tr__bot-bar');
+  var leftPost = root.querySelector('.tr__left-post');
+  var rightPost = root.querySelector('.tr__right-post');
+
+  if (base) base.setAttribute('fill', 'url(#' + uid + '_wg)');
+  if (topBar) topBar.setAttribute('fill', 'url(#' + uid + '_bg)');
+  if (botBar) botBar.setAttribute('fill', 'url(#' + uid + '_bg)');
+  if (leftPost) leftPost.setAttribute('fill', 'url(#' + uid + '_pg)');
+  if (rightPost) rightPost.setAttribute('fill', 'url(#' + uid + '_pg)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var slots = parseInt(P.slots) || 6;
+  slots = Math.max(3, Math.min(8, slots));
+
+  /* ── 生成孔位 ── */
+  var NS = 'http://www.w3.org/2000/svg';
+  var holesTop = root.querySelector('.tr__holes-top');
+  var holesBot = root.querySelector('.tr__holes-bot');
+
+  /* 孔位区域：x 从 40 到 160（立柱内侧），均匀分布 */
+  var holeAreaL = 42;
+  var holeAreaR = 158;
+  var spacing = (holeAreaR - holeAreaL) / (slots - 1);
+  var holeR = Math.min(5, spacing * 0.35);
+
+  for (var i = 0; i < slots; i++) {
+    var cx = holeAreaL + i * spacing;
+
+    /* 上横梁孔（y=38，横梁中心） */
+    if (holesTop) {
+      var c1 = document.createElementNS(NS, 'circle');
+      c1.setAttribute('cx', cx.toFixed(1));
+      c1.setAttribute('cy', '38');
+      c1.setAttribute('r', holeR.toFixed(1));
+      c1.setAttribute('fill', 'var(--cmp-dark-wood, #795548)');
+      c1.setAttribute('stroke', 'var(--cmp-stroke, #4e342e)');
+      c1.setAttribute('stroke-width', '0.6');
+      c1.setAttribute('opacity', '0.7');
+      holesTop.appendChild(c1);
+    }
+
+    /* 下横梁孔（y=91，横梁中心） */
+    if (holesBot) {
+      var c2 = document.createElementNS(NS, 'circle');
+      c2.setAttribute('cx', cx.toFixed(1));
+      c2.setAttribute('cy', '91');
+      c2.setAttribute('r', holeR.toFixed(1));
+      c2.setAttribute('fill', 'var(--cmp-dark-wood, #795548)');
+      c2.setAttribute('stroke', 'var(--cmp-stroke, #4e342e)');
+      c2.setAttribute('stroke-width', '0.6');
+      c2.setAttribute('opacity', '0.7');
+      holesBot.appendChild(c2);
+    }
+  }
+})();
+</script>

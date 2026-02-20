@@ -1,0 +1,236 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.tripod.basic",
+  "name": "三脚架",
+  "nameEn": "Tripod Stand",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 160 },
+  "tags": ["chemistry", "labware", "tripod", "stand", "support", "heating", "iron"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 160, "min": 80, "max": 320, "desc": "组件宽度" },
+    { "key": "metalColor",  "type": "color",  "default": "#757575", "desc": "金属颜色" },
+    { "key": "darkMetal",   "type": "color",  "default": "#424242", "desc": "金属深色" },
+    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "metalColor":  "--cmp-metal",
+    "darkMetal":   "--cmp-dark-metal",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.tripod.basic" role="img" aria-label="三脚架">
+  <style>
+    .cmp[data-cmp-id="chem.labware.tripod.basic"] {
+      --w: var(--cmp-size, 160px);
+      display: inline-block;
+      width: var(--w);
+      height: var(--w);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.tripod.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 金属柱渐变（左右明暗） -->
+      <linearGradient class="tp__leg-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--cmp-dark-metal, #424242)"/>
+        <stop offset="0.3" stop-color="var(--cmp-metal, #757575)"/>
+        <stop offset="0.6" stop-color="var(--cmp-metal, #757575)"/>
+        <stop offset="1" stop-color="var(--cmp-dark-metal, #424242)"/>
+      </linearGradient>
+      <!-- 顶环渐变（上亮下暗） -->
+      <linearGradient class="tp__ring-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-metal, #757575)"/>
+        <stop offset="0.4" stop-color="var(--cmp-metal, #757575)" stop-opacity="0.95"/>
+        <stop offset="0.8" stop-color="var(--cmp-dark-metal, #424242)"/>
+        <stop offset="1" stop-color="var(--cmp-dark-metal, #424242)"/>
+      </linearGradient>
+      <!-- 顶环内侧渐变 -->
+      <radialGradient class="tp__inner-grad" cx="0.45" cy="0.4" r="0.6">
+        <stop offset="0" stop-color="#555" stop-opacity="0.3"/>
+        <stop offset="1" stop-color="#222" stop-opacity="0.6"/>
+      </radialGradient>
+    </defs>
+
+    <!--
+      三脚架结构（viewBox 160×160）：
+      俯视略带角度的透视图
+      顶部铁环：椭圆中心 (80, 38)，rx=48 ry=14
+      三条腿从环下方向外撑开到地面
+      前腿（中间）：从 (80, 52) 到 (80, 148)
+      左后腿：从 (38, 42) 到 (14, 148)
+      右后腿：从 (122, 42) 到 (146, 148)
+      腿底部有小圆脚垫
+    -->
+
+    <!-- ===== 底部投影 ===== -->
+    <ellipse cx="80" cy="152" rx="60" ry="6" fill="#000" opacity="0.06"/>
+
+    <!-- ===== 后面两条腿（先画，被环遮挡） ===== -->
+
+    <!-- 左后腿 -->
+    <g class="tp__leg-left">
+      <!-- 腿主体 -->
+      <path class="tp__leg-l-body"
+            d="M34,44 L10,142 L18,144 L40,48 Z"
+            stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"
+            stroke-linejoin="round"/>
+      <!-- 腿高光 -->
+      <path d="M36,50 L14,142" fill="none"
+            stroke="#fff" stroke-width="0.8" opacity="0.12" stroke-linecap="round"/>
+      <!-- 脚垫 -->
+      <ellipse cx="14" cy="145" rx="6" ry="2.5"
+               fill="var(--cmp-dark-metal, #424242)"
+               stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+    </g>
+
+    <!-- 右后腿 -->
+    <g class="tp__leg-right">
+      <!-- 腿主体 -->
+      <path class="tp__leg-r-body"
+            d="M126,44 L150,142 L142,144 L120,48 Z"
+            stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"
+            stroke-linejoin="round"/>
+      <!-- 腿高光 -->
+      <path d="M124,50 L146,142" fill="none"
+            stroke="#fff" stroke-width="0.8" opacity="0.1" stroke-linecap="round"/>
+      <!-- 脚垫 -->
+      <ellipse cx="146" cy="145" rx="6" ry="2.5"
+               fill="var(--cmp-dark-metal, #424242)"
+               stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+    </g>
+
+    <!-- ===== 前腿（最前面，画在环之后会遮挡环下沿） ===== -->
+    <g class="tp__leg-front">
+      <!-- 腿主体 -->
+      <path class="tp__leg-f-body"
+            d="M76,50 L74,142 L86,142 L84,50 Z"
+            stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"
+            stroke-linejoin="round"/>
+      <!-- 腿高光 -->
+      <path d="M77,54 L76,140" fill="none"
+            stroke="#fff" stroke-width="1" opacity="0.15" stroke-linecap="round"/>
+      <!-- 腿暗面 -->
+      <path d="M83,54 L84,140" fill="none"
+            stroke="#000" stroke-width="0.6" opacity="0.06" stroke-linecap="round"/>
+      <!-- 脚垫 -->
+      <ellipse cx="80" cy="145" rx="8" ry="3"
+               fill="var(--cmp-dark-metal, #424242)"
+               stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+    </g>
+
+    <!-- ===== 腿之间的横撑（加固杆，三角形连接） ===== -->
+    <!-- 左撑 -->
+    <line x1="28" y1="105" x2="78" y2="105"
+          stroke="var(--cmp-stroke, #333)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="28" y1="105" x2="78" y2="105"
+          stroke="var(--cmp-metal, #757575)" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+    <!-- 右撑 -->
+    <line x1="132" y1="105" x2="82" y2="105"
+          stroke="var(--cmp-stroke, #333)" stroke-width="2.5" stroke-linecap="round" opacity="0.5"/>
+    <line x1="132" y1="105" x2="82" y2="105"
+          stroke="var(--cmp-metal, #757575)" stroke-width="1.8" stroke-linecap="round" opacity="0.7"/>
+    <!-- 后撑 -->
+    <line x1="24" y1="100" x2="136" y2="100"
+          stroke="var(--cmp-stroke, #333)" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+    <line x1="24" y1="100" x2="136" y2="100"
+          stroke="var(--cmp-metal, #757575)" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+
+    <!-- ===== 顶部铁环 ===== -->
+    <!-- 环体（外椭圆 + 内椭圆 形成环宽） -->
+    <!-- 环下半部分（被前腿遮挡的部分已由层序处理） -->
+
+    <!-- 环外壁 -->
+    <ellipse class="tp__ring-outer" cx="80" cy="38" rx="48" ry="14"
+             stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 环厚度带 -->
+    <path class="tp__ring-band"
+          d="M32,38 A48,14 0 0,1 128,38 A48,14 0 0,1 32,38 Z
+             M38,38 A42,11 0 0,0 122,38 A42,11 0 0,0 38,38 Z"
+          fill-rule="evenodd" stroke="none"/>
+    <!-- 环内壁描边 -->
+    <ellipse cx="80" cy="38" rx="42" ry="11" fill="none"
+             stroke="var(--cmp-stroke, #333)" stroke-width="0.6" opacity="0.5"/>
+    <!-- 环内部（透视深度，暗色） -->
+    <ellipse class="tp__ring-inner" cx="80" cy="39" rx="40" ry="10"
+             stroke="none"/>
+
+    <!-- 环上沿高光 -->
+    <path d="M45,27 Q65,22 115,27" fill="none"
+          stroke="#fff" stroke-width="1.5" opacity="0.2" stroke-linecap="round"/>
+    <path d="M52,29 Q72,25 108,29" fill="none"
+          stroke="#fff" stroke-width="0.7" opacity="0.12" stroke-linecap="round"/>
+
+    <!-- 环侧面厚度（前沿，表现环的高度/厚度） -->
+    <path d="M32,38 Q32,46 80,48 Q128,46 128,38"
+          fill="var(--cmp-dark-metal, #424242)" opacity="0.3"
+          stroke="var(--cmp-stroke, #333)" stroke-width="0.5"/>
+
+    <!-- ===== 腿与环的连接铆钉 ===== -->
+    <!-- 左铆钉 -->
+    <circle cx="36" cy="40" r="2.5"
+            fill="var(--cmp-metal, #757575)"
+            stroke="var(--cmp-stroke, #333)" stroke-width="0.6"/>
+    <circle cx="35.5" cy="39.5" r="0.8" fill="#fff" opacity="0.2"/>
+    <!-- 右铆钉 -->
+    <circle cx="124" cy="40" r="2.5"
+            fill="var(--cmp-metal, #757575)"
+            stroke="var(--cmp-stroke, #333)" stroke-width="0.6"/>
+    <circle cx="123.5" cy="39.5" r="0.8" fill="#fff" opacity="0.2"/>
+    <!-- 前铆钉 -->
+    <circle cx="80" cy="48" r="2.5"
+            fill="var(--cmp-metal, #757575)"
+            stroke="var(--cmp-stroke, #333)" stroke-width="0.6"/>
+    <circle cx="79.5" cy="47.5" r="0.8" fill="#fff" opacity="0.2"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.tripod.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'tp_' + Math.random().toString(36).slice(2, 8);
+
+  var legGrad = svg.querySelector('.tp__leg-grad');
+  var ringGrad = svg.querySelector('.tp__ring-grad');
+  var innerGrad = svg.querySelector('.tp__inner-grad');
+
+  if (legGrad) legGrad.setAttribute('id', uid + '_lg');
+  if (ringGrad) ringGrad.setAttribute('id', uid + '_rg');
+  if (innerGrad) innerGrad.setAttribute('id', uid + '_ig');
+
+  /* 填色绑定 */
+  var legL = root.querySelector('.tp__leg-l-body');
+  var legR = root.querySelector('.tp__leg-r-body');
+  var legF = root.querySelector('.tp__leg-f-body');
+  var ringOuter = root.querySelector('.tp__ring-outer');
+  var ringBand = root.querySelector('.tp__ring-band');
+  var ringInner = root.querySelector('.tp__ring-inner');
+
+  if (legL) legL.setAttribute('fill', 'url(#' + uid + '_lg)');
+  if (legR) legR.setAttribute('fill', 'url(#' + uid + '_lg)');
+  if (legF) legF.setAttribute('fill', 'url(#' + uid + '_lg)');
+  if (ringOuter) ringOuter.setAttribute('fill', 'url(#' + uid + '_rg)');
+  if (ringBand) ringBand.setAttribute('fill', 'url(#' + uid + '_rg)');
+  if (ringInner) ringInner.setAttribute('fill', 'url(#' + uid + '_ig)');
+})();
+</script>

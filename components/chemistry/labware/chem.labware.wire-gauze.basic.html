@@ -1,0 +1,193 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.wire-gauze.basic",
+  "name": "石棉网",
+  "nameEn": "Wire Gauze with Asbestos Center",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 120 },
+  "tags": ["chemistry", "labware", "wire-gauze", "asbestos", "heating", "support"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 160, "min": 80, "max": 320, "desc": "组件宽度" },
+    { "key": "wireColor",   "type": "color",  "default": "#9e9e9e", "desc": "铁丝颜色" },
+    { "key": "centerColor", "type": "color",  "default": "#e0e0e0", "desc": "石棉中心颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#616161", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "scorched",    "type": "boolean", "default": false, "desc": "显示烧灼痕迹" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "wireColor":   "--cmp-wire",
+    "centerColor": "--cmp-center",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.wire-gauze.basic" role="img" aria-label="石棉网">
+  <style>
+    .cmp[data-cmp-id="chem.labware.wire-gauze.basic"] {
+      --w: var(--cmp-size, 160px);
+      display: inline-block;
+      width: var(--w);
+      height: calc(var(--w) * 120 / 160);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.wire-gauze.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 铁丝网面渐变 -->
+      <linearGradient class="wg__wire-grad" x1="0.2" y1="0" x2="0.8" y2="1">
+        <stop offset="0" stop-color="#bdbdbd"/>
+        <stop offset="0.3" stop-color="var(--cmp-wire, #9e9e9e)"/>
+        <stop offset="0.7" stop-color="var(--cmp-wire, #9e9e9e)" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="#757575" stop-opacity="0.8"/>
+      </linearGradient>
+      <!-- 石棉中心渐变 -->
+      <radialGradient class="wg__center-grad" cx="0.45" cy="0.4" r="0.55">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.3"/>
+        <stop offset="0.4" stop-color="var(--cmp-center, #e0e0e0)"/>
+        <stop offset="1" stop-color="#bdbdbd" stop-opacity="0.7"/>
+      </radialGradient>
+      <!-- 烧灼痕迹渐变 -->
+      <radialGradient class="wg__scorch-grad" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#5d4037" stop-opacity="0.35"/>
+        <stop offset="0.5" stop-color="#795548" stop-opacity="0.2"/>
+        <stop offset="0.8" stop-color="#8d6e63" stop-opacity="0.08"/>
+        <stop offset="1" stop-color="#8d6e63" stop-opacity="0"/>
+      </radialGradient>
+      <!-- 边框金属渐变 -->
+      <linearGradient class="wg__frame-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#bdbdbd"/>
+        <stop offset="0.5" stop-color="var(--cmp-wire, #9e9e9e)"/>
+        <stop offset="1" stop-color="#757575"/>
+      </linearGradient>
+    </defs>
+
+    <!--
+      石棉网结构（viewBox 160×120）：
+      透视菱形表示方形网面（俯视略带角度）
+      菱形中心 (80, 55)
+      四角：上(80,15) 右(150,55) 下(80,95) 左(10,55)
+      中心石棉圆区域 半径约 28
+    -->
+
+    <!-- ===== 底部投影 ===== -->
+    <ellipse cx="80" cy="100" rx="55" ry="8" fill="#000" opacity="0.06"/>
+
+    <!-- ===== 网面主体（菱形 = 透视方形） ===== -->
+    <polygon class="wg__face"
+             points="80,15 150,55 80,95 10,55"
+             stroke="var(--cmp-stroke, #616161)" stroke-width="var(--cmp-stroke-width, 1.2)"
+             stroke-linejoin="round"/>
+
+    <!-- ===== 铁丝网格线 ===== -->
+    <g class="wg__grid" stroke="var(--cmp-stroke, #616161)" opacity="0.25">
+      <!-- 左上→右下方向的平行线（沿菱形对角） -->
+      <line x1="45" y1="15" x2="10" y2="35" stroke-width="0.6"/>
+      <line x1="80" y1="15" x2="10" y2="55" stroke-width="0.6"/>
+      <line x1="115" y1="15" x2="10" y2="75" stroke-width="0.6"/>
+      <line x1="150" y1="15" x2="10" y2="95" stroke-width="0.6"/>
+      <line x1="150" y1="35" x2="45" y2="95" stroke-width="0.6"/>
+      <line x1="150" y1="55" x2="80" y2="95" stroke-width="0.6"/>
+      <line x1="150" y1="75" x2="115" y2="95" stroke-width="0.6"/>
+
+      <!-- 右上→左下方向的平行线 -->
+      <line x1="115" y1="15" x2="150" y2="35" stroke-width="0.6"/>
+      <line x1="80" y1="15" x2="150" y2="55" stroke-width="0.6"/>
+      <line x1="45" y1="15" x2="150" y2="75" stroke-width="0.6"/>
+      <line x1="10" y1="15" x2="150" y2="95" stroke-width="0.6"/>
+      <line x1="10" y1="35" x2="115" y2="95" stroke-width="0.6"/>
+      <line x1="10" y1="55" x2="80" y2="95" stroke-width="0.6"/>
+      <line x1="10" y1="75" x2="45" y2="95" stroke-width="0.6"/>
+    </g>
+
+    <!-- ===== 石棉中心圆（椭圆，透视变形） ===== -->
+    <ellipse class="wg__center" cx="80" cy="55" rx="28" ry="18"
+             stroke="var(--cmp-stroke, #616161)" stroke-width="0.6" opacity="0.9"/>
+
+    <!-- 石棉纹理（细微不规则线条） -->
+    <g opacity="0.15" stroke="var(--cmp-stroke, #616161)" stroke-width="0.4" stroke-linecap="round">
+      <path d="M62,50 Q72,48 80,50 Q88,52 98,50" fill="none"/>
+      <path d="M58,55 Q68,53 80,55 Q92,57 102,55" fill="none"/>
+      <path d="M62,60 Q72,58 80,60 Q88,62 98,60" fill="none"/>
+      <path d="M66,46 Q76,44 86,46" fill="none"/>
+      <path d="M66,64 Q76,66 86,64" fill="none"/>
+    </g>
+
+    <!-- 烧灼痕迹（默认隐藏） -->
+    <ellipse class="wg__scorch" cx="80" cy="55" rx="22" ry="14" display="none"/>
+
+    <!-- ===== 边框厚度（菱形四边的金属边框） ===== -->
+    <!-- 上边（前面，亮） -->
+    <line x1="10" y1="55" x2="80" y2="15"
+          stroke="#bdbdbd" stroke-width="2.5" opacity="0.15" stroke-linecap="round"/>
+    <line x1="80" y1="15" x2="150" y2="55"
+          stroke="#bdbdbd" stroke-width="2.5" opacity="0.12" stroke-linecap="round"/>
+    <!-- 下边（后面，暗） -->
+    <line x1="10" y1="55" x2="80" y2="95"
+          stroke="#424242" stroke-width="1.5" opacity="0.08" stroke-linecap="round"/>
+    <line x1="80" y1="95" x2="150" y2="55"
+          stroke="#424242" stroke-width="1.5" opacity="0.06" stroke-linecap="round"/>
+
+    <!-- ===== 高光 ===== -->
+    <!-- 网面左上区域高光 -->
+    <polygon points="80,15 45,35 80,55 115,35" fill="#fff" opacity="0.04"/>
+    <!-- 石棉中心高光 -->
+    <ellipse cx="74" cy="50" rx="12" ry="6" fill="#fff" opacity="0.1"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.wire-gauze.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'wg_' + Math.random().toString(36).slice(2, 8);
+
+  var wireGrad = svg.querySelector('.wg__wire-grad');
+  var centerGrad = svg.querySelector('.wg__center-grad');
+  var scorchGrad = svg.querySelector('.wg__scorch-grad');
+  var frameGrad = svg.querySelector('.wg__frame-grad');
+
+  if (wireGrad) wireGrad.setAttribute('id', uid + '_wg');
+  if (centerGrad) centerGrad.setAttribute('id', uid + '_cg');
+  if (scorchGrad) scorchGrad.setAttribute('id', uid + '_sg');
+  if (frameGrad) frameGrad.setAttribute('id', uid + '_fg');
+
+  /* 填色绑定 */
+  var face = root.querySelector('.wg__face');
+  var center = root.querySelector('.wg__center');
+  var scorch = root.querySelector('.wg__scorch');
+
+  if (face) face.setAttribute('fill', 'url(#' + uid + '_wg)');
+  if (center) center.setAttribute('fill', 'url(#' + uid + '_cg)');
+  if (scorch) scorch.setAttribute('fill', 'url(#' + uid + '_sg)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  /* scorched: 显示烧灼痕迹 */
+  if (scorch && (P.scorched === true || P.scorched === 'true')) {
+    scorch.setAttribute('display', '');
+  }
+})();
+</script>

@@ -1,0 +1,546 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.thermal.conduction.interactive",
+  "name": "热传导演示（交互式）",
+  "nameEn": "Thermal Conduction Demo (Interactive)",
+  "category": "physics/thermal",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 200 },
+  "tags": ["thermal", "conduction", "heat", "wax", "rod", "interactive", "experiment"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 400, "desc": "组件高度" },
+    { "key": "rodColor",    "type": "color",  "default": "#78909c", "desc": "铁棒颜色" },
+    { "key": "waxColor",    "type": "color",  "default": "#ff7043", "desc": "蜡滴颜色" },
+    { "key": "flameColor",  "type": "color",  "default": "#ff9800", "desc": "火焰颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "accent",      "type": "color",  "default": "#1565c0", "desc": "强调色" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "rodColor":    "--cmp-rod",
+    "waxColor":    "--cmp-wax",
+    "flameColor":  "--cmp-flame",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "accent":      "--cmp-accent",
+    "glow":        "--cmp-glow"
+  },
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "heating": "boolean — 是否加热中",
+        "elapsed": "number(s) — 加热时长",
+        "melted": "number — 已融化蜡滴数(0-5)",
+        "temperatures": "number[] — 各蜡滴处温度(°C)"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.thermal.conduction.interactive" role="img" aria-label="热传导演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] {
+      --h: var(--cmp-size, 200px);
+      display: inline-block;
+      width: calc(var(--h) * 1.8);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] .hc__flame-btn {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] .hc__flame-btn:hover .hc__flame {
+      filter: brightness(1.15);
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] .hc__reset-btn {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] .hc__reset-btn:hover rect {
+      fill-opacity: 0.15;
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] .hc__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] .hc__info {
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      pointer-events: none;
+    }
+    @keyframes hc-flicker {
+      0%   { transform: scale(1, 1) rotate(-1deg); }
+      100% { transform: scale(1.04, 1.08) rotate(1deg); }
+    }
+    .cmp[data-cmp-id="phy.thermal.conduction.interactive"] .hc__flame.active {
+      animation: hc-flicker 0.3s ease-in-out infinite alternate;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 铁棒金属渐变（纵向光泽） -->
+      <linearGradient class="hc__metal-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-rod, #78909c)" stop-opacity="0.7"/>
+        <stop offset="0.35" stop-color="var(--cmp-rod, #78909c)"/>
+        <stop offset="1" stop-color="var(--cmp-rod, #78909c)" stop-opacity="0.5"/>
+      </linearGradient>
+      <!-- 热色叠加渐变（横向，JS动态更新） -->
+      <linearGradient class="hc__heat-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"    stop-color="#ff3300" stop-opacity="0"/>
+        <stop offset="0.11" stop-color="#ff4400" stop-opacity="0"/>
+        <stop offset="0.22" stop-color="#ff5500" stop-opacity="0"/>
+        <stop offset="0.33" stop-color="#ff6600" stop-opacity="0"/>
+        <stop offset="0.44" stop-color="#ff7700" stop-opacity="0"/>
+        <stop offset="0.56" stop-color="#ff8800" stop-opacity="0"/>
+        <stop offset="0.67" stop-color="#ff9900" stop-opacity="0"/>
+        <stop offset="0.78" stop-color="#ffaa00" stop-opacity="0"/>
+        <stop offset="0.89" stop-color="#ffbb00" stop-opacity="0"/>
+        <stop offset="1"    stop-color="#ffcc00" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 支架 -->
+    <g class="hc__stand">
+      <!-- 底座 -->
+      <rect x="46" y="150" width="268" height="5" rx="2"
+            fill="var(--cmp-stroke, #333)" opacity="0.7"/>
+      <!-- 左立柱 -->
+      <rect x="58" y="78" width="6" height="72" rx="1"
+            fill="var(--cmp-stroke, #333)" opacity="0.8"/>
+      <!-- 右立柱 -->
+      <rect x="296" y="78" width="6" height="72" rx="1"
+            fill="var(--cmp-stroke, #333)" opacity="0.8"/>
+      <!-- 左夹具 -->
+      <rect x="53" y="59" width="16" height="22" rx="2"
+            fill="none" stroke="var(--cmp-stroke, #333)"
+            stroke-width="var(--cmp-stroke-width, 1.5)"/>
+      <!-- 右夹具 -->
+      <rect x="291" y="59" width="16" height="22" rx="2"
+            fill="none" stroke="var(--cmp-stroke, #333)"
+            stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    </g>
+
+    <!-- 铁棒 -->
+    <rect class="hc__rod" x="50" y="62" width="260" height="16" rx="3"
+          stroke="var(--cmp-stroke, #333)"
+          stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 热色叠加层 -->
+    <rect class="hc__heat-overlay" x="50" y="62" width="260" height="16" rx="3"
+          pointer-events="none"/>
+
+    <!-- 蜡滴 ×5 -->
+    <g class="hc__wax-group">
+      <g class="hc__wax" data-idx="0">
+        <line class="hc__wax-trail" x1="93" y1="78" x2="93" y2="78"
+              stroke="var(--cmp-wax, #ff7043)" stroke-width="2" stroke-linecap="round" opacity="0"/>
+        <rect class="hc__wax-stem" x="91.5" y="78" width="3" height="5" rx="0.5"
+              fill="var(--cmp-wax, #ff7043)"/>
+        <circle class="hc__wax-drop" cx="93" cy="89" r="5.5"
+                fill="var(--cmp-wax, #ff7043)"
+                stroke="var(--cmp-stroke, #333)" stroke-width="0.5"/>
+        <text class="hc__temp-label hc__info" x="93" y="148"
+              text-anchor="middle" font-size="7"
+              fill="var(--cmp-accent, #1565c0)">25°C</text>
+      </g>
+      <g class="hc__wax" data-idx="1">
+        <line class="hc__wax-trail" x1="137" y1="78" x2="137" y2="78"
+              stroke="var(--cmp-wax, #ff7043)" stroke-width="2" stroke-linecap="round" opacity="0"/>
+        <rect class="hc__wax-stem" x="135.5" y="78" width="3" height="5" rx="0.5"
+              fill="var(--cmp-wax, #ff7043)"/>
+        <circle class="hc__wax-drop" cx="137" cy="89" r="5.5"
+                fill="var(--cmp-wax, #ff7043)"
+                stroke="var(--cmp-stroke, #333)" stroke-width="0.5"/>
+        <text class="hc__temp-label hc__info" x="137" y="148"
+              text-anchor="middle" font-size="7"
+              fill="var(--cmp-accent, #1565c0)">25°C</text>
+      </g>
+      <g class="hc__wax" data-idx="2">
+        <line class="hc__wax-trail" x1="180" y1="78" x2="180" y2="78"
+              stroke="var(--cmp-wax, #ff7043)" stroke-width="2" stroke-linecap="round" opacity="0"/>
+        <rect class="hc__wax-stem" x="178.5" y="78" width="3" height="5" rx="0.5"
+              fill="var(--cmp-wax, #ff7043)"/>
+        <circle class="hc__wax-drop" cx="180" cy="89" r="5.5"
+                fill="var(--cmp-wax, #ff7043)"
+                stroke="var(--cmp-stroke, #333)" stroke-width="0.5"/>
+        <text class="hc__temp-label hc__info" x="180" y="148"
+              text-anchor="middle" font-size="7"
+              fill="var(--cmp-accent, #1565c0)">25°C</text>
+      </g>
+      <g class="hc__wax" data-idx="3">
+        <line class="hc__wax-trail" x1="223" y1="78" x2="223" y2="78"
+              stroke="var(--cmp-wax, #ff7043)" stroke-width="2" stroke-linecap="round" opacity="0"/>
+        <rect class="hc__wax-stem" x="221.5" y="78" width="3" height="5" rx="0.5"
+              fill="var(--cmp-wax, #ff7043)"/>
+        <circle class="hc__wax-drop" cx="223" cy="89" r="5.5"
+                fill="var(--cmp-wax, #ff7043)"
+                stroke="var(--cmp-stroke, #333)" stroke-width="0.5"/>
+        <text class="hc__temp-label hc__info" x="223" y="148"
+              text-anchor="middle" font-size="7"
+              fill="var(--cmp-accent, #1565c0)">25°C</text>
+      </g>
+      <g class="hc__wax" data-idx="4">
+        <line class="hc__wax-trail" x1="267" y1="78" x2="267" y2="78"
+              stroke="var(--cmp-wax, #ff7043)" stroke-width="2" stroke-linecap="round" opacity="0"/>
+        <rect class="hc__wax-stem" x="265.5" y="78" width="3" height="5" rx="0.5"
+              fill="var(--cmp-wax, #ff7043)"/>
+        <circle class="hc__wax-drop" cx="267" cy="89" r="5.5"
+                fill="var(--cmp-wax, #ff7043)"
+                stroke="var(--cmp-stroke, #333)" stroke-width="0.5"/>
+        <text class="hc__temp-label hc__info" x="267" y="148"
+              text-anchor="middle" font-size="7"
+              fill="var(--cmp-accent, #1565c0)">25°C</text>
+      </g>
+    </g>
+
+    <!-- 火焰（可点击） -->
+    <g class="hc__flame-btn">
+      <rect x="20" y="40" width="40" height="55" fill="transparent"/>
+      <g class="hc__flame" opacity="0.35" style="transform-origin:40px 62px">
+        <ellipse cx="40" cy="60" rx="11" ry="18"
+                 fill="var(--cmp-flame, #ff9800)" opacity="0.9"/>
+        <ellipse cx="40" cy="58" rx="7" ry="12"
+                 fill="#ffeb3b" opacity="0.8"/>
+        <ellipse cx="40" cy="56" rx="3" ry="7"
+                 fill="#fff9c4" opacity="0.9"/>
+      </g>
+    </g>
+
+    <!-- 计时 -->
+    <text class="hc__elapsed hc__info" x="180" y="16"
+          text-anchor="middle" font-size="10"
+          fill="var(--cmp-accent, #1565c0)"></text>
+
+    <!-- 状态文字 -->
+    <text class="hc__status hc__label" x="180" y="175"
+          text-anchor="middle" font-size="9"
+          fill="var(--cmp-stroke, #333)">点击火焰开始加热</text>
+
+    <!-- 融化计数 -->
+    <text class="hc__melted-info hc__info" x="180" y="190"
+          text-anchor="middle" font-size="8"
+          fill="var(--cmp-accent, #1565c0)"></text>
+
+    <!-- 重置按钮 -->
+    <g class="hc__reset-btn" transform="translate(338, 184)">
+      <rect x="-14" y="-10" width="28" height="20" rx="4"
+            fill="var(--cmp-accent, #1565c0)" fill-opacity="0.08"
+            stroke="var(--cmp-accent, #1565c0)" stroke-width="0.8"/>
+      <text class="hc__label" text-anchor="middle" y="4" font-size="8"
+            fill="var(--cmp-accent, #1565c0)">重置</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.thermal.conduction.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'hc_' + Math.random().toString(36).slice(2, 8);
+  var metalGrad = svg.querySelector('.hc__metal-grad');
+  var heatGrad = svg.querySelector('.hc__heat-grad');
+  if (metalGrad) metalGrad.setAttribute('id', uid + '_mg');
+  if (heatGrad) heatGrad.setAttribute('id', uid + '_hg');
+
+  var rodRect = root.querySelector('.hc__rod');
+  var heatOverlay = root.querySelector('.hc__heat-overlay');
+  if (rodRect) rodRect.setAttribute('fill', 'url(#' + uid + '_mg)');
+  if (heatOverlay) heatOverlay.setAttribute('fill', 'url(#' + uid + '_hg)');
+
+  /* 收集热色渐变 stops */
+  var heatStops = [];
+  if (heatGrad) {
+    var stopEls = heatGrad.querySelectorAll('stop');
+    for (var i = 0; i < stopEls.length; i++) heatStops.push(stopEls[i]);
+  }
+
+  /* ── 物理常量 ── */
+  var N = 50;
+  var T_AMB = 25;
+  var T_FLAME = 400;
+  var T_MELT = 60;
+  var ALPHA = 800;
+  var HEAT_LOSS = 0.5;
+  var DX = 1.0;
+  var SUB_STEPS = 8;
+  var DT_MAX = 0.0005;
+
+  /* 蜡滴对应的段索引 (铁棒 x=50→310, 260px, 每段 5.2px) */
+  var WAX_X = [93, 137, 180, 223, 267];
+  var WAX_SEG = [];
+  for (var i = 0; i < 5; i++) WAX_SEG.push(Math.round((WAX_X[i] - 50) / (260 / N)));
+
+  /* ── 状态 ── */
+  var temps = [];
+  var waxMelt = [0, 0, 0, 0, 0]; /* 0=固态, 0→1=融化进度, 1=已融化 */
+  var heating = false;
+  var elapsed = 0;
+  var animId = null;
+  var lastTime = 0;
+  var frameCount = 0;
+
+  function resetState() {
+    temps = [];
+    for (var i = 0; i < N; i++) temps.push(T_AMB);
+    waxMelt = [0, 0, 0, 0, 0];
+    heating = false;
+    elapsed = 0;
+    lastTime = 0;
+    frameCount = 0;
+  }
+  resetState();
+
+  /* ── DOM 引用 ── */
+  var flameG = root.querySelector('.hc__flame');
+  var flameBtn = root.querySelector('.hc__flame-btn');
+  var resetBtn = root.querySelector('.hc__reset-btn');
+  var statusTxt = root.querySelector('.hc__status');
+  var elapsedTxt = root.querySelector('.hc__elapsed');
+  var meltedTxt = root.querySelector('.hc__melted-info');
+
+  var waxDrops = [], waxStems = [], waxTrails = [], tempLabels = [];
+  var waxGroups = root.querySelectorAll('.hc__wax');
+  for (var i = 0; i < waxGroups.length; i++) {
+    waxDrops.push(waxGroups[i].querySelector('.hc__wax-drop'));
+    waxStems.push(waxGroups[i].querySelector('.hc__wax-stem'));
+    waxTrails.push(waxGroups[i].querySelector('.hc__wax-trail'));
+    tempLabels.push(waxGroups[i].querySelector('.hc__temp-label'));
+  }
+
+  /* ── 物理模拟 ── */
+  function physicsStep(dt) {
+    if (dt > 0.05) dt = 0.05;
+    var subDt = dt / SUB_STEPS;
+    if (subDt > DT_MAX) subDt = DT_MAX;
+
+    for (var s = 0; s < SUB_STEPS; s++) {
+      var newT = temps.slice();
+
+      if (heating) newT[0] = T_FLAME;
+
+      for (var i = 1; i < N - 1; i++) {
+        var lap = (temps[i - 1] + temps[i + 1] - 2 * temps[i]) / (DX * DX);
+        var loss = HEAT_LOSS * (temps[i] - T_AMB);
+        newT[i] = temps[i] + (ALPHA * lap - loss) * subDt;
+      }
+
+      /* 右端绝热 */
+      newT[N - 1] = newT[N - 2];
+
+      for (var i = 0; i < N; i++) {
+        if (newT[i] < T_AMB) newT[i] = T_AMB;
+        if (newT[i] > T_FLAME) newT[i] = T_FLAME;
+      }
+      temps = newT;
+    }
+  }
+
+  function updateWax(dt) {
+    for (var i = 0; i < 5; i++) {
+      if (waxMelt[i] >= 1) continue;
+      if (temps[WAX_SEG[i]] >= T_MELT) {
+        waxMelt[i] = Math.min(1, waxMelt[i] + dt * 0.8);
+      }
+    }
+  }
+
+  /* ── 渲染 ── */
+  function render() {
+    /* 热色渐变 */
+    for (var i = 0; i < heatStops.length; i++) {
+      var segIdx = Math.round(i * (N - 1) / (heatStops.length - 1));
+      var t = temps[segIdx];
+      var ratio = Math.max(0, Math.min(1, (t - T_AMB) / (200 - T_AMB)));
+      var r = 255;
+      var g = Math.round(120 + 80 * (1 - ratio));
+      var b = Math.round(30 * (1 - ratio));
+      heatStops[i].setAttribute('stop-color', 'rgb(' + r + ',' + g + ',' + b + ')');
+      heatStops[i].setAttribute('stop-opacity', (ratio * 0.75).toFixed(3));
+    }
+
+    /* 蜡滴 */
+    var WAX_BASE_Y = 89;
+    var WAX_DRIP_DIST = 40;
+    for (var i = 0; i < 5; i++) {
+      var p = waxMelt[i];
+      var dripY = WAX_BASE_Y + p * WAX_DRIP_DIST;
+      var r = 5.5 - p * 2.5;
+      var opacity = 1 - p * 0.55;
+
+      if (waxDrops[i]) {
+        waxDrops[i].setAttribute('cy', dripY.toFixed(1));
+        waxDrops[i].setAttribute('r', r.toFixed(1));
+        waxDrops[i].setAttribute('opacity', opacity.toFixed(2));
+      }
+      if (waxStems[i]) {
+        var stemH = Math.max(0, 5 * (1 - p));
+        waxStems[i].setAttribute('height', stemH.toFixed(1));
+        waxStems[i].setAttribute('opacity', (1 - p).toFixed(2));
+      }
+      if (waxTrails[i] && p > 0.03) {
+        waxTrails[i].setAttribute('y2', dripY.toFixed(1));
+        waxTrails[i].setAttribute('opacity', (p * 0.45).toFixed(2));
+      }
+
+      /* 温度标签 */
+      if (tempLabels[i]) {
+        var tVal = Math.round(temps[WAX_SEG[i]]);
+        tempLabels[i].textContent = tVal + '\u00B0C';
+        /* 温度越高颜色越红 */
+        var tRatio = Math.max(0, Math.min(1, (tVal - T_AMB) / (150 - T_AMB)));
+        var lr = Math.round(21 + 208 * tRatio);
+        var lg = Math.round(101 - 60 * tRatio);
+        var lb = Math.round(192 - 150 * tRatio);
+        tempLabels[i].setAttribute('fill', 'rgb(' + lr + ',' + lg + ',' + lb + ')');
+      }
+    }
+
+    /* 计时 */
+    if (elapsedTxt) {
+      elapsedTxt.textContent = elapsed > 0 ? elapsed.toFixed(1) + 's' : '';
+    }
+
+    /* 融化计数 */
+    var meltedCount = 0;
+    for (var i = 0; i < 5; i++) { if (waxMelt[i] >= 1) meltedCount++; }
+    if (meltedTxt) {
+      if (meltedCount > 0) {
+        meltedTxt.textContent = '已融化 ' + meltedCount + '/5';
+      } else {
+        meltedTxt.textContent = '';
+      }
+    }
+
+    /* 状态文字 */
+    if (statusTxt) {
+      if (!heating && elapsed === 0) {
+        statusTxt.textContent = '点击火焰开始加热';
+      } else if (heating) {
+        statusTxt.textContent = meltedCount >= 5 ? '全部融化 — 实验完成' : '加热中…';
+      } else {
+        statusTxt.textContent = '已暂停 — 点击火焰继续';
+      }
+    }
+
+    /* aria-label */
+    root.setAttribute('aria-label',
+      '热传导演示 ' + (heating ? '加热中' : '未加热') +
+      ' 已融化' + meltedCount + '/5');
+  }
+
+  /* ── 事件派发（节流） ── */
+  function emitChange() {
+    var meltedCount = 0;
+    var tVals = [];
+    for (var i = 0; i < 5; i++) {
+      if (waxMelt[i] >= 1) meltedCount++;
+      tVals.push(Math.round(temps[WAX_SEG[i]]));
+    }
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'toggle',
+        values: {
+          heating: heating,
+          elapsed: Math.round(elapsed * 10) / 10,
+          melted: meltedCount,
+          temperatures: tVals
+        }
+      }
+    }));
+  }
+
+  /* ── 动画循环 ── */
+  function tick(ts) {
+    if (!lastTime) lastTime = ts;
+    var dt = (ts - lastTime) / 1000;
+    lastTime = ts;
+
+    if (heating) elapsed += dt;
+
+    physicsStep(dt);
+    updateWax(dt);
+    render();
+
+    frameCount++;
+    if (frameCount % 6 === 0) emitChange();
+
+    /* 继续条件：加热中 或 温度未回到室温 */
+    var active = heating;
+    if (!active) {
+      for (var i = 0; i < N; i++) {
+        if (temps[i] > T_AMB + 0.5) { active = true; break; }
+      }
+    }
+
+    if (active) {
+      animId = requestAnimationFrame(tick);
+    } else {
+      animId = null;
+      lastTime = 0;
+    }
+  }
+
+  function startAnim() {
+    if (animId) return;
+    lastTime = 0;
+    animId = requestAnimationFrame(tick);
+  }
+
+  /* ── 火焰视觉 ── */
+  function updateFlame() {
+    if (flameG) {
+      flameG.setAttribute('opacity', heating ? '1' : '0.35');
+      if (heating) {
+        flameG.classList.add('active');
+      } else {
+        flameG.classList.remove('active');
+      }
+    }
+  }
+
+  /* ── 交互 ── */
+  if (flameBtn) {
+    flameBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      heating = !heating;
+      updateFlame();
+      startAnim();
+      emitChange();
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (animId) { cancelAnimationFrame(animId); animId = null; }
+      resetState();
+      updateFlame();
+      render();
+      emitChange();
+    });
+  }
+
+  /* 初始渲染 */
+  render();
+})();
+</script>

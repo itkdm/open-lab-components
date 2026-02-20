@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run validate:*)",
+      "Bash(node -e:*)",
+      "Bash(echo:*)",
+      "Bash(npm run build:registry:*)",
+      "WebFetch(domain:cbu01.alicdn.com)",
+      "WebSearch",
+      "WebFetch(domain:www.amazon.com)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:www.honsenmagnetics.com)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

@@ -1,0 +1,226 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.magnet.horseshoe.basic",
+  "name": "U形磁铁",
+  "nameEn": "Horseshoe Magnet",
+  "category": "physics/magnet",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 200 },
+  "tags": ["magnet", "horseshoe", "u-magnet", "NS-pole", "magnetic-field"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
+    { "key": "northColor", "type": "color",  "default": "#e53935", "desc": "N极颜色" },
+    { "key": "southColor", "type": "color",  "default": "#1e88e5", "desc": "S极颜色" },
+    { "key": "fieldColor", "type": "color",  "default": "#666666", "desc": "磁力线颜色" },
+    { "key": "stroke",     "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "showField",  "type": "boolean", "default": true, "desc": "显示磁力线" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "northColor": "--cmp-north",
+    "southColor": "--cmp-south",
+    "fieldColor": "--cmp-field",
+    "stroke":     "--cmp-stroke",
+    "strokeWidth":"--cmp-stroke-width",
+    "glow":       "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.magnet.horseshoe.basic" role="img" aria-label="U形磁铁">
+  <style>
+    .cmp[data-cmp-id="phy.magnet.horseshoe.basic"] {
+      --h: var(--cmp-size, 200px);
+      display: inline-block;
+      width: calc(var(--h) * 160 / 200);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="phy.magnet.horseshoe.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.magnet.horseshoe.basic"] .hm__pole-label {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- N极渐变（左臂，从上到下） -->
+      <linearGradient class="hm__n-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.55"/>
+        <stop offset="0.3" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.9"/>
+        <stop offset="0.5" stop-color="var(--cmp-north, #e53935)"/>
+        <stop offset="0.8" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.85"/>
+        <stop offset="1" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.6"/>
+      </linearGradient>
+      <!-- S极渐变（右臂） -->
+      <linearGradient class="hm__s-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.6"/>
+        <stop offset="0.2" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.85"/>
+        <stop offset="0.5" stop-color="var(--cmp-south, #1e88e5)"/>
+        <stop offset="0.7" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.55"/>
+      </linearGradient>
+      <!-- 顶部弧段 N 半渐变 -->
+      <linearGradient class="hm__arc-n-grad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.85"/>
+        <stop offset="0.5" stop-color="var(--cmp-north, #e53935)"/>
+        <stop offset="1" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.7"/>
+      </linearGradient>
+      <!-- 顶部弧段 S 半渐变 -->
+      <linearGradient class="hm__arc-s-grad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.85"/>
+        <stop offset="0.5" stop-color="var(--cmp-south, #1e88e5)"/>
+        <stop offset="1" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.7"/>
+      </linearGradient>
+      <!-- 高光渐变 -->
+      <linearGradient class="hm__hl-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="0.3" stop-color="#fff" stop-opacity="0.25"/>
+        <stop offset="0.5" stop-color="#fff" stop-opacity="0.08"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 磁力线（磁感线从 N 极出发，进入 S 极）
+         N极面中心 x≈42, S极面中心 x≈118, 极面 y=180
+         内侧：N(42,180) → S(118,180)，在两极间向下弯曲
+         外侧：N(42,180) → 向左外扩 → 绕过顶部 → 向右外 → S(118,180) -->
+    <g class="hm__field" fill="none" stroke="var(--cmp-field, #666)" stroke-width="0.8" opacity="0.4">
+      <!-- 内侧磁力线（N极面→S极面，向下弯曲） -->
+      <path d="M42,180 C42,192 118,192 118,180" stroke-dasharray="3,2.5"/>
+      <path d="M42,180 C42,204 118,204 118,180" stroke-dasharray="3,2.5"/>
+      <path d="M42,180 C42,218 118,218 118,180" stroke-dasharray="3,2.5"/>
+      <!-- 外侧磁力线（从N极面出发，绕过磁铁外部，到达S极面） -->
+      <path d="M42,180 C28,198 12,150 12,85 C12,22 50,4 80,4 C110,4 148,22 148,85 C148,150 132,198 118,180" stroke-dasharray="3,2.5"/>
+      <path d="M42,180 C22,210 -2,150 -2,85 C-2,8 44,-10 80,-10 C116,-10 162,8 162,85 C162,150 138,210 118,180" stroke-dasharray="3,2.5"/>
+      <!-- 箭头（内侧弧线中段，指向右 = N→S） -->
+      <polygon fill="var(--cmp-field, #666)" points="76,196 84,200 76,204" opacity="0.55"/>
+      <polygon fill="var(--cmp-field, #666)" points="76,210 84,214 76,218" opacity="0.55"/>
+      <!-- 箭头（外侧弧线顶部，指向右 = N→S 绕行方向） -->
+      <polygon fill="var(--cmp-field, #666)" points="76,0 84,4 76,8" opacity="0.55"/>
+    </g>
+
+    <!--
+      实物教学 U 形磁铁（等壁厚设计）：
+      弧段圆心 (80, 65)
+      外半径 R=55 → 外弧顶点 (80, 10)
+      内半径 r=20 → 内弧顶点 (80, 45)
+      壁厚 = R-r = 35（与臂宽一致）
+      左外 x=25, 左内 x=60, 右内 x=100, 右外 x=135
+      臂底 y=180
+    -->
+
+    <!-- ===== N极（左半）===== -->
+    <!-- 左臂 -->
+    <rect class="hm__n-arm" x="25" y="65" width="35" height="115" rx="2"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 顶部弧段左半 -->
+    <path class="hm__arc-n"
+          d="M25,65 A55,55 0 0,1 80,10 L80,45 A20,20 0 0,0 60,65 Z"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"
+          stroke-linejoin="round"/>
+
+    <!-- ===== S极（右半）===== -->
+    <!-- 右臂 -->
+    <rect class="hm__s-arm" x="100" y="65" width="35" height="115" rx="2"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 顶部弧段右半 -->
+    <path class="hm__arc-s"
+          d="M135,65 A55,55 0 0,0 80,10 L80,45 A20,20 0 0,1 100,65 Z"
+          stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.5)"
+          stroke-linejoin="round"/>
+
+    <!-- 中心分界线（红蓝交界） -->
+    <line x1="80" y1="10" x2="80" y2="45"
+          stroke="var(--cmp-stroke, #333)" stroke-width="1" opacity="0.5"/>
+
+    <!-- 极面端面（底部，强调极面平整） -->
+    <line x1="25" y1="180" x2="60" y2="180"
+          stroke="var(--cmp-stroke, #333)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="100" y1="180" x2="135" y2="180"
+          stroke="var(--cmp-stroke, #333)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- 高光（左臂） -->
+    <rect x="25" y="65" width="35" height="115" rx="2" fill="url(#_hl_placeholder)" opacity="0.3" class="hm__hl-left"/>
+    <!-- 高光（右臂） -->
+    <rect x="100" y="65" width="35" height="115" rx="2" fill="url(#_hl_placeholder)" opacity="0.3" class="hm__hl-right"/>
+    <!-- 高光（顶部弧段，沿外弧内侧偏移） -->
+    <path d="M30,60 A50,50 0 0,1 130,60" fill="none" stroke="#fff" stroke-width="2" opacity="0.12"/>
+    <!-- 内壁阴影 -->
+    <line x1="60" y1="68" x2="60" y2="178" stroke="#000" stroke-width="1" opacity="0.08"/>
+    <line x1="100" y1="68" x2="100" y2="178" stroke="#000" stroke-width="1" opacity="0.08"/>
+
+    <!-- N / S 标签 -->
+    <text class="hm__pole-label" x="42.5" y="165" text-anchor="middle"
+          font-size="18" fill="#fff" opacity="0.9">N</text>
+    <text class="hm__pole-label" x="117.5" y="165" text-anchor="middle"
+          font-size="18" fill="#fff" opacity="0.9">S</text>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.magnet.horseshoe.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'hm_' + Math.random().toString(36).slice(2, 8);
+
+  var nGrad = svg.querySelector('.hm__n-grad');
+  var sGrad = svg.querySelector('.hm__s-grad');
+  var arcNGrad = svg.querySelector('.hm__arc-n-grad');
+  var arcSGrad = svg.querySelector('.hm__arc-s-grad');
+  var hlGrad = svg.querySelector('.hm__hl-grad');
+
+  if (nGrad) nGrad.setAttribute('id', uid + '_ng');
+  if (sGrad) sGrad.setAttribute('id', uid + '_sg');
+  if (arcNGrad) arcNGrad.setAttribute('id', uid + '_ang');
+  if (arcSGrad) arcSGrad.setAttribute('id', uid + '_asg');
+  if (hlGrad) hlGrad.setAttribute('id', uid + '_hl');
+
+  /* 左臂填色 */
+  var nArm = root.querySelector('.hm__n-arm');
+  if (nArm) nArm.setAttribute('fill', 'url(#' + uid + '_ng)');
+
+  /* 右臂填色 */
+  var sArm = root.querySelector('.hm__s-arm');
+  if (sArm) sArm.setAttribute('fill', 'url(#' + uid + '_sg)');
+
+  /* 弧段填色 */
+  var arcN = root.querySelector('.hm__arc-n');
+  if (arcN) arcN.setAttribute('fill', 'url(#' + uid + '_ang)');
+  var arcS = root.querySelector('.hm__arc-s');
+  if (arcS) arcS.setAttribute('fill', 'url(#' + uid + '_asg)');
+
+  /* 高光 */
+  var hlLeft = root.querySelector('.hm__hl-left');
+  var hlRight = root.querySelector('.hm__hl-right');
+  if (hlLeft) hlLeft.setAttribute('fill', 'url(#' + uid + '_hl)');
+  if (hlRight) hlRight.setAttribute('fill', 'url(#' + uid + '_hl)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  /* showField 控制 */
+  var fieldG = root.querySelector('.hm__field');
+  if (fieldG && (P.showField === false || P.showField === 'false')) {
+    fieldG.setAttribute('display', 'none');
+  }
+})();
+</script>

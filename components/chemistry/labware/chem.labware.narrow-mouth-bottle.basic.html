@@ -1,0 +1,343 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.narrow-mouth-bottle.basic",
+  "name": "细口瓶",
+  "nameEn": "Narrow-Mouth Bottle",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 90, "h": 160 },
+  "tags": ["chemistry", "labware", "bottle", "narrow-mouth", "reagent", "glass", "liquid", "storage"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 160, "min": 80, "max": 320, "desc": "组件高度" },
+    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.35)", "desc": "玻璃底色" },
+    { "key": "liquidColor", "type": "color",  "default": "#4fc3f7", "desc": "液体颜色" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.5, "min": 0, "max": 0.9, "desc": "液位占比" },
+    { "key": "capColor",    "type": "color",  "default": "#5d4037", "desc": "瓶塞颜色" },
+    { "key": "showCap",     "type": "boolean", "default": true, "desc": "显示瓶塞" },
+    { "key": "stroke",      "type": "color",  "default": "#35586a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "glassTint":   "--cmp-glass",
+    "liquidColor": "--cmp-liquid",
+    "capColor":    "--cmp-cap",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.narrow-mouth-bottle.basic" role="img" aria-label="细口瓶">
+  <style>
+    .cmp[data-cmp-id="chem.labware.narrow-mouth-bottle.basic"] {
+      --h: var(--cmp-size, 160px);
+      display: inline-block;
+      height: var(--h);
+      width: calc(var(--h) * 90 / 160);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.narrow-mouth-bottle.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 90 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 玻璃瓶身渐变 -->
+      <linearGradient class="nb__glass-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="rgba(255,255,255,0.5)"/>
+        <stop offset="0.15" stop-color="var(--cmp-glass, rgba(220,240,255,0.35))"/>
+        <stop offset="0.5" stop-color="var(--cmp-glass, rgba(220,240,255,0.35))"/>
+        <stop offset="0.85" stop-color="var(--cmp-glass, rgba(220,240,255,0.35))" stop-opacity="0.8"/>
+        <stop offset="1" stop-color="rgba(255,255,255,0.3)"/>
+      </linearGradient>
+      <!-- 瓶塞渐变 -->
+      <linearGradient class="nb__cap-grad" x1="0.2" y1="0" x2="0.8" y2="1">
+        <stop offset="0" stop-color="#8d6e63"/>
+        <stop offset="0.3" stop-color="var(--cmp-cap, #5d4037)"/>
+        <stop offset="0.7" stop-color="var(--cmp-cap, #5d4037)" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="#3e2723"/>
+      </linearGradient>
+      <!-- 液体渐变 -->
+      <linearGradient class="nb__liquid-grad" x1="0.3" y1="0" x2="0.7" y2="1">
+        <stop offset="0" stop-color="var(--cmp-liquid, #4fc3f7)" stop-opacity="0.5"/>
+        <stop offset="0.4" stop-color="var(--cmp-liquid, #4fc3f7)" stop-opacity="0.7"/>
+        <stop offset="1" stop-color="var(--cmp-liquid, #4fc3f7)" stop-opacity="0.85"/>
+      </linearGradient>
+      <!-- 液面高光 -->
+      <linearGradient class="nb__liquid-hl" x1="0.2" y1="0" x2="0.8" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.3"/>
+        <stop offset="0.5" stop-color="#fff" stop-opacity="0.05"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+      <!-- 底部投影 -->
+      <radialGradient class="nb__shadow-grad" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#000" stop-opacity="0.1"/>
+        <stop offset="0.7" stop-color="#000" stop-opacity="0.04"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!--
+      细口瓶结构（viewBox 90×160）：
+      瓶塞：小梯形，y=6~18
+      瓶口：窄口磨口段，x=36~54，y=18~26
+      瓶颈：从窄口渐扩到肩部，y=26~50
+      瓶肩：弧线过渡，y=50~62
+      瓶身：圆柱直筒，x=10~80，y=62~138
+      瓶底：圆弧，y=138~146
+    -->
+
+    <!-- ===== 底部投影 ===== -->
+    <ellipse class="nb__shadow" cx="45" cy="150" rx="30" ry="5"/>
+
+    <!-- ===== 瓶身（颈+肩+身+底一体） ===== -->
+    <path class="nb__body"
+          d="M36,24 L36,30 Q36,38 30,46 Q18,56 14,64
+             L14,136 Q14,146 45,146 Q76,146 76,136
+             L76,64 Q72,56 60,46 Q54,38 54,30 L54,24"
+          stroke="var(--cmp-stroke, #35586a)" stroke-width="var(--cmp-stroke-width, 1.8)"
+          stroke-linejoin="round"/>
+
+    <!-- 瓶身内部背景 -->
+    <path d="M38,25 L38,30 Q38,39 32,47 Q20,57 16,65
+             L16,135 Q16,144 45,144 Q74,144 74,135
+             L74,65 Q70,57 58,47 Q52,39 52,30 L52,25 Z"
+          fill="rgba(245,250,255,0.12)" stroke="none"/>
+
+    <!-- ===== 液体 ===== -->
+    <path class="nb__liquid" d="" stroke="none" opacity="0"/>
+    <!-- 液面高光 -->
+    <ellipse class="nb__liquid-highlight" cx="40" cy="0" rx="0" ry="0"
+             stroke="none" opacity="0"/>
+    <!-- 弯月面 -->
+    <path class="nb__meniscus" d="" fill="none" stroke="none" opacity="0"/>
+
+    <!-- ===== 瓶颈纹理 ===== -->
+    <path d="M34,36 Q45,34 56,36" fill="none"
+          stroke="#b0bec5" stroke-width="0.3" opacity="0.25"/>
+    <path d="M28,48 Q45,44 62,48" fill="none"
+          stroke="#b0bec5" stroke-width="0.3" opacity="0.2"/>
+
+    <!-- ===== 瓶肩弧线纹理 ===== -->
+    <path d="M18,60 Q45,54 72,60" fill="none"
+          stroke="#b0bec5" stroke-width="0.4" opacity="0.25"/>
+
+    <!-- ===== 瓶身左侧高光 ===== -->
+    <path d="M18,66 L18,132" fill="none"
+          stroke="#fff" stroke-width="3" opacity="0.18" stroke-linecap="round"/>
+    <path d="M22,62 L22,134" fill="none"
+          stroke="#fff" stroke-width="1.2" opacity="0.1" stroke-linecap="round"/>
+    <!-- 瓶颈高光 -->
+    <path d="M38,28 Q36,38 28,50" fill="none"
+          stroke="#fff" stroke-width="1.5" opacity="0.12" stroke-linecap="round"/>
+
+    <!-- ===== 瓶身右侧暗面 ===== -->
+    <path d="M72,66 L72,132" fill="none"
+          stroke="#000" stroke-width="1" opacity="0.04" stroke-linecap="round"/>
+
+    <!-- ===== 瓶口（磨口段） ===== -->
+    <rect x="36" y="18" width="18" height="8" rx="1"
+          fill="rgba(255,255,255,0.5)"
+          stroke="var(--cmp-stroke, #35586a)" stroke-width="var(--cmp-stroke-width, 1.8)"/>
+    <!-- 磨口纹理 -->
+    <g stroke="var(--cmp-stroke, #35586a)" stroke-width="0.3" opacity="0.25">
+      <line x1="38" y1="20" x2="52" y2="20"/>
+      <line x1="38" y1="22" x2="52" y2="22"/>
+      <line x1="38" y1="24" x2="52" y2="24"/>
+    </g>
+    <!-- 瓶口高光 -->
+    <line x1="39" y1="19" x2="49" y2="19"
+          stroke="#fff" stroke-width="0.7" opacity="0.25" stroke-linecap="round"/>
+
+    <!-- ===== 瓶底厚度线 ===== -->
+    <path d="M18,136 Q18,142 45,143 Q72,142 72,136" fill="none"
+          stroke="var(--cmp-stroke, #35586a)" stroke-width="0.6" opacity="0.3"/>
+
+    <!-- ===== 瓶塞 ===== -->
+    <g class="nb__cap-group">
+      <!-- 塞体（小梯形） -->
+      <path class="nb__cap-body"
+            d="M39,8 L37,18 L53,18 L51,8 Z"
+            stroke="var(--cmp-stroke, #35586a)" stroke-width="0.8"
+            stroke-linejoin="round"/>
+      <!-- 塞顶 -->
+      <ellipse cx="45" cy="8" rx="6" ry="2.5"
+               fill="var(--cmp-cap, #5d4037)"
+               stroke="var(--cmp-stroke, #35586a)" stroke-width="0.6"/>
+      <!-- 塞体高光 -->
+      <path d="M40,10 L38,17" fill="none"
+            stroke="#fff" stroke-width="0.8" opacity="0.12" stroke-linecap="round"/>
+      <!-- 软木纹理 -->
+      <line x1="40" y1="12" x2="50" y2="12"
+            stroke="#8d6e63" stroke-width="0.3" opacity="0.3"/>
+      <line x1="39" y1="15" x2="51" y2="15"
+            stroke="#8d6e63" stroke-width="0.3" opacity="0.25"/>
+      <!-- 塞顶高光 -->
+      <path d="M41,7 Q44,5.5 49,7" fill="none"
+            stroke="#fff" stroke-width="0.6" opacity="0.15" stroke-linecap="round"/>
+    </g>
+
+    <!-- ===== 标签区域 ===== -->
+    <rect x="22" y="80" width="46" height="30" rx="2"
+          fill="#fff" opacity="0.08"
+          stroke="var(--cmp-stroke, #35586a)" stroke-width="0.4" opacity="0.2"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.narrow-mouth-bottle.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'nb_' + Math.random().toString(36).slice(2, 8);
+
+  var glassGrad = svg.querySelector('.nb__glass-grad');
+  var capGrad = svg.querySelector('.nb__cap-grad');
+  var liquidGrad = svg.querySelector('.nb__liquid-grad');
+  var liquidHl = svg.querySelector('.nb__liquid-hl');
+  var shadowGrad = svg.querySelector('.nb__shadow-grad');
+
+  if (glassGrad) glassGrad.setAttribute('id', uid + '_gg');
+  if (capGrad) capGrad.setAttribute('id', uid + '_cg');
+  if (liquidGrad) liquidGrad.setAttribute('id', uid + '_lg');
+  if (liquidHl) liquidHl.setAttribute('id', uid + '_lh');
+  if (shadowGrad) shadowGrad.setAttribute('id', uid + '_sg');
+
+  /* 填色绑定 */
+  var body = root.querySelector('.nb__body');
+  var capBody = root.querySelector('.nb__cap-body');
+  var liquid = root.querySelector('.nb__liquid');
+  var shadow = root.querySelector('.nb__shadow');
+  var liquidHighlight = root.querySelector('.nb__liquid-highlight');
+
+  if (body) body.setAttribute('fill', 'url(#' + uid + '_gg)');
+  if (capBody) capBody.setAttribute('fill', 'url(#' + uid + '_cg)');
+  if (liquid) liquid.setAttribute('fill', 'url(#' + uid + '_lg)');
+  if (shadow) shadow.setAttribute('fill', 'url(#' + uid + '_sg)');
+  if (liquidHighlight) liquidHighlight.setAttribute('fill', 'url(#' + uid + '_lh)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  /* showCap */
+  var capGroup = root.querySelector('.nb__cap-group');
+  if (capGroup && (P.showCap === false || P.showCap === 'false')) {
+    capGroup.setAttribute('display', 'none');
+  }
+
+  /* liquidLevel */
+  var level = parseFloat(P.liquidLevel);
+  if (isNaN(level)) level = 0.5;
+  level = Math.max(0, Math.min(0.9, level));
+
+  var meniscus = root.querySelector('.nb__meniscus');
+
+  if (level > 0 && liquid) {
+    /*
+      瓶身内部区域：
+      直筒段：x=16~74, y=65~144（高79）
+      肩部段：y=47~65 渐窄
+      颈部段：y=30~47 更窄
+      总可用高度约 114 (30~144)
+    */
+    var botY = 144;
+    var topY = 30;
+    var range = botY - topY;
+    var fillH = range * level;
+    var surfY = botY - fillH;
+
+    /* 根据 surfY 计算液面宽度 */
+    var halfW;
+    if (surfY >= 65) {
+      /* 直筒段 */
+      halfW = 29;
+    } else if (surfY >= 47) {
+      /* 肩部段：从 29 渐窄到 18 */
+      var t = (65 - surfY) / 18;
+      halfW = 29 - t * 11;
+    } else {
+      /* 颈部段：从 18 渐窄到 7 */
+      var t2 = (47 - surfY) / 17;
+      halfW = 18 - t2 * 11;
+    }
+
+    var cx = 45;
+    var lx = cx - halfW;
+    var rx = cx + halfW;
+
+    /* 构建液体路径：从液面到瓶底 */
+    var d = 'M' + lx.toFixed(1) + ',' + surfY.toFixed(1);
+
+    /* 液面左侧向下到直筒段 */
+    if (surfY < 47) {
+      /* 从颈部经肩部到直筒 */
+      d += ' Q' + (lx - 2).toFixed(1) + ',' + (surfY + 4).toFixed(1);
+      d += ' ' + (cx - 18).toFixed(1) + ',47';
+      d += ' Q' + (cx - 24).toFixed(1) + ',52';
+      d += ' 16,65';
+    } else if (surfY < 65) {
+      /* 从肩部到直筒 */
+      d += ' Q' + (lx - 3).toFixed(1) + ',' + (surfY + 4).toFixed(1);
+      d += ' 16,65';
+    }
+
+    d += ' L16,135 Q16,144 45,144 Q74,144 74,135';
+
+    /* 右侧向上 */
+    if (surfY < 47) {
+      d += ' L74,65';
+      d += ' Q' + (cx + 24).toFixed(1) + ',52';
+      d += ' ' + (cx + 18).toFixed(1) + ',47';
+      d += ' Q' + (rx + 2).toFixed(1) + ',' + (surfY + 4).toFixed(1);
+      d += ' ' + rx.toFixed(1) + ',' + surfY.toFixed(1);
+    } else if (surfY < 65) {
+      d += ' L74,65';
+      d += ' Q' + (rx + 3).toFixed(1) + ',' + (surfY + 4).toFixed(1);
+      d += ' ' + rx.toFixed(1) + ',' + surfY.toFixed(1);
+    } else {
+      d += ' L74,' + surfY.toFixed(1);
+    }
+
+    d += ' Z';
+
+    liquid.setAttribute('d', d);
+    liquid.setAttribute('opacity', '0.8');
+
+    /* 液面高光 */
+    if (liquidHighlight) {
+      liquidHighlight.setAttribute('cx', (cx - 3).toFixed(1));
+      liquidHighlight.setAttribute('cy', surfY.toFixed(1));
+      liquidHighlight.setAttribute('rx', (halfW * 0.55).toFixed(1));
+      liquidHighlight.setAttribute('ry', '2.5');
+      liquidHighlight.setAttribute('opacity', '0.35');
+    }
+
+    /* 弯月面 */
+    if (meniscus) {
+      meniscus.setAttribute('d',
+        'M' + (cx - halfW + 2).toFixed(1) + ',' + surfY.toFixed(1) +
+        ' Q' + cx + ',' + (surfY + 1.5).toFixed(1) +
+        ' ' + (cx + halfW - 2).toFixed(1) + ',' + surfY.toFixed(1)
+      );
+      meniscus.setAttribute('stroke', 'var(--cmp-liquid, #4fc3f7)');
+      meniscus.setAttribute('stroke-width', '0.5');
+      meniscus.setAttribute('opacity', '0.4');
+    }
+  }
+})();
+</script>

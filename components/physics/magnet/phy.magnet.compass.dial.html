@@ -1,0 +1,221 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.magnet.compass.dial",
+  "name": "指南针",
+  "nameEn": "Compass",
+  "category": "physics/magnet",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 160 },
+  "tags": ["compass", "magnet", "needle", "direction", "NESW", "navigation"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 160, "min": 80, "max": 400, "desc": "组件尺寸" },
+    { "key": "northColor",  "type": "color",  "default": "#e53935", "desc": "N极颜色" },
+    { "key": "southColor",  "type": "color",  "default": "#1e88e5", "desc": "S极颜色" },
+    { "key": "dialColor",   "type": "color",  "default": "#fafafa", "desc": "表盘颜色" },
+    { "key": "rimColor",    "type": "color",  "default": "#b0bec5", "desc": "外圈颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "angle",       "type": "number", "default": 0, "min": -180, "max": 180, "desc": "磁针旋转角度(°)" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "northColor":  "--cmp-north",
+    "southColor":  "--cmp-south",
+    "dialColor":   "--cmp-dial",
+    "rimColor":    "--cmp-rim",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.magnet.compass.dial" role="img" aria-label="指南针">
+  <style>
+    .cmp[data-cmp-id="phy.magnet.compass.dial"] {
+      --h: var(--cmp-size, 160px);
+      display: inline-block;
+      width: var(--h);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="phy.magnet.compass.dial"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="phy.magnet.compass.dial"] .cd__dir-label {
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      pointer-events: none;
+    }
+    .cmp[data-cmp-id="phy.magnet.compass.dial"] .cd__tick-label {
+      font-family: Arial, sans-serif;
+      font-weight: 400;
+      pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 外圈金属渐变 -->
+      <radialGradient class="cd__rim-grad" cx="0.4" cy="0.35" r="0.65">
+        <stop offset="0" stop-color="#e8e8e8"/>
+        <stop offset="0.4" stop-color="var(--cmp-rim, #b0bec5)"/>
+        <stop offset="0.85" stop-color="var(--cmp-rim, #b0bec5)" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="#78909c"/>
+      </radialGradient>
+      <!-- 表盘渐变 -->
+      <radialGradient class="cd__dial-grad" cx="0.45" cy="0.4" r="0.6">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.5"/>
+        <stop offset="0.6" stop-color="var(--cmp-dial, #fafafa)"/>
+        <stop offset="1" stop-color="var(--cmp-dial, #fafafa)" stop-opacity="0.85"/>
+      </radialGradient>
+      <!-- N极渐变 -->
+      <linearGradient class="cd__n-grad" x1="0.5" y1="1" x2="0.5" y2="0">
+        <stop offset="0" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.75"/>
+        <stop offset="0.35" stop-color="var(--cmp-north, #e53935)"/>
+        <stop offset="1" stop-color="var(--cmp-north, #e53935)" stop-opacity="0.85"/>
+      </linearGradient>
+      <!-- S极渐变 -->
+      <linearGradient class="cd__s-grad" x1="0.5" y1="0" x2="0.5" y2="1">
+        <stop offset="0" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.75"/>
+        <stop offset="0.35" stop-color="var(--cmp-south, #1e88e5)"/>
+        <stop offset="1" stop-color="var(--cmp-south, #1e88e5)" stop-opacity="0.85"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ===== 外圈（金属边框） ===== -->
+    <circle class="cd__rim" cx="80" cy="80" r="76"
+            stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+    <!-- 外圈内侧阴影 -->
+    <circle cx="80" cy="80" r="73" fill="none"
+            stroke="#000" stroke-width="0.6" opacity="0.08"/>
+
+    <!-- ===== 表盘 ===== -->
+    <circle class="cd__dial" cx="80" cy="80" r="68"
+            stroke="var(--cmp-stroke, #333)" stroke-width="0.6" opacity="0.5"/>
+
+    <!-- ===== 刻度 ===== -->
+    <g stroke="var(--cmp-stroke, #333)" stroke-linecap="round">
+      <!-- 主刻度（N/E/S/W，每90°，长6） -->
+      <line x1="80" y1="14" x2="80" y2="20" stroke-width="1.5"/>
+      <line x1="146" y1="80" x2="140" y2="80" stroke-width="1.5"/>
+      <line x1="80" y1="146" x2="80" y2="140" stroke-width="1.5"/>
+      <line x1="14" y1="80" x2="20" y2="80" stroke-width="1.5"/>
+      <!-- 副刻度（NE/SE/SW/NW，每45°，长4） -->
+      <line x1="126.7" y1="33.3" x2="123.9" y2="36.1" stroke-width="1"/>
+      <line x1="126.7" y1="126.7" x2="123.9" y2="123.9" stroke-width="1"/>
+      <line x1="33.3" y1="126.7" x2="36.1" y2="123.9" stroke-width="1"/>
+      <line x1="33.3" y1="33.3" x2="36.1" y2="36.1" stroke-width="1"/>
+      <!-- 细刻度（每30°，长3） -->
+      <line x1="113" y1="22.9" x2="111.2" y2="25.9" stroke-width="0.6" opacity="0.5"/>
+      <line x1="137.1" y1="47" x2="134.1" y2="48.8" stroke-width="0.6" opacity="0.5"/>
+      <line x1="137.1" y1="113" x2="134.1" y2="111.2" stroke-width="0.6" opacity="0.5"/>
+      <line x1="113" y1="137.1" x2="111.2" y2="134.1" stroke-width="0.6" opacity="0.5"/>
+      <line x1="47" y1="137.1" x2="48.8" y2="134.1" stroke-width="0.6" opacity="0.5"/>
+      <line x1="22.9" y1="113" x2="25.9" y2="111.2" stroke-width="0.6" opacity="0.5"/>
+      <line x1="22.9" y1="47" x2="25.9" y2="48.8" stroke-width="0.6" opacity="0.5"/>
+      <line x1="47" y1="22.9" x2="48.8" y2="25.9" stroke-width="0.6" opacity="0.5"/>
+    </g>
+
+    <!-- ===== 方位标签 ===== -->
+    <!-- 北（红色突出） -->
+    <text class="cd__dir-label" x="80" y="33" text-anchor="middle"
+          font-size="14" fill="var(--cmp-north, #e53935)">N</text>
+    <!-- 东 -->
+    <text class="cd__dir-label" x="132" y="84.5" text-anchor="middle"
+          font-size="12" fill="var(--cmp-stroke, #333)">E</text>
+    <!-- 南 -->
+    <text class="cd__dir-label" x="80" y="137" text-anchor="middle"
+          font-size="12" fill="var(--cmp-stroke, #333)">S</text>
+    <!-- 西 -->
+    <text class="cd__dir-label" x="28" y="84.5" text-anchor="middle"
+          font-size="12" fill="var(--cmp-stroke, #333)">W</text>
+
+    <!-- 内圈装饰线 -->
+    <circle cx="80" cy="80" r="42" fill="none"
+            stroke="var(--cmp-stroke, #333)" stroke-width="0.3" opacity="0.25"/>
+
+    <!-- ===== 磁针（可旋转，绕中心 80,80） ===== -->
+    <g class="cd__needle-group">
+      <!-- N极（上半，三角尖端朝上） -->
+      <polygon class="cd__n-half"
+               points="80,28 74,80 80,84 86,80"
+               stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"
+               stroke-linejoin="round"/>
+      <!-- S极（下半，三角尖端朝下） -->
+      <polygon class="cd__s-half"
+               points="80,132 86,80 80,76 74,80"
+               stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"
+               stroke-linejoin="round"/>
+
+      <!-- N极高光 -->
+      <line x1="78" y1="42" x2="76.5" y2="70" stroke="#fff" stroke-width="1.2" opacity="0.3" stroke-linecap="round"/>
+      <!-- S极高光 -->
+      <line x1="78" y1="118" x2="76.5" y2="90" stroke="#fff" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+
+      <!-- 中心轴 -->
+      <circle cx="80" cy="80" r="4"
+              fill="#ccc"
+              stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+      <circle cx="79" cy="79" r="1.2" fill="#fff" opacity="0.4"/>
+    </g>
+
+    <!-- 玻璃高光（最上层） -->
+    <ellipse cx="68" cy="62" rx="28" ry="18" fill="#fff" opacity="0.06"
+             transform="rotate(-20 68 62)"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.magnet.compass.dial') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'cd_' + Math.random().toString(36).slice(2, 8);
+
+  var rimGrad = svg.querySelector('.cd__rim-grad');
+  var dialGrad = svg.querySelector('.cd__dial-grad');
+  var nGrad = svg.querySelector('.cd__n-grad');
+  var sGrad = svg.querySelector('.cd__s-grad');
+
+  if (rimGrad) rimGrad.setAttribute('id', uid + '_rg');
+  if (dialGrad) dialGrad.setAttribute('id', uid + '_dg');
+  if (nGrad) nGrad.setAttribute('id', uid + '_ng');
+  if (sGrad) sGrad.setAttribute('id', uid + '_sg');
+
+  /* 填色绑定 */
+  var rimEl = root.querySelector('.cd__rim');
+  var dialEl = root.querySelector('.cd__dial');
+  var nHalf = root.querySelector('.cd__n-half');
+  var sHalf = root.querySelector('.cd__s-half');
+
+  if (rimEl) rimEl.setAttribute('fill', 'url(#' + uid + '_rg)');
+  if (dialEl) dialEl.setAttribute('fill', 'url(#' + uid + '_dg)');
+  if (nHalf) nHalf.setAttribute('fill', 'url(#' + uid + '_ng)');
+  if (sHalf) sHalf.setAttribute('fill', 'url(#' + uid + '_sg)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  /* angle: 磁针旋转角度 */
+  var needleG = root.querySelector('.cd__needle-group');
+  if (needleG) {
+    var angle = parseFloat(P.angle) || 0;
+    if (angle !== 0) {
+      needleG.setAttribute('transform', 'rotate(' + angle + ' 80 80)');
+    }
+  }
+})();
+</script>

@@ -1,0 +1,169 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.tool.ruler.basic",
+  "name": "直尺",
+  "nameEn": "Ruler",
+  "category": "math/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 50 },
+  "tags": ["math", "ruler", "measurement", "length", "tool", "scale"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 320, "min": 160, "max": 600, "desc": "组件宽度" },
+    { "key": "length",     "type": "number",  "default": 15, "min": 5, "max": 30, "desc": "尺长(cm)" },
+    { "key": "fill",       "type": "color",  "default": "rgba(200,230,255,0.3)", "desc": "填充色" },
+    { "key": "stroke",     "type": "color",  "default": "#1976d2", "desc": "描边颜色" },
+    { "key": "scaleColor", "type": "color",  "default": "#1565c0", "desc": "刻度颜色" },
+    { "key": "opacity",    "type": "number(0-1)", "default": 0.92, "min": 0.3, "max": 1, "desc": "透明度" },
+    { "key": "rotate",     "type": "number(deg)", "default": 0, "desc": "旋转角度" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "fill":       "--cmp-fill",
+    "stroke":     "--cmp-stroke",
+    "scaleColor": "--cmp-scale-color",
+    "opacity":    "--cmp-opacity",
+    "rotate":     "--cmp-rotate",
+    "glow":       "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="math.tool.ruler.basic" role="img" aria-label="直尺">
+  <style>
+    .cmp[data-cmp-id="math.tool.ruler.basic"] {
+      width: var(--cmp-size, 320px);
+      height: calc(var(--cmp-size, 320px) * 50 / 320);
+      display: inline-block;
+      opacity: var(--cmp-opacity, 0.92);
+      transform: rotate(var(--cmp-rotate, 0deg));
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="math.tool.ruler.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="math.tool.ruler.basic"] .rl__num {
+      font-family: Arial, sans-serif;
+      font-weight: 400;
+      pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 320 50" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="rl__fill-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-fill, rgba(200,230,255,0.3))" stop-opacity="0.9"/>
+        <stop offset="0.5" stop-color="var(--cmp-fill, rgba(200,230,255,0.3))"/>
+        <stop offset="1" stop-color="var(--cmp-fill, rgba(200,230,255,0.3))" stop-opacity="0.7"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 尺身 -->
+    <rect class="rl__body" x="4" y="4" width="312" height="42" rx="2"
+          stroke="var(--cmp-stroke, #1976d2)" stroke-width="1.5"/>
+
+    <!-- 上沿高光 -->
+    <line x1="8" y1="6" x2="312" y2="6"
+          stroke="#fff" stroke-width="0.8" opacity="0.2" stroke-linecap="round"/>
+
+    <!-- 刻度（由 JS 生成） -->
+    <g class="rl__ticks"></g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.tool.ruler.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'rl_' + Math.random().toString(36).slice(2, 8);
+  var fillGrad = svg.querySelector('.rl__fill-grad');
+  if (fillGrad) fillGrad.setAttribute('id', uid + '_fg');
+  var body = root.querySelector('.rl__body');
+  if (body) body.setAttribute('fill', 'url(#' + uid + '_fg)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  var cmLen = parseInt(P.length) || 15;
+  cmLen = Math.max(5, Math.min(30, cmLen));
+
+  /* ── 刻度生成 ── */
+  var ticksG = root.querySelector('.rl__ticks');
+  if (!ticksG) return;
+
+  var NS = 'http://www.w3.org/2000/svg';
+
+  /* 刻度区域：x 从 10 到 310，总宽 300px */
+  var startX = 10;
+  var endX = 310;
+  var totalW = endX - startX;
+  var pxPerCm = totalW / cmLen;
+  var pxPerMm = pxPerCm / 10;
+
+  var totalMm = cmLen * 10;
+
+  for (var mm = 0; mm <= totalMm; mm++) {
+    var x = startX + mm * pxPerMm;
+
+    /* 刻度长度和粗细 */
+    var len, sw;
+    if (mm % 10 === 0) {
+      len = 16; sw = 1.2; /* 整厘米 */
+    } else if (mm % 5 === 0) {
+      len = 11; sw = 0.8; /* 半厘米 */
+    } else {
+      len = 6; sw = 0.5;  /* 毫米 */
+    }
+
+    var line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', x.toFixed(1));
+    line.setAttribute('y1', '4');
+    line.setAttribute('x2', x.toFixed(1));
+    line.setAttribute('y2', (4 + len).toFixed(1));
+    line.setAttribute('stroke', 'var(--cmp-scale-color, #1565c0)');
+    line.setAttribute('stroke-width', sw.toString());
+    if (mm % 10 !== 0 && mm % 5 !== 0) {
+      line.setAttribute('opacity', '0.6');
+    }
+    ticksG.appendChild(line);
+
+    /* 整厘米数字 */
+    if (mm % 10 === 0) {
+      var cm = mm / 10;
+      var txt = document.createElementNS(NS, 'text');
+      txt.setAttribute('class', 'rl__num');
+      txt.setAttribute('x', x.toFixed(1));
+      txt.setAttribute('y', '32');
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('font-size', cm % 5 === 0 ? '10' : '8');
+      txt.setAttribute('fill', 'var(--cmp-scale-color, #1565c0)');
+      txt.textContent = cm;
+      ticksG.appendChild(txt);
+    }
+  }
+
+  /* cm 单位标记 */
+  var unit = document.createElementNS(NS, 'text');
+  unit.setAttribute('class', 'rl__num');
+  unit.setAttribute('x', (endX - 2).toFixed(1));
+  unit.setAttribute('y', '44');
+  unit.setAttribute('text-anchor', 'end');
+  unit.setAttribute('font-size', '7');
+  unit.setAttribute('fill', 'var(--cmp-scale-color, #1565c0)');
+  unit.setAttribute('opacity', '0.6');
+  unit.textContent = 'cm';
+  ticksG.appendChild(unit);
+})();
+</script>

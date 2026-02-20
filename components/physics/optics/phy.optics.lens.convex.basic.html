@@ -1,0 +1,157 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.optics.lens.convex.basic",
+  "name": "凸透镜",
+  "nameEn": "Convex Lens",
+  "category": "physics/optics",
+  "version": "1.0.0",
+  "viewport": { "w": 80, "h": 200 },
+  "tags": ["optics", "lens", "convex-lens", "converging", "refraction"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
+    { "key": "lensColor",   "type": "color",  "default": "#90caf9", "desc": "透镜颜色" },
+    { "key": "lensEdge",    "type": "color",  "default": "#42a5f5", "desc": "透镜边缘色" },
+    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "showAxis",    "type": "boolean", "default": true, "desc": "显示主光轴" },
+    { "key": "showArrows",  "type": "boolean", "default": true, "desc": "显示端部箭头" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "lensColor":   "--cmp-lens",
+    "lensEdge":    "--cmp-lens-edge",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.optics.lens.convex.basic" role="img" aria-label="凸透镜">
+  <style>
+    .cmp[data-cmp-id="phy.optics.lens.convex.basic"] {
+      --h: var(--cmp-size, 200px);
+      display: inline-block;
+      width: calc(var(--h) * 80 / 200);
+      height: var(--h);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="phy.optics.lens.convex.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 80 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 透镜填充渐变（水平方向，边缘深中间浅） -->
+      <linearGradient class="cvl__fill-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--cmp-lens-edge, #42a5f5)" stop-opacity="0.55"/>
+        <stop offset="0.3" stop-color="var(--cmp-lens, #90caf9)" stop-opacity="0.3"/>
+        <stop offset="0.5" stop-color="var(--cmp-lens, #90caf9)" stop-opacity="0.2"/>
+        <stop offset="0.7" stop-color="var(--cmp-lens, #90caf9)" stop-opacity="0.3"/>
+        <stop offset="1" stop-color="var(--cmp-lens-edge, #42a5f5)" stop-opacity="0.55"/>
+      </linearGradient>
+      <!-- 高光渐变（垂直方向） -->
+      <linearGradient class="cvl__hl-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.3"/>
+        <stop offset="0.3" stop-color="#fff" stop-opacity="0.08"/>
+        <stop offset="0.7" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0.1"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 主光轴（水平虚线） -->
+    <line class="cvl__axis" x1="0" y1="100" x2="80" y2="100"
+          stroke="#999" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.5"/>
+
+    <!--
+      凸透镜形状：中间厚、边缘薄
+      viewBox 80×200，透镜中心 (40, 100)
+
+      结构（与凹透镜对称）：
+      - 上端 y=18，宽度 36~44（薄8px）
+      - 下端 y=182，宽度 36~44（薄8px）
+      - 中腰 y=100，宽度 16~64（厚48px）
+      - 左侧轮廓：从(36,18)向外凸到(16,100)再到(36,182)
+      - 右侧轮廓：从(44,18)向外凸到(64,100)再到(44,182)
+    -->
+
+    <!-- 透镜主体 -->
+    <path class="cvl__body"
+          d="M36,18 L44,18
+             Q64,55 64,100 Q64,145 44,182
+             L36,182
+             Q16,145 16,100 Q16,55 36,18 Z"
+          stroke="var(--cmp-lens-edge, #42a5f5)"
+          stroke-width="var(--cmp-stroke-width, 1.5)"
+          stroke-linejoin="round"/>
+
+    <!-- 高光层 -->
+    <path class="cvl__highlight"
+          d="M36,18 L44,18
+             Q64,55 64,100 Q64,145 44,182
+             L36,182
+             Q16,145 16,100 Q16,55 36,18 Z"
+          fill="none" opacity="0.5"/>
+
+    <!-- 端部箭头标记（凸透镜符号：箭头向外） -->
+    <g class="cvl__arrows">
+      <!-- 上端：左右各一个向外的箭头 -->
+      <polygon points="32,10 36,18 40,10" fill="var(--cmp-lens-edge, #42a5f5)" opacity="0.8"/>
+      <polygon points="40,10 44,18 48,10" fill="var(--cmp-lens-edge, #42a5f5)" opacity="0.8"/>
+      <!-- 下端：左右各一个向外的箭头 -->
+      <polygon points="32,190 36,182 40,190" fill="var(--cmp-lens-edge, #42a5f5)" opacity="0.8"/>
+      <polygon points="40,190 44,182 48,190" fill="var(--cmp-lens-edge, #42a5f5)" opacity="0.8"/>
+    </g>
+
+    <!-- 边缘高光线（左侧外弧） -->
+    <path d="M19,28 Q18,55 18,100 Q18,145 19,172"
+          fill="none" stroke="#fff" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'phy.optics.lens.convex.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'cvl_' + Math.random().toString(36).slice(2, 8);
+
+  var fillGrad = svg.querySelector('.cvl__fill-grad');
+  var hlGrad = svg.querySelector('.cvl__hl-grad');
+  if (fillGrad) fillGrad.setAttribute('id', uid + '_fg');
+  if (hlGrad) hlGrad.setAttribute('id', uid + '_hg');
+
+  var body = root.querySelector('.cvl__body');
+  var highlight = root.querySelector('.cvl__highlight');
+  if (body) body.setAttribute('fill', 'url(#' + uid + '_fg)');
+  if (highlight) highlight.setAttribute('fill', 'url(#' + uid + '_hg)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  /* showAxis */
+  var axis = root.querySelector('.cvl__axis');
+  if (axis && (P.showAxis === false || P.showAxis === 'false')) {
+    axis.setAttribute('display', 'none');
+  }
+
+  /* showArrows */
+  var arrows = root.querySelector('.cvl__arrows');
+  if (arrows && (P.showArrows === false || P.showArrows === 'false')) {
+    arrows.setAttribute('display', 'none');
+  }
+})();
+</script>

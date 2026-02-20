@@ -79,11 +79,19 @@
       <path d="M60,90 C60,140 180,140 180,90" stroke-dasharray="4,3"/>
       <path d="M60,90 C60,160 180,160 180,90" stroke-dasharray="4,3"/>
       <path d="M60,90 C60,180 180,180 180,90" stroke-dasharray="4,3"/>
-      <!-- 箭头（N极出发方向） -->
-      <polygon fill="var(--cmp-field, #666)" points="56,55 64,50 60,60" opacity="0.6"/>
-      <polygon fill="var(--cmp-field, #666)" points="56,125 64,130 60,120" opacity="0.6"/>
-      <polygon fill="var(--cmp-field, #666)" points="176,55 184,60 180,50" opacity="0.6"/>
-      <polygon fill="var(--cmp-field, #666)" points="176,125 184,120 180,130" opacity="0.6"/>
+      <!--
+        箭头方向：外部磁感线从 N(左) → S(右)
+        上方弧线在顶部中段向右走，下方弧线在底部中段向右走
+        箭头放在弧线中段(x≈120)，朝右 = 朝 S 极方向
+      -->
+      <!-- 上方弧线箭头（弧顶中段，朝右） -->
+      <polygon fill="var(--cmp-field, #666)" points="116,32 124,37 116,42" opacity="0.7"/>
+      <polygon fill="var(--cmp-field, #666)" points="116,12 124,17 116,22" opacity="0.7"/>
+      <polygon fill="var(--cmp-field, #666)" points="116,52 124,57 116,62" opacity="0.7"/>
+      <!-- 下方弧线箭头（弧底中段，朝右） -->
+      <polygon fill="var(--cmp-field, #666)" points="116,138 124,143 116,148" opacity="0.7"/>
+      <polygon fill="var(--cmp-field, #666)" points="116,158 124,163 116,168" opacity="0.7"/>
+      <polygon fill="var(--cmp-field, #666)" points="116,118 124,123 116,128" opacity="0.7"/>
     </g>
 
     <!-- 磁铁主体（可拖拽） -->

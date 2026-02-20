@@ -6,9 +6,9 @@
   "nameEn": "Interactive Clock",
   "category": "math/clock",
   "version": "2.1.0",
-  "viewport": { "w": 400, "h": 500 },
+  "viewport": { "w": 240, "h": 300 },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 400, "min": 200, "max": 600, "desc": "钟表直径" },
+    { "key": "size", "type": "number(px)", "default": 240, "min": 120, "max": 600, "desc": "钟表直径" },
     { "key": "speed", "type": "number", "default": 1, "min": 0, "max": 3600, "desc": "时间流逝倍速（0=静止，1=真实时间）" },
     { "key": "secondSmooth", "type": "boolean", "default": false, "desc": "秒针是否顺滑（true=顺滑，false=跳秒）" },
     { "key": "hourLengthRatio", "type": "number", "default": 0.22, "min": 0.15, "max": 0.35, "desc": "时针长度占钟表直径的比例" },
@@ -48,7 +48,7 @@
   <style>
     .cmp[data-cmp-id="math.clock.interactive"] {
       /* 尺寸 */
-      --clock-size: var(--cmp-clock-size, 400px);
+      --clock-size: var(--cmp-clock-size, 240px);
 
       /* 颜色相关，可通过 props 配置 */
       --clock-bg: var(--cmp-dial-bg, #ffffff);
@@ -217,7 +217,7 @@
       if (!clockFace || !hourHand || !minuteHand || !secondHand) return;
 
       // 获取钟表尺寸（用于计算刻度和数字位置）
-      const clockSize = parseInt(getComputedStyle(cmp).getPropertyValue('--clock-size')) || 400;
+      const clockSize = parseInt(getComputedStyle(cmp).getPropertyValue('--clock-size')) || 240;
       const numberRadius = clockSize * 0.36; // 数字位置半径（略靠内）
       const markRadius = clockSize * 0.44;   // 刻度位置半径（靠外圈）
 

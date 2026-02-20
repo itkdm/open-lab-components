@@ -1,0 +1,144 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.glass-rod.basic",
+  "name": "玻璃棒",
+  "nameEn": "Glass Rod",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 30, "h": 200 },
+  "tags": ["chemistry", "labware", "glass-rod", "stirring", "glass", "tool"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
+    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.4)", "desc": "玻璃底色" },
+    { "key": "stroke",      "type": "color",  "default": "#5a8a9a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 2.5, "desc": "描边粗细" },
+    { "key": "rotate",      "type": "number(deg)", "default": 0, "desc": "旋转角度" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "glassTint":   "--cmp-glass",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "rotate":      "--cmp-rotate",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.glass-rod.basic" role="img" aria-label="玻璃棒">
+  <style>
+    .cmp[data-cmp-id="chem.labware.glass-rod.basic"] {
+      --h: var(--cmp-size, 200px);
+      display: inline-block;
+      height: var(--h);
+      width: calc(var(--h) * 30 / 200);
+      transform: rotate(var(--cmp-rotate, 0deg));
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.glass-rod.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 30 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 玻璃棒主体渐变（左右明暗，圆柱感） -->
+      <linearGradient class="gr__body-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="rgba(255,255,255,0.5)"/>
+        <stop offset="0.15" stop-color="var(--cmp-glass, rgba(220,240,255,0.4))"/>
+        <stop offset="0.4" stop-color="var(--cmp-glass, rgba(220,240,255,0.4))"/>
+        <stop offset="0.6" stop-color="var(--cmp-glass, rgba(220,240,255,0.4))" stop-opacity="0.85"/>
+        <stop offset="0.85" stop-color="var(--cmp-glass, rgba(220,240,255,0.4))" stop-opacity="0.7"/>
+        <stop offset="1" stop-color="rgba(255,255,255,0.3)"/>
+      </linearGradient>
+      <!-- 端部渐变（半球形端头） -->
+      <radialGradient class="gr__tip-grad" cx="0.4" cy="0.4" r="0.6">
+        <stop offset="0" stop-color="rgba(255,255,255,0.5)"/>
+        <stop offset="0.5" stop-color="var(--cmp-glass, rgba(220,240,255,0.4))"/>
+        <stop offset="1" stop-color="var(--cmp-glass, rgba(220,240,255,0.4))" stop-opacity="0.7"/>
+      </radialGradient>
+    </defs>
+
+    <!--
+      玻璃棒结构（viewBox 30×200）：
+      棒体：x=10~20（直径10px），y=12~188
+      上端：半圆弧封口 y=12
+      下端：半圆弧封口 y=188
+      实心玻璃棒，两端烧圆
+    -->
+
+    <!-- ===== 棒体 ===== -->
+    <rect class="gr__body" x="10" y="12" width="10" height="176" rx="0"
+          stroke="var(--cmp-stroke, #5a8a9a)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+
+    <!-- ===== 上端（烧圆的半球） ===== -->
+    <path class="gr__top-tip"
+          d="M10,14 Q10,6 15,6 Q20,6 20,14"
+          stroke="var(--cmp-stroke, #5a8a9a)" stroke-width="var(--cmp-stroke-width, 1.2)"
+          stroke-linejoin="round"/>
+
+    <!-- ===== 下端（烧圆的半球） ===== -->
+    <path class="gr__bot-tip"
+          d="M10,186 Q10,194 15,194 Q20,194 20,186"
+          stroke="var(--cmp-stroke, #5a8a9a)" stroke-width="var(--cmp-stroke-width, 1.2)"
+          stroke-linejoin="round"/>
+
+    <!-- ===== 左侧高光（纵向，圆柱反光） ===== -->
+    <line x1="12" y1="14" x2="12" y2="186"
+          stroke="#fff" stroke-width="1.8" opacity="0.25" stroke-linecap="round"/>
+    <line x1="13.5" y1="10" x2="13.5" y2="190"
+          stroke="#fff" stroke-width="0.6" opacity="0.12" stroke-linecap="round"/>
+
+    <!-- ===== 右侧暗面 ===== -->
+    <line x1="19" y1="14" x2="19" y2="186"
+          stroke="#000" stroke-width="0.5" opacity="0.05" stroke-linecap="round"/>
+
+    <!-- ===== 上端高光 ===== -->
+    <path d="M12,10 Q14,7 16,10" fill="none"
+          stroke="#fff" stroke-width="0.8" opacity="0.2" stroke-linecap="round"/>
+
+    <!-- ===== 下端高光 ===== -->
+    <path d="M12,190 Q14,193 16,190" fill="none"
+          stroke="#fff" stroke-width="0.6" opacity="0.12" stroke-linecap="round"/>
+
+    <!-- ===== 中段微弱横纹（玻璃质感） ===== -->
+    <line x1="11" y1="60" x2="19" y2="60"
+          stroke="#fff" stroke-width="0.3" opacity="0.08"/>
+    <line x1="11" y1="100" x2="19" y2="100"
+          stroke="#fff" stroke-width="0.3" opacity="0.06"/>
+    <line x1="11" y1="140" x2="19" y2="140"
+          stroke="#fff" stroke-width="0.3" opacity="0.08"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.glass-rod.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'gr_' + Math.random().toString(36).slice(2, 8);
+
+  var bodyGrad = svg.querySelector('.gr__body-grad');
+  var tipGrad = svg.querySelector('.gr__tip-grad');
+
+  if (bodyGrad) bodyGrad.setAttribute('id', uid + '_bg');
+  if (tipGrad) tipGrad.setAttribute('id', uid + '_tg');
+
+  /* 填色绑定 */
+  var body = root.querySelector('.gr__body');
+  var topTip = root.querySelector('.gr__top-tip');
+  var botTip = root.querySelector('.gr__bot-tip');
+
+  if (body) body.setAttribute('fill', 'url(#' + uid + '_bg)');
+  if (topTip) topTip.setAttribute('fill', 'url(#' + uid + '_tg)');
+  if (botTip) botTip.setAttribute('fill', 'url(#' + uid + '_tg)');
+})();
+</script>

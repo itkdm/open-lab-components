@@ -1,0 +1,282 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.evaporating-dish.basic",
+  "name": "蒸发皿",
+  "nameEn": "Evaporating Dish",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 120 },
+  "tags": ["chemistry", "labware", "evaporating-dish", "porcelain", "heating"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件宽度" },
+    { "key": "bodyColor",   "type": "color",  "default": "#eceff1", "desc": "瓷体颜色" },
+    { "key": "innerColor",  "type": "color",  "default": "#fafafa", "desc": "内壁颜色" },
+    { "key": "liquidColor", "type": "color",  "default": "#4db6ac", "desc": "液体颜色" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.4, "min": 0, "max": 1, "desc": "液位占比" },
+    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "bodyColor":   "--cmp-body",
+    "innerColor":  "--cmp-inner",
+    "liquidColor": "--cmp-liquid",
+    "liquidLevel": "--cmp-liquid-level",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.evaporating-dish.basic" role="img" aria-label="蒸发皿">
+  <style>
+    .cmp[data-cmp-id="chem.labware.evaporating-dish.basic"] {
+      --w: var(--cmp-size, 200px);
+      display: inline-block;
+      width: var(--w);
+      height: calc(var(--w) * 120 / 200);
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.evaporating-dish.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 200 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 瓷体外壁渐变（上浅下深，模拟光照） -->
+      <linearGradient class="ed__body-grad" x1="0.3" y1="0" x2="0.7" y2="1">
+        <stop offset="0" stop-color="var(--cmp-body, #eceff1)"/>
+        <stop offset="0.35" stop-color="var(--cmp-body, #eceff1)" stop-opacity="0.95"/>
+        <stop offset="0.7" stop-color="#cfd8dc"/>
+        <stop offset="1" stop-color="#b0bec5" stop-opacity="0.85"/>
+      </linearGradient>
+      <!-- 内壁渐变（碗内阴影） -->
+      <radialGradient class="ed__inner-grad" cx="0.5" cy="0.6" r="0.55">
+        <stop offset="0" stop-color="#e0e0e0" stop-opacity="0.5"/>
+        <stop offset="0.5" stop-color="var(--cmp-inner, #fafafa)" stop-opacity="0.8"/>
+        <stop offset="1" stop-color="var(--cmp-inner, #fafafa)"/>
+      </radialGradient>
+      <!-- 液体渐变 -->
+      <radialGradient class="ed__liquid-grad" cx="0.5" cy="0.4" r="0.6">
+        <stop offset="0" stop-color="var(--cmp-liquid, #4db6ac)" stop-opacity="0.55"/>
+        <stop offset="0.6" stop-color="var(--cmp-liquid, #4db6ac)" stop-opacity="0.75"/>
+        <stop offset="1" stop-color="var(--cmp-liquid, #4db6ac)" stop-opacity="0.9"/>
+      </radialGradient>
+      <!-- 碟口边缘渐变（瓷釉厚度感） -->
+      <linearGradient class="ed__rim-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.6"/>
+        <stop offset="0.4" stop-color="var(--cmp-body, #eceff1)"/>
+        <stop offset="1" stop-color="#b0bec5" stop-opacity="0.7"/>
+      </linearGradient>
+      <!-- 底部投影渐变 -->
+      <radialGradient class="ed__shadow-grad" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#000" stop-opacity="0.1"/>
+        <stop offset="0.7" stop-color="#000" stop-opacity="0.04"/>
+        <stop offset="1" stop-color="#000" stop-opacity="0"/>
+      </radialGradient>
+      <!-- 液面高光渐变 -->
+      <linearGradient class="ed__liquid-hl" x1="0.2" y1="0" x2="0.8" y2="1">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.35"/>
+        <stop offset="0.5" stop-color="#fff" stop-opacity="0.05"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+      </linearGradient>
+    </defs>
+
+    <!--
+      蒸发皿结构（viewBox 200×120）：
+      碟口椭圆中心 (100, 42)，rx=80 ry=20
+      碟底弧线最低点 y≈92
+      碟壁厚度 ≈ 4px（通过内外两层弧线表现）
+      左侧倒液嘴 x≈16
+    -->
+
+    <!-- ===== 底部投影 ===== -->
+    <ellipse class="ed__shadow" cx="100" cy="100" rx="65" ry="10"/>
+
+    <!-- ===== 碟体外壁（可见的下半部分） ===== -->
+    <!-- 外壁主体：从碟口椭圆两端向下弯到碟底 -->
+    <path class="ed__body-fill"
+          d="M20,42 Q20,92 100,96 Q180,92 180,42
+             A80,20 0 0,0 20,42 Z"
+          stroke="none"/>
+    <!-- 外壁描边 -->
+    <path d="M20,42 Q20,92 100,96 Q180,92 180,42"
+          fill="none"
+          stroke="var(--cmp-stroke, #546e7a)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+
+    <!-- 外壁瓷釉纹理线（水平弧线，增加立体感） -->
+    <path d="M28,55 Q100,62 172,55" fill="none"
+          stroke="#b0bec5" stroke-width="0.5" opacity="0.3"/>
+    <path d="M38,68 Q100,76 162,68" fill="none"
+          stroke="#b0bec5" stroke-width="0.4" opacity="0.25"/>
+    <path d="M55,80 Q100,86 145,80" fill="none"
+          stroke="#b0bec5" stroke-width="0.3" opacity="0.2"/>
+
+    <!-- 外壁左侧高光（光泽弧线） -->
+    <path d="M28,48 Q30,68 50,82" fill="none"
+          stroke="#fff" stroke-width="2" opacity="0.12" stroke-linecap="round"/>
+    <path d="M34,48 Q35,64 52,76" fill="none"
+          stroke="#fff" stroke-width="1" opacity="0.08" stroke-linecap="round"/>
+
+    <!-- 外壁右侧暗面 -->
+    <path d="M168,50 Q164,70 148,82" fill="none"
+          stroke="#000" stroke-width="1" opacity="0.04" stroke-linecap="round"/>
+
+    <!-- ===== 碟口边缘环（厚实的瓷口） ===== -->
+    <!-- 外椭圆（碟口外沿） -->
+    <ellipse cx="100" cy="42" rx="80" ry="20" fill="none"
+             stroke="var(--cmp-stroke, #546e7a)" stroke-width="var(--cmp-stroke-width, 1.5)"/>
+    <!-- 边缘厚度带（外沿和内沿之间的环形区域） -->
+    <path class="ed__rim"
+          d="M20,42 A80,20 0 0,1 180,42 A80,20 0 0,1 20,42 Z
+             M26,42 A74,17 0 0,0 174,42 A74,17 0 0,0 26,42 Z"
+          fill-rule="evenodd"
+          stroke="none"/>
+    <!-- 内椭圆（碟口内沿） -->
+    <ellipse cx="100" cy="42" rx="74" ry="17" fill="none"
+             stroke="var(--cmp-stroke, #546e7a)" stroke-width="0.5" opacity="0.4"/>
+
+    <!-- 碟口上沿高光弧 -->
+    <path d="M40,26 Q70,20 130,26" fill="none"
+          stroke="#fff" stroke-width="1.8" opacity="0.25" stroke-linecap="round"/>
+    <path d="M50,28 Q80,23 120,28" fill="none"
+          stroke="#fff" stroke-width="0.8" opacity="0.15" stroke-linecap="round"/>
+
+    <!-- ===== 碟体内壁（碟口内椭圆以内的可见区域） ===== -->
+    <ellipse class="ed__inner" cx="100" cy="43" rx="72" ry="15"
+             stroke="none"/>
+
+    <!-- 内壁深度阴影弧（碟底方向渐暗） -->
+    <ellipse cx="100" cy="48" rx="55" ry="8" fill="#000" opacity="0.04"/>
+    <ellipse cx="100" cy="50" rx="40" ry="5" fill="#000" opacity="0.03"/>
+
+    <!-- ===== 液体 ===== -->
+    <ellipse class="ed__liquid" cx="100" cy="43" rx="0" ry="0"
+             stroke="none" opacity="0"/>
+    <!-- 液面高光 -->
+    <ellipse class="ed__liquid-highlight" cx="88" cy="43" rx="0" ry="0"
+             stroke="none" opacity="0"/>
+    <!-- 液面弯月面边缘 -->
+    <ellipse class="ed__meniscus" cx="100" cy="43" rx="0" ry="0"
+             fill="none" stroke="none" opacity="0"/>
+
+    <!-- ===== 倒液嘴（左侧） ===== -->
+    <!-- 嘴部外形 -->
+    <path class="ed__spout-body"
+          d="M20,40 Q12,38 8,32 Q6,28 8,25 Q12,27 16,32 Q18,36 20,38"
+          fill="var(--cmp-body, #eceff1)"
+          stroke="var(--cmp-stroke, #546e7a)" stroke-width="var(--cmp-stroke-width, 1.5)"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- 嘴部内侧 -->
+    <path d="M21,39 Q15,37 12,33 Q14,30 18,34"
+          fill="var(--cmp-inner, #fafafa)" opacity="0.6"
+          stroke="none"/>
+    <!-- 嘴部高光 -->
+    <path d="M14,30 Q16,33 19,36" fill="none"
+          stroke="#fff" stroke-width="0.8" opacity="0.2" stroke-linecap="round"/>
+
+    <!-- ===== 内壁高光（瓷釉反光） ===== -->
+    <path d="M45,38 Q70,30 130,38" fill="none"
+          stroke="#fff" stroke-width="1.5" opacity="0.18" stroke-linecap="round"/>
+    <ellipse cx="80" cy="40" rx="20" ry="4" fill="#fff" opacity="0.06"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.evaporating-dish.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'ed_' + Math.random().toString(36).slice(2, 8);
+
+  var bodyGrad = svg.querySelector('.ed__body-grad');
+  var innerGrad = svg.querySelector('.ed__inner-grad');
+  var liquidGrad = svg.querySelector('.ed__liquid-grad');
+  var rimGrad = svg.querySelector('.ed__rim-grad');
+  var shadowGrad = svg.querySelector('.ed__shadow-grad');
+  var liquidHl = svg.querySelector('.ed__liquid-hl');
+
+  if (bodyGrad) bodyGrad.setAttribute('id', uid + '_bg');
+  if (innerGrad) innerGrad.setAttribute('id', uid + '_ig');
+  if (liquidGrad) liquidGrad.setAttribute('id', uid + '_lg');
+  if (rimGrad) rimGrad.setAttribute('id', uid + '_rg');
+  if (shadowGrad) shadowGrad.setAttribute('id', uid + '_sg');
+  if (liquidHl) liquidHl.setAttribute('id', uid + '_lh');
+
+  /* 填色绑定 */
+  var bodyFill = root.querySelector('.ed__body-fill');
+  var inner = root.querySelector('.ed__inner');
+  var liquid = root.querySelector('.ed__liquid');
+  var rim = root.querySelector('.ed__rim');
+  var shadow = root.querySelector('.ed__shadow');
+  var liquidHighlight = root.querySelector('.ed__liquid-highlight');
+
+  if (bodyFill) bodyFill.setAttribute('fill', 'url(#' + uid + '_bg)');
+  if (inner) inner.setAttribute('fill', 'url(#' + uid + '_ig)');
+  if (liquid) liquid.setAttribute('fill', 'url(#' + uid + '_lg)');
+  if (rim) rim.setAttribute('fill', 'url(#' + uid + '_rg)');
+  if (shadow) shadow.setAttribute('fill', 'url(#' + uid + '_sg)');
+  if (liquidHighlight) liquidHighlight.setAttribute('fill', 'url(#' + uid + '_lh)');
+
+  /* ── Props ── */
+  var P = {};
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') P = o; }
+  } catch(e) {}
+
+  /* 液位计算 */
+  var level = parseFloat(P.liquidLevel);
+  if (isNaN(level)) level = 0.4;
+  level = Math.max(0, Math.min(1, level));
+
+  var meniscus = root.querySelector('.ed__meniscus');
+
+  if (level > 0) {
+    /* 液面参数 */
+    var maxRx = 68, maxRy = 14;
+    var lrx = maxRx * Math.sqrt(level);
+    var lry = maxRy * Math.sqrt(level);
+    /* 液面 y：满液 y=43（碟口内沿），空液 y≈56（碟底附近） */
+    var ly = 43 + (1 - level) * 13;
+
+    if (liquid) {
+      liquid.setAttribute('cx', '100');
+      liquid.setAttribute('cy', ly.toFixed(1));
+      liquid.setAttribute('rx', lrx.toFixed(1));
+      liquid.setAttribute('ry', lry.toFixed(1));
+      liquid.setAttribute('opacity', '0.8');
+    }
+
+    /* 液面高光椭圆（偏左上，模拟光源反射） */
+    if (liquidHighlight) {
+      liquidHighlight.setAttribute('cx', (92 - (1 - level) * 5).toFixed(1));
+      liquidHighlight.setAttribute('cy', (ly - 1).toFixed(1));
+      liquidHighlight.setAttribute('rx', (lrx * 0.5).toFixed(1));
+      liquidHighlight.setAttribute('ry', (lry * 0.45).toFixed(1));
+      liquidHighlight.setAttribute('opacity', '0.4');
+    }
+
+    /* 弯月面（液面边缘的凹面） */
+    if (meniscus) {
+      meniscus.setAttribute('cx', '100');
+      meniscus.setAttribute('cy', ly.toFixed(1));
+      meniscus.setAttribute('rx', (lrx - 1).toFixed(1));
+      meniscus.setAttribute('ry', (lry - 0.5).toFixed(1));
+      meniscus.setAttribute('stroke', 'var(--cmp-liquid, #4db6ac)');
+      meniscus.setAttribute('stroke-width', '0.6');
+      meniscus.setAttribute('opacity', '0.4');
+    }
+  }
+})();
+</script>

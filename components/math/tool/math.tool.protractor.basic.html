@@ -1,0 +1,189 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.tool.protractor.basic",
+  "name": "量角器",
+  "nameEn": "Protractor",
+  "category": "math/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 260, "h": 145 },
+  "tags": ["math", "protractor", "angle", "measurement", "geometry", "tool"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 260, "min": 140, "max": 500, "desc": "组件宽度" },
+    { "key": "fill",       "type": "color",  "default": "rgba(200,230,255,0.25)", "desc": "填充色" },
+    { "key": "stroke",     "type": "color",  "default": "#1976d2", "desc": "描边颜色" },
+    { "key": "scaleColor", "type": "color",  "default": "#1565c0", "desc": "刻度颜色" },
+    { "key": "opacity",    "type": "number(0-1)", "default": 0.92, "min": 0.3, "max": 1, "desc": "透明度" },
+    { "key": "rotate",     "type": "number(deg)", "default": 0, "desc": "旋转角度" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "fill":       "--cmp-fill",
+    "stroke":     "--cmp-stroke",
+    "scaleColor": "--cmp-scale-color",
+    "opacity":    "--cmp-opacity",
+    "rotate":     "--cmp-rotate",
+    "glow":       "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="math.tool.protractor.basic" role="img" aria-label="量角器">
+  <style>
+    .cmp[data-cmp-id="math.tool.protractor.basic"] {
+      width: var(--cmp-size, 260px);
+      height: calc(var(--cmp-size, 260px) * 145 / 260);
+      display: inline-block;
+      opacity: var(--cmp-opacity, 0.92);
+      transform: rotate(var(--cmp-rotate, 0deg));
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="math.tool.protractor.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="math.tool.protractor.basic"] .pt__num {
+      font-family: Arial, sans-serif;
+      font-weight: 400;
+      pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 260 145" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="pt__fill-grad" x1="0.5" y1="1" x2="0.5" y2="0">
+        <stop offset="0" stop-color="var(--cmp-fill, rgba(200,230,255,0.25))" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="var(--cmp-fill, rgba(200,230,255,0.25))" stop-opacity="0.5"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 半圆主体（圆心 130,135，半径 120） -->
+    <path class="pt__body"
+          d="M10,135 A120,120 0 0,1 250,135 Z"
+          stroke="var(--cmp-stroke, #1976d2)" stroke-width="1.5"
+          stroke-linejoin="round"/>
+
+    <!-- 内部镂空半圆（半径 45） -->
+    <path d="M85,135 A45,45 0 0,1 175,135 Z"
+          fill="#fff" fill-opacity="0.45"
+          stroke="var(--cmp-stroke, #1976d2)" stroke-width="0.6" opacity="0.5"/>
+
+    <!-- 中心点标记 -->
+    <line x1="127" y1="135" x2="133" y2="135"
+          stroke="var(--cmp-scale-color, #1565c0)" stroke-width="1"/>
+    <line x1="130" y1="132" x2="130" y2="138"
+          stroke="var(--cmp-scale-color, #1565c0)" stroke-width="1"/>
+
+    <!-- 底边基线 -->
+    <line x1="10" y1="135" x2="250" y2="135"
+          stroke="var(--cmp-stroke, #1976d2)" stroke-width="1.5"/>
+
+    <!-- 刻度（由 JS 生成） -->
+    <g class="pt__ticks"></g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.tool.protractor.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'pt_' + Math.random().toString(36).slice(2, 8);
+  var fillGrad = svg.querySelector('.pt__fill-grad');
+  if (fillGrad) fillGrad.setAttribute('id', uid + '_fg');
+  var body = root.querySelector('.pt__body');
+  if (body) body.setAttribute('fill', 'url(#' + uid + '_fg)');
+
+  /* ── 刻度生成 ── */
+  var ticksG = root.querySelector('.pt__ticks');
+  if (!ticksG) return;
+
+  var CX = 130, CY = 135, R = 120;
+  var NS = 'http://www.w3.org/2000/svg';
+
+  for (var deg = 0; deg <= 180; deg++) {
+    /* 角度：0°在右侧(3点钟)，逆时针到180°(9点钟) */
+    /* SVG 角度：从右侧开始，顺时针为正 → 用负角度实现逆时针 */
+    var rad = deg * Math.PI / 180;
+    var cos = Math.cos(rad);
+    var sin = Math.sin(rad);
+
+    /* 外端点（圆弧边缘） */
+    var ox = CX - cos * R;
+    var oy = CY - sin * R;
+
+    /* 刻度长度 */
+    var len;
+    if (deg % 10 === 0) {
+      len = 12; /* 主刻度（每10°） */
+    } else if (deg % 5 === 0) {
+      len = 8;  /* 中刻度（每5°） */
+    } else {
+      len = 4;  /* 细刻度（每1°） */
+    }
+
+    /* 内端点 */
+    var ix = CX - cos * (R - len);
+    var iy = CY - sin * (R - len);
+
+    var line = document.createElementNS(NS, 'line');
+    line.setAttribute('x1', ox.toFixed(1));
+    line.setAttribute('y1', oy.toFixed(1));
+    line.setAttribute('x2', ix.toFixed(1));
+    line.setAttribute('y2', iy.toFixed(1));
+    line.setAttribute('stroke', 'var(--cmp-scale-color, #1565c0)');
+
+    if (deg % 10 === 0) {
+      line.setAttribute('stroke-width', '1.2');
+    } else if (deg % 5 === 0) {
+      line.setAttribute('stroke-width', '0.8');
+    } else {
+      line.setAttribute('stroke-width', '0.5');
+      line.setAttribute('opacity', '0.6');
+    }
+    ticksG.appendChild(line);
+
+    /* 外圈数字（每10°，顺时针读数 0→180） */
+    if (deg % 10 === 0) {
+      var numR = R - 16;
+      var nx = CX - cos * numR;
+      var ny = CY - sin * numR;
+
+      var txt = document.createElementNS(NS, 'text');
+      txt.setAttribute('class', 'pt__num');
+      txt.setAttribute('x', nx.toFixed(1));
+      txt.setAttribute('y', (ny + 3).toFixed(1));
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('font-size', deg % 30 === 0 ? '9' : '7.5');
+      txt.setAttribute('fill', 'var(--cmp-scale-color, #1565c0)');
+      txt.textContent = deg;
+      ticksG.appendChild(txt);
+
+      /* 内圈数字（反向读数 180→0） */
+      var innerDeg = 180 - deg;
+      if (innerDeg !== deg) {
+        var numR2 = R - 27;
+        var nx2 = CX - cos * numR2;
+        var ny2 = CY - sin * numR2;
+
+        var txt2 = document.createElementNS(NS, 'text');
+        txt2.setAttribute('class', 'pt__num');
+        txt2.setAttribute('x', nx2.toFixed(1));
+        txt2.setAttribute('y', (ny2 + 3).toFixed(1));
+        txt2.setAttribute('text-anchor', 'middle');
+        txt2.setAttribute('font-size', '6.5');
+        txt2.setAttribute('fill', 'var(--cmp-scale-color, #1565c0)');
+        txt2.setAttribute('opacity', '0.55');
+        txt2.textContent = innerDeg;
+        ticksG.appendChild(txt2);
+      }
+    }
+  }
+})();
+</script>

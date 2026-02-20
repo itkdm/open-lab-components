@@ -6,10 +6,10 @@
   "nameEn": "Interactive Protractor",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 240 },
+  "viewport": { "w": 280, "h": 140 },
   "props": [
-    { "key": "width", "type": "number(px)", "default": 480, "min": 240, "max": 960, "desc": "量角器宽度" },
-    { "key": "height", "type": "number(px)", "default": 240, "min": 120, "max": 480, "desc": "量角器高度" },
+    { "key": "width", "type": "number(px)", "default": 280, "min": 140, "max": 960, "desc": "量角器宽度" },
+    { "key": "height", "type": "number(px)", "default": 140, "min": 70, "max": 480, "desc": "量角器高度" },
     { "key": "rotate", "type": "number(deg)", "default": 0, "min": -180, "max": 180, "desc": "旋转角度" },
     { "key": "opacity", "type": "number(0-1)", "default": 0.92, "min": 0, "max": 1, "desc": "透明度" },
     { "key": "fill", "type": "color", "default": "rgba(200,230,255,0.3)", "desc": "填充色" },
@@ -91,8 +91,8 @@
 
 <style>
     .cmp[data-cmp-id="phy.apparatus.protractor.interactive"] {
-        width: var(--cmp-width, 480px);
-        height: var(--cmp-height, 240px);
+        width: var(--cmp-width, 280px);
+        height: var(--cmp-height, 140px);
         display: inline-block;
         position: relative;
         opacity: var(--cmp-opacity, 0.92);

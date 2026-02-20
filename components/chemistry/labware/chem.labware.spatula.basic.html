@@ -1,0 +1,177 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.spatula.basic",
+  "name": "药匙",
+  "nameEn": "Spatula",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 260, "h": 44 },
+  "tags": ["chemistry", "labware", "spatula", "spoon", "tool", "metal", "sampling"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 260, "min": 130, "max": 520, "desc": "组件宽度" },
+    { "key": "metalColor",  "type": "color",  "default": "#9e9e9e", "desc": "金属颜色" },
+    { "key": "darkMetal",   "type": "color",  "default": "#616161", "desc": "金属深色" },
+    { "key": "stroke",      "type": "color",  "default": "#424242", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 2.5, "desc": "描边粗细" },
+    { "key": "rotate",      "type": "number(deg)", "default": 0, "desc": "旋转角度" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "metalColor":  "--cmp-metal",
+    "darkMetal":   "--cmp-dark-metal",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "rotate":      "--cmp-rotate",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.spatula.basic" role="img" aria-label="药匙">
+  <style>
+    .cmp[data-cmp-id="chem.labware.spatula.basic"] {
+      --w: var(--cmp-size, 260px);
+      display: inline-block;
+      width: var(--w);
+      height: calc(var(--w) * 44 / 260);
+      transform: rotate(var(--cmp-rotate, 0deg));
+      filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+              rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+      user-select: none;
+    }
+    .cmp[data-cmp-id="chem.labware.spatula.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 260 44" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 金属柄渐变 -->
+      <linearGradient class="sp__handle-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#d0d0d0"/>
+        <stop offset="0.15" stop-color="var(--cmp-metal, #9e9e9e)"/>
+        <stop offset="0.5" stop-color="var(--cmp-metal, #9e9e9e)"/>
+        <stop offset="0.85" stop-color="var(--cmp-dark-metal, #616161)"/>
+        <stop offset="1" stop-color="var(--cmp-dark-metal, #616161)"/>
+      </linearGradient>
+      <!-- 大匙渐变 -->
+      <radialGradient class="sp__big-grad" cx="0.4" cy="0.35" r="0.65">
+        <stop offset="0" stop-color="#ddd" stop-opacity="0.5"/>
+        <stop offset="0.35" stop-color="var(--cmp-metal, #9e9e9e)"/>
+        <stop offset="1" stop-color="var(--cmp-dark-metal, #616161)" stop-opacity="0.85"/>
+      </radialGradient>
+      <!-- 小匙渐变 -->
+      <radialGradient class="sp__small-grad" cx="0.4" cy="0.35" r="0.65">
+        <stop offset="0" stop-color="#ddd" stop-opacity="0.5"/>
+        <stop offset="0.35" stop-color="var(--cmp-metal, #9e9e9e)"/>
+        <stop offset="1" stop-color="var(--cmp-dark-metal, #616161)" stop-opacity="0.85"/>
+      </radialGradient>
+    </defs>
+
+    <!--
+      药匙结构（viewBox 260×44）：
+      整体一根金属条，两端展宽成匙头
+      大匙（左端）：中心 x≈28, 椭圆形凹勺，宽44 高22
+      柄：中段 y=19~25，扁平金属条
+      小匙（右端）：中心 x≈238, 椭圆形凹勺，宽28 高16
+      所有部分用连续 path 一体成型
+    -->
+
+    <!-- ===== 底部投影 ===== -->
+    <ellipse cx="130" cy="40" rx="110" ry="3" fill="#000" opacity="0.04"/>
+
+    <!-- ===== 整体外轮廓（一体化 path） ===== -->
+    <!--
+      大匙左端 → 柄上沿 → 小匙右端 → 柄下沿 → 回到大匙
+      大匙中心(28,22), 半径 rx=24 ry=12
+      小匙中心(238,22), 半径 rx=16 ry=9
+      柄上沿 y=19, 下沿 y=25
+    -->
+    <path class="sp__outline"
+          d="M4,22
+             A24,12 0 1,1 52,22
+             L52,19 L222,19
+             Q226,19 226,16
+             A16,9 0 1,1 250,22
+             A16,9 0 1,1 226,28
+             Q226,25 222,25
+             L52,25 L52,22
+             A24,12 0 1,1 4,22 Z"
+          stroke="var(--cmp-stroke, #424242)" stroke-width="var(--cmp-stroke-width, 1.2)"
+          stroke-linejoin="round"/>
+
+    <!-- ===== 大匙凹面细节 ===== -->
+    <!-- 凹面阴影（深度感） -->
+    <ellipse cx="26" cy="23" rx="17" ry="8" fill="#000" opacity="0.08"/>
+    <!-- 凹面内壁渐变高光 -->
+    <ellipse cx="23" cy="19" rx="12" ry="5" fill="#fff" opacity="0.12"/>
+    <!-- 匙碗边缘高光弧 -->
+    <path d="M10,14 Q24,8 46,14" fill="none"
+          stroke="#fff" stroke-width="1" opacity="0.22" stroke-linecap="round"/>
+    <!-- 匙碗内圈线（凹面边缘） -->
+    <ellipse cx="28" cy="22" rx="18" ry="9" fill="none"
+             stroke="var(--cmp-stroke, #424242)" stroke-width="0.4" opacity="0.2"/>
+
+    <!-- ===== 柄部细节 ===== -->
+    <!-- 柄上沿高光 -->
+    <line x1="56" y1="20" x2="218" y2="20"
+          stroke="#fff" stroke-width="0.7" opacity="0.22" stroke-linecap="round"/>
+    <!-- 柄下沿暗线 -->
+    <line x1="56" y1="24.5" x2="218" y2="24.5"
+          stroke="#000" stroke-width="0.4" opacity="0.06" stroke-linecap="round"/>
+    <!-- 柄中线（金属质感纹理） -->
+    <line x1="60" y1="22" x2="216" y2="22"
+          stroke="#fff" stroke-width="0.3" opacity="0.06"/>
+
+    <!-- ===== 小匙凹面细节 ===== -->
+    <!-- 凹面阴影 -->
+    <ellipse cx="237" cy="23" rx="11" ry="6" fill="#000" opacity="0.07"/>
+    <!-- 凹面高光 -->
+    <ellipse cx="234" cy="19" rx="7" ry="3.5" fill="#fff" opacity="0.1"/>
+    <!-- 匙碗边缘高光弧 -->
+    <path d="M226,16 Q236,12 250,16" fill="none"
+          stroke="#fff" stroke-width="0.7" opacity="0.18" stroke-linecap="round"/>
+    <!-- 匙碗内圈线 -->
+    <ellipse cx="238" cy="22" rx="12" ry="7" fill="none"
+             stroke="var(--cmp-stroke, #424242)" stroke-width="0.3" opacity="0.18"/>
+
+    <!-- ===== 柄与匙头过渡区域加强 ===== -->
+    <!-- 左过渡（柄展宽到大匙） -->
+    <path d="M52,19 Q50,16 48,14" fill="none"
+          stroke="var(--cmp-metal, #9e9e9e)" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+    <path d="M52,25 Q50,28 48,30" fill="none"
+          stroke="var(--cmp-dark-metal, #616161)" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+    <!-- 右过渡（柄展宽到小匙） -->
+    <path d="M222,19 Q224,17 226,15" fill="none"
+          stroke="var(--cmp-metal, #9e9e9e)" stroke-width="1" opacity="0.25" stroke-linecap="round"/>
+    <path d="M222,25 Q224,27 226,29" fill="none"
+          stroke="var(--cmp-dark-metal, #616161)" stroke-width="0.8" opacity="0.15" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'chem.labware.spatula.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID ── */
+  var uid = 'sp_' + Math.random().toString(36).slice(2, 8);
+
+  var handleGrad = svg.querySelector('.sp__handle-grad');
+  var bigGrad = svg.querySelector('.sp__big-grad');
+  var smallGrad = svg.querySelector('.sp__small-grad');
+
+  if (handleGrad) handleGrad.setAttribute('id', uid + '_hg');
+  if (bigGrad) bigGrad.setAttribute('id', uid + '_bg');
+  if (smallGrad) smallGrad.setAttribute('id', uid + '_sg');
+
+  /* 整体轮廓用柄渐变填充 */
+  var outline = root.querySelector('.sp__outline');
+  if (outline) outline.setAttribute('fill', 'url(#' + uid + '_hg)');
+})();
+</script>

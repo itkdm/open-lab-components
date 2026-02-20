@@ -5,10 +5,10 @@
   "name": "圆规（交互式）",
   "nameEn": "Compass (Interactive)",
   "category": "math/geometry",
-  "version": "1.0.0",
-  "viewport": { "w": 200, "h": 200 },
+  "version": "1.2.0",
+  "viewport": { "w": 300, "h": 300 },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 200, "min": 100, "max": 600, "desc": "组件尺寸" },
+    { "key": "size", "type": "number(px)", "default": 300, "min": 150, "max": 600, "desc": "组件尺寸" },
     { "key": "metalColor", "type": "color", "default": "#888888", "desc": "金属部件颜色" },
     { "key": "pencilColor", "type": "color", "default": "#ffb74d", "desc": "铅笔腿颜色" },
     { "key": "arcColor", "type": "color", "default": "#1565c0", "desc": "圆弧颜色" },
@@ -29,307 +29,355 @@
   },
   "tags": ["compass", "geometry", "circle", "radius", "interactive", "math", "drawing"],
   "events": [
-    {
-      "name": "cmp:change",
-      "type": "drag",
-      "values": {
-        "radius": "number(px) — 当前半径",
-        "angle": "number(deg) — 两腿张开角度"
-      }
-    },
-    {
-      "name": "cmp:changeend",
-      "type": "drag",
-      "values": {
-        "radius": "number(px) — 最终半径",
-        "angle": "number(deg) — 最终张开角度"
-      }
-    }
+    { "name": "cmp:change", "type": "drag", "values": { "radius": "number", "sweepDeg": "number — 已画弧度数" } },
+    { "name": "cmp:changeend", "type": "drag", "values": { "radius": "number", "sweepDeg": "number" } }
   ]
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.compass.interactive" role="img" aria-label="圆规（交互式）">
   <style>
     .cmp[data-cmp-id="math.geometry.compass.interactive"] {
-      --size: var(--cmp-size, 200px);
-      --metal-color: var(--cmp-metal-color, #888888);
-      --pencil-color: var(--cmp-pencil-color, #ffb74d);
-      --arc-color: var(--cmp-arc-color, #1565c0);
-      --stroke-color: var(--cmp-stroke, #555555);
-      --stroke-w: var(--cmp-stroke-width, 1.5);
-      --accent-color: var(--cmp-accent, #d32f2f);
-      --glow-val: var(--cmp-glow, 0);
-
+      --size: var(--cmp-size, 300px);
       display: inline-block;
       width: var(--size);
       height: var(--size);
       user-select: none;
       touch-action: none;
-      filter: drop-shadow(0 0 calc(12px * var(--glow-val)) rgba(21, 101, 194, calc(0.5 * var(--glow-val))));
+      filter: drop-shadow(0 0 calc(12px * var(--cmp-glow, 0)) rgba(21,101,194, calc(0.5 * var(--cmp-glow, 0))));
     }
-
     .cmp[data-cmp-id="math.geometry.compass.interactive"] svg {
-      display: block;
-      width: 100%;
-      height: 100%;
+      display: block; width: 100%; height: 100%; overflow: visible;
     }
-
-    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cmp__handle {
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cp__pivot-handle {
       cursor: grab;
     }
-
-    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cmp__handle:active {
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cp__pivot-handle:active {
       cursor: grabbing;
     }
-
-    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cmp__radius-text {
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cp__pencil-handle {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="math.geometry.compass.interactive"] .cp__info {
       font-family: Arial, sans-serif;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: bold;
       pointer-events: none;
     }
   </style>
 
-  <svg viewBox="0 0 200 200" aria-hidden="true">
-    <defs>
-      <linearGradient id="cmp-compass-metal-grad" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#aaa" />
-        <stop offset="50%" stop-color="#ddd" />
-        <stop offset="100%" stop-color="#999" />
-      </linearGradient>
-    </defs>
-
-    <!-- 圆弧 -->
-    <circle class="cmp__arc" cx="0" cy="0" r="0" fill="none" stroke-dasharray="4 3" stroke-width="1.5" opacity="0.6" />
+  <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- 画出的弧线轨迹 -->
+    <path class="cp__trail" d="" fill="none" stroke-width="1.8" stroke-linecap="round" opacity="0"/>
 
     <!-- 针腿 -->
-    <line class="cmp__needle-leg" x1="100" y1="30" x2="100" y2="30" stroke-width="3" stroke-linecap="round" />
-
+    <line class="cp__needle-leg" stroke-width="3" stroke-linecap="round"/>
     <!-- 铅笔腿 -->
-    <line class="cmp__pencil-leg" x1="100" y1="30" x2="100" y2="30" stroke-width="3" stroke-linecap="round" />
-
+    <line class="cp__pencil-leg" stroke-width="3" stroke-linecap="round"/>
     <!-- 针尖 -->
-    <circle class="cmp__needle-tip" cx="0" cy="0" r="2" />
-
-    <!-- 铅笔尖 -->
-    <polygon class="cmp__pencil-tip" points="0,0 0,0 0,0" />
-
-    <!-- 铅笔尖芯 -->
-    <line class="cmp__pencil-core" x1="0" y1="0" x2="0" y2="0" stroke-width="1.5" stroke-linecap="round" />
-
+    <circle class="cp__needle-tip" r="2.5"/>
+    <!-- 铅笔尖三角 -->
+    <polygon class="cp__pencil-tri"/>
+    <!-- 铅笔芯 -->
+    <line class="cp__pencil-core" stroke-width="1.5" stroke-linecap="round" stroke="#333"/>
     <!-- 铰接点 -->
-    <circle class="cmp__pivot" cx="100" cy="30" r="5" />
-    <circle class="cmp__pivot-inner" cx="100" cy="30" r="2.5" fill="#ccc" stroke="none" />
+    <circle class="cp__pivot" r="5"/>
+    <circle class="cp__pivot-inner" r="2.5" fill="#ccc" stroke="none"/>
 
     <!-- 拖拽手柄 -->
-    <circle class="cmp__handle" cx="0" cy="0" r="8" fill="transparent" stroke="none" />
+    <circle class="cp__pivot-handle" r="14" fill="transparent" stroke="none"/>
+    <circle class="cp__pencil-handle" r="12" fill="transparent" stroke="none"/>
 
-    <!-- 半径文字 -->
-    <text class="cmp__radius-text" x="0" y="0" text-anchor="middle"></text>
+    <!-- 信息文字 -->
+    <text class="cp__info" x="150" y="295" text-anchor="middle"></text>
   </svg>
-
-  <script>
-    (function () {
-      var root = document.currentScript.closest('[data-cmp-id="math.geometry.compass.interactive"]');
-      if (!root) return;
-
-      var svg = root.querySelector('svg');
-      if (!svg) return;
-
-      var arcEl = svg.querySelector('.cmp__arc');
-      var needleLeg = svg.querySelector('.cmp__needle-leg');
-      var pencilLeg = svg.querySelector('.cmp__pencil-leg');
-      var needleTip = svg.querySelector('.cmp__needle-tip');
-      var pencilTip = svg.querySelector('.cmp__pencil-tip');
-      var pencilCore = svg.querySelector('.cmp__pencil-core');
-      var handle = svg.querySelector('.cmp__handle');
-      var radiusText = svg.querySelector('.cmp__radius-text');
-
-      /* --- geometry constants --- */
-      var PIVOT_X = 100;
-      var PIVOT_Y = 30;
-      var LEG_LEN = 130;
-      var MIN_ANGLE = 8;
-      var MAX_ANGLE = 70;
-
-      /* --- state --- */
-      var halfAngle = 25; /* degrees, half the opening angle */
-
-      function degToRad(d) { return d * Math.PI / 180; }
-
-      function calcLegEnd(angleDeg, side) {
-        /* side: -1 = left (needle), +1 = right (pencil) */
-        var rad = degToRad(angleDeg * side);
-        return {
-          x: PIVOT_X + LEG_LEN * Math.sin(rad),
-          y: PIVOT_Y + LEG_LEN * Math.cos(rad)
-        };
-      }
-
-      function render() {
-        var cs = getComputedStyle(root);
-        var metalColor = cs.getPropertyValue('--metal-color').trim() || '#888888';
-        var pencilColor = cs.getPropertyValue('--pencil-color').trim() || '#ffb74d';
-        var arcColor = cs.getPropertyValue('--arc-color').trim() || '#1565c0';
-        var strokeColor = cs.getPropertyValue('--stroke-color').trim() || '#555555';
-        var strokeW = parseFloat(cs.getPropertyValue('--stroke-w')) || 1.5;
-        var accentColor = cs.getPropertyValue('--accent-color').trim() || '#d32f2f';
-
-        var needleEnd = calcLegEnd(halfAngle, -1);
-        var pencilEnd = calcLegEnd(halfAngle, 1);
-
-        /* radius = horizontal distance between the two leg tips at the bottom */
-        var dx = pencilEnd.x - needleEnd.x;
-        var dy = pencilEnd.y - needleEnd.y;
-        var radius = Math.sqrt(dx * dx + dy * dy) / 2;
-
-        /* needle leg */
-        needleLeg.setAttribute('x1', PIVOT_X);
-        needleLeg.setAttribute('y1', PIVOT_Y);
-        needleLeg.setAttribute('x2', needleEnd.x);
-        needleLeg.setAttribute('y2', needleEnd.y);
-        needleLeg.setAttribute('stroke', metalColor);
-
-        /* pencil leg */
-        pencilLeg.setAttribute('x1', PIVOT_X);
-        pencilLeg.setAttribute('y1', PIVOT_Y);
-        pencilLeg.setAttribute('x2', pencilEnd.x);
-        pencilLeg.setAttribute('y2', pencilEnd.y);
-        pencilLeg.setAttribute('stroke', pencilColor);
-
-        /* needle tip (small dark triangle at bottom of needle leg) */
-        needleTip.setAttribute('cx', needleEnd.x);
-        needleTip.setAttribute('cy', needleEnd.y);
-        needleTip.setAttribute('fill', strokeColor);
-
-        /* pencil tip (triangle) */
-        var tipLen = 8;
-        var tipHalf = 3;
-        var pAngleRad = degToRad(-halfAngle);
-        var pDirX = Math.sin(pAngleRad);
-        var pDirY = Math.cos(pAngleRad);
-        var pPerpX = pDirY;
-        var pPerpY = -pDirX;
-        var tipBottom = { x: pencilEnd.x + pDirX * tipLen, y: pencilEnd.y + pDirY * tipLen };
-        var tipLeft = { x: pencilEnd.x - pPerpX * tipHalf, y: pencilEnd.y - pPerpY * tipHalf };
-        var tipRight = { x: pencilEnd.x + pPerpX * tipHalf, y: pencilEnd.y + pPerpY * tipHalf };
-        pencilTip.setAttribute('points',
-          tipLeft.x + ',' + tipLeft.y + ' ' +
-          tipBottom.x + ',' + tipBottom.y + ' ' +
-          tipRight.x + ',' + tipRight.y
-        );
-        pencilTip.setAttribute('fill', pencilColor);
-        pencilTip.setAttribute('stroke', strokeColor);
-        pencilTip.setAttribute('stroke-width', strokeW * 0.5);
-
-        /* pencil core (dark line at very tip) */
-        var coreStart = { x: pencilEnd.x + pDirX * (tipLen * 0.5), y: pencilEnd.y + pDirY * (tipLen * 0.5) };
-        pencilCore.setAttribute('x1', coreStart.x);
-        pencilCore.setAttribute('y1', coreStart.y);
-        pencilCore.setAttribute('x2', tipBottom.x);
-        pencilCore.setAttribute('y2', tipBottom.y);
-        pencilCore.setAttribute('stroke', '#333');
-
-        /* arc: centered at needle tip, radius = distance to pencil tip */
-        var arcRadius = Math.sqrt(
-          Math.pow(pencilEnd.x - needleEnd.x, 2) +
-          Math.pow(pencilEnd.y - needleEnd.y, 2)
-        );
-        arcEl.setAttribute('cx', needleEnd.x);
-        arcEl.setAttribute('cy', needleEnd.y);
-        arcEl.setAttribute('r', arcRadius);
-        arcEl.setAttribute('stroke', arcColor);
-
-        /* pivot */
-        var pivotEl = svg.querySelector('.cmp__pivot');
-        pivotEl.setAttribute('fill', metalColor);
-        pivotEl.setAttribute('stroke', strokeColor);
-        pivotEl.setAttribute('stroke-width', strokeW);
-
-        /* drag handle at pencil end */
-        handle.setAttribute('cx', pencilEnd.x);
-        handle.setAttribute('cy', pencilEnd.y);
-
-        /* radius text */
-        var midX = (needleEnd.x + pencilEnd.x) / 2;
-        var midY = Math.max(needleEnd.y, pencilEnd.y) + 16;
-        if (midY > 195) midY = 195;
-        radiusText.setAttribute('x', midX);
-        radiusText.setAttribute('y', midY);
-        radiusText.setAttribute('fill', accentColor);
-        radiusText.textContent = 'r = ' + Math.round(radius);
-      }
-
-      function getValues() {
-        var needleEnd = calcLegEnd(halfAngle, -1);
-        var pencilEnd = calcLegEnd(halfAngle, 1);
-        var arcRadius = Math.sqrt(
-          Math.pow(pencilEnd.x - needleEnd.x, 2) +
-          Math.pow(pencilEnd.y - needleEnd.y, 2)
-        );
-        return {
-          radius: Math.round(arcRadius * 100) / 100,
-          angle: Math.round(halfAngle * 2 * 100) / 100
-        };
-      }
-
-      function emitChange(name) {
-        root.dispatchEvent(new CustomEvent(name, {
-          bubbles: true,
-          composed: true,
-          detail: {
-            id: root.getAttribute('data-cmp-id'),
-            type: 'drag',
-            values: getValues()
-          }
-        }));
-      }
-
-      /* --- pointer interaction --- */
-      var dragging = false;
-
-      function svgPoint(clientX, clientY) {
-        var pt = svg.createSVGPoint();
-        pt.x = clientX;
-        pt.y = clientY;
-        return pt.matrixTransform(svg.getScreenCTM().inverse());
-      }
-
-      function onPointerDown(e) {
-        e.preventDefault();
-        dragging = true;
-        try { e.target.setPointerCapture(e.pointerId); } catch (_) {}
-      }
-
-      function onPointerMove(e) {
-        if (!dragging) return;
-        e.preventDefault();
-        var p = svgPoint(e.clientX, e.clientY);
-        /* compute angle from pivot to pointer */
-        var dx = p.x - PIVOT_X;
-        var dy = p.y - PIVOT_Y;
-        var angle = Math.atan2(dx, dy) * 180 / Math.PI;
-        /* clamp */
-        if (angle < MIN_ANGLE) angle = MIN_ANGLE;
-        if (angle > MAX_ANGLE) angle = MAX_ANGLE;
-        halfAngle = angle;
-        render();
-        emitChange('cmp:change');
-      }
-
-      function onPointerUp(e) {
-        if (!dragging) return;
-        dragging = false;
-        emitChange('cmp:changeend');
-      }
-
-      handle.addEventListener('pointerdown', onPointerDown, { passive: false });
-      root.addEventListener('pointermove', onPointerMove, { passive: false });
-      root.addEventListener('pointerup', onPointerUp, { passive: false });
-      root.addEventListener('pointercancel', onPointerUp, { passive: false });
-
-      /* initial render */
-      render();
-    })();
-  </script>
 </div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.compass.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var trail    = svg.querySelector('.cp__trail');
+  var nLeg     = svg.querySelector('.cp__needle-leg');
+  var pLeg     = svg.querySelector('.cp__pencil-leg');
+  var nTip     = svg.querySelector('.cp__needle-tip');
+  var pTri     = svg.querySelector('.cp__pencil-tri');
+  var pCore    = svg.querySelector('.cp__pencil-core');
+  var pivotC   = svg.querySelector('.cp__pivot');
+  var pivotIn  = svg.querySelector('.cp__pivot-inner');
+  var pivotH   = svg.querySelector('.cp__pivot-handle');
+  var pencilH  = svg.querySelector('.cp__pencil-handle');
+  var infoTxt  = svg.querySelector('.cp__info');
+
+  /*
+   * 几何模型（简洁版）：
+   *   - 针尖固定在 (NX, NY)，这是圆心
+   *   - halfAngle 控制两腿张开的半角（度），决定半径
+   *   - rotation 控制整个圆规绕针尖的朝向（弧度）
+   *   - 铰接点在针尖正上方，两腿对称向下张开
+   *   - 整体再绕针尖旋转 rotation 角度
+   */
+  var NX = 150, NY = 190;
+  var LEG = 120;
+  var halfAngle = 18;          /* 半角（度），初始 ~18° */
+  var rotation = 0;            /* 整体旋转（弧度），0 = 铰接点正上方 */
+
+  /* 画弧状态 */
+  var drawing = false;
+  var adjusting = false;
+  var drawStartRot = 0;
+  var accumSweep = 0;
+  var prevMouseAngle = 0;
+
+  function deg2rad(d) { return d * Math.PI / 180; }
+
+  /* 计算铰接点和两个尖端的绝对坐标 */
+  function geometry() {
+    var ha = deg2rad(halfAngle);
+    /* 未旋转时：铰接点在 (0, -LEG*cos(ha))，针尖在 (-LEG*sin(ha), 0)，铅笔尖在 (+LEG*sin(ha), 0) */
+    /* 但我们以针尖为原点，所以先算相对针尖的坐标 */
+    /* 铰接点相对针尖：(LEG*sin(ha), -LEG*cos(ha)) — 即针尖在左下，铰接点在右上 */
+    /* 不对，重新想：铰接点在上方，两腿对称向下 */
+    /* 以铰接点为局部原点：针尖 = (-sin(ha)*LEG, cos(ha)*LEG)，铅笔尖 = (+sin(ha)*LEG, cos(ha)*LEG) */
+    /* 以针尖为原点：铰接点 = (sin(ha)*LEG, -cos(ha)*LEG)，铅笔尖 = (2*sin(ha)*LEG, 0) */
+    var sinA = Math.sin(ha), cosA = Math.cos(ha);
+    /* 相对针尖（未旋转） */
+    var pivRx = sinA * LEG;
+    var pivRy = -cosA * LEG;
+    var penRx = 2 * sinA * LEG;
+    var penRy = 0;
+
+    /* 绕针尖旋转 rotation */
+    var cr = Math.cos(rotation), sr = Math.sin(rotation);
+    return {
+      pivX: NX + pivRx * cr - pivRy * sr,
+      pivY: NY + pivRx * sr + pivRy * cr,
+      penX: NX + penRx * cr - penRy * sr,
+      penY: NY + penRx * sr + penRy * cr,
+      radius: 2 * sinA * LEG
+    };
+  }
+
+  function colors() {
+    var cs = getComputedStyle(root);
+    return {
+      metal:  cs.getPropertyValue('--cmp-metal-color').trim()  || '#888888',
+      pencil: cs.getPropertyValue('--cmp-pencil-color').trim() || '#ffb74d',
+      arc:    cs.getPropertyValue('--cmp-arc-color').trim()    || '#1565c0',
+      stroke: cs.getPropertyValue('--cmp-stroke').trim()       || '#555555',
+      sw:     parseFloat(cs.getPropertyValue('--cmp-stroke-width')) || 1.5,
+      accent: cs.getPropertyValue('--cmp-accent').trim()       || '#d32f2f'
+    };
+  }
+
+  function render() {
+    var c = colors();
+    var g = geometry();
+
+    /* 针腿 */
+    nLeg.setAttribute('x1', g.pivX); nLeg.setAttribute('y1', g.pivY);
+    nLeg.setAttribute('x2', NX);     nLeg.setAttribute('y2', NY);
+    nLeg.setAttribute('stroke', c.metal);
+
+    /* 铅笔腿 */
+    pLeg.setAttribute('x1', g.pivX); pLeg.setAttribute('y1', g.pivY);
+    pLeg.setAttribute('x2', g.penX); pLeg.setAttribute('y2', g.penY);
+    pLeg.setAttribute('stroke', c.pencil);
+
+    /* 针尖 */
+    nTip.setAttribute('cx', NX); nTip.setAttribute('cy', NY);
+    nTip.setAttribute('fill', c.stroke);
+
+    /* 铅笔尖三角 */
+    var tipLen = 8, tipHalf = 3;
+    var pdx = g.penX - g.pivX, pdy = g.penY - g.pivY;
+    var pdl = Math.sqrt(pdx * pdx + pdy * pdy) || 1;
+    pdx /= pdl; pdy /= pdl;
+    var ppx = -pdy, ppy = pdx;
+    var tb = { x: g.penX + pdx * tipLen, y: g.penY + pdy * tipLen };
+    var tl = { x: g.penX - ppx * tipHalf, y: g.penY - ppy * tipHalf };
+    var tr = { x: g.penX + ppx * tipHalf, y: g.penY + ppy * tipHalf };
+    pTri.setAttribute('points', tl.x+','+tl.y+' '+tb.x+','+tb.y+' '+tr.x+','+tr.y);
+    pTri.setAttribute('fill', c.pencil);
+    pTri.setAttribute('stroke', c.stroke);
+    pTri.setAttribute('stroke-width', c.sw * 0.5);
+
+    /* 铅笔芯 */
+    var cm = { x: g.penX + pdx * tipLen * 0.5, y: g.penY + pdy * tipLen * 0.5 };
+    pCore.setAttribute('x1', cm.x); pCore.setAttribute('y1', cm.y);
+    pCore.setAttribute('x2', tb.x); pCore.setAttribute('y2', tb.y);
+
+    /* 铰接点 */
+    pivotC.setAttribute('cx', g.pivX); pivotC.setAttribute('cy', g.pivY);
+    pivotC.setAttribute('fill', c.metal);
+    pivotC.setAttribute('stroke', c.stroke);
+    pivotC.setAttribute('stroke-width', c.sw);
+    pivotIn.setAttribute('cx', g.pivX); pivotIn.setAttribute('cy', g.pivY);
+
+    /* 手柄 */
+    pivotH.setAttribute('cx', g.pivX); pivotH.setAttribute('cy', g.pivY);
+    pencilH.setAttribute('cx', g.penX); pencilH.setAttribute('cy', g.penY);
+
+    /* 信息 */
+    var sweepDeg = Math.abs(accumSweep) * 180 / Math.PI;
+    infoTxt.setAttribute('fill', c.accent);
+    if (sweepDeg > 0.5) {
+      infoTxt.textContent = 'r=' + Math.round(g.radius) + '  ' + Math.round(sweepDeg) + '\u00B0';
+    } else {
+      infoTxt.textContent = 'r=' + Math.round(g.radius);
+    }
+
+    trail.setAttribute('stroke', c.arc);
+  }
+
+  /* ── 画弧 ── */
+  function updateTrail() {
+    if (!drawing) return;
+    if (Math.abs(accumSweep) < 0.005) {
+      trail.setAttribute('opacity', '0');
+      return;
+    }
+
+    var g = geometry();
+    var r = g.radius;
+    var startA = drawStartRot;
+    var total = accumSweep;
+    var dir = total > 0 ? 1 : -1;
+    var absT = Math.abs(total);
+    var sweepFlag = dir > 0 ? 1 : 0;
+    /* 拆成 <= PI 的段 */
+    var segs = Math.ceil(absT / (Math.PI * 0.99));
+    var segA = total / segs;
+
+    var curA = startA;
+    var d = '';
+    for (var i = 0; i < segs; i++) {
+      var nextA = curA + segA;
+      /* 铅笔尖在 rotation=curA 时的位置 */
+      var sx = NX + r * Math.cos(curA);
+      var sy = NY + r * Math.sin(curA);
+      var ex = NX + r * Math.cos(nextA);
+      var ey = NY + r * Math.sin(nextA);
+      var large = Math.abs(segA) > Math.PI ? 1 : 0;
+      if (i === 0) d += 'M' + sx.toFixed(2) + ',' + sy.toFixed(2);
+      d += ' A' + r.toFixed(2) + ',' + r.toFixed(2)
+         + ' 0 ' + large + ',' + sweepFlag
+         + ' ' + ex.toFixed(2) + ',' + ey.toFixed(2);
+      curA = nextA;
+    }
+
+    trail.setAttribute('d', d);
+    trail.setAttribute('opacity', '0.8');
+  }
+
+  /* ── 事件 ── */
+  function emitCmp(name) {
+    var g = geometry();
+    var sweepDeg = Math.abs(accumSweep) * 180 / Math.PI;
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'drag',
+        values: { radius: Math.round(g.radius), sweepDeg: Math.round(sweepDeg * 10) / 10 }
+      }
+    }));
+  }
+
+  function svgPt(cx, cy) {
+    var pt = svg.createSVGPoint();
+    pt.x = cx; pt.y = cy;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse());
+  }
+
+  /* ── 拖铰接点（顶部）→ 画弧 ── */
+  pivotH.addEventListener('pointerdown', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    drawing = true;
+    /* 铅笔尖当前角度 = rotation（相对针尖的角度） */
+    drawStartRot = rotation;
+    accumSweep = 0;
+    /* 记录鼠标相对针尖的初始角度 */
+    var p = svgPt(e.clientX, e.clientY);
+    if (p) {
+      prevMouseAngle = Math.atan2(p.y - NY, p.x - NX);
+    } else {
+      prevMouseAngle = 0;
+    }
+    trail.setAttribute('d', '');
+    trail.setAttribute('opacity', '0');
+    svg.setPointerCapture(e.pointerId);
+  });
+
+  /* ── 拖铅笔尖（底部）→ 调半径 ── */
+  pencilH.addEventListener('pointerdown', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    adjusting = true;
+    svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!adjusting && !drawing) return;
+    e.preventDefault();
+    var p = svgPt(e.clientX, e.clientY);
+    if (!p) return;
+
+    if (adjusting) {
+      /* 铅笔尖到针尖的距离 → 半径 → 反算 halfAngle */
+      var dx = p.x - NX, dy = p.y - NY;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      /* radius = 2 * sin(halfAngle) * LEG，所以 sin(ha) = dist / (2*LEG) */
+      var sinHa = Math.max(0.05, Math.min(0.95, dist / (2 * LEG)));
+      halfAngle = Math.asin(sinHa) * 180 / Math.PI;
+      /* 更新朝向 */
+      rotation = Math.atan2(dy, dx);
+      render();
+      emitCmp('cmp:change');
+    }
+
+    if (drawing) {
+      /* 鼠标绕针尖的角度变化 → 圆规同步旋转 */
+      var dx2 = p.x - NX, dy2 = p.y - NY;
+      var mouseAngle = Math.atan2(dy2, dx2);
+      var delta = mouseAngle - prevMouseAngle;
+      /* 归一化 delta */
+      while (delta > Math.PI) delta -= 2 * Math.PI;
+      while (delta < -Math.PI) delta += 2 * Math.PI;
+      accumSweep += delta;
+      prevMouseAngle = mouseAngle;
+      rotation += delta;
+      render();
+      updateTrail();
+      emitCmp('cmp:change');
+    }
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (adjusting) {
+      adjusting = false;
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+      emitCmp('cmp:changeend');
+    }
+    if (drawing) {
+      drawing = false;
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+      emitCmp('cmp:changeend');
+    }
+  });
+
+  svg.addEventListener('pointercancel', function() {
+    adjusting = false;
+    drawing = false;
+  });
+
+  /* 初始渲染 */
+  render();
+})();
+</script>
