@@ -1,0 +1,285 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.micrometer.basic",
+  "name": "螺旋测微器",
+  "nameEn": "Micrometer",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 180 },
+  "tags": ["apparatus", "micrometer", "measurement", "precision", "screw-gauge"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 180, "min": 120, "max": 300, "desc": "组件高度" },
+    { "key": "reading",     "type": "number",     "default": 5.25, "min": 0, "max": 25, "desc": "读数(mm)" },
+    { "key": "frameColor",  "type": "color",  "default": "#546e7a", "desc": "弓架颜色" },
+    { "key": "thimbleColor","type": "color",  "default": "#78909c", "desc": "活动套筒颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "frameColor": "--cmp-frame", "thimbleColor": "--cmp-thimble",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.micrometer.basic" role="img" aria-label="螺旋测微器">
+  <style>
+    .cmp[data-cmp-id="phy.apparatus.micrometer.basic"]{
+      --h:var(--cmp-size,180px);display:inline-block;
+      width:calc(var(--h)*300/180);height:var(--h);user-select:none;
+    }
+    .cmp[data-cmp-id="phy.apparatus.micrometer.basic"] svg{width:100%;height:100%;display:block;overflow:visible}
+  </style>
+
+  <svg viewBox="0 0 300 180" aria-hidden="true">
+    <!--
+      螺旋测微器侧视图（水平放置）
+      弓架 C 形开口朝右，砧面（固定）在上，螺杆（活动）在下
+      固定套筒 + 活动套筒 + 棘轮 从弓架右上方水平向右延伸
+    -->
+
+    <!-- C 形弓架 -->
+    <path d="M110,38 L40,38 Q16,38 16,62 L16,118 Q16,142 40,142 L110,142"
+          fill="none" stroke="var(--cmp-frame,#546e7a)"
+          stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- 弓架高光 -->
+    <path d="M108,40 L42,40 Q20,40 20,62 L20,116" fill="none"
+          stroke="#ffffff" stroke-width="2.5" opacity="0.12" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 砧面（固定端，弓架右上角，朝下的平面） -->
+    <rect x="104" y="38" width="16" height="14" rx="1"
+          fill="var(--cmp-frame,#546e7a)"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- 砧面测量面 -->
+    <rect x="106" y="50" width="12" height="3" rx="0.5"
+          fill="#90a4ae" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+
+    <!-- 固定套筒（主尺，从弓架右下角水平向右延伸） -->
+    <rect x="104" y="128" width="120" height="18" rx="2"
+          fill="var(--cmp-frame,#546e7a)"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- 固定套筒高光 -->
+    <rect x="106" y="130" width="116" height="4" rx="1" fill="#ffffff" opacity="0.12"/>
+
+    <!-- 主尺基准线 -->
+    <line x1="108" y1="137" x2="222" y2="137"
+          stroke="var(--cmp-stroke,#263238)" stroke-width="0.6" opacity="0.5"/>
+
+    <!-- 主尺刻度（由 JS 生成） -->
+    <g class="mic__main-scale"></g>
+
+    <!-- 测微螺杆（从套筒向上伸出到砧面） -->
+    <rect class="mic__spindle" x="108" y="53" width="8" height="75" rx="1"
+          fill="#b0bec5" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+    <!-- 螺杆高光 -->
+    <rect class="mic__spindle-hi" x="109.5" y="55" width="2.5" height="71" rx="0.5"
+          fill="#ffffff" opacity="0.15"/>
+
+    <!-- 活动套筒（旋转的圆筒，套在固定套筒外面） -->
+    <g class="mic__thimble">
+      <!-- 套筒主体 -->
+      <rect class="mic__thimble-body" x="200" y="122" width="56" height="30" rx="3"
+            fill="var(--cmp-thimble,#78909c)"
+            stroke="var(--cmp-stroke,#263238)"
+            stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <!-- 套筒左边缘（斜面） -->
+      <ellipse class="mic__thimble-edge" cx="200" cy="137" rx="3" ry="15"
+               fill="var(--cmp-thimble,#78909c)"
+               stroke="var(--cmp-stroke,#263238)"
+               stroke-width="0.6"/>
+      <!-- 套筒纹理 -->
+      <g class="mic__thimble-lines" opacity="0.15"></g>
+      <!-- 套筒刻度（0-49） -->
+      <g class="mic__thimble-scale"></g>
+    </g>
+
+    <!-- 棘轮（活动套筒右端） -->
+    <g class="mic__ratchet">
+      <rect x="256" y="126" width="24" height="22" rx="4"
+            fill="var(--cmp-thimble,#78909c)"
+            stroke="var(--cmp-stroke,#263238)"
+            stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <!-- 棘轮纹理 -->
+      <g opacity="0.2">
+        <line x1="260" y1="127" x2="260" y2="147" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+        <line x1="264" y1="127" x2="264" y2="147" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+        <line x1="268" y1="127" x2="268" y2="147" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+        <line x1="272" y1="127" x2="272" y2="147" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+        <line x1="276" y1="127" x2="276" y2="147" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+      </g>
+    </g>
+
+    <!-- 被测物体示意（两个砧面之间的间隙） -->
+    <line class="mic__gap-l" x1="106" y1="53" x2="118" y2="53"
+          stroke="var(--cmp-stroke,#263238)" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.2"/>
+    <line class="mic__gap-r" x1="106" y1="128" x2="118" y2="128"
+          stroke="var(--cmp-stroke,#263238)" stroke-width="0.4" stroke-dasharray="2,2" opacity="0.2"/>
+
+    <!-- 读数显示 -->
+    <text class="mic__readout" x="150" y="100" font-size="12" font-weight="700"
+          font-family="'Courier New',monospace"
+          fill="var(--cmp-stroke,#263238)" text-anchor="middle" opacity="0.55"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.apparatus.micrometer.basic')return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var mainScaleG=root.querySelector('.mic__main-scale');
+    var thimbleG=root.querySelector('.mic__thimble');
+    var ratchetG=root.querySelector('.mic__ratchet');
+    var thimbleScaleG=root.querySelector('.mic__thimble-scale');
+    var thimbleLinesG=root.querySelector('.mic__thimble-lines');
+    var spindleEl=root.querySelector('.mic__spindle');
+    var spindleHi=root.querySelector('.mic__spindle-hi');
+    var readout=root.querySelector('.mic__readout');
+
+    /*
+      螺旋测微器原理:
+      - 主尺: 每格 0.5mm，上排整 mm，下排半 mm
+      - 活动套筒: 一圈 50 格，转一圈 = 0.5mm，每格 = 0.01mm
+      - 读数 = 主尺读数 + 套筒读数 × 0.01
+      - 量程 0-25mm
+
+      布局:
+      - 主尺刻度区: x=108 → x=222, 共 114px
+      - 每 0.5mm = 114/50 = 2.28px (量程 25mm = 50 个 0.5mm)
+      - 活动套筒初始左边缘 x=200, 向左移动
+      - 螺杆从 y=128(套筒顶) 向上伸到 y=53(砧面底)
+      - reading 增大 → 螺杆变短(间隙变小) → 套筒向左移
+    */
+
+    var SCALE_X0=108;
+    var PX_PER_HALF_MM=2.28; /* 每 0.5mm 的像素数 */
+    var SPINDLE_TOP_MIN=53; /* 砧面底部 y */
+    var SPINDLE_BOT=128; /* 固定套筒顶部 y */
+
+    /* 生成主尺刻度 */
+    if(mainScaleG){
+      for(var half=0;half<=50;half++){
+        var x=SCALE_X0+half*PX_PER_HALF_MM;
+        if(x>222)break;
+        var isMm=(half%2===0);
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1',x);ln.setAttribute('x2',x);
+        /* 整 mm 刻度在基准线上方，半 mm 在下方 */
+        if(isMm){
+          ln.setAttribute('y1','130');ln.setAttribute('y2','137');
+        } else {
+          ln.setAttribute('y1','137');ln.setAttribute('y2','143');
+        }
+        ln.setAttribute('stroke','var(--cmp-stroke,#263238)');
+        ln.setAttribute('stroke-width',isMm?'0.7':'0.5');
+        ln.setAttribute('opacity','0.6');
+        mainScaleG.appendChild(ln);
+
+        /* 整 mm 数字标注（每 5mm 标一个） */
+        if(isMm&&half%10===0){
+          var t=document.createElementNS(NS,'text');
+          t.setAttribute('x',x);t.setAttribute('y','129');
+          t.setAttribute('font-size','6');t.setAttribute('text-anchor','middle');
+          t.setAttribute('fill','var(--cmp-stroke,#263238)');t.setAttribute('opacity','0.5');
+          t.setAttribute('font-family','sans-serif');
+          t.textContent=String(half/2);
+          mainScaleG.appendChild(t);
+        }
+      }
+    }
+
+    /* 套筒纹理 */
+    if(thimbleLinesG){
+      for(var i=0;i<9;i++){
+        var x=204+i*6;
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1',x);ln.setAttribute('x2',x);
+        ln.setAttribute('y1','123');ln.setAttribute('y2','151');
+        ln.setAttribute('stroke','var(--cmp-stroke,#263238)');ln.setAttribute('stroke-width','0.4');
+        thimbleLinesG.appendChild(ln);
+      }
+    }
+
+    /* 套筒刻度（左边缘处，0-49 格，只显示基准线附近的几格） */
+    function buildThimbleScale(microReading){
+      if(!thimbleScaleG)return;
+      thimbleScaleG.innerHTML='';
+      /* 在套筒左边缘显示刻度，围绕基准线 y=137 */
+      /* microReading: 0-49 的小数 */
+      var centerDiv=Math.round(microReading); /* 对齐基准线的格数 */
+      for(var i=centerDiv-6;i<=centerDiv+6;i++){
+        var div=(i%50+50)%50;
+        var yOff=(i-microReading)*2.4; /* 每格 2.4px */
+        var y=137+yOff;
+        if(y<123||y>151)continue;
+        var isMajor=(div%5===0);
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1','196');ln.setAttribute('x2',isMajor?'203':'200');
+        ln.setAttribute('y1',y);ln.setAttribute('y2',y);
+        ln.setAttribute('stroke','var(--cmp-stroke,#263238)');
+        ln.setAttribute('stroke-width',isMajor?'0.7':'0.4');
+        ln.setAttribute('opacity','0.6');
+        thimbleScaleG.appendChild(ln);
+        if(isMajor){
+          var t=document.createElementNS(NS,'text');
+          t.setAttribute('x','194');t.setAttribute('y',String(y+2));
+          t.setAttribute('font-size','5');t.setAttribute('text-anchor','end');
+          t.setAttribute('fill','var(--cmp-stroke,#263238)');t.setAttribute('opacity','0.5');
+          t.setAttribute('font-family','sans-serif');
+          t.textContent=String(div);
+          thimbleScaleG.appendChild(t);
+        }
+      }
+    }
+
+    function parseProps(){
+      try{var r=root.getAttribute('data-props');return r?JSON.parse(r)||{}:{};}catch(e){return {};}
+    }
+
+    function render(){
+      var props=parseProps();
+      var reading=Math.max(0,Math.min(25,Number(props.reading)||0));
+
+      /* 分解读数 */
+      var halfMms=Math.floor(reading/0.5); /* 主尺读到的 0.5mm 数 */
+      var microReading=(reading-halfMms*0.5)/0.01; /* 套筒读数 0-49 */
+
+      /* 活动套筒 + 棘轮位移: 向左移动
+         套筒初始左边缘 x=200, 25mm 时移到 x≈112, 总行程 88px */
+      var THIMBLE_TRAVEL=88; /* 25mm 对应的总像素行程 */
+      var dx=reading/25*THIMBLE_TRAVEL;
+      if(thimbleG)thimbleG.setAttribute('transform','translate('+(-dx)+',0)');
+      if(ratchetG)ratchetG.setAttribute('transform','translate('+(-dx)+',0)');
+
+      /* 螺杆: reading = 被测物尺寸 = 砧面与螺杆之间的间隙
+         reading=0 → 螺杆顶贴砧面(y=53), 间隙=0
+         reading=25 → 螺杆顶在最下方(y=128), 间隙最大 */
+      var totalRange=SPINDLE_BOT-SPINDLE_TOP_MIN; /* 75px */
+      var spTop=SPINDLE_TOP_MIN+(reading/25)*totalRange;
+      var spH=SPINDLE_BOT-spTop;
+      if(spindleEl){
+        spindleEl.setAttribute('y',String(spTop));
+        spindleEl.setAttribute('height',String(Math.max(2,spH)));
+      }
+      if(spindleHi){
+        spindleHi.setAttribute('y',String(spTop+2));
+        spindleHi.setAttribute('height',String(Math.max(1,spH-4)));
+      }
+
+      /* 套筒刻度 */
+      buildThimbleScale(microReading);
+
+      /* 读数显示 */
+      if(readout)readout.textContent=reading.toFixed(2)+' mm';
+    }
+
+    render();
+    var obs=new MutationObserver(render);
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){obs.disconnect();});
+  })();
+  </script>
+</div>

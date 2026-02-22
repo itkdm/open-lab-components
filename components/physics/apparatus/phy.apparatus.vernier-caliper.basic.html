@@ -1,0 +1,178 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.vernier-caliper.basic",
+  "name": "游标卡尺",
+  "nameEn": "Vernier Caliper",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 100 },
+  "tags": ["apparatus", "vernier", "caliper", "measurement", "length", "precision"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 100, "min": 60, "max": 180, "desc": "组件高度" },
+    { "key": "reading",     "type": "number",     "default": 0, "min": 0, "max": 100, "desc": "读数(mm)" },
+    { "key": "bodyColor",   "type": "color",  "default": "#b0bec5", "desc": "主尺颜色" },
+    { "key": "sliderColor", "type": "color",  "default": "#90a4ae", "desc": "游标颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bodyColor": "--cmp-body", "sliderColor": "--cmp-slider",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.vernier-caliper.basic" role="img" aria-label="游标卡尺">
+  <style>
+    .cmp[data-cmp-id="phy.apparatus.vernier-caliper.basic"]{
+      --h:var(--cmp-size,100px);display:inline-block;width:calc(var(--h)*4);height:var(--h);
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.apparatus.vernier-caliper.basic"] svg{width:100%;height:100%;display:block;overflow:visible}
+  </style>
+
+  <svg viewBox="0 0 400 100" aria-hidden="true">
+    <!-- 主尺身 -->
+    <rect x="10" y="10" width="380" height="24" rx="1"
+          fill="var(--cmp-body,#b0bec5)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- 主尺高光 -->
+    <rect x="12" y="12" width="376" height="6" rx="1" fill="#ffffff" opacity="0.18"/>
+
+    <!-- 主尺外量爪（固定，左侧向下） -->
+    <path d="M10,34 L10,80 L16,90 L22,80 L22,34"
+          fill="var(--cmp-body,#b0bec5)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.2)"
+          stroke-linejoin="round"/>
+    <!-- 量爪高光 -->
+    <line x1="13" y1="36" x2="13" y2="78" stroke="#ffffff" stroke-width="1.5" opacity="0.15"/>
+
+    <!-- 主尺刻度 -->
+    <g class="vc__main-scale"></g>
+
+    <!-- 游标（可滑动部分） -->
+    <g class="vc__slider">
+      <!-- 游标尺身 -->
+      <rect class="vc__slider-body" x="10" y="34" width="60" height="16" rx="1"
+            fill="var(--cmp-slider,#90a4ae)"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="var(--cmp-stroke-width,1.2)"/>
+
+      <!-- 游标外量爪（活动，向下） -->
+      <path class="vc__slider-jaw" d="M10,50 L10,80 L16,90 L22,80 L22,50"
+            fill="var(--cmp-slider,#90a4ae)"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="var(--cmp-stroke-width,1.2)"
+            stroke-linejoin="round"/>
+
+      <!-- 游标刻度 -->
+      <g class="vc__vernier-scale"></g>
+
+      <!-- 零线 -->
+      <line class="vc__zero-line" x1="10" y1="34" x2="10" y2="50"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+    </g>
+
+    <!-- 读数 -->
+    <text class="vc__readout" x="200" y="96" font-size="10" font-weight="700"
+          font-family="'Courier New',monospace"
+          fill="var(--cmp-stroke,#37474f)" text-anchor="middle" opacity="0.6"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.apparatus.vernier-caliper.basic')return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var mainScaleG=root.querySelector('.vc__main-scale');
+    var vernierScaleG=root.querySelector('.vc__vernier-scale');
+    var sliderG=root.querySelector('.vc__slider');
+    var readout=root.querySelector('.vc__readout');
+
+    /* 主尺: 0mm 起点 x=22, 每 mm = 3px, 最大 ~120mm */
+    var ORIGIN_X=22, PX_PER_MM=3;
+
+    /* 生成主尺刻度（一次性） */
+    if(mainScaleG){
+      for(var mm=0;mm<=120;mm++){
+        var x=ORIGIN_X+mm*PX_PER_MM;
+        if(x>388)break;
+        var isCm=mm%10===0;
+        var is5mm=mm%5===0;
+        var tickH=isCm?10:(is5mm?7:4);
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1',x);ln.setAttribute('x2',x);
+        ln.setAttribute('y1',34);ln.setAttribute('y2',34-tickH);
+        ln.setAttribute('stroke','var(--cmp-stroke,#37474f)');
+        ln.setAttribute('stroke-width',isCm?'0.8':'0.4');
+        ln.setAttribute('opacity',isCm?'0.7':'0.4');
+        mainScaleG.appendChild(ln);
+        if(isCm){
+          var t=document.createElementNS(NS,'text');
+          t.setAttribute('x',x);t.setAttribute('y',20);
+          t.setAttribute('font-size','6');t.setAttribute('text-anchor','middle');
+          t.setAttribute('fill','var(--cmp-stroke,#37474f)');t.setAttribute('opacity','0.6');
+          t.setAttribute('font-family','sans-serif');
+          t.textContent=String(mm/10);
+          mainScaleG.appendChild(t);
+        }
+      }
+    }
+
+    /* 生成游标刻度（10分度，9mm分10格） */
+    function buildVernier(){
+      if(!vernierScaleG)return;
+      vernierScaleG.innerHTML='';
+      var vernierPxPerDiv=0.9*PX_PER_MM; /* 每格 0.9mm */
+      for(var i=0;i<=10;i++){
+        var x=i*vernierPxPerDiv;
+        var isEnd=(i===0||i===10);
+        var is5=(i===5);
+        var tickH=isEnd?10:(is5?8:5);
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1',x);ln.setAttribute('x2',x);
+        ln.setAttribute('y1',0);ln.setAttribute('y2',tickH);
+        ln.setAttribute('stroke','var(--cmp-stroke,#37474f)');
+        ln.setAttribute('stroke-width',isEnd?'0.8':'0.4');
+        ln.setAttribute('opacity','0.6');
+        vernierScaleG.appendChild(ln);
+        if(i%5===0){
+          var t=document.createElementNS(NS,'text');
+          t.setAttribute('x',x);t.setAttribute('y',tickH+7);
+          t.setAttribute('font-size','5');t.setAttribute('text-anchor','middle');
+          t.setAttribute('fill','var(--cmp-stroke,#37474f)');t.setAttribute('opacity','0.5');
+          t.setAttribute('font-family','sans-serif');
+          t.textContent=String(i);
+          vernierScaleG.appendChild(t);
+        }
+      }
+    }
+    buildVernier();
+
+    function parseProps(){
+      try{var r=root.getAttribute('data-props');return r?JSON.parse(r)||{}:{};}catch(e){return {};}
+    }
+
+    function render(){
+      var props=parseProps();
+      var reading=Math.max(0,Math.min(100,Number(props.reading)||0));
+
+      /* 游标偏移 */
+      var dx=reading*PX_PER_MM;
+      if(sliderG)sliderG.setAttribute('transform','translate('+dx+',0)');
+
+      /* 读数 */
+      if(readout)readout.textContent=reading.toFixed(1)+' mm';
+    }
+
+    render();
+    var obs=new MutationObserver(render);
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){obs.disconnect();});
+  })();
+  </script>
+</div>

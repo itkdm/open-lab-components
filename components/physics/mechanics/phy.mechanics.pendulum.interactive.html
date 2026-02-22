@@ -1,0 +1,205 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.pendulum.interactive",
+  "name": "单摆（交互式）",
+  "nameEn": "Simple Pendulum (Interactive)",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 240 },
+  "tags": ["mechanics", "pendulum", "oscillation", "gravity", "period", "interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 240, "min": 140, "max": 400, "desc": "组件高度" },
+    { "key": "length",      "type": "number(0-1)", "default": 0.7, "min": 0.3, "max": 1, "desc": "摆线长度比" },
+    { "key": "angle",       "type": "number",     "default": 30, "min": -60, "max": 60, "desc": "初始角度(°)" },
+    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "bobColor",    "type": "color",  "default": "#5c6bc0", "desc": "摆球颜色" },
+    { "key": "bobRadius",   "type": "number", "default": 14, "min": 8, "max": 24, "desc": "摆球半径" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showProtractor","type": "enum", "default": "on", "enum": ["on","off"], "desc": "显示角度刻度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bobColor": "--cmp-bob",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "angle": "number — 当前角度(°)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.pendulum.interactive" role="img" aria-label="单摆（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.mechanics.pendulum.interactive"]{
+      --h:var(--cmp-size,240px);display:inline-block;
+      width:calc(var(--h)*200/240);height:var(--h);user-select:none;
+    }
+    .cmp[data-cmp-id="phy.mechanics.pendulum.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+  </style>
+
+  <svg viewBox="0 0 200 240" aria-hidden="true">
+    <!-- 支架横梁 -->
+    <line x1="40" y1="16" x2="160" y2="16"
+          stroke="var(--cmp-stroke,#37474f)" stroke-width="3" stroke-linecap="round"/>
+    <!-- 支架立柱 -->
+    <rect x="96" y="4" width="8" height="16" rx="2"
+          fill="var(--cmp-stroke,#37474f)"/>
+
+    <!-- 角度刻度弧 -->
+    <g class="pend__protractor">
+      <path d="M60,16 A40,40 0 0,1 140,16" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.2"/>
+      <!-- 刻度线由 JS 生成 -->
+      <g class="pend__ticks"></g>
+    </g>
+
+    <!-- 竖直参考线 -->
+    <line x1="100" y1="16" x2="100" y2="230" stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="0.5" stroke-dasharray="3,3" opacity="0.15"/>
+
+    <!-- 摆线 + 摆球（由 JS 控制） -->
+    <line class="pend__string" x1="100" y1="16" x2="100" y2="170"
+          stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2"/>
+    <circle class="pend__bob" cx="100" cy="170" r="14"
+            fill="var(--cmp-bob,#5c6bc0)"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <!-- 摆球高光 -->
+    <circle class="pend__bob-hi" cx="96" cy="166" r="5"
+            fill="#ffffff" opacity="0.25"/>
+
+    <!-- 角度标注 -->
+    <text class="pend__angle-text" x="100" y="236" font-size="11" font-weight="600"
+          font-family="'Courier New',monospace"
+          fill="var(--cmp-stroke,#37474f)" text-anchor="middle" opacity="0.6"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.mechanics.pendulum.interactive')return;
+
+    var NS='http://www.w3.org/2000/svg';
+    var PX=100,PY=16; /* 悬挂点 */
+    var MAX_L=190; /* 最大摆线像素长度 */
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var lengthRatio=Math.max(0.3,Math.min(1,Number(P.length)||0.7));
+    var initAngle=(Number(P.angle)||30)*Math.PI/180;
+    var running=(P.running!=='off');
+    var bobR=Math.max(8,Math.min(24,Number(P.bobRadius)||14));
+    var showProt=(P.showProtractor!=='off');
+
+    var stringEl=root.querySelector('.pend__string');
+    var bobEl=root.querySelector('.pend__bob');
+    var bobHi=root.querySelector('.pend__bob-hi');
+    var angleText=root.querySelector('.pend__angle-text');
+    var protG=root.querySelector('.pend__protractor');
+    var ticksG=root.querySelector('.pend__ticks');
+
+    /* 角度刻度 */
+    if(ticksG&&showProt){
+      for(var d=-60;d<=60;d+=10){
+        var rad=d*Math.PI/180;
+        var r1=36,r2=(d%30===0)?44:40;
+        var x1=PX+r1*Math.sin(rad),y1=PY+r1*Math.cos(rad);
+        var x2=PX+r2*Math.sin(rad),y2=PY+r2*Math.cos(rad);
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1',x1);ln.setAttribute('y1',y1);
+        ln.setAttribute('x2',x2);ln.setAttribute('y2',y2);
+        ln.setAttribute('stroke','var(--cmp-stroke,#37474f)');
+        ln.setAttribute('stroke-width',d%30===0?'0.8':'0.4');
+        ln.setAttribute('opacity','0.3');
+        ticksG.appendChild(ln);
+        if(d%30===0){
+          var tx=document.createElementNS(NS,'text');
+          tx.setAttribute('x',PX+(r2+8)*Math.sin(rad));
+          tx.setAttribute('y',PY+(r2+8)*Math.cos(rad));
+          tx.setAttribute('font-size','7');tx.setAttribute('text-anchor','middle');
+          tx.setAttribute('dominant-baseline','central');
+          tx.setAttribute('fill','var(--cmp-stroke,#37474f)');tx.setAttribute('opacity','0.35');
+          tx.textContent=Math.abs(d)+'°';
+          ticksG.appendChild(tx);
+        }
+      }
+    }
+    if(protG&&!showProt)protG.style.display='none';
+
+    /* 物理模拟 */
+    var g=9.8;
+    var L=lengthRatio; /* 归一化长度 */
+    var theta=initAngle;
+    var omega=0;
+    var animId=0;
+    var lastT=0;
+
+    function render(angle){
+      var Lpx=lengthRatio*MAX_L;
+      var bx=PX+Lpx*Math.sin(angle);
+      var by=PY+Lpx*Math.cos(angle);
+      if(stringEl){
+        stringEl.setAttribute('x2',bx);stringEl.setAttribute('y2',by);
+      }
+      if(bobEl){
+        bobEl.setAttribute('cx',bx);bobEl.setAttribute('cy',by);
+        bobEl.setAttribute('r',bobR);
+      }
+      if(bobHi){
+        bobHi.setAttribute('cx',bx-bobR*0.3);bobHi.setAttribute('cy',by-bobR*0.3);
+        bobHi.setAttribute('r',bobR*0.35);
+      }
+      if(angleText){
+        angleText.textContent=(angle*180/Math.PI).toFixed(1)+'°';
+      }
+    }
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.05);
+      lastT=t;
+
+      /* 简单摆微分方程: θ'' = -(g/L)sin(θ)，加微弱阻尼 */
+      var Lm=lengthRatio*1.2; /* 模拟用长度(m) */
+      var alpha=-(g/Lm)*Math.sin(theta)-0.02*omega;
+      omega+=alpha*dt;
+      theta+=omega*dt;
+
+      render(theta);
+      if(running)animId=requestAnimationFrame(tick);
+    }
+
+    render(theta);
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* 事件 */
+    function emit(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{angle:Math.round(theta*180/Math.PI*10)/10}}}));
+    }
+
+    /* props 变化 */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      var newRunning=(P2.running!=='off');
+      lengthRatio=Math.max(0.3,Math.min(1,Number(P2.length)||0.7));
+      bobR=Math.max(8,Math.min(24,Number(P2.bobRadius)||14));
+      if(P2.angle!=null&&!newRunning){
+        theta=(Number(P2.angle)||0)*Math.PI/180;omega=0;
+        render(theta);
+      }
+      if(newRunning&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRunning&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

@@ -1,0 +1,320 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.instrument.microscope.basic",
+  "name": "光学显微镜",
+  "nameEn": "Optical Microscope",
+  "category": "biology/instrument",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 300 },
+  "tags": ["biology", "instrument", "microscope", "optics", "magnification"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 300, "min": 180, "max": 500, "desc": "组件高度" },
+    { "key": "bodyColor",   "type": "color",  "default": "#37474f", "desc": "机身颜色" },
+    { "key": "metalColor",  "type": "color",  "default": "#78909c", "desc": "金属件颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bodyColor": "--cmp-body", "metalColor": "--cmp-metal",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  光学显微镜 — 高质量教学示意图
+  viewBox: 0 0 200 300
+
+  结构布局（自下而上）：
+  - 底座:       y=274..294, x=22..158
+  - 镜臂:       x=66..78, y=46..274（实心竖柱，顶部弯向右）
+  - 反光镜:     中心(108,248)，支架从镜臂底部 y=240 水平延伸
+  - 粗准焦螺旋: 镜臂左侧 (52,182)
+  - 细准焦螺旋: 镜臂左侧 (52,210)
+  - 载物台:     y=158..166, x=60..156，通过支撑臂连接镜臂
+  - 遮光器:     载物台正下方 (108,176)
+  - 转换器:     (108,112)，通过镜筒连接镜臂顶部
+  - 物镜:       从转换器向下悬挂，最长到 y=148（不碰载物台）
+  - 镜筒:       从镜臂顶部(82,46) 斜向右下到转换器(108,112)
+  - 目镜:       镜筒顶端，沿镜筒方向倾斜
+-->
+<div class="cmp" data-cmp-id="bio.instrument.microscope.basic" role="img" aria-label="光学显微镜">
+  <svg class="mic__svg" viewBox="0 0 200 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <linearGradient id="mic_metalG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#90a4ae"/>
+        <stop offset="40%" stop-color="#b0bec5"/>
+        <stop offset="100%" stop-color="#78909c"/>
+      </linearGradient>
+      <linearGradient id="mic_bodyG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#455a64"/>
+        <stop offset="35%" stop-color="#546e7a"/>
+        <stop offset="100%" stop-color="#37474f"/>
+      </linearGradient>
+      <linearGradient id="mic_armG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#546e7a"/>
+        <stop offset="30%" stop-color="#607d8b"/>
+        <stop offset="100%" stop-color="#455a64"/>
+      </linearGradient>
+      <radialGradient id="mic_lensG" cx="0.4" cy="0.35" r="0.6">
+        <stop offset="0%" stop-color="#e3f2fd"/>
+        <stop offset="100%" stop-color="#90caf9"/>
+      </radialGradient>
+    </defs>
+
+    <!-- ==================== 底座 ==================== -->
+    <path d="M22,280 Q22,272 32,272 L148,272 Q158,272 158,280 L158,288 Q158,294 148,294 L32,294 Q22,294 22,288 Z"
+          fill="url(#mic_bodyG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1.5"/>
+    <path d="M26,274 L154,274 Q156,274 156,276 L156,278 Q156,274 148,272 L32,272 Q24,274 26,274 Z"
+          fill="#ffffff" opacity="0.06"/>
+    <rect x="30" y="291" width="120" height="2" rx="1" fill="#000" opacity="0.1"/>
+
+    <!-- ==================== 镜臂（实心竖柱，顶部弯向右） ==================== -->
+    <path d="M66,274 L66,62 Q66,46 78,42 L86,42 Q74,46 74,62 L74,274 Z"
+          fill="url(#mic_armG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1.2"/>
+    <!-- 镜臂左侧高光 -->
+    <path d="M67.5,270 L67.5,65 Q67.5,48 78,43" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.1"/>
+    <!-- 镜臂与底座连接处加厚 -->
+    <rect x="62" y="268" width="16" height="8" rx="2"
+          fill="url(#mic_armG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+
+    <!-- ==================== 反光镜支架 + 反光镜 ==================== -->
+    <!-- 水平支架从镜臂底部延伸到右侧 -->
+    <line x1="74" y1="248" x2="108" y2="248" stroke="var(--cmp-stroke,#263238)" stroke-width="2"/>
+    <!-- 镜面支撑叉 -->
+    <path d="M102,252 L108,248 L102,244" fill="none" stroke="var(--cmp-stroke,#263238)" stroke-width="1.2"/>
+    <!-- 反光镜 -->
+    <g transform="translate(108,248)">
+      <ellipse cx="0" cy="0" rx="18" ry="11" transform="rotate(-12)"
+               fill="url(#mic_lensG)" opacity="0.7"
+               stroke="var(--cmp-metal,#78909c)" stroke-width="1.5"/>
+      <ellipse cx="-4" cy="-2" rx="7" ry="3.5" transform="rotate(-12)"
+               fill="#ffffff" opacity="0.3"/>
+      <ellipse cx="0" cy="0" rx="15" ry="9" transform="rotate(-12)"
+               fill="none" stroke="#b0bec5" stroke-width="0.5" opacity="0.4"/>
+    </g>
+
+    <!-- ==================== 载物台支撑臂（从镜臂水平延伸） ==================== -->
+    <rect x="74" y="158" width="34" height="5" rx="1"
+          fill="url(#mic_armG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+
+    <!-- ==================== 载物台 ==================== -->
+    <rect x="58" y="155" width="100" height="8" rx="2"
+          fill="url(#mic_metalG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1.2"/>
+    <!-- 载物台顶面高光 -->
+    <rect x="62" y="156" width="92" height="2" rx="1" fill="#ffffff" opacity="0.08"/>
+    <!-- 通光孔 -->
+    <circle cx="108" cy="159" r="7" fill="#1a237e" opacity="0.25"/>
+    <circle cx="108" cy="159" r="5" fill="#0d47a1" opacity="0.2"/>
+    <!-- 压片夹（左） -->
+    <g stroke="var(--cmp-stroke,#263238)" stroke-width="1.2" stroke-linecap="round" fill="none">
+      <path d="M86,155 L82,149 L86,145"/>
+      <circle cx="82" cy="149" r="1" fill="var(--cmp-stroke,#263238)"/>
+    </g>
+    <!-- 压片夹（右） -->
+    <g stroke="var(--cmp-stroke,#263238)" stroke-width="1.2" stroke-linecap="round" fill="none">
+      <path d="M126,155 L130,149 L126,145"/>
+      <circle cx="130" cy="149" r="1" fill="var(--cmp-stroke,#263238)"/>
+    </g>
+
+    <!-- ==================== 遮光器 ==================== -->
+    <!-- 遮光器连接杆（从载物台底部延伸） -->
+    <line x1="108" y1="163" x2="108" y2="170" stroke="var(--cmp-stroke,#263238)" stroke-width="1.5"/>
+    <g transform="translate(108,180)">
+      <circle cx="0" cy="0" r="10" fill="url(#mic_bodyG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+      <circle cx="0" cy="0" r="5" fill="#37474f" stroke="#455a64" stroke-width="0.5"/>
+      <circle cx="0" cy="0" r="2.5" fill="#455a64"/>
+    </g>
+
+    <!-- ==================== 粗准焦螺旋 ==================== -->
+    <g transform="translate(50,182)">
+      <!-- 轴（连接到镜臂） -->
+      <rect x="0" y="-3" width="18" height="6" rx="1" fill="#546e7a" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+      <!-- 旋钮主体 -->
+      <ellipse cx="0" cy="0" rx="14" ry="9"
+               fill="url(#mic_metalG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+      <g opacity="0.25" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5">
+        <line x1="-11" y1="-4" x2="-11" y2="4"/>
+        <line x1="-8" y1="-6" x2="-8" y2="6"/>
+        <line x1="-5" y1="-7.5" x2="-5" y2="7.5"/>
+        <line x1="-2" y1="-8.5" x2="-2" y2="8.5"/>
+        <line x1="1" y1="-9" x2="1" y2="9"/>
+        <line x1="4" y1="-8.5" x2="4" y2="8.5"/>
+        <line x1="7" y1="-7" x2="7" y2="7"/>
+        <line x1="10" y1="-5" x2="10" y2="5"/>
+      </g>
+      <ellipse cx="-2" cy="-3" rx="8" ry="3" fill="#ffffff" opacity="0.08"/>
+    </g>
+
+    <!-- ==================== 细准焦螺旋 ==================== -->
+    <g transform="translate(50,210)">
+      <rect x="2" y="-2" width="14" height="4" rx="1" fill="#546e7a" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <ellipse cx="0" cy="0" rx="10" ry="7"
+               fill="url(#mic_metalG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+      <g opacity="0.2" stroke="var(--cmp-stroke,#263238)" stroke-width="0.4">
+        <line x1="-7" y1="-4" x2="-7" y2="4"/>
+        <line x1="-4" y1="-5.5" x2="-4" y2="5.5"/>
+        <line x1="-1" y1="-6.5" x2="-1" y2="6.5"/>
+        <line x1="2" y1="-7" x2="2" y2="7"/>
+        <line x1="5" y1="-6" x2="5" y2="6"/>
+        <line x1="8" y1="-4" x2="8" y2="4"/>
+      </g>
+      <ellipse cx="-1" cy="-2" rx="6" ry="2.5" fill="#ffffff" opacity="0.07"/>
+    </g>
+
+    <!-- ==================== 镜筒 ==================== -->
+    <!--
+      镜筒从镜臂顶部 (82,46) 斜向右下到转换器 (108,112)
+      倾斜角度 ≈ atan2(66,26) ≈ 68.5°
+    -->
+    <g>
+      <!-- 镜筒正面 -->
+      <path d="M74,44 L82,44 L114,110 L106,110 Z"
+            fill="url(#mic_bodyG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+      <!-- 镜筒侧面（右侧面，给立体感） -->
+      <path d="M82,44 L87,42 L119,108 L114,110 Z"
+            fill="#455a64" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+      <!-- 镜筒高光 -->
+      <path d="M76,46 L108,112" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.08"/>
+    </g>
+
+    <!-- ==================== 目镜（沿镜筒方向倾斜） ==================== -->
+    <!--
+      镜筒方向向量: (26,66) → 角度约 68.5°
+      目镜放在镜筒顶端 (78,44)，沿镜筒方向向上延伸
+    -->
+    <g transform="translate(78,42) rotate(-21.5)">
+      <!-- 目镜筒体 -->
+      <rect x="-7" y="-20" width="14" height="18" rx="2"
+            fill="url(#mic_bodyG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+      <!-- 目镜顶部法兰 -->
+      <ellipse cx="0" cy="-20" rx="9" ry="3.5"
+               fill="url(#mic_metalG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+      <!-- 目镜镜片 -->
+      <ellipse cx="0" cy="-20" rx="5.5" ry="2.2"
+               fill="url(#mic_lensG)" opacity="0.6"
+               stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <!-- 目镜底部法兰 -->
+      <ellipse cx="0" cy="-2" rx="8" ry="3"
+               fill="url(#mic_metalG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+    </g>
+
+    <!-- ==================== 转换器（物镜座） ==================== -->
+    <g transform="translate(108,112)">
+      <circle cx="0" cy="0" r="12"
+              fill="url(#mic_metalG)" stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+      <circle cx="0" cy="0" r="4" fill="#546e7a" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+      <circle cx="0" cy="0" r="10" fill="none" stroke="#455a64" stroke-width="0.4" opacity="0.3"/>
+    </g>
+
+    <!-- ==================== 物镜（从转换器向下，不超过载物台 y=155） ==================== -->
+    <!-- 4× 短物镜 -->
+    <g transform="translate(98,124)">
+      <rect x="-3" y="0" width="6" height="14" rx="2"
+            fill="url(#mic_bodyG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+      <rect x="-3" y="10" width="6" height="2.5" rx="0.5" fill="#e53935" opacity="0.8"/>
+      <ellipse cx="0" cy="14" rx="2.5" ry="1" fill="#90a4ae" stroke="var(--cmp-stroke,#263238)" stroke-width="0.4"/>
+    </g>
+    <!-- 10× 中物镜（正对通光孔） -->
+    <g transform="translate(108,124)">
+      <rect x="-3.5" y="0" width="7" height="20" rx="2"
+            fill="url(#mic_bodyG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+      <rect x="-3.5" y="15" width="7" height="2.5" rx="0.5" fill="#fdd835" opacity="0.8"/>
+      <ellipse cx="0" cy="20" rx="3" ry="1.2" fill="#90a4ae" stroke="var(--cmp-stroke,#263238)" stroke-width="0.4"/>
+    </g>
+    <!-- 40× 长物镜 -->
+    <g transform="translate(118,124)">
+      <rect x="-3" y="0" width="6" height="26" rx="2"
+            fill="url(#mic_bodyG)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.6"/>
+      <rect x="-3" y="21" width="6" height="2.5" rx="0.5" fill="#1e88e5" opacity="0.8"/>
+      <ellipse cx="0" cy="26" rx="2.5" ry="1" fill="#90a4ae" stroke="var(--cmp-stroke,#263238)" stroke-width="0.4"/>
+    </g>
+
+    <!-- ==================== 标注 ==================== -->
+    <g class="mic__labels" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#263238)" font-weight="600">
+
+      <!-- 目镜 -->
+      <line x1="68" y1="24" x2="38" y2="14" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="36" y="16" text-anchor="end" font-size="6.5" opacity="0.7">目镜</text>
+
+      <!-- 镜筒 -->
+      <line x1="92" y1="68" x2="38" y2="52" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="36" y="54" text-anchor="end" font-size="6.5" opacity="0.7">镜筒</text>
+
+      <!-- 转换器 -->
+      <line x1="120" y1="112" x2="162" y2="102" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="164" y="104" font-size="6.5" opacity="0.7">转换器</text>
+
+      <!-- 物镜 -->
+      <line x1="124" y1="138" x2="162" y2="132" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="164" y="134" font-size="6.5" opacity="0.7">物镜</text>
+
+      <!-- 压片夹 -->
+      <line x1="130" y1="148" x2="162" y2="146" stroke="var(--cmp-stroke,#263238)" stroke-width="0.4"/>
+      <text x="164" y="148" font-size="6" opacity="0.65">压片夹</text>
+
+      <!-- 载物台 -->
+      <line x1="158" y1="159" x2="166" y2="159" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="168" y="161" font-size="6.5" opacity="0.7">载物台</text>
+
+      <!-- 通光孔 -->
+      <line x1="108" y1="163" x2="108" y2="168" stroke="var(--cmp-stroke,#263238)" stroke-width="0.3" stroke-dasharray="1,1"/>
+      <text x="108" y="172" text-anchor="middle" font-size="5" opacity="0.55">通光孔</text>
+
+      <!-- 遮光器 -->
+      <line x1="118" y1="180" x2="162" y2="180" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="164" y="182" font-size="6.5" opacity="0.7">遮光器</text>
+
+      <!-- 镜臂 -->
+      <line x1="66" y1="130" x2="38" y2="124" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="36" y="126" text-anchor="end" font-size="6.5" opacity="0.7">镜臂</text>
+
+      <!-- 粗准焦螺旋 -->
+      <line x1="36" y1="182" x2="8" y2="182" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="6" y="184" text-anchor="end" font-size="6" opacity="0.7">粗准焦螺旋</text>
+
+      <!-- 细准焦螺旋 -->
+      <line x1="40" y1="210" x2="8" y2="216" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="6" y="218" text-anchor="end" font-size="6" opacity="0.7">细准焦螺旋</text>
+
+      <!-- 反光镜 -->
+      <line x1="126" y1="248" x2="162" y2="248" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="164" y="250" font-size="6.5" opacity="0.7">反光镜</text>
+
+      <!-- 底座 -->
+      <line x1="80" y1="290" x2="8" y2="290" stroke="var(--cmp-stroke,#263238)" stroke-width="0.5"/>
+      <text x="6" y="292" text-anchor="end" font-size="6.5" opacity="0.7">底座</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.instrument.microscope.basic") return;
+  const labels = root.querySelector(".mic__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.instrument.microscope.basic"] {
+  height: var(--cmp-size, 300px);
+  width: calc(var(--cmp-size, 300px) * 200 / 300);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.instrument.microscope.basic"] .mic__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

@@ -1,0 +1,163 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.round-bottom-flask.basic",
+  "name": "圆底烧瓶",
+  "nameEn": "Round-Bottom Flask",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 140 },
+  "tags": ["chemistry", "labware", "flask", "round-bottom", "distillation", "heating"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 280, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.4, "min": 0, "max": 0.85, "desc": "液面高度" },
+    { "key": "liquidColor", "type": "color",  "default": "#81d4fa", "desc": "液体颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.3)", "desc": "玻璃底色" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "liquidLevel": "--cmp-liquid-level",
+    "liquidColor": "--cmp-liquid",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glassTint":   "--cmp-glass-tint"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.round-bottom-flask.basic" role="img" aria-label="圆底烧瓶">
+  <svg class="rbf__svg" viewBox="0 0 100 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <clipPath id="rbf__clip__default">
+        <path d="M43,4 L43,42 C32,47 14,62 12,84 A38,38 0 0,0 50,122 A38,38 0 0,0 88,84 C86,62 68,47 57,42 L57,4 Z"/>
+      </clipPath>
+    </defs>
+
+    <!--
+      整体轮廓用两条独立路径画左右壁，顶部瓶口开口。
+      圆底用大圆弧，颈→肩用 C 三次贝塞尔平滑过渡。
+    -->
+
+    <!-- 左壁：瓶口翻边→瓶颈→肩部→圆底中心 -->
+    <path class="rbf__wall-l"
+          d="M39,2 L39,4 L43,4 L43,42 C32,47 14,62 12,84 A38,38 0 0,0 50,122"
+          fill="none"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- 右壁：圆底中心→肩部→瓶颈→瓶口翻边 -->
+    <path class="rbf__wall-r"
+          d="M50,122 A38,38 0 0,0 88,84 C86,62 68,47 57,42 L57,4 L61,4 L61,2"
+          fill="none"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round" stroke-linecap="round"/>
+
+    <!-- 玻璃填充（无描边，补背景色） -->
+    <path d="M43,4 L43,42 C32,47 14,62 12,84 A38,38 0 0,0 88,84 C86,62 68,47 57,42 L57,4 Z"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.3))" stroke="none"/>
+
+    <!-- 液体 -->
+    <rect class="rbf__liquid" x="8" y="80" width="84" height="46" rx="0"
+          fill="var(--cmp-liquid,#81d4fa)" opacity="0.6"
+          clip-path="url(#rbf__clip__default)"/>
+
+    <!-- 液面弯月面 -->
+    <ellipse class="rbf__meniscus" cx="50" cy="80" rx="28" ry="3"
+             fill="var(--cmp-liquid,#81d4fa)" opacity="0.3"
+             clip-path="url(#rbf__clip__default)"/>
+
+    <!-- 玻璃高光 -->
+    <path d="M20,52 Q16,70 18,94 Q22,110 36,118" fill="none" stroke="#ffffff" stroke-width="2.5"
+          stroke-linecap="round" opacity="0.22"/>
+    <path d="M44.5,6 L44.5,40" fill="none" stroke="#ffffff" stroke-width="1.5"
+          stroke-linecap="round" opacity="0.18"/>
+    <!-- 右侧微反光 -->
+    <path d="M82,56 Q86,72 82,96" fill="none" stroke="#ffffff" stroke-width="1"
+          stroke-linecap="round" opacity="0.08"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.round-bottom-flask.basic") return;
+
+  const uid = "rbf_" + Math.random().toString(36).slice(2, 8);
+  const clip = root.querySelector("#rbf__clip__default");
+  if (clip) clip.id = uid + "_clip";
+  root.querySelectorAll("[clip-path]").forEach(el =>
+    el.setAttribute("clip-path", `url(#${uid}_clip)`));
+
+  const liquidEl = root.querySelector(".rbf__liquid");
+  const meniscusEl = root.querySelector(".rbf__meniscus");
+
+  /* 瓶身: 瓶颈底 y≈42, 圆弧中心 y=84 r=38, 弧底 y≈122 */
+  const Y_BOT = 120, Y_TOP = 42;
+  const ARC_CY = 84, ARC_R = 38;
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function readNum(props, key, cssVar, fb) {
+    if (Number.isFinite(Number(props[key]))) return Number(props[key]);
+    const v = getComputedStyle(root).getPropertyValue(cssVar).trim();
+    const n = parseFloat(v);
+    return Number.isFinite(n) ? n : fb;
+  }
+
+  /* 在给定 y 处，瓶身的水平半宽 */
+  function halfWidthAtY(y) {
+    if (y <= Y_TOP) return 8; /* 瓶颈宽度 */
+    /* 圆弧区域: 圆心(50, ARC_CY), 半径 ARC_R */
+    if (y >= ARC_CY - ARC_R && y <= ARC_CY + ARC_R) {
+      const dy = y - ARC_CY;
+      return Math.sqrt(Math.max(0, ARC_R * ARC_R - dy * dy));
+    }
+    /* 过渡区 (瓶颈→圆弧) */
+    const t = (y - Y_TOP) / (ARC_CY - ARC_R - Y_TOP + 1);
+    return 8 + t * (Math.sqrt(ARC_R * ARC_R) - 8);
+  }
+
+  function render() {
+    const props = parseProps();
+    let level = readNum(props, "liquidLevel", "--cmp-liquid-level", 0.4);
+    level = Math.max(0, Math.min(0.85, level));
+
+    const usable = Y_BOT - Y_TOP;
+    const liquidH = level * usable;
+    const liquidY = Y_BOT - liquidH;
+
+    if (liquidEl) {
+      liquidEl.setAttribute("y", String(liquidY));
+      liquidEl.setAttribute("height", String(Math.max(0, Y_BOT + 4 - liquidY)));
+    }
+    if (meniscusEl) {
+      const hw = halfWidthAtY(liquidY);
+      meniscusEl.setAttribute("cx", "50");
+      meniscusEl.setAttribute("cy", String(liquidY));
+      meniscusEl.setAttribute("rx", String(Math.max(4, hw - 2)));
+      meniscusEl.style.display = level > 0.01 ? "" : "none";
+    }
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.round-bottom-flask.basic"] {
+  height: var(--cmp-size, 140px);
+  width: calc(var(--cmp-size, 140px) * 0.714);
+  display: inline-block;
+}
+.cmp[data-cmp-id="chem.labware.round-bottom-flask.basic"] .rbf__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>

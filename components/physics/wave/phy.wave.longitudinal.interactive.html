@@ -1,0 +1,113 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.wave.longitudinal.interactive",
+  "name": "纵波演示（交互式）",
+  "nameEn": "Longitudinal Wave (Interactive)",
+  "category": "physics/wave",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 120 },
+  "tags": ["wave", "longitudinal", "sound", "compression", "rarefaction", "interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 120, "min": 80, "max": 240, "desc": "组件高度" },
+    { "key": "amplitude",   "type": "number",     "default": 8,   "min": 2, "max": 20, "desc": "振幅(px)" },
+    { "key": "wavelength",  "type": "number",     "default": 120, "min": 60, "max": 240, "desc": "波长(px)" },
+    { "key": "speed",       "type": "number",     "default": 1,   "min": 0, "max": 3, "desc": "传播速度倍率" },
+    { "key": "particles",   "type": "number",     "default": 40,  "min": 20, "max": 80, "desc": "质点数量" },
+    { "key": "particleColor","type": "color", "default": "#1e88e5", "desc": "质点颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调亮度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "particleColor": "--cmp-particle",
+    "stroke": "--cmp-stroke", "glow": "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.wave.longitudinal.interactive" role="img" aria-label="纵波演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.wave.longitudinal.interactive"]{
+      --h:var(--cmp-size,120px);display:inline-block;width:calc(var(--h)*4);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,214,102,calc(.8*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.wave.longitudinal.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+  </style>
+
+  <svg viewBox="0 0 480 120" aria-hidden="true">
+    <!-- 平衡位置参考线 -->
+    <line x1="0" y1="60" x2="480" y2="60" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" stroke-dasharray="4,4" opacity="0.2"/>
+    <!-- 质点层 -->
+    <g class="lw__dots"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.wave.longitudinal.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var amp=Math.max(2,Math.min(20,Number(P.amplitude)||8));
+    var wl=Math.max(60,Math.min(240,Number(P.wavelength)||120));
+    var spd=Math.max(0,Math.min(3,Number(P.speed)!=null?Number(P.speed):1));
+    var nDots=Math.max(20,Math.min(80,Math.round(Number(P.particles)||40)));
+
+    var VW=480,VH=120,CY=60;
+    var dotsG=root.querySelector('.lw__dots');
+
+    /* 创建质点 */
+    var circles=[];
+    var spacing=VW/nDots;
+    for(var i=0;i<nDots;i++){
+      var c=document.createElementNS(NS,'circle');
+      c.setAttribute('r','4');
+      c.setAttribute('cy',String(CY));
+      c.setAttribute('fill','var(--cmp-particle,#1e88e5)');
+      c.setAttribute('opacity','0.85');
+      dotsG.appendChild(c);
+      circles.push({el:c,restX:i*spacing+spacing/2});
+    }
+
+    var phase=0;
+    var animId=0;
+
+    function render(){
+      var TWO_PI=Math.PI*2;
+      for(var i=0;i<circles.length;i++){
+        var ci=circles[i];
+        var displacement=amp*Math.sin(TWO_PI*(ci.restX/wl)-phase);
+        ci.el.setAttribute('cx',String(ci.restX+displacement));
+      }
+    }
+
+    function tick(){
+      phase+=0.04*spd;
+      render();
+      animId=requestAnimationFrame(tick);
+    }
+
+    render();
+    if(spd>0)animId=requestAnimationFrame(tick);
+
+    /* 监听 props 变化 */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      spd=Math.max(0,Math.min(3,Number(P2.speed)!=null?Number(P2.speed):1));
+      amp=Math.max(2,Math.min(20,Number(P2.amplitude)||8));
+      wl=Math.max(60,Math.min(240,Number(P2.wavelength)||120));
+      if(spd>0&&!animId)animId=requestAnimationFrame(tick);
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

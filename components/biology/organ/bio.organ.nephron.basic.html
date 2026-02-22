@@ -1,0 +1,245 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.nephron.basic",
+  "name": "肾单位结构",
+  "nameEn": "Nephron Structure",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 240, "h": 300 },
+  "tags": ["biology", "organ", "nephron", "kidney", "anatomy", "urinary", "glomerulus"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 300, "min": 200, "max": 500, "desc": "组件高度" },
+    { "key": "capsuleColor",   "type": "color",  "default": "#a5d6a7", "desc": "肾小囊颜色" },
+    { "key": "tubuleColor",    "type": "color",  "default": "#fff176", "desc": "肾小管颜色" },
+    { "key": "capillaryColor", "type": "color",  "default": "#ef5350", "desc": "毛细血管颜色" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "capsuleColor": "--cmp-capsule", "tubuleColor": "--cmp-tubule",
+    "capillaryColor": "--cmp-capillary", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  肾单位结构 — 教学示意
+  viewBox: 0 0 240 300
+  上部：肾小体（肾小球+肾小囊）
+  中下部：肾小管（近曲小管→髓袢→远曲小管→集合管）
+  右侧：肾小管周围毛细血管网
+-->
+<div class="cmp" data-cmp-id="bio.organ.nephron.basic" role="img" aria-label="肾单位结构">
+  <svg class="nephron__svg" viewBox="0 0 240 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <radialGradient id="np_glomG" cx="0.4" cy="0.4" r="0.6">
+        <stop offset="0%" stop-color="#ef9a9a"/>
+        <stop offset="100%" stop-color="#c62828"/>
+      </radialGradient>
+      <linearGradient id="np_tubuleG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#fff9c4"/>
+        <stop offset="100%" stop-color="#fff176"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ==================== 入球小动脉 ==================== -->
+    <path d="M40,30 Q55,30 65,38 Q72,44 75,52"
+          fill="none" stroke="var(--cmp-capillary,#ef5350)" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+    <path d="M40,30 Q55,30 65,38 Q72,44 75,52"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- ==================== 出球小动脉 ==================== -->
+    <path d="M115,52 Q118,44 125,38 Q135,30 150,30"
+          fill="none" stroke="var(--cmp-capillary,#ef5350)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
+    <path d="M115,52 Q118,44 125,38 Q135,30 150,30"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- ==================== 肾小囊（鲍曼囊） ==================== -->
+    <!-- 外层囊壁 -->
+    <path d="M60,42 Q55,35 65,28 Q80,18 105,18 Q130,18 135,28 Q140,35 135,50
+             Q130,65 115,75 Q100,82 85,82 Q70,82 60,72 Q52,62 55,50 Z"
+          fill="var(--cmp-capsule,#a5d6a7)" opacity="0.25"
+          stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+    <!-- 囊腔（肾小囊腔） -->
+    <path d="M65,45 Q62,38 70,32 Q82,24 100,24 Q118,24 128,32 Q134,38 130,48
+             Q126,60 112,68 Q100,74 88,74 Q76,74 68,66 Q60,58 62,48 Z"
+          fill="var(--cmp-capsule,#a5d6a7)" opacity="0.12"/>
+
+    <!-- ==================== 肾小球（毛细血管球） ==================== -->
+    <g transform="translate(95,50)">
+      <!-- 毛细血管团（多个弯曲的小管） -->
+      <path d="M-15,-8 Q-10,-15 -2,-12 Q5,-10 8,-15 Q12,-10 15,-8"
+            fill="none" stroke="url(#np_glomG)" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M-18,-2 Q-12,-8 -5,-5 Q2,-2 8,-6 Q14,-2 18,0"
+            fill="none" stroke="url(#np_glomG)" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M-16,5 Q-10,0 -3,3 Q4,6 10,2 Q16,5 18,8"
+            fill="none" stroke="url(#np_glomG)" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M-14,12 Q-8,6 0,10 Q8,6 14,12"
+            fill="none" stroke="url(#np_glomG)" stroke-width="3" stroke-linecap="round"/>
+      <!-- 肾小球整体轮廓（虚线） -->
+      <circle cx="0" cy="2" r="18" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.3"/>
+    </g>
+
+    <!-- ==================== 肾小管系统 ==================== -->
+
+    <!-- 近曲小管（从肾小囊出口向下弯曲） -->
+    <path d="M85,82 Q80,95 75,108 Q68,125 60,135 Q50,148 45,160"
+          fill="none" stroke="var(--cmp-tubule,#fff176)" stroke-width="6" stroke-linecap="round" opacity="0.7"/>
+    <path d="M85,82 Q80,95 75,108 Q68,125 60,135 Q50,148 45,160"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+    <!-- 近曲小管刷状缘（微绒毛标记） -->
+    <g stroke="var(--cmp-tubule,#fff176)" stroke-width="0.5" opacity="0.4">
+      <line x1="80" y1="92" x2="78" y2="89"/>
+      <line x1="82" y1="92" x2="84" y2="89"/>
+      <line x1="76" y1="105" x2="74" y2="102"/>
+      <line x1="78" y1="105" x2="80" y2="102"/>
+      <line x1="68" y1="120" x2="66" y2="117"/>
+      <line x1="70" y1="120" x2="72" y2="117"/>
+      <line x1="58" y1="138" x2="56" y2="135"/>
+      <line x1="60" y1="138" x2="62" y2="135"/>
+    </g>
+
+    <!-- 髓袢降支（向下） -->
+    <path d="M45,160 Q40,180 38,200 Q36,225 40,245 Q42,255 50,260"
+          fill="none" stroke="var(--cmp-tubule,#fff176)" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+    <path d="M45,160 Q40,180 38,200 Q36,225 40,245 Q42,255 50,260"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- 髓袢底部（U形弯） -->
+    <path d="M50,260 Q60,272 75,272 Q90,272 100,260"
+          fill="none" stroke="var(--cmp-tubule,#fff176)" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+    <path d="M50,260 Q60,272 75,272 Q90,272 100,260"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- 髓袢升支（向上） -->
+    <path d="M100,260 Q108,245 112,225 Q115,200 112,180 Q108,165 105,155"
+          fill="none" stroke="var(--cmp-tubule,#fff176)" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+    <path d="M100,260 Q108,245 112,225 Q115,200 112,180 Q108,165 105,155"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- 远曲小管（向上弯回肾小体附近） -->
+    <path d="M105,155 Q108,140 115,125 Q122,110 130,100 Q138,92 140,85"
+          fill="none" stroke="var(--cmp-tubule,#fff176)" stroke-width="5.5" stroke-linecap="round" opacity="0.65"/>
+    <path d="M105,155 Q108,140 115,125 Q122,110 130,100 Q138,92 140,85"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- 集合管（从远曲小管向下） -->
+    <path d="M140,85 Q145,95 148,110 Q150,130 150,155 Q150,180 148,200
+             Q146,220 145,240 Q144,260 145,280 L145,295"
+          fill="none" stroke="#ffb74d" stroke-width="7" stroke-linecap="round" opacity="0.5"/>
+    <path d="M140,85 Q145,95 148,110 Q150,130 150,155 Q150,180 148,200
+             Q146,220 145,240 Q144,260 145,280 L145,295"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.3"/>
+
+    <!-- ==================== 肾小管周围毛细血管网 ==================== -->
+    <g stroke="var(--cmp-capillary,#ef5350)" fill="none" stroke-linecap="round" opacity="0.25">
+      <!-- 从出球小动脉分出 -->
+      <path d="M150,30 Q165,40 170,60 Q175,80 170,100" stroke-width="2"/>
+      <path d="M170,100 Q165,120 160,140 Q155,160 160,180" stroke-width="1.5"/>
+      <path d="M160,180 Q165,200 160,220 Q155,240 160,260" stroke-width="1.5"/>
+      <!-- 横向分支包绕肾小管 -->
+      <path d="M170,80 Q140,85 120,90" stroke-width="1.2"/>
+      <path d="M165,120 Q135,125 110,130" stroke-width="1.2"/>
+      <path d="M160,160 Q130,165 105,160" stroke-width="1.2"/>
+      <path d="M160,200 Q130,205 110,200" stroke-width="1.2"/>
+      <path d="M155,240 Q125,245 100,240" stroke-width="1.2"/>
+      <!-- 左侧分支 -->
+      <path d="M45,160 Q25,170 20,190 Q18,210 25,230" stroke-width="1.2"/>
+      <path d="M25,230 Q30,250 40,260" stroke-width="1"/>
+    </g>
+
+    <!-- ==================== 血流方向箭头 ==================== -->
+    <defs>
+      <marker id="np_arrowR" markerWidth="5" markerHeight="3" refX="4" refY="1.5" orient="auto">
+        <path d="M0,0 L5,1.5 L0,3" fill="var(--cmp-capillary,#ef5350)" opacity="0.5"/>
+      </marker>
+      <marker id="np_arrowY" markerWidth="5" markerHeight="3" refX="4" refY="1.5" orient="auto">
+        <path d="M0,0 L5,1.5 L0,3" fill="#f9a825" opacity="0.5"/>
+      </marker>
+    </defs>
+    <!-- 入球动脉箭头 -->
+    <path d="M48,32 L62,38" fill="none" stroke="var(--cmp-capillary,#ef5350)" stroke-width="1" opacity="0.5" marker-end="url(#np_arrowR)"/>
+    <!-- 出球动脉箭头 -->
+    <path d="M125,38 L140,32" fill="none" stroke="var(--cmp-capillary,#ef5350)" stroke-width="1" opacity="0.5" marker-end="url(#np_arrowR)"/>
+    <!-- 滤液方向 -->
+    <path d="M82,90 L78,100" fill="none" stroke="#f9a825" stroke-width="0.8" opacity="0.4" marker-end="url(#np_arrowY)"/>
+
+    <!-- ==================== 标注 ==================== -->
+    <g class="nephron__labels" font-size="6" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#37474f)" font-weight="600">
+
+      <!-- 入球小动脉 -->
+      <line x1="42" y1="28" x2="15" y2="15" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="13" y="13" text-anchor="end" font-size="6" opacity="0.7">入球小动脉</text>
+
+      <!-- 出球小动脉 -->
+      <line x1="148" y1="28" x2="180" y2="15" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="182" y="17" font-size="6" opacity="0.7">出球小动脉</text>
+
+      <!-- 肾小球 -->
+      <line x1="95" y1="35" x2="95" y2="10" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="95" y="8" text-anchor="middle" font-size="6.5" opacity="0.7">肾小球</text>
+
+      <!-- 肾小囊 -->
+      <line x1="130" y1="22" x2="175" y2="42" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="177" y="44" font-size="6" opacity="0.65">肾小囊</text>
+
+      <!-- 近曲小管 -->
+      <line x1="60" y1="120" x2="15" y2="115" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="13" y="117" text-anchor="end" font-size="6" opacity="0.7">近曲小管</text>
+
+      <!-- 髓袢降支 -->
+      <line x1="36" y1="220" x2="12" y2="225" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="10" y="227" text-anchor="end" font-size="5.5" opacity="0.6">髓袢降支</text>
+
+      <!-- 髓袢 -->
+      <text x="75" y="288" text-anchor="middle" font-size="6" opacity="0.6">髓袢</text>
+
+      <!-- 髓袢升支 -->
+      <line x1="114" y1="220" x2="180" y2="225" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="182" y="227" font-size="5.5" opacity="0.6">髓袢升支</text>
+
+      <!-- 远曲小管 -->
+      <line x1="130" y1="108" x2="180" y2="105" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="182" y="107" font-size="6" opacity="0.7">远曲小管</text>
+
+      <!-- 集合管 -->
+      <line x1="150" y1="180" x2="195" y2="175" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="197" y="177" font-size="6" opacity="0.7">集合管</text>
+
+      <!-- 毛细血管网 -->
+      <line x1="170" y1="140" x2="200" y2="140" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <text x="202" y="142" font-size="5" opacity="0.5">毛细血管网</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.organ.nephron.basic") return;
+  const labels = root.querySelector(".nephron__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.organ.nephron.basic"] {
+  height: var(--cmp-size, 300px);
+  width: calc(var(--cmp-size, 300px) * 240 / 300);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.organ.nephron.basic"] .nephron__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

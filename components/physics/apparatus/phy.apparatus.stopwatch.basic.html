@@ -1,0 +1,185 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.stopwatch.basic",
+  "name": "秒表",
+  "nameEn": "Stopwatch",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 130 },
+  "tags": ["stopwatch", "timer", "time", "measurement", "apparatus"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 130, "min": 80, "max": 240, "desc": "组件高度" },
+    { "key": "seconds",     "type": "number",     "default": 0,   "min": 0, "max": 3599, "desc": "显示秒数" },
+    { "key": "bodyColor",   "type": "color",  "default": "#e0e0e0", "desc": "表壳颜色" },
+    { "key": "faceColor",   "type": "color",  "default": "#fafafa", "desc": "表盘颜色" },
+    { "key": "handColor",   "type": "color",  "default": "#d32f2f", "desc": "指针颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "bodyColor":   "--cmp-body",
+    "faceColor":   "--cmp-face",
+    "handColor":   "--cmp-hand",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.stopwatch.basic" role="img" aria-label="秒表">
+  <svg class="sw__svg" viewBox="0 0 100 130" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 表环（顶部挂环） -->
+    <circle cx="50" cy="12" r="8" fill="none"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="2.5"/>
+
+    <!-- 按钮（顶部左右） -->
+    <rect x="30" y="18" width="8" height="6" rx="2"
+          fill="var(--cmp-body,#e0e0e0)"
+          stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+    <rect x="62" y="18" width="8" height="6" rx="2"
+          fill="var(--cmp-body,#e0e0e0)"
+          stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+
+    <!-- 表壳 -->
+    <circle cx="50" cy="72" r="42"
+            fill="var(--cmp-body,#e0e0e0)"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <!-- 表壳高光 -->
+    <path d="M20,50 Q18,60 20,72" fill="none" stroke="#ffffff"
+          stroke-width="3" stroke-linecap="round" opacity="0.3"/>
+
+    <!-- 表盘 -->
+    <circle cx="50" cy="72" r="36"
+            fill="var(--cmp-face,#fafafa)"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="1"/>
+
+    <!-- 刻度 -->
+    <g class="sw__ticks"></g>
+
+    <!-- 小表盘（分钟） -->
+    <circle cx="50" cy="56" r="10"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+    <!-- 分针 -->
+    <line class="sw__min-hand" x1="50" y1="56" x2="50" y2="48"
+          stroke="var(--cmp-stroke,#37474f)" stroke-width="1" stroke-linecap="round"/>
+
+    <!-- 秒针 -->
+    <line class="sw__sec-hand" x1="50" y1="72" x2="50" y2="40"
+          stroke="var(--cmp-hand,#d32f2f)" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- 中心轴 -->
+    <circle cx="50" cy="72" r="2.5"
+            fill="var(--cmp-hand,#d32f2f)"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+
+    <!-- 数字显示 -->
+    <text class="sw__display" x="50" y="96" font-size="9" font-weight="700"
+          font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)"
+          text-anchor="middle">00:00.0</text>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.apparatus.stopwatch.basic") return;
+
+  const NS = "http://www.w3.org/2000/svg";
+  const ticksG = root.querySelector(".sw__ticks");
+  const secHand = root.querySelector(".sw__sec-hand");
+  const minHand = root.querySelector(".sw__min-hand");
+  const display = root.querySelector(".sw__display");
+
+  const CX = 50, CY = 72, R = 34;
+
+  /* 生成刻度 */
+  if (ticksG) {
+    for (let i = 0; i < 60; i++) {
+      const angle = (i * 6 - 90) * Math.PI / 180;
+      const isMajor = i % 5 === 0;
+      const r1 = isMajor ? R - 6 : R - 3;
+      const r2 = R;
+      const line = document.createElementNS(NS, "line");
+      line.setAttribute("x1", String(CX + r1 * Math.cos(angle)));
+      line.setAttribute("y1", String(CY + r1 * Math.sin(angle)));
+      line.setAttribute("x2", String(CX + r2 * Math.cos(angle)));
+      line.setAttribute("y2", String(CY + r2 * Math.sin(angle)));
+      line.setAttribute("stroke", "var(--cmp-stroke,#37474f)");
+      line.setAttribute("stroke-width", isMajor ? "1.2" : "0.5");
+      line.setAttribute("opacity", isMajor ? "0.7" : "0.4");
+      ticksG.appendChild(line);
+
+      if (isMajor) {
+        const txt = document.createElementNS(NS, "text");
+        const tr = R - 10;
+        txt.setAttribute("x", String(CX + tr * Math.cos(angle)));
+        txt.setAttribute("y", String(CY + tr * Math.sin(angle)));
+        txt.setAttribute("font-size", "6");
+        txt.setAttribute("font-family", "sans-serif");
+        txt.setAttribute("fill", "var(--cmp-stroke,#37474f)");
+        txt.setAttribute("text-anchor", "middle");
+        txt.setAttribute("dominant-baseline", "central");
+        txt.setAttribute("opacity", "0.6");
+        txt.textContent = String(i);
+        ticksG.appendChild(txt);
+      }
+    }
+  }
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function render() {
+    const props = parseProps();
+    let secs = Math.max(0, Math.min(3599, Number(props.seconds) || 0));
+
+    const totalSec = secs;
+    const min = Math.floor(totalSec / 60);
+    const sec = totalSec - min * 60;
+
+    /* 秒针角度 */
+    const secAngle = (sec / 60) * 360 - 90;
+    const secRad = secAngle * Math.PI / 180;
+    if (secHand) {
+      secHand.setAttribute("x2", String(CX + 30 * Math.cos(secRad)));
+      secHand.setAttribute("y2", String(CY + 30 * Math.sin(secRad)));
+    }
+
+    /* 分针角度 */
+    const minAngle = (min / 30) * 360 - 90;
+    const minRad = minAngle * Math.PI / 180;
+    if (minHand) {
+      minHand.setAttribute("x2", String(50 + 7 * Math.cos(minRad)));
+      minHand.setAttribute("y2", String(56 + 7 * Math.sin(minRad)));
+    }
+
+    /* 数字显示 */
+    if (display) {
+      const m = String(min).padStart(2, "0");
+      const s = String(Math.floor(sec)).padStart(2, "0");
+      const d = String(Math.round((sec % 1) * 10));
+      display.textContent = m + ":" + s + "." + d;
+    }
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.apparatus.stopwatch.basic"] {
+  height: var(--cmp-size, 130px);
+  width: calc(var(--cmp-size, 130px) * 0.769);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.apparatus.stopwatch.basic"] .sw__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>

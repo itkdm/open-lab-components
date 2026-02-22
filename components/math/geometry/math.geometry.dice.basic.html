@@ -1,0 +1,103 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.dice.basic",
+  "name": "骰子",
+  "nameEn": "Dice",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 100 },
+  "tags": ["math", "geometry", "dice", "probability", "random", "cube"],
+  "props": [
+    { "key": "size",      "type": "number(px)", "default": 100, "min": 40, "max": 200, "desc": "组件尺寸" },
+    { "key": "face",      "type": "number",     "default": 6, "min": 1, "max": 6, "desc": "显示点数" },
+    { "key": "bodyColor", "type": "color",  "default": "#fafafa", "desc": "骰子颜色" },
+    { "key": "dotColor",  "type": "color",  "default": "#263238", "desc": "点颜色" },
+    { "key": "stroke",    "type": "color",  "default": "#bdbdbd", "desc": "描边颜色" },
+    { "key": "rounded",   "type": "number", "default": 12, "min": 2, "max": 20, "desc": "圆角半径" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bodyColor": "--cmp-body",
+    "dotColor": "--cmp-dot", "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.dice.basic" role="img" aria-label="骰子">
+  <svg class="dice__svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 骰子体（带阴影） -->
+    <rect x="8" y="8" width="84" height="84" rx="12"
+          fill="var(--cmp-body,#fafafa)"
+          stroke="var(--cmp-stroke,#bdbdbd)"
+          stroke-width="2"/>
+    <!-- 高光 -->
+    <rect x="12" y="12" width="76" height="20" rx="8"
+          fill="#ffffff" opacity="0.3"/>
+
+    <!-- 点数层 -->
+    <g class="dice__dots"></g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "math.geometry.dice.basic") return;
+  const NS = "http://www.w3.org/2000/svg";
+  const dotsG = root.querySelector(".dice__dots");
+
+  /* 标准骰子点位 (50x50 中心区域, 中心50,50) */
+  const layouts = {
+    1: [[50,50]],
+    2: [[30,30],[70,70]],
+    3: [[30,30],[50,50],[70,70]],
+    4: [[30,30],[70,30],[30,70],[70,70]],
+    5: [[30,30],[70,30],[50,50],[30,70],[70,70]],
+    6: [[30,28],[70,28],[30,50],[70,50],[30,72],[70,72]]
+  };
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function render() {
+    const props = parseProps();
+    const face = Math.max(1, Math.min(6, Math.round(Number(props.face) || 6)));
+    const rounded = Math.max(2, Math.min(20, Number(props.rounded) || 12));
+
+    /* 更新圆角 */
+    const rect = root.querySelector("rect");
+    if (rect) rect.setAttribute("rx", String(rounded));
+
+    /* 画点 */
+    dotsG.innerHTML = "";
+    const positions = layouts[face] || layouts[6];
+    positions.forEach(([cx, cy]) => {
+      const c = document.createElementNS(NS, "circle");
+      c.setAttribute("cx", String(cx));
+      c.setAttribute("cy", String(cy));
+      c.setAttribute("r", "7");
+      c.setAttribute("fill", "var(--cmp-dot,#263238)");
+      dotsG.appendChild(c);
+    });
+
+    root.setAttribute("aria-label", "骰子 " + face + " 点");
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="math.geometry.dice.basic"] {
+  width: var(--cmp-size, 100px);
+  height: var(--cmp-size, 100px);
+  display: inline-block;
+}
+.cmp[data-cmp-id="math.geometry.dice.basic"] .dice__svg {
+  width: 100%; height: 100%; display: block;
+  filter: drop-shadow(2px 3px 4px rgba(0,0,0,0.15));
+}
+</style>

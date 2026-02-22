@@ -1,0 +1,129 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.led.basic",
+  "name": "发光二极管（LED）",
+  "nameEn": "LED",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 80, "h": 110 },
+  "tags": ["led", "diode", "circuit", "semiconductor", "light"],
+  "props": [
+    { "key": "size",        "type": "number(px)",  "default": 110,       "min": 48, "max": 256, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "color",       "type": "color",       "default": "#ef4444", "desc": "LED 颜色（红/绿/蓝/黄等）" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0,         "min": 0,  "max": 1,   "desc": "发光强度（0=灭，1=最亮）" },
+    { "key": "bodyColor",   "type": "color",       "default": "rgba(180,60,60,0.35)", "desc": "外壳颜色（透明环氧体）" },
+    { "key": "leadColor",   "type": "color",       "default": "#9e9e9e", "desc": "引脚颜色" },
+    { "key": "stroke",      "type": "color",       "default": "#374151", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number",      "default": 1.6,       "min": 0.5, "max": 4, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "color":       "--cmp-color",
+    "glow":        "--cmp-glow",
+    "bodyColor":   "--cmp-body",
+    "leadColor":   "--cmp-lead",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.led.basic" role="img" aria-label="发光二极管（LED）">
+  <svg class="led__svg" viewBox="0 0 80 110" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- ===== 引脚 ===== -->
+    <!-- 阳极引脚（左，较长） -->
+    <line x1="30" y1="68" x2="30" y2="100"
+          stroke="var(--cmp-lead, #9e9e9e)" stroke-width="2" stroke-linecap="round"/>
+    <!-- 阴极引脚（右，较短） -->
+    <line x1="50" y1="68" x2="50" y2="92"
+          stroke="var(--cmp-lead, #9e9e9e)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- +/− 标注 -->
+    <text x="30" y="108" font-size="8" font-weight="700" font-family="Arial, sans-serif"
+          fill="var(--cmp-stroke, #374151)" opacity="0.55" text-anchor="middle">+</text>
+    <text x="50" y="100" font-size="8" font-weight="700" font-family="Arial, sans-serif"
+          fill="var(--cmp-stroke, #374151)" opacity="0.55" text-anchor="middle">−</text>
+
+    <!-- ===== 内发光层（与外壳同形，glow 控制透明度） ===== -->
+    <path class="led__glow"
+          d="M24,66 L24,42 C24,24 40,10 40,10 C40,10 56,24 56,42 L56,66 Z"
+          fill="var(--cmp-color, #ef4444)"/>
+
+    <!-- ===== 环氧树脂外壳 ===== -->
+    <!-- 半球顶 + 圆柱体 -->
+    <path class="led__body"
+          d="M24,66 L24,42 C24,24 40,10 40,10 C40,10 56,24 56,42 L56,66 Z"
+          fill="var(--cmp-body, rgba(180,60,60,0.35))"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="var(--cmp-stroke-width, 1.6)"
+          stroke-linejoin="round"/>
+
+    <!-- ===== 内部结构：反射杯 + 圆形芯片 ===== -->
+    <!-- 反射杯（梯形碗状） -->
+    <path class="led__cup" d="M33,56 L30,64 L50,64 L47,56 Z"
+          fill="var(--cmp-lead, #9e9e9e)" opacity="0.4"
+          stroke="var(--cmp-stroke, #374151)" stroke-width="0.6"/>
+    <!-- 圆形发光芯片 -->
+    <circle class="led__chip" cx="40" cy="54" r="5.5"
+            fill="var(--cmp-color, #ef4444)" opacity="0.35"/>
+    <!-- 键合线（芯片→引脚） -->
+    <path d="M37,58 L30,66 M43,58 L50,66"
+          fill="none" stroke="var(--cmp-lead, #9e9e9e)" stroke-width="0.7"
+          stroke-linecap="round" opacity="0.45"/>
+
+    <!-- ===== 外壳质感 ===== -->
+    <!-- 顶部弧面高光 -->
+    <path d="M32,18 C34,14 39,12 43,14"
+          fill="none" stroke="#ffffff" stroke-width="2.2"
+          stroke-linecap="round" opacity="0.4"/>
+    <path d="M30,24 C31,22 34,20 36,21"
+          fill="none" stroke="#ffffff" stroke-width="1.2"
+          stroke-linecap="round" opacity="0.25"/>
+    <!-- 侧面高光 -->
+    <line x1="26" y1="38" x2="26" y2="58"
+          stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.15"/>
+
+    <!-- 底部法兰（加宽边缘） -->
+    <rect x="22" y="64" width="36" height="4" rx="1"
+          fill="var(--cmp-body, rgba(180,60,60,0.35))"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="var(--cmp-stroke-width, 1.6)"/>
+    <!-- 阴极缺口（右下角切平） -->
+    <rect x="54" y="64" width="4" height="4" rx="0.5"
+          fill="var(--cmp-stroke, #374151)" opacity="0.25"/>
+  </svg>
+</div>
+
+<style>
+  .cmp[data-cmp-id="phy.circuit.led.basic"] {
+    height: var(--cmp-size, 110px);
+    width: calc(var(--cmp-size, 110px) * 0.727);
+    display: inline-grid;
+    place-items: center;
+    transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+  }
+
+  .cmp[data-cmp-id="phy.circuit.led.basic"] .led__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0 0 calc(12px * var(--cmp-glow, 0))
+            var(--cmp-color, #ef4444));
+  }
+
+  /* 与外壳同形的内发光层，opacity 绑定 glow */
+  .cmp[data-cmp-id="phy.circuit.led.basic"] .led__glow {
+    opacity: calc(var(--cmp-glow, 0) * 0.6);
+  }
+
+  /* 芯片亮度随 glow 从 0.35 渐变到 1 */
+  .cmp[data-cmp-id="phy.circuit.led.basic"] .led__chip {
+    opacity: calc(0.35 + 0.65 * var(--cmp-glow, 0));
+  }
+
+  /* 反射杯随 glow 微亮 */
+  .cmp[data-cmp-id="phy.circuit.led.basic"] .led__cup {
+    opacity: calc(0.4 + 0.3 * var(--cmp-glow, 0));
+  }
+</style>

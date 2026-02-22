@@ -9,7 +9,15 @@
       "WebSearch",
       "WebFetch(domain:www.amazon.com)",
       "WebFetch(domain:en.wikipedia.org)",
-      "WebFetch(domain:www.honsenmagnetics.com)"
+      "WebFetch(domain:www.honsenmagnetics.com)",
+      "Bash(tail:*)",
+      "Bash(cd \"D:/develop/project/edu-html/组件库/open-lab-components\" && node tools/validate/index.js 2>&1)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(f\"\" id: {d[''id'']}, name: {d[''name'']}, viewport: {d[''viewport'']}\"\"\\)\")",
+      "Bash(done)",
+      "Bash(cd \"D:\\\\develop\\\\project\\\\edu-html\\\\组件库\\\\open-lab-components\" && npm run build:site 2>&1)",
+      "Bash(cd D:\\\\develop\\\\project\\\\edu-html\\\\组件库\\\\open-lab-components:*)",
+      "Bash(cd \"D:\\\\develop\\\\project\\\\edu-html\\\\组件库\\\\open-lab-components\" && git add components/ site/components.html site/playground.html .claude/settings.local.json registry/registry.json site/dist/ && git commit -m \"$\\(cat <<'EOF'\nfeat: add biology organ components and batch new STEM components\n\nAdd 5 organ components \\(heart, eye, ear, neuron, nephron\\), plus new\nbiology cell/instrument, chemistry labware, physics apparatus/circuit/\noptics/wave/thermal, and math geometry/probability components.\nRebuild registry \\(114 total\\) and site.\n\nCo-Authored-By: Claude Opus 4.6 \\(1M context\\) <noreply@anthropic.com>\nEOF\n\\)\" 2>&1)",
+      "Bash(cd \"D:\\\\develop\\\\project\\\\edu-html\\\\组件库\\\\open-lab-components\" && git add components/ site/components.html site/playground.html .claude/settings.local.json && git commit -m \"$\\(cat <<'EOF'\nfeat: add biology organ components and batch new STEM components\n\nAdd 5 organ components \\(heart, eye, ear, neuron, nephron\\), plus new\nbiology cell/instrument, chemistry labware, physics apparatus/circuit/\noptics/wave/thermal, and math geometry/probability components.\n\nCo-Authored-By: Claude Opus 4.6 \\(1M context\\) <noreply@anthropic.com>\nEOF\n\\)\" 2>&1)"
     ],
     "deny": [],
     "ask": []

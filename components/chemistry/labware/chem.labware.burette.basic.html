@@ -1,0 +1,191 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.burette.basic",
+  "name": "酸式滴定管",
+  "nameEn": "Burette",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 40, "h": 240 },
+  "tags": ["chemistry", "labware", "burette", "titration", "volume", "measurement"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 240, "min": 160, "max": 400, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.8, "min": 0, "max": 1, "desc": "液面高度" },
+    { "key": "liquidColor", "type": "color",  "default": "#ef9a9a", "desc": "液体颜色" },
+    { "key": "scaleMax",    "type": "number", "default": 50, "desc": "刻度最大值(mL)" },
+    { "key": "majorStep",   "type": "number", "default": 10, "min": 1, "desc": "主刻度间隔" },
+    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "stopcock",    "type": "enum",   "default": "closed", "enum": ["open","closed"], "desc": "活塞状态" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "liquidColor": "--cmp-liquid",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.burette.basic" role="img" aria-label="酸式滴定管">
+  <svg class="bur__svg" viewBox="0 0 40 240" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 管身 -->
+    <rect x="14" y="10" width="12" height="190" rx="1"
+          fill="rgba(220,240,255,0.25)"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+
+    <!-- 液体 -->
+    <rect class="bur__liquid" x="15.5" y="30" width="9" height="168"
+          fill="var(--cmp-liquid,#ef9a9a)" opacity="0.55"/>
+
+    <!-- 液面弯月面 -->
+    <ellipse class="bur__meniscus" cx="20" cy="30" rx="4" ry="1.5"
+             fill="var(--cmp-liquid,#ef9a9a)" opacity="0.3"/>
+
+    <!-- 刻度 -->
+    <g class="bur__scale"></g>
+
+    <!-- 管口（顶部微喇叭） -->
+    <path d="M12,12 L14,10 L26,10 L28,12"
+          fill="none" stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.5)" stroke-linecap="round"/>
+
+    <!-- 活塞座 -->
+    <rect x="10" y="198" width="20" height="8" rx="2"
+          fill="rgba(220,240,255,0.3)"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="1"/>
+
+    <!-- 活塞手柄 -->
+    <g class="bur__stopcock">
+      <rect class="bur__handle" x="28" y="199" width="10" height="6" rx="2"
+            fill="#78909c" stroke="var(--cmp-stroke,#546e7a)" stroke-width="0.8"/>
+    </g>
+
+    <!-- 下管尖嘴 -->
+    <path d="M18,206 L18,228 Q18,232 20,234 Q22,232 22,228 L22,206"
+          fill="rgba(220,240,255,0.25)"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+
+    <!-- 滴液（活塞打开时） -->
+    <g class="bur__drip" style="display:none">
+      <ellipse cx="20" cy="237" rx="1.5" ry="2.5" fill="var(--cmp-liquid,#ef9a9a)" opacity="0.7">
+        <animate attributeName="cy" from="236" to="240" dur="0.8s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.7" to="0" dur="0.8s" repeatCount="indefinite"/>
+      </ellipse>
+    </g>
+
+    <!-- 管身高光 -->
+    <rect x="15.5" y="12" width="2.5" height="186" rx="1" fill="#ffffff" opacity="0.2"/>
+
+    <!-- 读数 -->
+    <text class="bur__readout" x="20" y="8" font-size="6" font-weight="600"
+          font-family="'DIN Alternate','Arial Narrow',sans-serif"
+          fill="var(--cmp-stroke,#546e7a)" text-anchor="middle" opacity="0.6">0.0 mL</text>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.burette.basic") return;
+  const NS = "http://www.w3.org/2000/svg";
+
+  const scaleG = root.querySelector(".bur__scale");
+  const liquidEl = root.querySelector(".bur__liquid");
+  const meniscusEl = root.querySelector(".bur__meniscus");
+  const readout = root.querySelector(".bur__readout");
+  const drip = root.querySelector(".bur__drip");
+  const handle = root.querySelector(".bur__handle");
+
+  /* 管身内部: y=12(顶0mL) → y=198(底50mL) */
+  const Y_TOP = 12, Y_BOT = 198;
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function render() {
+    const props = parseProps();
+    let level = Math.max(0, Math.min(1, Number(props.liquidLevel) || 0.8));
+    const scaleMax = Number(props.scaleMax) || 50;
+    const majorStep = Math.max(1, Number(props.majorStep) || 10);
+    const open = props.stopcock === "open";
+
+    /* 滴定管刻度是从上往下读（0在顶部） */
+    const usable = Y_BOT - Y_TOP;
+    const liquidH = level * usable;
+    const liquidY = Y_TOP + (1 - level) * usable;
+
+    if (liquidEl) {
+      liquidEl.setAttribute("y", String(liquidY));
+      liquidEl.setAttribute("height", String(Math.max(0, liquidH)));
+    }
+    if (meniscusEl) {
+      meniscusEl.setAttribute("cy", String(liquidY));
+      meniscusEl.style.display = level > 0.01 ? "" : "none";
+    }
+
+    /* 刻度（从上到下：0 → scaleMax） */
+    if (scaleG) {
+      scaleG.innerHTML = "";
+      const minorStep = majorStep / 5;
+      for (let v = 0; v <= scaleMax; v += minorStep) {
+        const ratio = v / scaleMax;
+        const y = Y_TOP + ratio * usable;
+        const isMajor = Math.abs(v % majorStep) < 0.01 || Math.abs(v % majorStep - majorStep) < 0.01;
+        const tickLen = isMajor ? 8 : 4;
+
+        const line = document.createElementNS(NS, "line");
+        line.setAttribute("x1", String(26));
+        line.setAttribute("x2", String(26 + tickLen));
+        line.setAttribute("y1", String(y));
+        line.setAttribute("y2", String(y));
+        line.setAttribute("stroke", "var(--cmp-stroke,#546e7a)");
+        line.setAttribute("stroke-width", isMajor ? "0.8" : "0.4");
+        line.setAttribute("opacity", isMajor ? "0.5" : "0.3");
+        scaleG.appendChild(line);
+
+        if (isMajor) {
+          const txt = document.createElementNS(NS, "text");
+          txt.setAttribute("x", String(36));
+          txt.setAttribute("y", String(y + 2));
+          txt.setAttribute("font-size", "5");
+          txt.setAttribute("font-family", "sans-serif");
+          txt.setAttribute("fill", "var(--cmp-stroke,#546e7a)");
+          txt.setAttribute("text-anchor", "end");
+          txt.setAttribute("opacity", "0.45");
+          txt.textContent = String(Math.round(v));
+          scaleG.appendChild(txt);
+        }
+      }
+    }
+
+    /* 读数（从上往下读） */
+    const reading = (1 - level) * scaleMax;
+    if (readout) readout.textContent = reading.toFixed(1) + " mL";
+
+    /* 活塞 */
+    if (drip) drip.style.display = open ? "" : "none";
+    if (handle) {
+      handle.setAttribute("x", open ? "28" : "28");
+      handle.setAttribute("fill", open ? "#a5d6a7" : "#78909c");
+    }
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.burette.basic"] {
+  height: var(--cmp-size, 240px);
+  width: calc(var(--cmp-size, 240px) * 0.167);
+  display: inline-block;
+}
+.cmp[data-cmp-id="chem.labware.burette.basic"] .bur__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

@@ -1,0 +1,158 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.cart.collision",
+  "name": "碰撞实验小车",
+  "nameEn": "Collision Cart",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 130, "h": 60 },
+  "tags": ["physics", "mechanics", "cart", "collision", "momentum", "bumper"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 130, "min": 80, "max": 220, "desc": "组件宽度" },
+    { "key": "bodyColor",   "type": "color",  "default": "#e53935", "desc": "车身颜色" },
+    { "key": "bumperColor", "type": "color",  "default": "#fdd835", "desc": "缓冲器颜色" },
+    { "key": "wheelColor",  "type": "color",  "default": "#37474f", "desc": "车轮颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边宽度" },
+    { "key": "bumperType",  "type": "enum",   "default": "spring", "enum": ["spring","velcro","magnet"], "desc": "缓冲器类型" },
+    { "key": "flagVisible", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示遮光片" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "bodyColor":   "--cmp-body",
+    "bumperColor": "--cmp-bumper",
+    "wheelColor":  "--cmp-wheel",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.cart.collision" role="img" aria-label="碰撞实验小车">
+  <svg class="cc__svg" viewBox="0 0 130 60" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 车身主体（低矮流线型） -->
+    <path class="cc__body"
+          d="M22,14 L108,14 C112,14 114,16 114,20 L114,34 C114,36 112,38 108,38 L22,38 C18,38 16,36 16,34 L16,20 C16,16 18,14 22,14 Z"
+          fill="var(--cmp-body,#e53935)"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <!-- 车身高光 -->
+    <rect x="20" y="16" width="90" height="6" rx="2" fill="#ffffff" opacity="0.25"/>
+    <!-- 车身中线装饰 -->
+    <line x1="22" y1="26" x2="108" y2="26" stroke="#ffffff" stroke-width="1.5" opacity="0.15"/>
+
+    <!-- 遮光片（光电门计时用） -->
+    <g class="cc__flag">
+      <rect x="62" y="4" width="6" height="12" rx="0.5"
+            fill="#263238" stroke="var(--cmp-stroke,#263238)"
+            stroke-width="0.8"/>
+      <rect x="63" y="5" width="2" height="10" rx="0.5" fill="#ffffff" opacity="0.12"/>
+    </g>
+
+    <!-- 前缓冲器 -->
+    <g class="cc__bumper-front">
+      <!-- 弹簧型（默认） -->
+      <g class="cc__bumper-spring">
+        <path d="M114,20 L118,18 L120,24 L122,18 L124,24 L126,20 L128,22"
+              fill="none" stroke="var(--cmp-bumper,#fdd835)"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <!-- 魔术贴型 -->
+      <g class="cc__bumper-velcro" style="display:none">
+        <rect x="114" y="17" width="6" height="14" rx="1"
+              fill="var(--cmp-bumper,#fdd835)"
+              stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+        <line x1="116" y1="19" x2="116" y2="29" stroke="#263238" stroke-width="0.5" opacity="0.4"/>
+        <line x1="118" y1="19" x2="118" y2="29" stroke="#263238" stroke-width="0.5" opacity="0.4"/>
+      </g>
+      <!-- 磁铁型 -->
+      <g class="cc__bumper-magnet" style="display:none">
+        <rect x="114" y="17" width="8" height="14" rx="2"
+              fill="var(--cmp-bumper,#fdd835)"
+              stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+        <text x="118" y="27" font-size="7" font-weight="700" fill="#c62828"
+              text-anchor="middle" font-family="serif">N</text>
+      </g>
+    </g>
+
+    <!-- 后缓冲器（镜像） -->
+    <g class="cc__bumper-rear">
+      <g class="cc__bumper-spring">
+        <path d="M16,20 L12,18 L10,24 L8,18 L6,24 L4,20 L2,22"
+              fill="none" stroke="var(--cmp-bumper,#fdd835)"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <g class="cc__bumper-velcro" style="display:none">
+        <rect x="10" y="17" width="6" height="14" rx="1"
+              fill="var(--cmp-bumper,#fdd835)"
+              stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+        <line x1="12" y1="19" x2="12" y2="29" stroke="#263238" stroke-width="0.5" opacity="0.4"/>
+        <line x1="14" y1="19" x2="14" y2="29" stroke="#263238" stroke-width="0.5" opacity="0.4"/>
+      </g>
+      <g class="cc__bumper-magnet" style="display:none">
+        <rect x="8" y="17" width="8" height="14" rx="2"
+              fill="var(--cmp-bumper,#fdd835)"
+              stroke="var(--cmp-stroke,#263238)" stroke-width="1"/>
+        <text x="12" y="27" font-size="7" font-weight="700" fill="#1565c0"
+              text-anchor="middle" font-family="serif">S</text>
+      </g>
+    </g>
+
+    <!-- 左轮 -->
+    <circle cx="34" cy="48" r="10" fill="var(--cmp-wheel,#37474f)"
+            stroke="var(--cmp-stroke,#263238)" stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <circle cx="34" cy="48" r="3.5" fill="#78909c"/>
+    <circle cx="34" cy="48" r="1.5" fill="#b0bec5"/>
+    <!-- 右轮 -->
+    <circle cx="96" cy="48" r="10" fill="var(--cmp-wheel,#37474f)"
+            stroke="var(--cmp-stroke,#263238)" stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <circle cx="96" cy="48" r="3.5" fill="#78909c"/>
+    <circle cx="96" cy="48" r="1.5" fill="#b0bec5"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.mechanics.cart.collision") return;
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function update() {
+    const props = parseProps();
+    const type = props.bumperType || "spring";
+    const flagOn = props.flagVisible !== "off";
+
+    /* 切换缓冲器类型 */
+    ["front", "rear"].forEach(side => {
+      const g = root.querySelector(`.cc__bumper-${side}`);
+      if (!g) return;
+      g.querySelector(".cc__bumper-spring").style.display = type === "spring" ? "" : "none";
+      g.querySelector(".cc__bumper-velcro").style.display = type === "velcro" ? "" : "none";
+      g.querySelector(".cc__bumper-magnet").style.display = type === "magnet" ? "" : "none";
+    });
+
+    /* 遮光片 */
+    const flag = root.querySelector(".cc__flag");
+    if (flag) flag.style.display = flagOn ? "" : "none";
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.mechanics.cart.collision"] {
+  width: var(--cmp-size, 130px);
+  height: calc(var(--cmp-size, 130px) * 0.462);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.mechanics.cart.collision"] .cc__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

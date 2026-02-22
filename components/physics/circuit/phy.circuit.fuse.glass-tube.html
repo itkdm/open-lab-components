@@ -1,0 +1,183 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.fuse.glass-tube",
+  "name": "保险丝（玻璃管）",
+  "nameEn": "Glass Tube Fuse",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 120, "h": 40 },
+  "tags": ["fuse", "circuit", "protection", "safety", "glass-tube"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 64,        "min": 24, "max": 256, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "aspect",      "type": "number",     "default": 3.0,       "min": 2.0, "max": 4.5, "desc": "宽高比（width = size × aspect）" },
+    { "key": "capColor",    "type": "color",      "default": "#b0b0b0", "desc": "金属端帽颜色" },
+    { "key": "glassColor",  "type": "color",      "default": "rgba(220,235,245,0.4)", "desc": "玻璃管颜色" },
+    { "key": "wireColor",   "type": "color",      "default": "#9e9e9e", "desc": "熔丝颜色" },
+    { "key": "leadColor",   "type": "color",      "default": "#888888", "desc": "引脚颜色" },
+    { "key": "stroke",      "type": "color",      "default": "#374151", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number",     "default": 1.6,       "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "blown",       "type": "enum",       "default": "intact",  "enum": ["intact", "blown"], "desc": "熔断状态" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0,        "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "aspect":      "--cmp-aspect",
+    "capColor":    "--cmp-cap",
+    "glassColor":  "--cmp-glass",
+    "wireColor":   "--cmp-wire",
+    "leadColor":   "--cmp-lead",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.fuse.glass-tube" role="img" aria-label="保险丝（玻璃管）">
+  <svg class="fuse__svg" viewBox="0 0 120 40" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- ===== 引脚 ===== -->
+    <line x1="0" y1="20" x2="14" y2="20"
+          stroke="var(--cmp-lead, #888)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="106" y1="20" x2="120" y2="20"
+          stroke="var(--cmp-lead, #888)" stroke-width="2" stroke-linecap="round"/>
+
+    <!-- ===== 左端帽（金属） ===== -->
+    <rect x="14" y="7" width="16" height="26" rx="3"
+          fill="var(--cmp-cap, #b0b0b0)"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="var(--cmp-stroke-width, 1.6)"/>
+    <!-- 端帽高光 -->
+    <rect x="16" y="9" width="12" height="6" rx="2"
+          fill="#ffffff" opacity="0.25"/>
+    <!-- 端帽底部阴影 -->
+    <rect x="16" y="25" width="12" height="5" rx="2"
+          fill="#000000" opacity="0.12"/>
+    <!-- 端帽纹路 -->
+    <line x1="14" y1="15" x2="30" y2="15"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="0.5" opacity="0.2"/>
+    <line x1="14" y1="25" x2="30" y2="25"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="0.5" opacity="0.2"/>
+
+    <!-- ===== 玻璃管 ===== -->
+    <rect x="30" y="9" width="60" height="22" rx="2"
+          fill="var(--cmp-glass, rgba(220,235,245,0.4))"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="calc(var(--cmp-stroke-width, 1.6) * 0.7)"/>
+    <!-- 玻璃管高光（顶部反光带） -->
+    <rect x="32" y="10" width="56" height="5" rx="1.5"
+          fill="#ffffff" opacity="0.3"/>
+    <!-- 玻璃管底部折射 -->
+    <rect x="32" y="24" width="56" height="4" rx="1.5"
+          fill="#ffffff" opacity="0.1"/>
+
+    <!-- ===== 熔丝（管内金属丝） ===== -->
+    <line class="fuse__wire" x1="30" y1="20" x2="90" y2="20"
+          stroke="var(--cmp-wire, #9e9e9e)" stroke-width="1.4"
+          stroke-linecap="round"/>
+    <!-- 熔丝微弱反光 -->
+    <line class="fuse__wire-hi" x1="34" y1="19" x2="86" y2="19"
+          stroke="#ffffff" stroke-width="0.6"
+          stroke-linecap="round" opacity="0.2"/>
+
+    <!-- ===== 右端帽（金属） ===== -->
+    <rect x="90" y="7" width="16" height="26" rx="3"
+          fill="var(--cmp-cap, #b0b0b0)"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="var(--cmp-stroke-width, 1.6)"/>
+    <!-- 端帽高光 -->
+    <rect x="92" y="9" width="12" height="6" rx="2"
+          fill="#ffffff" opacity="0.25"/>
+    <!-- 端帽底部阴影 -->
+    <rect x="92" y="25" width="12" height="5" rx="2"
+          fill="#000000" opacity="0.12"/>
+    <!-- 端帽纹路 -->
+    <line x1="90" y1="15" x2="106" y2="15"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="0.5" opacity="0.2"/>
+    <line x1="90" y1="25" x2="106" y2="25"
+          stroke="var(--cmp-stroke, #374151)"
+          stroke-width="0.5" opacity="0.2"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.circuit.fuse.glass-tube") return;
+
+  const wire = root.querySelector(".fuse__wire");
+  const wireHi = root.querySelector(".fuse__wire-hi");
+
+  function parseDataProps() {
+    const raw = root.getAttribute("data-props");
+    if (!raw) return {};
+    try { const p = JSON.parse(raw); return p && typeof p === "object" ? p : {}; } catch (e) { return {}; }
+  }
+
+  function render() {
+    const props = parseDataProps();
+    const blown = props.blown === "blown";
+
+    if (wire) {
+      if (blown) {
+        // 熔断：断开的熔丝，两段残余 + 中间断口
+        wire.setAttribute("d", "M30,20 L50,20 M70,20 L90,20");
+        wire.removeAttribute("x1");
+        wire.removeAttribute("y1");
+        wire.removeAttribute("x2");
+        wire.removeAttribute("y2");
+        // 切换为 path 渲染
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M30,20 L48,20 M72,20 L90,20");
+        path.setAttribute("stroke", wire.getAttribute("stroke"));
+        path.setAttribute("stroke-width", wire.getAttribute("stroke-width"));
+        path.setAttribute("stroke-linecap", "round");
+        path.setAttribute("class", "fuse__wire");
+        wire.parentNode.replaceChild(path, wire);
+        if (wireHi) wireHi.style.display = "none";
+      } else {
+        // 完好：连续熔丝
+        if (wire.tagName === "path") {
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", "30");
+          line.setAttribute("y1", "20");
+          line.setAttribute("x2", "90");
+          line.setAttribute("y2", "20");
+          line.setAttribute("stroke", "var(--cmp-wire, #9e9e9e)");
+          line.setAttribute("stroke-width", "1.4");
+          line.setAttribute("stroke-linecap", "round");
+          line.setAttribute("class", "fuse__wire");
+          wire.parentNode.replaceChild(line, wire);
+        }
+        if (wireHi) wireHi.style.display = "";
+      }
+    }
+  }
+
+  render();
+
+  const observer = new MutationObserver(() => render());
+  observer.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => observer.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+  .cmp[data-cmp-id="phy.circuit.fuse.glass-tube"] {
+    height: var(--cmp-size, 64px);
+    width: calc(var(--cmp-size, 64px) * var(--cmp-aspect, 3.0));
+    display: inline-grid;
+    place-items: center;
+    transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+  }
+
+  .cmp[data-cmp-id="phy.circuit.fuse.glass-tube"] .fuse__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0))
+            rgba(255, 214, 102, calc(0.9 * var(--cmp-glow, 0))));
+  }
+</style>

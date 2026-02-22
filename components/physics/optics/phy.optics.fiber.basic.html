@@ -1,0 +1,108 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.optics.fiber.basic",
+  "name": "光纤（全反射演示）",
+  "nameEn": "Optical Fiber (Total Internal Reflection)",
+  "category": "physics/optics",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 100 },
+  "tags": ["optics", "fiber", "total-internal-reflection", "light", "refraction"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 100, "min": 60, "max": 180, "desc": "组件高度" },
+    { "key": "lightOn",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "光源开关" },
+    { "key": "fiberColor", "type": "color",  "default": "#e3f2fd", "desc": "光纤颜色" },
+    { "key": "lightColor", "type": "color",  "default": "#fdd835", "desc": "光线颜色" },
+    { "key": "stroke",     "type": "color",  "default": "#546e7a", "desc": "描边颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "fiberColor": "--cmp-fiber",
+    "lightColor": "--cmp-light", "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.optics.fiber.basic" role="img" aria-label="光纤（全反射演示）">
+  <style>
+    .cmp[data-cmp-id="phy.optics.fiber.basic"]{
+      --h:var(--cmp-size,100px);display:inline-block;width:calc(var(--h)*4);height:var(--h);
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.optics.fiber.basic"] svg{width:100%;height:100%;display:block;overflow:visible}
+    @keyframes fiber-pulse{0%,100%{opacity:0.8}50%{opacity:0.4}}
+  </style>
+
+  <svg viewBox="0 0 400 100" aria-hidden="true">
+    <!-- 光纤外壳（弯曲路径） -->
+    <path class="fib__outer"
+          d="M20,50 Q80,50 120,30 Q180,10 220,40 Q260,70 300,30 Q340,10 380,50"
+          fill="none" stroke="var(--cmp-stroke,#546e7a)" stroke-width="22"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 光纤芯（内部，稍窄） -->
+    <path class="fib__core"
+          d="M20,50 Q80,50 120,30 Q180,10 220,40 Q260,70 300,30 Q340,10 380,50"
+          fill="none" stroke="var(--cmp-fiber,#e3f2fd)" stroke-width="16"
+          stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- 光线在光纤内全反射的锯齿路径 -->
+    <g class="fib__light">
+      <path d="M24,50 L55,42 L75,56 L100,36 L125,28 L145,22 L170,16 L190,28 L210,42 L230,48 L250,60 L270,62 L290,40 L310,26 L330,18 L350,22 L370,40 L380,50"
+            fill="none" stroke="var(--cmp-light,#fdd835)" stroke-width="1.5"
+            stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+      <!-- 反射点标记 -->
+      <g opacity="0.5">
+        <circle cx="55" cy="42" r="2" fill="var(--cmp-light,#fdd835)"/>
+        <circle cx="100" cy="36" r="2" fill="var(--cmp-light,#fdd835)"/>
+        <circle cx="145" cy="22" r="2" fill="var(--cmp-light,#fdd835)"/>
+        <circle cx="190" cy="28" r="2" fill="var(--cmp-light,#fdd835)"/>
+        <circle cx="250" cy="60" r="2" fill="var(--cmp-light,#fdd835)"/>
+        <circle cx="290" cy="40" r="2" fill="var(--cmp-light,#fdd835)"/>
+        <circle cx="330" cy="18" r="2" fill="var(--cmp-light,#fdd835)"/>
+        <circle cx="370" cy="40" r="2" fill="var(--cmp-light,#fdd835)"/>
+      </g>
+      <!-- 光线发光效果 -->
+      <path d="M24,50 L55,42 L75,56 L100,36 L125,28 L145,22 L170,16 L190,28 L210,42 L230,48 L250,60 L270,62 L290,40 L310,26 L330,18 L350,22 L370,40 L380,50"
+            fill="none" stroke="var(--cmp-light,#fdd835)" stroke-width="4"
+            stroke-linecap="round" opacity="0.15"
+            style="animation:fiber-pulse 1.5s ease-in-out infinite"/>
+    </g>
+
+    <!-- 光源（左端） -->
+    <circle cx="16" cy="50" r="8" fill="var(--cmp-light,#fdd835)" opacity="0.6"/>
+    <circle cx="16" cy="50" r="4" fill="#ffffff" opacity="0.5"/>
+
+    <!-- 出射光（右端） -->
+    <g class="fib__exit">
+      <line x1="380" y1="50" x2="396" y2="46" stroke="var(--cmp-light,#fdd835)" stroke-width="1.5" opacity="0.6"/>
+      <line x1="380" y1="50" x2="396" y2="50" stroke="var(--cmp-light,#fdd835)" stroke-width="1.5" opacity="0.6"/>
+      <line x1="380" y1="50" x2="396" y2="54" stroke="var(--cmp-light,#fdd835)" stroke-width="1.5" opacity="0.6"/>
+    </g>
+
+    <!-- 标注 -->
+    <text x="200" y="92" font-size="9" font-weight="600"
+          font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="var(--cmp-stroke,#546e7a)" text-anchor="middle" opacity="0.5">全反射</text>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.optics.fiber.basic") return;
+
+  const light = root.querySelector(".fib__light");
+  const exit = root.querySelector(".fib__exit");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    const on = props.lightOn !== "off";
+    if (light) light.style.display = on ? "" : "none";
+    if (exit) exit.style.display = on ? "" : "none";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>

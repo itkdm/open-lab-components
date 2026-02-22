@@ -1,0 +1,127 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.condenser.basic",
+  "name": "冷凝管",
+  "nameEn": "Condenser Tube",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 50, "h": 200 },
+  "tags": ["chemistry", "labware", "condenser", "distillation", "cooling"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 360, "desc": "组件高度" },
+    { "key": "waterFlow",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "冷却水流动" },
+    { "key": "waterColor",  "type": "color",  "default": "#bbdefb", "desc": "冷却水颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.25)", "desc": "玻璃底色" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "waterColor":  "--cmp-water",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glassTint":   "--cmp-glass-tint"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.condenser.basic" role="img" aria-label="冷凝管">
+  <svg class="cond__svg" viewBox="0 0 50 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 外管 -->
+    <rect x="8" y="30" width="34" height="140" rx="3"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.25))"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+
+    <!-- 冷却水（外管内） -->
+    <rect class="cond__water" x="10" y="32" width="30" height="136" rx="2"
+          fill="var(--cmp-water,#bbdefb)" opacity="0.35"/>
+
+    <!-- 内管（蒸气通道） -->
+    <rect x="20" y="6" width="10" height="188" rx="2"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.25))"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+
+    <!-- 内管高光 -->
+    <rect x="22" y="8" width="3" height="184" rx="1" fill="#ffffff" opacity="0.2"/>
+
+    <!-- 进水口（下方侧管） -->
+    <path d="M8,150 L0,150 L0,156 L8,156"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.25))"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="calc(var(--cmp-stroke-width,1.5)*0.8)"
+          stroke-linejoin="round"/>
+    <!-- 进水口标注 -->
+    <text x="4" y="164" font-size="5" fill="var(--cmp-stroke,#546e7a)"
+          text-anchor="middle" opacity="0.5" font-family="sans-serif">进</text>
+
+    <!-- 出水口（上方侧管） -->
+    <path d="M42,50 L50,50 L50,44 L42,44"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.25))"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="calc(var(--cmp-stroke-width,1.5)*0.8)"
+          stroke-linejoin="round"/>
+    <!-- 出水口标注 -->
+    <text x="46" y="40" font-size="5" fill="var(--cmp-stroke,#546e7a)"
+          text-anchor="middle" opacity="0.5" font-family="sans-serif">出</text>
+
+    <!-- 水流动画条纹 -->
+    <g class="cond__flow" opacity="0">
+      <rect x="12" y="32" width="6" height="8" rx="1" fill="#ffffff" opacity="0.25">
+        <animate attributeName="y" from="160" to="32" dur="2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="32" y="32" width="6" height="8" rx="1" fill="#ffffff" opacity="0.2">
+        <animate attributeName="y" from="140" to="32" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="12" y="32" width="6" height="6" rx="1" fill="#ffffff" opacity="0.15">
+        <animate attributeName="y" from="120" to="32" dur="2s" begin="1.3s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+
+    <!-- 外管高光 -->
+    <rect x="10" y="32" width="4" height="136" rx="2" fill="#ffffff" opacity="0.15"/>
+
+    <!-- 上下管口 -->
+    <ellipse cx="25" cy="6" rx="5" ry="2"
+             fill="var(--cmp-glass-tint,rgba(220,240,255,0.25))"
+             stroke="var(--cmp-stroke,#546e7a)"
+             stroke-width="calc(var(--cmp-stroke-width,1.5)*0.7)"/>
+    <ellipse cx="25" cy="194" rx="5" ry="2"
+             fill="var(--cmp-glass-tint,rgba(220,240,255,0.25))"
+             stroke="var(--cmp-stroke,#546e7a)"
+             stroke-width="calc(var(--cmp-stroke-width,1.5)*0.7)"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.condenser.basic") return;
+
+  const flow = root.querySelector(".cond__flow");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    const on = props.waterFlow !== "off";
+    if (flow) flow.style.opacity = on ? "1" : "0";
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.condenser.basic"] {
+  height: var(--cmp-size, 200px);
+  width: calc(var(--cmp-size, 200px) * 0.25);
+  display: inline-block;
+}
+.cmp[data-cmp-id="chem.labware.condenser.basic"] .cond__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

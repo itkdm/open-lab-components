@@ -1,0 +1,233 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.neuron.basic",
+  "name": "神经元结构",
+  "nameEn": "Neuron Structure",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 140 },
+  "tags": ["biology", "organ", "neuron", "nerve", "anatomy", "synapse", "axon", "dendrite"],
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 140, "min": 100, "max": 300, "desc": "组件高度" },
+    { "key": "bodyColor",     "type": "color",  "default": "#7e57c2", "desc": "细胞体颜色" },
+    { "key": "axonColor",     "type": "color",  "default": "#fdd835", "desc": "轴突颜色" },
+    { "key": "myelinColor",   "type": "color",  "default": "#fff9c4", "desc": "髓鞘颜色" },
+    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bodyColor": "--cmp-body", "axonColor": "--cmp-axon",
+    "myelinColor": "--cmp-myelin", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  神经元结构 — 教学示意（水平布局）
+  viewBox: 0 0 360 140
+  左侧：树突 → 细胞体 → 轴突丘 → 轴突（髓鞘+郎飞结） → 突触小体
+-->
+<div class="cmp" data-cmp-id="bio.organ.neuron.basic" role="img" aria-label="神经元结构">
+  <svg class="neuron__svg" viewBox="0 0 360 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <radialGradient id="nr_bodyG" cx="0.4" cy="0.4" r="0.6">
+        <stop offset="0%" stop-color="#b39ddb"/>
+        <stop offset="100%" stop-color="#5e35b1"/>
+      </radialGradient>
+      <linearGradient id="nr_myelinG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#fff9c4"/>
+        <stop offset="50%" stop-color="#fff176"/>
+        <stop offset="100%" stop-color="#fff9c4"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ==================== 树突（左侧分支） ==================== -->
+    <g stroke="var(--cmp-body,#7e57c2)" fill="none" stroke-linecap="round" opacity="0.7">
+      <!-- 主树突分支 -->
+      <path d="M10,40 Q25,45 40,50 Q55,55 65,60" stroke-width="2"/>
+      <path d="M5,55 Q20,58 35,60 Q50,62 65,65" stroke-width="1.8"/>
+      <path d="M8,70 Q25,70 45,70 Q58,70 68,70" stroke-width="2.2"/>
+      <path d="M5,85 Q20,82 35,80 Q50,78 65,75" stroke-width="1.8"/>
+      <path d="M10,100 Q25,95 40,90 Q55,85 65,80" stroke-width="2"/>
+      <!-- 次级分支 -->
+      <path d="M10,40 Q5,30 2,22" stroke-width="1"/>
+      <path d="M10,40 Q15,32 12,24" stroke-width="0.8"/>
+      <path d="M5,55 Q0,48 -2,40" stroke-width="0.8"/>
+      <path d="M8,70 Q2,65 -2,58" stroke-width="0.8"/>
+      <path d="M8,70 Q2,75 -2,82" stroke-width="0.8"/>
+      <path d="M5,85 Q0,92 -2,100" stroke-width="0.8"/>
+      <path d="M10,100 Q5,108 2,116" stroke-width="1"/>
+      <path d="M10,100 Q15,108 12,118" stroke-width="0.8"/>
+      <!-- 树突棘（小突起） -->
+      <circle cx="25" cy="44" r="1.2" fill="var(--cmp-body,#7e57c2)" opacity="0.5"/>
+      <circle cx="30" cy="60" r="1" fill="var(--cmp-body,#7e57c2)" opacity="0.5"/>
+      <circle cx="20" cy="72" r="1.2" fill="var(--cmp-body,#7e57c2)" opacity="0.5"/>
+      <circle cx="28" cy="82" r="1" fill="var(--cmp-body,#7e57c2)" opacity="0.5"/>
+      <circle cx="22" cy="96" r="1.2" fill="var(--cmp-body,#7e57c2)" opacity="0.5"/>
+    </g>
+
+    <!-- ==================== 细胞体（胞体） ==================== -->
+    <ellipse cx="85" cy="70" rx="22" ry="20"
+             fill="url(#nr_bodyG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+    <!-- 细胞核 -->
+    <circle cx="82" cy="68" r="10" fill="#4527a0" opacity="0.3"
+            stroke="#4527a0" stroke-width="0.8" opacity="0.4"/>
+    <!-- 核仁 -->
+    <circle cx="80" cy="66" r="4" fill="#311b92" opacity="0.25"/>
+    <!-- 尼氏体（粗面内质网团块） -->
+    <g opacity="0.2">
+      <rect x="72" y="78" width="5" height="3" rx="1" fill="#311b92"/>
+      <rect x="80" y="80" width="4" height="2.5" rx="1" fill="#311b92"/>
+      <rect x="90" y="76" width="5" height="3" rx="1" fill="#311b92"/>
+      <rect x="94" y="62" width="4" height="2.5" rx="1" fill="#311b92"/>
+    </g>
+
+    <!-- ==================== 轴突丘 ==================== -->
+    <path d="M107,65 Q115,62 122,64 Q128,66 130,70 Q128,74 122,76 Q115,78 107,75"
+          fill="var(--cmp-body,#7e57c2)" opacity="0.5" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+
+    <!-- ==================== 轴突（中央长轴） ==================== -->
+    <line x1="130" y1="70" x2="320" y2="70"
+          stroke="var(--cmp-axon,#fdd835)" stroke-width="2.5" opacity="0.5"/>
+
+    <!-- ==================== 髓鞘（施万细胞包裹段） ==================== -->
+    <!-- 髓鞘段1 -->
+    <rect x="135" y="58" width="30" height="24" rx="10"
+          fill="url(#nr_myelinG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.7"/>
+    <!-- 郎飞结1 -->
+    <line x1="168" y1="64" x2="168" y2="76" stroke="var(--cmp-axon,#fdd835)" stroke-width="2.5" opacity="0.6"/>
+
+    <!-- 髓鞘段2 -->
+    <rect x="172" y="58" width="30" height="24" rx="10"
+          fill="url(#nr_myelinG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.7"/>
+    <!-- 郎飞结2 -->
+    <line x1="205" y1="64" x2="205" y2="76" stroke="var(--cmp-axon,#fdd835)" stroke-width="2.5" opacity="0.6"/>
+
+    <!-- 髓鞘段3 -->
+    <rect x="209" y="58" width="30" height="24" rx="10"
+          fill="url(#nr_myelinG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.7"/>
+    <!-- 郎飞结3 -->
+    <line x1="242" y1="64" x2="242" y2="76" stroke="var(--cmp-axon,#fdd835)" stroke-width="2.5" opacity="0.6"/>
+
+    <!-- 髓鞘段4 -->
+    <rect x="246" y="58" width="30" height="24" rx="10"
+          fill="url(#nr_myelinG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.7"/>
+    <!-- 郎飞结4 -->
+    <line x1="279" y1="64" x2="279" y2="76" stroke="var(--cmp-axon,#fdd835)" stroke-width="2.5" opacity="0.6"/>
+
+    <!-- 髓鞘段5 -->
+    <rect x="283" y="58" width="30" height="24" rx="10"
+          fill="url(#nr_myelinG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.7"/>
+
+    <!-- 髓鞘内施万细胞核 -->
+    <ellipse cx="150" cy="62" rx="5" ry="2.5" fill="#f9a825" opacity="0.3"/>
+    <ellipse cx="187" cy="62" rx="5" ry="2.5" fill="#f9a825" opacity="0.3"/>
+    <ellipse cx="224" cy="62" rx="5" ry="2.5" fill="#f9a825" opacity="0.3"/>
+    <ellipse cx="261" cy="62" rx="5" ry="2.5" fill="#f9a825" opacity="0.3"/>
+    <ellipse cx="298" cy="62" rx="5" ry="2.5" fill="#f9a825" opacity="0.3"/>
+
+    <!-- ==================== 轴突末梢（突触小体） ==================== -->
+    <g>
+      <!-- 分支 -->
+      <path d="M316,70 Q325,60 335,52" fill="none" stroke="var(--cmp-axon,#fdd835)" stroke-width="1.5" opacity="0.6"/>
+      <path d="M316,70 Q328,68 340,65" fill="none" stroke="var(--cmp-axon,#fdd835)" stroke-width="1.5" opacity="0.6"/>
+      <path d="M316,70 Q328,72 340,75" fill="none" stroke="var(--cmp-axon,#fdd835)" stroke-width="1.5" opacity="0.6"/>
+      <path d="M316,70 Q325,80 335,88" fill="none" stroke="var(--cmp-axon,#fdd835)" stroke-width="1.5" opacity="0.6"/>
+      <!-- 突触小体（膨大末端） -->
+      <circle cx="337" cy="50" r="5" fill="var(--cmp-axon,#fdd835)" opacity="0.5" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+      <circle cx="342" cy="64" r="5" fill="var(--cmp-axon,#fdd835)" opacity="0.5" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+      <circle cx="342" cy="76" r="5" fill="var(--cmp-axon,#fdd835)" opacity="0.5" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+      <circle cx="337" cy="90" r="5" fill="var(--cmp-axon,#fdd835)" opacity="0.5" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+      <!-- 突触小泡（小点） -->
+      <circle cx="335" cy="48" r="1.2" fill="#f57f17" opacity="0.4"/>
+      <circle cx="339" cy="52" r="1" fill="#f57f17" opacity="0.4"/>
+      <circle cx="340" cy="62" r="1.2" fill="#f57f17" opacity="0.4"/>
+      <circle cx="344" cy="66" r="1" fill="#f57f17" opacity="0.4"/>
+      <circle cx="340" cy="74" r="1.2" fill="#f57f17" opacity="0.4"/>
+      <circle cx="344" cy="78" r="1" fill="#f57f17" opacity="0.4"/>
+      <circle cx="335" cy="88" r="1.2" fill="#f57f17" opacity="0.4"/>
+      <circle cx="339" cy="92" r="1" fill="#f57f17" opacity="0.4"/>
+    </g>
+
+    <!-- ==================== 信号传导方向箭头 ==================== -->
+    <defs>
+      <marker id="nr_arrow" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+        <path d="M0,0 L6,2 L0,4" fill="var(--cmp-stroke,#37474f)" opacity="0.4"/>
+      </marker>
+    </defs>
+    <path d="M50,125 L310,125" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"
+          stroke-dasharray="4,3" opacity="0.3" marker-end="url(#nr_arrow)"/>
+    <text x="180" y="135" text-anchor="middle" font-size="6" font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="var(--cmp-stroke,#37474f)" opacity="0.35">神经冲动传导方向</text>
+
+    <!-- ==================== 标注 ==================== -->
+    <g class="neuron__labels" font-size="6" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#37474f)" font-weight="600">
+
+      <!-- 树突 -->
+      <line x1="15" y1="38" x2="15" y2="22" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="15" y="19" text-anchor="middle" font-size="6.5" opacity="0.7">树突</text>
+
+      <!-- 细胞体 -->
+      <line x1="85" y1="50" x2="85" y2="28" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="85" y="25" text-anchor="middle" font-size="6.5" opacity="0.7">细胞体</text>
+
+      <!-- 细胞核 -->
+      <line x1="82" y1="58" x2="82" y2="42" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <text x="82" y="39" text-anchor="middle" font-size="5" opacity="0.55">细胞核</text>
+
+      <!-- 轴突丘 -->
+      <line x1="118" y1="62" x2="118" y2="42" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <text x="118" y="39" text-anchor="middle" font-size="5.5" opacity="0.6">轴突丘</text>
+
+      <!-- 轴突 -->
+      <text x="220" y="95" text-anchor="middle" font-size="6.5" opacity="0.6">轴突</text>
+
+      <!-- 髓鞘 -->
+      <line x1="150" y1="56" x2="150" y2="42" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <text x="150" y="39" text-anchor="middle" font-size="5.5" opacity="0.6">髓鞘</text>
+
+      <!-- 郎飞结 -->
+      <line x1="205" y1="78" x2="205" y2="95" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <text x="205" y="102" text-anchor="middle" font-size="5.5" opacity="0.6">郎飞结</text>
+
+      <!-- 施万细胞 -->
+      <line x1="261" y1="56" x2="261" y2="42" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <text x="261" y="39" text-anchor="middle" font-size="5" opacity="0.55">施万细胞</text>
+
+      <!-- 突触小体 -->
+      <line x1="342" y1="50" x2="352" y2="35" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="354" y="37" font-size="5.5" opacity="0.65">突触小体</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.organ.neuron.basic") return;
+  const labels = root.querySelector(".neuron__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.organ.neuron.basic"] {
+  height: var(--cmp-size, 140px);
+  width: calc(var(--cmp-size, 140px) * 360 / 140);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.organ.neuron.basic"] .neuron__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

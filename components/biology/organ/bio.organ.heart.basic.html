@@ -1,0 +1,260 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.heart.basic",
+  "name": "心脏结构",
+  "nameEn": "Heart Anatomy",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 260, "h": 280 },
+  "tags": ["biology", "organ", "heart", "anatomy", "circulatory", "cardiovascular"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 280, "min": 180, "max": 500, "desc": "组件高度" },
+    { "key": "bodyColor",   "type": "color",  "default": "#c62828", "desc": "心肌颜色" },
+    { "key": "venousColor", "type": "color",  "default": "#5c6bc0", "desc": "静脉血颜色" },
+    { "key": "arterialColor","type": "color", "default": "#e53935", "desc": "动脉血颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#4e342e", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bodyColor": "--cmp-body", "venousColor": "--cmp-venous",
+    "arterialColor": "--cmp-arterial", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  人体心脏结构 — 正面剖面图（教学示意）
+  viewBox: 0 0 260 280
+  注意：解剖学正面观，左右与观察者相反
+  图中左侧 = 人体右侧（右心），图中右侧 = 人体左侧（左心）
+-->
+<div class="cmp" data-cmp-id="bio.organ.heart.basic" role="img" aria-label="心脏结构">
+  <svg class="heart__svg" viewBox="0 0 260 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <!-- 心肌渐变 -->
+      <linearGradient id="ht_muscleG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ef5350"/>
+        <stop offset="50%" stop-color="#c62828"/>
+        <stop offset="100%" stop-color="#8e0000"/>
+      </linearGradient>
+      <!-- 静脉血渐变（蓝紫） -->
+      <linearGradient id="ht_venousG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7986cb"/>
+        <stop offset="100%" stop-color="#3949ab"/>
+      </linearGradient>
+      <!-- 动脉血渐变（鲜红） -->
+      <linearGradient id="ht_arterialG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ff5252"/>
+        <stop offset="100%" stop-color="#d32f2f"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ==================== 大血管（后层，先画） ==================== -->
+
+    <!-- 上腔静脉（图左上，进入右心房） -->
+    <path d="M68,10 L68,60 Q68,72 78,72"
+          fill="none" stroke="url(#ht_venousG)" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+    <path d="M68,10 L68,60 Q68,72 78,72"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1" opacity="0.4"/>
+
+    <!-- 下腔静脉（图左下，进入右心房） -->
+    <path d="M78,200 Q68,200 68,210 L68,260"
+          fill="none" stroke="url(#ht_venousG)" stroke-width="14" stroke-linecap="round" opacity="0.8"/>
+    <path d="M78,200 Q68,200 68,210 L68,260"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1" opacity="0.4"/>
+
+    <!-- 肺动脉（从右心室向上，分左右） -->
+    <path d="M110,90 Q110,50 90,35 Q70,20 50,28"
+          fill="none" stroke="url(#ht_venousG)" stroke-width="12" stroke-linecap="round" opacity="0.8"/>
+    <path d="M110,90 Q110,50 90,35 Q70,20 50,28"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1" opacity="0.4"/>
+
+    <!-- 肺静脉（从左上进入左心房） -->
+    <path d="M210,28 Q190,20 175,35 Q160,50 160,72"
+          fill="none" stroke="url(#ht_arterialG)" stroke-width="10" stroke-linecap="round" opacity="0.7"/>
+    <path d="M210,28 Q190,20 175,35 Q160,50 160,72"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1" opacity="0.4"/>
+
+    <!-- 主动脉弓（从左心室向上弯向右） -->
+    <path d="M155,95 Q155,55 170,38 Q185,22 210,18 Q230,16 240,30"
+          fill="none" stroke="url(#ht_arterialG)" stroke-width="14" stroke-linecap="round" opacity="0.85"/>
+    <path d="M155,95 Q155,55 170,38 Q185,22 210,18 Q230,16 240,30"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1" opacity="0.4"/>
+
+    <!-- ==================== 心脏外形（心肌壁） ==================== -->
+    <path d="M80,72 Q50,72 38,100 Q22,140 50,190 Q75,230 130,260
+             Q185,230 210,190 Q238,140 222,100 Q210,72 180,72
+             Q165,72 155,82 L130,100 L105,82 Q95,72 80,72 Z"
+          fill="url(#ht_muscleG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="2"/>
+    <!-- 心肌高光 -->
+    <path d="M55,100 Q42,135 60,180" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.08"/>
+
+    <!-- ==================== 内部分隔（室间隔 + 房间隔） ==================== -->
+    <!-- 房间隔（上部） -->
+    <line x1="130" y1="78" x2="130" y2="130" stroke="var(--cmp-stroke,#4e342e)" stroke-width="3"/>
+    <!-- 室间隔（下部，较厚） -->
+    <path d="M130,130 L130,240" stroke="var(--cmp-stroke,#4e342e)" stroke-width="5"/>
+    <!-- 室间隔肌肉质感 -->
+    <path d="M128,135 L128,235" stroke="#8e0000" stroke-width="1" opacity="0.3"/>
+
+    <!-- ==================== 四个腔室填色 ==================== -->
+    <!-- 右心房（图左上，静脉血） -->
+    <path d="M82,76 Q60,76 48,100 Q38,125 50,145 L130,130 L130,78 Q120,76 105,82 L130,100 Z"
+          fill="url(#ht_venousG)" opacity="0.25"/>
+    <!-- 右心室（图左下，静脉血） -->
+    <path d="M50,150 Q35,180 60,210 Q80,235 128,255 L128,135 Z"
+          fill="url(#ht_venousG)" opacity="0.2"/>
+    <!-- 左心房（图右上，动脉血） -->
+    <path d="M132,78 L132,130 L210,145 Q220,125 212,100 Q200,76 178,76 Q165,76 155,82 L132,100 Z"
+          fill="url(#ht_arterialG)" opacity="0.2"/>
+    <!-- 左心室（图右下，动脉血，壁更厚） -->
+    <path d="M132,135 L132,255 Q180,235 205,210 Q225,180 210,150 Z"
+          fill="url(#ht_arterialG)" opacity="0.18"/>
+
+    <!-- ==================== 瓣膜 ==================== -->
+    <!-- 三尖瓣（右房室口） -->
+    <g transform="translate(90,132)">
+      <path d="M-15,0 Q-8,-8 0,-2 Q8,-8 15,0" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.5"/>
+      <path d="M-15,0 Q-8,6 0,2 Q8,6 15,0" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.5"/>
+    </g>
+    <!-- 二尖瓣（左房室口） -->
+    <g transform="translate(170,132)">
+      <path d="M-12,0 Q-6,-7 0,-2 Q6,-7 12,0" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.5"/>
+      <path d="M-12,0 Q-6,5 0,2 Q6,5 12,0" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.5"/>
+    </g>
+    <!-- 肺动脉瓣（右心室出口） -->
+    <g transform="translate(110,92)">
+      <path d="M-6,-4 Q0,-8 6,-4" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.2"/>
+      <path d="M-6,-4 Q0,0 6,-4" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.2"/>
+    </g>
+    <!-- 主动脉瓣（左心室出口） -->
+    <g transform="translate(155,96)">
+      <path d="M-6,-4 Q0,-8 6,-4" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.2"/>
+      <path d="M-6,-4 Q0,0 6,-4" fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.2"/>
+    </g>
+
+    <!-- ==================== 腱索（连接瓣膜和乳头肌） ==================== -->
+    <g stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.6" opacity="0.4" fill="none">
+      <!-- 三尖瓣腱索 -->
+      <path d="M80,132 Q75,160 70,180"/>
+      <path d="M100,132 Q95,165 85,185"/>
+      <!-- 二尖瓣腱索 -->
+      <path d="M162,132 Q165,160 175,180"/>
+      <path d="M178,132 Q180,165 190,185"/>
+    </g>
+    <!-- 乳头肌 -->
+    <ellipse cx="72" cy="185" rx="6" ry="10" fill="#c62828" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8" opacity="0.5"/>
+    <ellipse cx="87" cy="190" rx="5" ry="8" fill="#c62828" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8" opacity="0.5"/>
+    <ellipse cx="178" cy="185" rx="6" ry="10" fill="#c62828" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8" opacity="0.5"/>
+    <ellipse cx="192" cy="188" rx="5" ry="8" fill="#c62828" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8" opacity="0.5"/>
+
+    <!-- ==================== 血流方向箭头 ==================== -->
+    <defs>
+      <marker id="ht_arrowB" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+        <path d="M0,0 L6,2 L0,4" fill="#3949ab" opacity="0.6"/>
+      </marker>
+      <marker id="ht_arrowR" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+        <path d="M0,0 L6,2 L0,4" fill="#d32f2f" opacity="0.6"/>
+      </marker>
+    </defs>
+    <!-- 右心房→右心室 -->
+    <path d="M90,115 L90,145" fill="none" stroke="#3949ab" stroke-width="1.2" opacity="0.5" marker-end="url(#ht_arrowB)"/>
+    <!-- 右心室→肺动脉 -->
+    <path d="M105,145 Q105,120 105,100" fill="none" stroke="#3949ab" stroke-width="1.2" opacity="0.5" marker-end="url(#ht_arrowB)"/>
+    <!-- 左心房→左心室 -->
+    <path d="M170,115 L170,145" fill="none" stroke="#d32f2f" stroke-width="1.2" opacity="0.5" marker-end="url(#ht_arrowR)"/>
+    <!-- 左心室→主动脉 -->
+    <path d="M160,145 Q160,120 158,100" fill="none" stroke="#d32f2f" stroke-width="1.2" opacity="0.5" marker-end="url(#ht_arrowR)"/>
+
+    <!-- ==================== 标注 ==================== -->
+    <g class="heart__labels" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#4e342e)" font-weight="600">
+
+      <!-- 上腔静脉 -->
+      <line x1="68" y1="30" x2="18" y2="20" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.5"/>
+      <text x="16" y="22" text-anchor="end" font-size="6" opacity="0.7">上腔静脉</text>
+
+      <!-- 下腔静脉 -->
+      <line x1="68" y1="240" x2="18" y2="250" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.5"/>
+      <text x="16" y="252" text-anchor="end" font-size="6" opacity="0.7">下腔静脉</text>
+
+      <!-- 肺动脉 -->
+      <line x1="80" y1="32" x2="30" y2="42" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.5"/>
+      <text x="28" y="44" text-anchor="end" font-size="6" opacity="0.7">肺动脉</text>
+
+      <!-- 主动脉 -->
+      <line x1="220" y1="18" x2="248" y2="10" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.5"/>
+      <text x="250" y="12" font-size="6" opacity="0.7">主动脉</text>
+
+      <!-- 肺静脉 -->
+      <line x1="200" y1="28" x2="240" y2="40" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.5"/>
+      <text x="242" y="42" font-size="6" opacity="0.7">肺静脉</text>
+
+      <!-- 右心房 -->
+      <text x="85" y="110" text-anchor="middle" font-size="7" opacity="0.65">右心房</text>
+
+      <!-- 右心室 -->
+      <text x="85" y="190" text-anchor="middle" font-size="7" opacity="0.65">右心室</text>
+
+      <!-- 左心房 -->
+      <text x="175" y="110" text-anchor="middle" font-size="7" opacity="0.65">左心房</text>
+
+      <!-- 左心室 -->
+      <text x="175" y="190" text-anchor="middle" font-size="7" opacity="0.65">左心室</text>
+
+      <!-- 房间隔 -->
+      <line x1="130" y1="105" x2="138" y2="105" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.3"/>
+      <text x="140" y="107" font-size="5" opacity="0.5">房间隔</text>
+
+      <!-- 室间隔 -->
+      <line x1="130" y1="185" x2="138" y2="185" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.3"/>
+      <text x="140" y="187" font-size="5" opacity="0.5">室间隔</text>
+
+      <!-- 三尖瓣 -->
+      <line x1="78" y1="132" x2="38" y2="138" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="36" y="140" text-anchor="end" font-size="5.5" opacity="0.6">三尖瓣</text>
+
+      <!-- 二尖瓣 -->
+      <line x1="182" y1="132" x2="222" y2="138" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="224" y="140" font-size="5.5" opacity="0.6">二尖瓣</text>
+
+      <!-- 肺动脉瓣 -->
+      <line x1="104" y1="88" x2="38" y2="68" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="36" y="70" text-anchor="end" font-size="5" opacity="0.55">肺动脉瓣</text>
+
+      <!-- 主动脉瓣 -->
+      <line x1="161" y1="92" x2="224" y2="72" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="226" y="74" font-size="5" opacity="0.55">主动脉瓣</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.organ.heart.basic") return;
+  const labels = root.querySelector(".heart__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.organ.heart.basic"] {
+  height: var(--cmp-size, 280px);
+  width: calc(var(--cmp-size, 280px) * 260 / 280);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.organ.heart.basic"] .heart__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

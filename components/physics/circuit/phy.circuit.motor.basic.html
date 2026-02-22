@@ -1,0 +1,114 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.motor.basic",
+  "name": "电动机",
+  "nameEn": "DC Motor",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 80 },
+  "tags": ["circuit", "motor", "dc", "rotation", "electromagnetic"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 80, "min": 50, "max": 160, "desc": "组件高度" },
+    { "key": "running",    "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "运转状态" },
+    { "key": "bodyColor",  "type": "color",  "default": "#78909c", "desc": "外壳颜色" },
+    { "key": "shaftColor", "type": "color",  "default": "#b0bec5", "desc": "转轴颜色" },
+    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bodyColor": "--cmp-body", "shaftColor": "--cmp-shaft",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.motor.basic" role="img" aria-label="电动机">
+  <svg class="mot__svg" viewBox="0 0 100 80" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 电机外壳（圆柱侧视） -->
+    <rect x="20" y="14" width="50" height="52" rx="6"
+          fill="var(--cmp-body,#78909c)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <!-- 外壳高光 -->
+    <rect x="23" y="17" width="12" height="46" rx="3" fill="#ffffff" opacity="0.15"/>
+    <!-- 外壳散热纹 -->
+    <g opacity="0.15">
+      <line x1="30" y1="20" x2="64" y2="20" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+      <line x1="30" y1="28" x2="64" y2="28" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+      <line x1="30" y1="36" x2="64" y2="36" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+      <line x1="30" y1="44" x2="64" y2="44" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+      <line x1="30" y1="52" x2="64" y2="52" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+      <line x1="30" y1="60" x2="64" y2="60" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+    </g>
+
+    <!-- 前端盖 -->
+    <ellipse cx="70" cy="40" rx="6" ry="26"
+             fill="var(--cmp-body,#78909c)"
+             stroke="var(--cmp-stroke,#37474f)"
+             stroke-width="var(--cmp-stroke-width,1.5)"/>
+
+    <!-- 转轴 -->
+    <rect x="76" y="37" width="20" height="6" rx="1"
+          fill="var(--cmp-shaft,#b0bec5)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="0.8"/>
+    <!-- 转轴高光 -->
+    <rect x="78" y="38" width="16" height="2" rx="0.5" fill="#ffffff" opacity="0.2"/>
+
+    <!-- 转轴末端扇叶标记（运转时旋转） -->
+    <g class="mot__fan" transform-origin="96 40">
+      <line x1="96" y1="34" x2="96" y2="46" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="90" y1="40" x2="96" y2="34" stroke="var(--cmp-stroke,#37474f)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+      <line x1="96" y1="46" x2="90" y2="40" stroke="var(--cmp-stroke,#37474f)" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+    </g>
+
+    <!-- 接线端子 -->
+    <circle cx="28" cy="14" r="3" fill="#e53935"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    <circle cx="42" cy="14" r="3" fill="#1e88e5"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    <!-- +/- 标记 -->
+    <text x="28" y="10" font-size="6" font-weight="700" fill="#e53935" text-anchor="middle">+</text>
+    <text x="42" y="10" font-size="6" font-weight="700" fill="#1e88e5" text-anchor="middle">−</text>
+
+    <!-- M 标记 -->
+    <text x="45" y="44" font-size="14" font-weight="700"
+          font-family="serif" fill="#ffffff" text-anchor="middle" opacity="0.2">M</text>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.circuit.motor.basic") return;
+
+  const fan = root.querySelector(".mot__fan");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    const on = props.running === "on";
+    if (fan) fan.style.animation = on ? "mot-spin 0.3s linear infinite" : "none";
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.circuit.motor.basic"] {
+  height: var(--cmp-size, 80px);
+  width: calc(var(--cmp-size, 80px) * 1.25);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.circuit.motor.basic"] .mot__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+@keyframes mot-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+</style>

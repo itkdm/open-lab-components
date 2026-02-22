@@ -1,0 +1,138 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.probability.spinner.interactive",
+  "name": "概率转盘（交互式）",
+  "nameEn": "Probability Spinner (Interactive)",
+  "category": "math/probability",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 220 },
+  "tags": ["math", "probability", "spinner", "random", "statistics", "interactive"],
+  "props": [
+    { "key": "size",      "type": "number(px)", "default": 220, "min": 120, "max": 360, "desc": "组件高度" },
+    { "key": "sectors",   "type": "number", "default": 4, "min": 2, "max": 8, "desc": "扇区数量" },
+    { "key": "spinning",  "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "旋转状态" },
+    { "key": "stroke",    "type": "color",  "default": "#37474f", "desc": "描边颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="math.probability.spinner.interactive" role="img" aria-label="概率转盘（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.probability.spinner.interactive"]{
+      --h:var(--cmp-size,220px);display:inline-block;
+      width:calc(var(--h)*200/220);height:var(--h);user-select:none;
+    }
+    .cmp[data-cmp-id="math.probability.spinner.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    @keyframes spin-wheel{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+  </style>
+
+  <svg viewBox="0 0 200 220" aria-hidden="true">
+    <!-- 转盘 -->
+    <g class="sp__wheel" transform-origin="100 100">
+      <g class="sp__sectors"></g>
+      <!-- 外圈 -->
+      <circle cx="100" cy="100" r="85" fill="none"
+              stroke="var(--cmp-stroke,#37474f)" stroke-width="2.5"/>
+    </g>
+
+    <!-- 中心轴 -->
+    <circle cx="100" cy="100" r="6" fill="var(--cmp-stroke,#37474f)"/>
+    <circle cx="100" cy="100" r="3" fill="#ffffff" opacity="0.3"/>
+
+    <!-- 指针（顶部固定） -->
+    <polygon points="100,10 95,22 105,22" fill="#e53935"
+             stroke="var(--cmp-stroke,#37474f)" stroke-width="1" stroke-linejoin="round"/>
+
+    <!-- 概率标注 -->
+    <text class="sp__prob" x="100" y="210" font-size="11" font-weight="700"
+          font-family="'Courier New',monospace"
+          fill="var(--cmp-stroke,#37474f)" text-anchor="middle" opacity="0.6"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.probability.spinner.interactive')return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var COLORS=['#e53935','#1e88e5','#43a047','#fb8c00','#8e24aa','#00acc1','#f4511e','#3949ab'];
+    var CX=100,CY=100,R=84;
+
+    var sectorsG=root.querySelector('.sp__sectors');
+    var wheelG=root.querySelector('.sp__wheel');
+    var probText=root.querySelector('.sp__prob');
+
+    function parseProps(){
+      try{var r=root.getAttribute('data-props');return r?JSON.parse(r)||{}:{};}catch(e){return {};}
+    }
+
+    function polarToCart(cx,cy,r,angleDeg){
+      var rad=(angleDeg-90)*Math.PI/180;
+      return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
+    }
+
+    function buildSectors(n){
+      if(!sectorsG)return;
+      sectorsG.innerHTML='';
+      var angle=360/n;
+      for(var i=0;i<n;i++){
+        var startAngle=i*angle;
+        var endAngle=(i+1)*angle;
+        var start=polarToCart(CX,CY,R,startAngle);
+        var end=polarToCart(CX,CY,R,endAngle);
+        var largeArc=angle>180?1:0;
+
+        var path=document.createElementNS(NS,'path');
+        var d='M'+CX+','+CY+' L'+start.x+','+start.y+' A'+R+','+R+' 0 '+largeArc+',1 '+end.x+','+end.y+' Z';
+        path.setAttribute('d',d);
+        path.setAttribute('fill',COLORS[i%COLORS.length]);
+        path.setAttribute('opacity','0.7');
+        path.setAttribute('stroke','var(--cmp-stroke,#37474f)');
+        path.setAttribute('stroke-width','1');
+        sectorsG.appendChild(path);
+
+        /* 扇区编号 */
+        var midAngle=startAngle+angle/2;
+        var labelPos=polarToCart(CX,CY,R*0.6,midAngle);
+        var txt=document.createElementNS(NS,'text');
+        txt.setAttribute('x',labelPos.x);
+        txt.setAttribute('y',labelPos.y+3);
+        txt.setAttribute('text-anchor','middle');
+        txt.setAttribute('font-size','14');
+        txt.setAttribute('font-weight','700');
+        txt.setAttribute('fill','#ffffff');
+        txt.setAttribute('font-family','sans-serif');
+        txt.textContent=String(i+1);
+        sectorsG.appendChild(txt);
+      }
+
+      if(probText){
+        var frac='1/'+n;
+        var pct=(100/n).toFixed(1)+'%';
+        probText.textContent='P = '+frac+' = '+pct;
+      }
+    }
+
+    function render(){
+      var props=parseProps();
+      var n=Math.max(2,Math.min(8,Math.round(Number(props.sectors)||4)));
+      var spinning=(props.spinning==='on');
+
+      buildSectors(n);
+
+      if(wheelG){
+        wheelG.style.animation=spinning?'spin-wheel 2s linear infinite':'none';
+      }
+    }
+
+    render();
+    var obs=new MutationObserver(render);
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){obs.disconnect();});
+  })();
+  </script>
+</div>

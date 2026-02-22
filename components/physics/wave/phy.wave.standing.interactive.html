@@ -1,0 +1,171 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.wave.standing.interactive",
+  "name": "驻波演示（交互式）",
+  "nameEn": "Standing Wave (Interactive)",
+  "category": "physics/wave",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 140 },
+  "tags": ["wave", "standing", "node", "antinode", "resonance", "interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 260, "desc": "组件高度" },
+    { "key": "harmonics",   "type": "number",     "default": 3, "min": 1, "max": 8, "desc": "谐波次数（波腹数）" },
+    { "key": "amplitude",   "type": "number",     "default": 40, "min": 10, "max": 55, "desc": "振幅(px)" },
+    { "key": "speed",       "type": "number",     "default": 1, "min": 0, "max": 3, "desc": "速度倍率" },
+    { "key": "waveColor",   "type": "color",  "default": "#1e88e5", "desc": "波形颜色" },
+    { "key": "nodeColor",   "type": "color",  "default": "#e53935", "desc": "波节标记颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "showNodes",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示波节/波腹标记" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "waveColor": "--cmp-wave",
+    "nodeColor": "--cmp-node", "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.wave.standing.interactive" role="img" aria-label="驻波演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.wave.standing.interactive"]{
+      --h:var(--cmp-size,140px);display:inline-block;width:calc(var(--h)*480/140);height:var(--h);
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.wave.standing.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+  </style>
+
+  <svg viewBox="0 0 480 140" aria-hidden="true">
+    <!-- 平衡线 -->
+    <line x1="20" y1="70" x2="460" y2="70" stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="0.5" stroke-dasharray="4,4" opacity="0.2"/>
+    <!-- 两端固定点 -->
+    <rect x="14" y="20" width="6" height="100" rx="2"
+          fill="var(--cmp-stroke,#37474f)" opacity="0.3"/>
+    <rect x="460" y="20" width="6" height="100" rx="2"
+          fill="var(--cmp-stroke,#37474f)" opacity="0.3"/>
+
+    <!-- 波形路径 -->
+    <path class="sw__wave" d="" fill="none"
+          stroke="var(--cmp-wave,#1e88e5)" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- 包络线（上下） -->
+    <path class="sw__env-up" d="" fill="none"
+          stroke="var(--cmp-wave,#1e88e5)" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.3"/>
+    <path class="sw__env-dn" d="" fill="none"
+          stroke="var(--cmp-wave,#1e88e5)" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.3"/>
+
+    <!-- 波节/波腹标记 -->
+    <g class="sw__markers"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.wave.standing.interactive')return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var harmonics=Math.max(1,Math.min(8,Math.round(Number(P.harmonics)||3)));
+    var amp=Math.max(10,Math.min(55,Number(P.amplitude)||40));
+    var spd=Math.max(0,Math.min(3,Number(P.speed)!=null?Number(P.speed):1));
+    var showNodes=(P.showNodes!=='off');
+
+    var X0=20,X1=460,CY=70;
+    var L=X1-X0;
+
+    var wavePath=root.querySelector('.sw__wave');
+    var envUp=root.querySelector('.sw__env-up');
+    var envDn=root.querySelector('.sw__env-dn');
+    var markersG=root.querySelector('.sw__markers');
+
+    /* 生成波节/波腹标记 */
+    function buildMarkers(){
+      markersG.innerHTML='';
+      if(!showNodes)return;
+      /* 波节: x = i*L/harmonics, i=0..harmonics */
+      for(var i=0;i<=harmonics;i++){
+        var x=X0+i*(L/harmonics);
+        var c=document.createElementNS(NS,'circle');
+        c.setAttribute('cx',x);c.setAttribute('cy',CY);c.setAttribute('r','4');
+        c.setAttribute('fill','var(--cmp-node,#e53935)');c.setAttribute('opacity','0.7');
+        markersG.appendChild(c);
+        /* N 标注 */
+        var t=document.createElementNS(NS,'text');
+        t.setAttribute('x',x);t.setAttribute('y',CY+16);
+        t.setAttribute('font-size','8');t.setAttribute('text-anchor','middle');
+        t.setAttribute('fill','var(--cmp-node,#e53935)');t.setAttribute('opacity','0.5');
+        t.setAttribute('font-weight','600');t.setAttribute('font-family','serif');
+        t.textContent='N';
+        markersG.appendChild(t);
+      }
+      /* 波腹: x = (i+0.5)*L/harmonics */
+      for(var i=0;i<harmonics;i++){
+        var x=X0+(i+0.5)*(L/harmonics);
+        var t2=document.createElementNS(NS,'text');
+        t2.setAttribute('x',x);t2.setAttribute('y',CY-amp-8);
+        t2.setAttribute('font-size','8');t2.setAttribute('text-anchor','middle');
+        t2.setAttribute('fill','var(--cmp-wave,#1e88e5)');t2.setAttribute('opacity','0.5');
+        t2.setAttribute('font-weight','600');t2.setAttribute('font-family','serif');
+        t2.textContent='A';
+        markersG.appendChild(t2);
+      }
+    }
+    buildMarkers();
+
+    /* 包络线 */
+    function buildEnvelope(){
+      var pts=80;
+      var dUp='M',dDn='M';
+      for(var i=0;i<=pts;i++){
+        var x=X0+i*(L/pts);
+        var env=amp*Math.abs(Math.sin(harmonics*Math.PI*(x-X0)/L));
+        dUp+=(i?'L':'')+(x)+','+(CY-env)+' ';
+        dDn+=(i?'L':'')+(x)+','+(CY+env)+' ';
+      }
+      if(envUp)envUp.setAttribute('d',dUp);
+      if(envDn)envDn.setAttribute('d',dDn);
+    }
+    buildEnvelope();
+
+    var phase=0;
+    var animId=0;
+
+    function render(){
+      var pts=120;
+      var d='M';
+      for(var i=0;i<=pts;i++){
+        var x=X0+i*(L/pts);
+        /* 驻波: y = A*sin(nπx/L)*cos(ωt) */
+        var y=CY-amp*Math.sin(harmonics*Math.PI*(x-X0)/L)*Math.cos(phase);
+        d+=(i?'L':'')+x.toFixed(1)+','+y.toFixed(1)+' ';
+      }
+      if(wavePath)wavePath.setAttribute('d',d);
+    }
+
+    function tick(){
+      phase+=0.05*spd;
+      render();
+      animId=requestAnimationFrame(tick);
+    }
+
+    render();
+    if(spd>0)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      var newH=Math.max(1,Math.min(8,Math.round(Number(P2.harmonics)||3)));
+      if(newH!==harmonics){harmonics=newH;buildMarkers();buildEnvelope();}
+      spd=Math.max(0,Math.min(3,Number(P2.speed)!=null?Number(P2.speed):1));
+      amp=Math.max(10,Math.min(55,Number(P2.amplitude)||40));
+      if(spd>0&&!animId)animId=requestAnimationFrame(tick);
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

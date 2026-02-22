@@ -1,0 +1,150 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.wash-bottle.basic",
+  "name": "洗瓶",
+  "nameEn": "Wash Bottle",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 90, "h": 130 },
+  "tags": ["chemistry", "labware", "wash-bottle", "rinse", "water"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 130, "min": 80, "max": 240, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.6, "min": 0, "max": 0.9, "desc": "液面高度" },
+    { "key": "liquidColor", "type": "color",  "default": "#e3f2fd", "desc": "液体颜色" },
+    { "key": "bodyColor",   "type": "color",  "default": "rgba(240,240,240,0.5)", "desc": "瓶身颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#78909c", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "squeezing",   "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "挤压出水状态" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "liquidLevel": "--cmp-liquid-level",
+    "liquidColor": "--cmp-liquid",
+    "bodyColor":   "--cmp-body",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.wash-bottle.basic" role="img" aria-label="洗瓶">
+  <svg class="wb__svg" viewBox="0 0 90 130" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <clipPath id="wb__clip__default">
+        <path d="M22,40 Q12,55 12,80 Q12,115 45,118 Q78,115 78,80 Q78,55 68,40 Z"/>
+      </clipPath>
+    </defs>
+
+    <!-- 瓶身（软塑料质感） -->
+    <path class="wb__body"
+          d="M22,40 Q12,55 12,80 Q12,115 45,118 Q78,115 78,80 Q78,55 68,40"
+          fill="var(--cmp-body,rgba(240,240,240,0.5))"
+          stroke="var(--cmp-stroke,#78909c)"
+          stroke-width="var(--cmp-stroke-width,1.5)"
+          stroke-linejoin="round"/>
+
+    <!-- 液体 -->
+    <rect class="wb__liquid" x="10" y="75" width="70" height="44"
+          fill="var(--cmp-liquid,#e3f2fd)" opacity="0.6"
+          clip-path="url(#wb__clip__default)"/>
+    <ellipse class="wb__meniscus" cx="45" cy="75" rx="24" ry="2.5"
+             fill="var(--cmp-liquid,#e3f2fd)" opacity="0.3"
+             clip-path="url(#wb__clip__default)"/>
+
+    <!-- 瓶盖 -->
+    <rect x="24" y="34" width="42" height="8" rx="3"
+          fill="#e0e0e0" stroke="var(--cmp-stroke,#78909c)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+
+    <!-- 吹气管（从瓶盖左侧伸入瓶内） -->
+    <path d="M30,38 L30,70" fill="none"
+          stroke="var(--cmp-stroke,#78909c)"
+          stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- 出水管（从瓶盖弯曲向右上方） -->
+    <path d="M56,36 L56,26 Q56,14 66,10 L78,6"
+          fill="none" stroke="var(--cmp-stroke,#78909c)"
+          stroke-width="1.8" stroke-linecap="round"/>
+    <!-- 出水管尖嘴 -->
+    <path d="M78,6 L84,4" fill="none"
+          stroke="var(--cmp-stroke,#78909c)"
+          stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- 出水水滴（挤压时显示） -->
+    <g class="wb__drops" style="display:none">
+      <ellipse cx="86" cy="6" rx="1.5" ry="2" fill="#64b5f6" opacity="0.7">
+        <animate attributeName="cx" from="86" to="90" dur="0.6s" repeatCount="indefinite"/>
+        <animate attributeName="cy" from="6" to="14" dur="0.6s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.7" to="0" dur="0.6s" repeatCount="indefinite"/>
+      </ellipse>
+      <ellipse cx="86" cy="5" rx="1" ry="1.5" fill="#64b5f6" opacity="0.5">
+        <animate attributeName="cx" from="86" to="89" dur="0.6s" begin="0.3s" repeatCount="indefinite"/>
+        <animate attributeName="cy" from="5" to="12" dur="0.6s" begin="0.3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" from="0.5" to="0" dur="0.6s" begin="0.3s" repeatCount="indefinite"/>
+      </ellipse>
+    </g>
+
+    <!-- 瓶身高光 -->
+    <path d="M20,48 Q16,65 20,100" fill="none" stroke="#ffffff"
+          stroke-width="2.5" stroke-linecap="round" opacity="0.2"/>
+    <path d="M72,50 Q76,65 72,95" fill="none" stroke="#ffffff"
+          stroke-width="1" stroke-linecap="round" opacity="0.08"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.wash-bottle.basic") return;
+
+  const uid = "wb_" + Math.random().toString(36).slice(2, 8);
+  const clip = root.querySelector("#wb__clip__default");
+  if (clip) clip.id = uid + "_clip";
+  root.querySelectorAll("[clip-path]").forEach(el =>
+    el.setAttribute("clip-path", `url(#${uid}_clip)`));
+
+  const liquidEl = root.querySelector(".wb__liquid");
+  const meniscusEl = root.querySelector(".wb__meniscus");
+  const drops = root.querySelector(".wb__drops");
+
+  const Y_BOT = 116, Y_TOP = 42;
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+  function readNum(p, k, cv, fb) {
+    if (Number.isFinite(Number(p[k]))) return Number(p[k]);
+    const v = getComputedStyle(root).getPropertyValue(cv).trim();
+    const n = parseFloat(v); return Number.isFinite(n) ? n : fb;
+  }
+
+  function render() {
+    const props = parseProps();
+    let level = readNum(props, "liquidLevel", "--cmp-liquid-level", 0.6);
+    level = Math.max(0, Math.min(0.9, level));
+
+    const h = level * (Y_BOT - Y_TOP);
+    const y = Y_BOT - h;
+
+    if (liquidEl) { liquidEl.setAttribute("y", String(y)); liquidEl.setAttribute("height", String(Math.max(0, h + 2))); }
+    if (meniscusEl) { meniscusEl.setAttribute("cy", String(y)); meniscusEl.style.display = level > 0.01 ? "" : "none"; }
+    if (drops) drops.style.display = props.squeezing === "on" ? "" : "none";
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.wash-bottle.basic"] {
+  height: var(--cmp-size, 130px);
+  width: calc(var(--cmp-size, 130px) * 0.692);
+  display: inline-block;
+}
+.cmp[data-cmp-id="chem.labware.wash-bottle.basic"] .wb__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

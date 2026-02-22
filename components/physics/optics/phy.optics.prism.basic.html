@@ -1,0 +1,107 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.optics.prism.basic",
+  "name": "三棱镜",
+  "nameEn": "Triangular Prism",
+  "category": "physics/optics",
+  "version": "1.0.0",
+  "viewport": { "w": 120, "h": 120 },
+  "tags": ["optics", "prism", "refraction", "dispersion", "spectrum", "light"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 120, "min": 60, "max": 240, "desc": "组件尺寸" },
+    { "key": "glassColor",  "type": "color",  "default": "rgba(180,220,255,0.35)", "desc": "玻璃颜色" },
+    { "key": "edgeColor",   "type": "color",  "default": "#64b5f6", "desc": "棱边颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "showSpectrum","type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示色散光谱" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "glassColor":  "--cmp-glass",
+    "edgeColor":   "--cmp-edge",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.optics.prism.basic" role="img" aria-label="三棱镜">
+  <svg class="prism__svg" viewBox="0 0 120 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 色散光谱（可选） -->
+    <g class="prism__spectrum" style="display:none">
+      <!-- 入射白光 -->
+      <line x1="0" y1="58" x2="32" y2="58" stroke="#ffffff" stroke-width="2.5" opacity="0.7"/>
+      <!-- 色散光束 -->
+      <line x1="88" y1="50" x2="118" y2="36" stroke="#ff0000" stroke-width="1.5" opacity="0.7"/>
+      <line x1="88" y1="53" x2="118" y2="42" stroke="#ff8800" stroke-width="1.5" opacity="0.7"/>
+      <line x1="88" y1="56" x2="118" y2="48" stroke="#ffdd00" stroke-width="1.5" opacity="0.7"/>
+      <line x1="88" y1="59" x2="118" y2="54" stroke="#00cc00" stroke-width="1.5" opacity="0.7"/>
+      <line x1="88" y1="62" x2="118" y2="60" stroke="#0088ff" stroke-width="1.5" opacity="0.7"/>
+      <line x1="88" y1="65" x2="118" y2="66" stroke="#4400cc" stroke-width="1.5" opacity="0.7"/>
+      <line x1="88" y1="68" x2="118" y2="72" stroke="#8800aa" stroke-width="1.5" opacity="0.7"/>
+    </g>
+
+    <!-- 三棱镜主体（等边三角形，顶点朝上） -->
+    <polygon class="prism__body" points="60,10 18,100 102,100"
+             fill="var(--cmp-glass,rgba(180,220,255,0.35))"
+             stroke="var(--cmp-stroke,#37474f)"
+             stroke-width="var(--cmp-stroke-width,1.8)"
+             stroke-linejoin="round"/>
+
+    <!-- 左面高光（入射面） -->
+    <path d="M58,16 L22,94" fill="none"
+          stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" opacity="0.25"/>
+    <!-- 右面微反光 -->
+    <path d="M64,16 L98,94" fill="none"
+          stroke="#ffffff" stroke-width="1" stroke-linecap="round" opacity="0.1"/>
+    <!-- 底面高光 -->
+    <line x1="24" y1="98" x2="96" y2="98"
+          stroke="#ffffff" stroke-width="1.5" opacity="0.12"/>
+
+    <!-- 内部折射效果（微弱彩虹） -->
+    <path d="M40,50 L80,50" fill="none"
+          stroke="var(--cmp-edge,#64b5f6)" stroke-width="0.8" opacity="0.15"/>
+    <path d="M35,60 L85,60" fill="none"
+          stroke="var(--cmp-edge,#64b5f6)" stroke-width="0.6" opacity="0.1"/>
+
+    <!-- 棱边高光点 -->
+    <circle cx="60" cy="12" r="2" fill="#ffffff" opacity="0.3"/>
+    <circle cx="19" cy="99" r="1.5" fill="#ffffff" opacity="0.15"/>
+    <circle cx="101" cy="99" r="1.5" fill="#ffffff" opacity="0.15"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.optics.prism.basic") return;
+
+  const spectrum = root.querySelector(".prism__spectrum");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (spectrum) spectrum.style.display = props.showSpectrum === "on" ? "" : "none";
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.optics.prism.basic"] {
+  width: var(--cmp-size, 120px);
+  height: var(--cmp-size, 120px);
+  display: inline-block;
+  filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0))
+          rgba(180,220,255, calc(0.8 * var(--cmp-glow, 0))));
+}
+.cmp[data-cmp-id="phy.optics.prism.basic"] .prism__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

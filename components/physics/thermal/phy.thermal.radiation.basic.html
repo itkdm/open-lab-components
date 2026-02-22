@@ -1,0 +1,148 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.thermal.radiation.basic",
+  "name": "热辐射演示",
+  "nameEn": "Thermal Radiation Demo",
+  "category": "physics/thermal",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 160 },
+  "tags": ["thermal", "radiation", "heat", "infrared", "emission"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 160, "min": 100, "max": 300, "desc": "组件高度" },
+    { "key": "temperature", "type": "number",     "default": 0.5, "min": 0, "max": 1, "desc": "温度（0冷→1热）" },
+    { "key": "sourceColor", "type": "color",  "default": "#424242", "desc": "热源颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "sourceColor": "--cmp-source",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.thermal.radiation.basic" role="img" aria-label="热辐射演示">
+  <svg class="trad__svg" viewBox="0 0 200 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 热源物体（方块） -->
+    <rect class="trad__source" x="20" y="50" width="60" height="60" rx="6"
+          fill="var(--cmp-source,#424242)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <!-- 热源高光 -->
+    <rect x="24" y="53" width="20" height="6" rx="2" fill="#ffffff" opacity="0.12"/>
+
+    <!-- 热源发光层（温度越高越亮） -->
+    <rect class="trad__glow" x="20" y="50" width="60" height="60" rx="6"
+          fill="#ff5722" opacity="0"/>
+
+    <!-- 温度标注 -->
+    <text class="trad__temp" x="50" y="88" font-size="12" font-weight="700"
+          font-family="'Courier New',monospace"
+          fill="#ffffff" text-anchor="middle" opacity="0.8"></text>
+
+    <!-- 辐射波纹（从热源向右发射） -->
+    <g class="trad__waves">
+      <path class="trad__w1" d="M86,60 Q96,80 86,100" fill="none"
+            stroke="#ff5722" stroke-width="2" stroke-linecap="round" opacity="0"/>
+      <path class="trad__w2" d="M100,52 Q114,80 100,108" fill="none"
+            stroke="#ff5722" stroke-width="1.8" stroke-linecap="round" opacity="0"/>
+      <path class="trad__w3" d="M116,44 Q134,80 116,116" fill="none"
+            stroke="#ff5722" stroke-width="1.5" stroke-linecap="round" opacity="0"/>
+      <path class="trad__w4" d="M134,38 Q156,80 134,122" fill="none"
+            stroke="#ff5722" stroke-width="1.2" stroke-linecap="round" opacity="0"/>
+      <path class="trad__w5" d="M152,32 Q178,80 152,128" fill="none"
+            stroke="#ff5722" stroke-width="1" stroke-linecap="round" opacity="0"/>
+    </g>
+
+    <!-- 向上辐射波纹 -->
+    <g class="trad__waves-up">
+      <path class="trad__wu1" d="M35,44 Q50,34 65,44" fill="none"
+            stroke="#ff5722" stroke-width="1.5" stroke-linecap="round" opacity="0"/>
+      <path class="trad__wu2" d="M30,32 Q50,18 70,32" fill="none"
+            stroke="#ff5722" stroke-width="1.2" stroke-linecap="round" opacity="0"/>
+      <path class="trad__wu3" d="M26,20 Q50,4 74,20" fill="none"
+            stroke="#ff5722" stroke-width="1" stroke-linecap="round" opacity="0"/>
+    </g>
+
+    <!-- 标签 -->
+    <text x="50" y="130" font-size="10" font-weight="600"
+          font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="var(--cmp-stroke,#37474f)" text-anchor="middle" opacity="0.5">热源</text>
+    <text x="150" y="145" font-size="9" font-weight="600"
+          font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="var(--cmp-stroke,#37474f)" text-anchor="middle" opacity="0.4">红外辐射</text>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.thermal.radiation.basic") return;
+
+  const glow = root.querySelector(".trad__glow");
+  const temp = root.querySelector(".trad__temp");
+  const waves = [];
+  for (let i = 1; i <= 5; i++) {
+    const w = root.querySelector(".trad__w" + i);
+    if (w) waves.push(w);
+  }
+  const wavesUp = [];
+  for (let i = 1; i <= 3; i++) {
+    const w = root.querySelector(".trad__wu" + i);
+    if (w) wavesUp.push(w);
+  }
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function render() {
+    const props = parseProps();
+    let t = Math.max(0, Math.min(1, Number(props.temperature) != null ? Number(props.temperature) : 0.5));
+
+    /* 热源发光 */
+    if (glow) glow.setAttribute("opacity", String(t * 0.6));
+
+    /* 温度标注 */
+    if (temp) {
+      const degC = Math.round(20 + t * 980);
+      temp.textContent = degC + "°C";
+    }
+
+    /* 辐射波纹：温度越高，显示越多层，透明度越高 */
+    waves.forEach((w, i) => {
+      const threshold = (i + 1) / (waves.length + 1);
+      const op = t > threshold ? Math.min(0.6, (t - threshold) * 2) : 0;
+      w.setAttribute("opacity", String(op));
+    });
+    wavesUp.forEach((w, i) => {
+      const threshold = (i + 1) / (wavesUp.length + 1);
+      const op = t > threshold ? Math.min(0.5, (t - threshold) * 1.5) : 0;
+      w.setAttribute("opacity", String(op));
+    });
+
+    /* 颜色随温度变化：冷灰→暗红→亮橙 */
+    const r = Math.round(66 + t * 189);
+    const g = Math.round(66 - t * 40);
+    const b = Math.round(66 - t * 50);
+    const source = root.querySelector(".trad__source");
+    if (source) source.setAttribute("fill", `rgb(${r},${g},${b})`);
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.thermal.radiation.basic"] {
+  height: var(--cmp-size, 160px);
+  width: calc(var(--cmp-size, 160px) * 1.25);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.thermal.radiation.basic"] .trad__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

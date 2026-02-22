@@ -1,0 +1,114 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.optics.mirror.concave.basic",
+  "name": "凹面镜",
+  "nameEn": "Concave Mirror",
+  "category": "physics/optics",
+  "version": "1.0.0",
+  "viewport": { "w": 80, "h": 200 },
+  "tags": ["optics", "mirror", "concave", "reflection", "focus"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
+    { "key": "mirrorColor", "type": "color",  "default": "#b0bec5", "desc": "镜面颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "showAxis",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示主光轴" },
+    { "key": "showFocus",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示焦点标记" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "mirrorColor": "--cmp-mirror",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.optics.mirror.concave.basic" role="img" aria-label="凹面镜">
+  <svg class="cm__svg" viewBox="0 0 80 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 主光轴 -->
+    <line class="cm__axis" x1="0" y1="100" x2="80" y2="100"
+          stroke="#999" stroke-width="0.8" stroke-dasharray="4,3" opacity="0.5"/>
+
+    <!--
+      凹面镜截面：单一闭合形状
+      凹弧面（反射面，朝左）: 从顶(52,14)经凹弧到底(52,186)
+      背面（平直/微凸）: 从底(52,186)沿右侧回到顶(52,14)
+      镜片厚度约 6px
+    -->
+    <path class="cm__body"
+          d="M52,14 Q32,100 52,186 L58,186 Q60,100 58,14 Z"
+          fill="var(--cmp-mirror,#b0bec5)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round"/>
+
+    <!-- 凹面高光（反射质感，贴合凹弧） -->
+    <path d="M49,26 Q34,100 49,174" fill="none"
+          stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+    <path d="M46,44 Q36,100 46,156" fill="none"
+          stroke="#ffffff" stroke-width="0.8" stroke-linecap="round" opacity="0.15"/>
+
+    <!-- 镜背斜线阴影（标准光学符号：表示不透光面） -->
+    <g class="cm__hatch" opacity="0.35">
+      <line x1="56" y1="20" x2="62" y2="14" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="57" y1="34" x2="63" y2="28" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="48" x2="64" y2="42" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="62" x2="64" y2="56" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="76" x2="64" y2="70" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="90" x2="64" y2="84" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="104" x2="64" y2="98" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="118" x2="64" y2="112" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="132" x2="64" y2="126" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="146" x2="64" y2="140" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="58" y1="160" x2="64" y2="154" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="57" y1="174" x2="63" y2="168" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+      <line x1="56" y1="186" x2="62" y2="180" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9"/>
+    </g>
+
+    <!-- 焦点标记 F（凹面镜焦点在反射面前方） -->
+    <g class="cm__focus">
+      <circle cx="25" cy="100" r="2" fill="var(--cmp-stroke,#37474f)" opacity="0.6"/>
+      <text x="25" y="112" font-size="9" font-weight="700" font-style="italic"
+            font-family="'Times New Roman',serif"
+            fill="var(--cmp-stroke,#37474f)" text-anchor="middle" opacity="0.6">F</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.optics.mirror.concave.basic") return;
+
+  const axis = root.querySelector(".cm__axis");
+  const focus = root.querySelector(".cm__focus");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (axis) axis.style.display = props.showAxis === "off" ? "none" : "";
+    if (focus) focus.style.display = props.showFocus === "off" ? "none" : "";
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.optics.mirror.concave.basic"] {
+  height: var(--cmp-size, 200px);
+  width: calc(var(--cmp-size, 200px) * 0.4);
+  display: inline-block;
+  filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+          rgba(255,214,102, calc(0.8 * var(--cmp-glow, 0))));
+}
+.cmp[data-cmp-id="phy.optics.mirror.concave.basic"] .cm__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

@@ -1,0 +1,137 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.distillation-flask.basic",
+  "name": "蒸馏烧瓶",
+  "nameEn": "Distillation Flask",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 130, "h": 140 },
+  "tags": ["chemistry", "labware", "flask", "distillation", "side-arm", "heating"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 280, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.35, "min": 0, "max": 0.7, "desc": "液面高度" },
+    { "key": "liquidColor", "type": "color",  "default": "#80cbc4", "desc": "液体颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.3)", "desc": "玻璃底色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "liquidColor": "--cmp-liquid",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "glassTint": "--cmp-glass-tint"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.distillation-flask.basic" role="img" aria-label="蒸馏烧瓶">
+  <svg class="df__svg" viewBox="0 0 130 140" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <clipPath id="df__clip__default">
+        <path d="M38,38 C24,44 10,62 10,82 A40,40 0 0,0 90,82 C90,62 76,44 62,38 L62,8 L38,8 Z"/>
+      </clipPath>
+    </defs>
+
+    <!-- 瓶身（圆底） -->
+    <path class="df__body"
+          d="M38,38 C24,44 10,62 10,82 A40,40 0 0,0 90,82 C90,62 76,44 62,38"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.3))"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round"/>
+
+    <!-- 瓶颈（右壁在支管处开口） -->
+    <path d="M38,4 L62,4 L62,18 M62,28 L62,40 M38,40 L38,4"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.3))"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round"/>
+    <!-- 瓶颈填充（不带描边，补充背景色） -->
+    <rect x="39" y="5" width="22" height="34" fill="var(--cmp-glass-tint,rgba(220,240,255,0.3))" stroke="none"/>
+
+    <!-- 瓶口翻边 -->
+    <rect x="35" y="2" width="30" height="5" rx="2"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.3))"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.8)"/>
+
+    <!-- 支管（侧臂，从瓶颈开口处伸出） -->
+    <path d="M62,18 L90,6 L96,6 M96,14 L62,28"
+          fill="none"
+          stroke="var(--cmp-stroke,#546e7a)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- 支管填充 -->
+    <path d="M62,18 L90,6 L96,6 L96,14 L62,28 Z"
+          fill="var(--cmp-glass-tint,rgba(220,240,255,0.3))"
+          stroke="none"/>
+    <!-- 支管口 -->
+    <ellipse cx="96" cy="10" rx="2" ry="4.5"
+             fill="var(--cmp-glass-tint,rgba(220,240,255,0.3))"
+             stroke="var(--cmp-stroke,#546e7a)"
+             stroke-width="calc(var(--cmp-stroke-width,1.8)*0.6)"/>
+
+    <!-- 液体 -->
+    <rect class="df__liquid" x="8" y="85" width="84" height="38"
+          fill="var(--cmp-liquid,#80cbc4)" opacity="0.55"
+          clip-path="url(#df__clip__default)"/>
+    <!-- 液面弯月面 -->
+    <ellipse class="df__meniscus" cx="50" cy="85" rx="28" ry="2.5"
+             fill="var(--cmp-liquid,#80cbc4)" opacity="0.3"
+             clip-path="url(#df__clip__default)"/>
+
+    <!-- 玻璃高光 -->
+    <path d="M18,50 Q14,68 18,95 Q24,112 40,118" fill="none" stroke="#ffffff"
+          stroke-width="2.5" stroke-linecap="round" opacity="0.22"/>
+    <path d="M40,6 L40,36" fill="none" stroke="#ffffff" stroke-width="1.5"
+          stroke-linecap="round" opacity="0.18"/>
+    <path d="M82,56 Q86,70 82,92" fill="none" stroke="#ffffff" stroke-width="1"
+          stroke-linecap="round" opacity="0.08"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.distillation-flask.basic") return;
+
+  const uid = "df_" + Math.random().toString(36).slice(2, 8);
+  const clip = root.querySelector("#df__clip__default");
+  if (clip) clip.id = uid + "_clip";
+  root.querySelectorAll("[clip-path]").forEach(el =>
+    el.setAttribute("clip-path", `url(#${uid}_clip)`));
+
+  const liquidEl = root.querySelector(".df__liquid");
+  const meniscusEl = root.querySelector(".df__meniscus");
+  const Y_BOT = 120, Y_TOP = 40;
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function render() {
+    const props = parseProps();
+    let level = Math.max(0, Math.min(0.7, Number(props.liquidLevel) || 0.35));
+    const h = level * (Y_BOT - Y_TOP);
+    const y = Y_BOT - h;
+
+    if (liquidEl) { liquidEl.setAttribute("y", String(y)); liquidEl.setAttribute("height", String(Math.max(0, h + 2))); }
+    if (meniscusEl) { meniscusEl.setAttribute("cy", String(y)); meniscusEl.style.display = level > 0.01 ? "" : "none"; }
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.distillation-flask.basic"] {
+  height: var(--cmp-size, 140px);
+  width: calc(var(--cmp-size, 140px) * 0.929);
+  display: inline-block;
+}
+.cmp[data-cmp-id="chem.labware.distillation-flask.basic"] .df__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>

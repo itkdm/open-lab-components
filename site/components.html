@@ -579,6 +579,9 @@
           autocomplete="off"
         >
         <div class="toolbar-controls">
+          <select id="subjectFilter">
+            <option value="" data-i18n-option="filter-all-subjects">所有学科</option>
+          </select>
           <select id="categoryFilter">
             <option value="" data-i18n-option="filter-all-categories">所有分类</option>
           </select>
@@ -599,7 +602,7 @@
   <main id="components">
     <div class="section-header">
       <h2 data-i18n="section-title">全部组件</h2>
-      <p><span data-i18n="section-desc-prefix">共</span> <span id="componentCountText">-</span> <span data-i18n="section-desc-suffix">个组件，覆盖多个物理实验场景。</span></p>
+      <p><span data-i18n="section-desc-prefix">共</span> <span id="componentCountText">-</span> <span data-i18n="section-desc-suffix">个组件，覆盖多个实验场景。</span></p>
     </div>
     
     <div id="grid" class="grid">
@@ -624,7 +627,7 @@
         'hero-desc': '在这里搜索、筛选和预览所有 Open Lab Components 组件，并复制代码到你的宿主系统中使用。',
         'section-title': '全部组件',
         'section-desc-prefix': '共',
-        'section-desc-suffix': '个组件，覆盖多个物理实验场景。',
+        'section-desc-suffix': '个组件，覆盖多个实验场景。',
         'search-placeholder': '搜索组件（名称、标签、分类）...',
         'loading': '加载中',
         'empty-title': '未找到匹配的组件',
@@ -635,6 +638,10 @@
         'components-word': '个组件',
         'categories-word': '个分类',
         'filter-all-categories': '所有分类',
+        'filter-all-subjects': '所有学科',
+        'subject-physics': '物理',
+        'subject-chemistry': '化学',
+        'subject-math': '数学',
         'sort-by-name': '按名称',
         'sort-by-version': '按版本',
         'sort-by-category': '按分类',
@@ -663,6 +670,10 @@
         'components-word': 'components',
         'categories-word': 'categories',
         'filter-all-categories': 'All Categories',
+        'filter-all-subjects': 'All Subjects',
+        'subject-physics': 'Physics',
+        'subject-chemistry': 'Chemistry',
+        'subject-math': 'Math',
         'sort-by-name': 'By Name',
         'sort-by-version': 'By Version',
         'sort-by-category': 'By Category',
@@ -738,6 +749,7 @@
         isLoading = false;
         
         updateStats();
+        buildSubjectFilter();
         buildCategoryFilter();
         render();
         
@@ -767,9 +779,32 @@
       updateStatsText();
     }
 
+    function buildSubjectFilter() {
+      if (!Array.isArray(registry) || registry.length === 0) return;
+      const subjects = [...new Set(registry.map(c => c.category.split('/')[0]))].sort();
+      const select = document.getElementById('subjectFilter');
+      const firstOption = select.options[0];
+      select.innerHTML = '';
+      if (firstOption) select.appendChild(firstOption);
+      subjects.forEach(sub => {
+        const option = document.createElement('option');
+        option.value = sub;
+        option.textContent = t('subject-' + sub) || sub;
+        select.appendChild(option);
+      });
+      select.onchange = () => {
+        // 切换学科时重置分类筛选
+        document.getElementById('categoryFilter').value = '';
+        buildCategoryFilter();
+        filter();
+      };
+    }
+
     function buildCategoryFilter() {
       if (!Array.isArray(registry) || registry.length === 0) return;
-      const cats = [...new Set(registry.map(c => c.category))].sort();
+      const activeSubject = document.getElementById('subjectFilter').value;
+      const source = activeSubject ? registry.filter(c => c.category.startsWith(activeSubject + '/')) : registry;
+      const cats = [...new Set(source.map(c => c.category))].sort();
       categories = cats;
       const select = document.getElementById('categoryFilter');
       // 清空现有选项（保留"所有分类"选项）
@@ -811,15 +846,17 @@
       if (!Array.isArray(registry)) return;
       const searchInput = document.getElementById('search');
       const query = (searchInput?.value || '').toLowerCase();
+      const activeSubject = document.getElementById('subjectFilter').value;
       const activeCategory = document.getElementById('categoryFilter').value;
 
       filtered = registry.filter(c => {
-        const matchQuery = !query || 
+        const matchQuery = !query ||
           c.name.toLowerCase().includes(query) ||
           c.id.toLowerCase().includes(query) ||
           (c.tags || []).some(t => t.toLowerCase().includes(query));
+        const matchSubject = !activeSubject || c.category.startsWith(activeSubject + '/');
         const matchCategory = !activeCategory || c.category === activeCategory;
-        return matchQuery && matchCategory;
+        return matchQuery && matchSubject && matchCategory;
       });
 
       // 重置显示数量
@@ -1031,6 +1068,7 @@ ${componentHtml}
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
       localStorage.setItem(LANG_KEY, currentLang);
       applyStaticTexts();
+      buildSubjectFilter();
       buildCategoryFilter();
       updateStats();
       render();

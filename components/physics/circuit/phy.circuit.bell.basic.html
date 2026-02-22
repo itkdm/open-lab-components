@@ -1,0 +1,111 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.bell.basic",
+  "name": "电铃",
+  "nameEn": "Electric Bell",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 100 },
+  "tags": ["circuit", "bell", "electromagnetic", "sound", "switch"],
+  "props": [
+    { "key": "size",      "type": "number(px)", "default": 100, "min": 60, "max": 200, "desc": "组件尺寸" },
+    { "key": "ringing",   "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "响铃状态" },
+    { "key": "bellColor", "type": "color",  "default": "#fdd835", "desc": "铃碗颜色" },
+    { "key": "bodyColor", "type": "color",  "default": "#78909c", "desc": "底座颜色" },
+    { "key": "stroke",    "type": "color",  "default": "#37474f", "desc": "描边颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "bellColor": "--cmp-bell", "bodyColor": "--cmp-body",
+    "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.bell.basic" role="img" aria-label="电铃">
+  <style>
+    .cmp[data-cmp-id="phy.circuit.bell.basic"]{
+      width:var(--cmp-size,100px);height:var(--cmp-size,100px);display:inline-block;
+    }
+    .cmp[data-cmp-id="phy.circuit.bell.basic"] svg{width:100%;height:100%;display:block;overflow:visible}
+    @keyframes bell-ring{
+      0%,100%{transform:rotate(0deg)}
+      15%{transform:rotate(5deg)}
+      30%{transform:rotate(-5deg)}
+      45%{transform:rotate(4deg)}
+      60%{transform:rotate(-3deg)}
+      75%{transform:rotate(2deg)}
+      90%{transform:rotate(-1deg)}
+    }
+  </style>
+
+  <svg viewBox="0 0 100 100" aria-hidden="true">
+    <!-- 底座 -->
+    <rect x="20" y="75" width="60" height="18" rx="4"
+          fill="var(--cmp-body,#78909c)"
+          stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+    <!-- 底座高光 -->
+    <rect x="24" y="77" width="40" height="4" rx="2" fill="#ffffff" opacity="0.1"/>
+
+    <!-- 电磁铁线圈（底座上方） -->
+    <rect x="38" y="60" width="24" height="18" rx="3"
+          fill="#5d4037" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+    <!-- 线圈绕线 -->
+    <g opacity="0.3">
+      <line x1="40" y1="63" x2="60" y2="63" stroke="#ff8a65" stroke-width="0.8"/>
+      <line x1="40" y1="66" x2="60" y2="66" stroke="#ff8a65" stroke-width="0.8"/>
+      <line x1="40" y1="69" x2="60" y2="69" stroke="#ff8a65" stroke-width="0.8"/>
+      <line x1="40" y1="72" x2="60" y2="72" stroke="#ff8a65" stroke-width="0.8"/>
+      <line x1="40" y1="75" x2="60" y2="75" stroke="#ff8a65" stroke-width="0.8"/>
+    </g>
+
+    <!-- 弹片（从电磁铁到铃锤） -->
+    <path d="M50,60 L50,40 Q50,35 45,32"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- 铃碗 + 铃锤（可振动） -->
+    <g class="bell__dome" transform-origin="50 35">
+      <!-- 铃碗 -->
+      <path d="M15,30 Q15,8 50,8 Q85,8 85,30 Q85,38 50,38 Q15,38 15,30"
+            fill="var(--cmp-bell,#fdd835)"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <!-- 铃碗高光 -->
+      <path d="M25,14 Q40,10 55,14" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.3"/>
+      <!-- 铃锤 -->
+      <circle cx="45" cy="32" r="4" fill="var(--cmp-stroke,#37474f)"/>
+    </g>
+
+    <!-- 接线端子 -->
+    <circle cx="28" cy="92" r="3" fill="#e53935" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    <circle cx="72" cy="92" r="3" fill="#1e88e5" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+
+    <!-- 声波（响铃时显示） -->
+    <g class="bell__sound" style="display:none" opacity="0.4">
+      <path d="M88,20 Q94,24 88,28" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <path d="M92,16 Q100,24 92,32" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+      <path d="M12,20 Q6,24 12,28" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <path d="M8,16 Q0,24 8,32" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.circuit.bell.basic") return;
+
+  const dome = root.querySelector(".bell__dome");
+  const sound = root.querySelector(".bell__sound");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    const on = props.ringing === "on";
+    if (dome) dome.style.animation = on ? "bell-ring 0.15s ease-in-out infinite" : "none";
+    if (sound) sound.style.display = on ? "" : "none";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>

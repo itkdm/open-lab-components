@@ -50,12 +50,135 @@
   if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.alcohol-lamp.basic") return;
 
   const flame = root.querySelector(".lamp__flame");
-  let raw = root.getAttribute("data-props");
-  let props = {};
-  try { if (raw) props = JSON.parse(raw) || {}; } catch (e) {}
+  const alcoholPath = root.querySelector(".lamp__alcohol");
 
-  const flameOn = props.flameOn !== "off";
-  if (flame) flame.style.display = flameOn ? "" : "none";
+  function parseDataProps() {
+    const raw = root.getAttribute("data-props");
+    if (!raw) return {};
+    try { const p = JSON.parse(raw); return p && typeof p === "object" ? p : {}; } catch (e) { return {}; }
+  }
+
+  function readNumber(props, key, cssVar, fallback) {
+    if (Number.isFinite(Number(props[key]))) return Number(props[key]);
+    const v = getComputedStyle(root).getPropertyValue(cssVar).trim();
+    const n = Number.parseFloat(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  /* 瓶身轮廓: M28,52 Q15,65 15,85 Q15,110 50,110 Q85,110 85,85 Q85,65 72,52
+     二次贝塞尔 Q: B(t) = (1-t)²P0 + 2t(1-t)Pc + t²P1
+     需要从 y 反解 t，再用 t 求 x。
+
+     左侧两段:
+       段1: P0=(28,52) Pc=(15,65) P1=(15,85)  → y∈[52,85]
+       段2: P0=(15,85) Pc=(15,110) P1=(50,110) → y∈[85,110]
+     右侧两段:
+       段3: P0=(50,110) Pc=(85,110) P1=(85,85) → y∈[85,110]
+       段4: P0=(85,85) Pc=(85,65) P1=(72,52)   → y∈[52,85]
+  */
+
+  /* 从 y 反解二次贝塞尔参数 t: y = (1-t)²y0 + 2t(1-t)yc + t²y1 */
+  function solveT(y, y0, yc, y1) {
+    /* ay*t² + by*t + cy = 0 where ay=y0-2yc+y1, by=-2y0+2yc, cy=y0-y */
+    const a = y0 - 2 * yc + y1;
+    const b = -2 * y0 + 2 * yc;
+    const c = y0 - y;
+    if (Math.abs(a) < 0.001) {
+      /* 线性 */
+      return Math.abs(b) > 0.001 ? -c / b : 0;
+    }
+    const disc = b * b - 4 * a * c;
+    if (disc < 0) return 0;
+    const sq = Math.sqrt(disc);
+    const t1 = (-b + sq) / (2 * a);
+    const t2 = (-b - sq) / (2 * a);
+    /* 取 [0,1] 范围内的解 */
+    if (t1 >= 0 && t1 <= 1) return t1;
+    if (t2 >= 0 && t2 <= 1) return t2;
+    return t1 >= 0 ? t1 : t2;
+  }
+
+  function bezX(t, x0, xc, x1) {
+    return (1 - t) * (1 - t) * x0 + 2 * t * (1 - t) * xc + t * t * x1;
+  }
+
+  function bodyXAtY(y) {
+    if (y <= 52) return { left: 28, right: 72 };
+    if (y >= 110) return { left: 15, right: 85 };
+    let left, right;
+    if (y <= 85) {
+      /* 左段1: (28,52)→(15,65)→(15,85) */
+      const t = solveT(y, 52, 65, 85);
+      left = bezX(t, 28, 15, 15);
+      /* 右段4: (85,85)→(85,65)→(72,52), 反向: 从 y=52→85 对应 t=1→0 */
+      const tr = solveT(y, 85, 65, 52);
+      right = bezX(tr, 85, 85, 72);
+    } else {
+      /* 左段2: (15,85)→(15,110)→(50,110) */
+      const t = solveT(y, 85, 110, 110);
+      left = bezX(t, 15, 15, 50);
+      /* 右段3: (50,110)→(85,110)→(85,85), 反向 */
+      const tr = solveT(y, 85, 110, 110);
+      right = bezX(tr, 85, 85, 50);
+    }
+    return { left, right };
+  }
+
+  function buildAlcoholPath(level) {
+    const yBottom = 110; // 瓶底最低点
+    const yTop = 54;
+    const yLiquid = yBottom - level * (yBottom - yTop);
+
+    if (level <= 0) return "";
+
+    const steps = 24;
+    const points = [];
+    const inset = 2;
+
+    // 液面处左右端点
+    const top = bodyXAtY(yLiquid);
+    points.push(`M${(top.left + inset).toFixed(1)},${yLiquid.toFixed(1)}`);
+
+    // 左侧瓶壁：从液面向下到瓶底
+    for (let i = 1; i <= steps; i++) {
+      const y = yLiquid + (yBottom - yLiquid) * (i / steps);
+      const x = bodyXAtY(Math.min(y, 109.5));
+      points.push(`L${(x.left + inset).toFixed(1)},${y.toFixed(1)}`);
+    }
+
+    // 右侧瓶壁：从瓶底向上到液面
+    for (let i = steps; i >= 0; i--) {
+      const y = yLiquid + (yBottom - yLiquid) * (i / steps);
+      const x = bodyXAtY(Math.min(y, 109.5));
+      points.push(`L${(x.right - inset).toFixed(1)},${y.toFixed(1)}`);
+    }
+
+    points.push("Z");
+    return points.join(" ");
+  }
+
+  function render() {
+    const props = parseDataProps();
+
+    // 火焰开关
+    const flameOn = props.flameOn !== "off";
+    if (flame) flame.style.display = flameOn ? "" : "none";
+
+    // 酒精液面
+    let level = readNumber(props, "alcoholLevel", "--cmp-alcohol-level", 0.5);
+    level = Math.max(0, Math.min(1, level));
+    if (alcoholPath) {
+      const d = buildAlcoholPath(level);
+      alcoholPath.setAttribute("d", d || "M0,0");
+      alcoholPath.style.display = d ? "" : "none";
+    }
+  }
+
+  render();
+
+  const observer = new MutationObserver(() => render());
+  observer.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => observer.disconnect(), { once: true });
 })();
 </script>
 

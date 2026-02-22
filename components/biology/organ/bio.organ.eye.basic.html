@@ -1,0 +1,223 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.eye.basic",
+  "name": "眼球结构",
+  "nameEn": "Eye Anatomy",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 260, "h": 200 },
+  "tags": ["biology", "organ", "eye", "anatomy", "vision", "optics"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 140, "max": 400, "desc": "组件高度" },
+    { "key": "scleraColor", "type": "color",  "default": "#f5f5f5", "desc": "巩膜颜色" },
+    { "key": "irisColor",   "type": "color",  "default": "#5d4037", "desc": "虹膜颜色" },
+    { "key": "retinaColor", "type": "color",  "default": "#ff8a65", "desc": "视网膜颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "scleraColor": "--cmp-sclera", "irisColor": "--cmp-iris",
+    "retinaColor": "--cmp-retina", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  人眼球水平剖面图 — 教学示意
+  viewBox: 0 0 260 200
+  左侧为前方（角膜侧），右侧为后方（视神经侧）
+  眼球中心约 (130,100)，半径约 70
+-->
+<div class="cmp" data-cmp-id="bio.organ.eye.basic" role="img" aria-label="眼球结构">
+  <svg class="eye__svg" viewBox="0 0 260 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <radialGradient id="eye_scleraG" cx="0.45" cy="0.5" r="0.55">
+        <stop offset="0%" stop-color="#fafafa"/>
+        <stop offset="80%" stop-color="#e0e0e0"/>
+        <stop offset="100%" stop-color="#bdbdbd"/>
+      </radialGradient>
+      <radialGradient id="eye_vitreousG" cx="0.4" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="rgba(200,230,255,0.15)"/>
+        <stop offset="100%" stop-color="rgba(150,200,240,0.08)"/>
+      </radialGradient>
+      <linearGradient id="eye_corneaG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="rgba(200,230,255,0.5)"/>
+        <stop offset="100%" stop-color="rgba(200,230,255,0.1)"/>
+      </linearGradient>
+      <radialGradient id="eye_lensG" cx="0.4" cy="0.4" r="0.6">
+        <stop offset="0%" stop-color="rgba(255,255,255,0.6)"/>
+        <stop offset="60%" stop-color="rgba(220,240,255,0.3)"/>
+        <stop offset="100%" stop-color="rgba(180,210,240,0.2)"/>
+      </radialGradient>
+      <radialGradient id="eye_irisG" cx="0.4" cy="0.4" r="0.6">
+        <stop offset="0%" stop-color="#8d6e63"/>
+        <stop offset="100%" stop-color="#4e342e"/>
+      </radialGradient>
+    </defs>
+
+    <!-- ==================== 眼球外壁（巩膜） ==================== -->
+    <!-- 巩膜主体（近圆形，前方略突出为角膜） -->
+    <ellipse cx="135" cy="100" rx="75" ry="70"
+             fill="url(#eye_scleraG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="2"/>
+
+    <!-- ==================== 脉络膜（巩膜内层，深色） ==================== -->
+    <ellipse cx="135" cy="100" rx="70" ry="65"
+             fill="none" stroke="#5d4037" stroke-width="3" opacity="0.2"/>
+
+    <!-- ==================== 视网膜（最内层，橙红色） ==================== -->
+    <!-- 视网膜覆盖后2/3眼球内壁 -->
+    <path d="M90,42 Q135,35 180,42 Q210,55 215,100 Q210,145 180,158 Q135,165 90,158"
+          fill="none" stroke="var(--cmp-retina,#ff8a65)" stroke-width="3" opacity="0.5"/>
+
+    <!-- ==================== 玻璃体 ==================== -->
+    <ellipse cx="140" cy="100" rx="62" ry="58"
+             fill="url(#eye_vitreousG)"/>
+
+    <!-- ==================== 角膜（前方透明突出部分） ==================== -->
+    <path d="M68,55 Q45,70 42,100 Q45,130 68,145"
+          fill="url(#eye_corneaG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="2"/>
+    <!-- 角膜高光 -->
+    <path d="M62,62 Q48,78 46,100" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
+
+    <!-- ==================== 前房（角膜与虹膜之间） ==================== -->
+    <path d="M68,55 Q58,70 56,100 Q58,130 68,145 L72,140 Q62,128 60,100 Q62,72 72,60 Z"
+          fill="rgba(180,220,255,0.15)"/>
+
+    <!-- ==================== 虹膜 ==================== -->
+    <!-- 上半虹膜 -->
+    <path d="M72,60 Q76,72 78,82"
+          fill="none" stroke="url(#eye_irisG)" stroke-width="5" stroke-linecap="round"/>
+    <!-- 下半虹膜 -->
+    <path d="M72,140 Q76,128 78,118"
+          fill="none" stroke="url(#eye_irisG)" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- ==================== 瞳孔（虹膜中央开口） ==================== -->
+    <line x1="78" y1="88" x2="78" y2="112" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+
+    <!-- ==================== 晶状体（双凸透镜形） ==================== -->
+    <path d="M82,70 Q100,65 100,100 Q100,135 82,130 Q72,115 72,100 Q72,85 82,70 Z"
+          fill="url(#eye_lensG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.8"/>
+    <!-- 晶状体高光 -->
+    <path d="M80,78 Q88,75 90,90" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.25"/>
+
+    <!-- ==================== 睫状体（连接虹膜和晶状体的肌肉环） ==================== -->
+    <!-- 上睫状体 -->
+    <path d="M72,60 Q78,55 88,58 Q95,60 100,65"
+          fill="none" stroke="#8d6e63" stroke-width="2.5" opacity="0.4"/>
+    <!-- 下睫状体 -->
+    <path d="M72,140 Q78,145 88,142 Q95,140 100,135"
+          fill="none" stroke="#8d6e63" stroke-width="2.5" opacity="0.4"/>
+    <!-- 悬韧带（晶状体悬挂丝） -->
+    <g stroke="#8d6e63" stroke-width="0.5" opacity="0.35">
+      <line x1="85" y1="58" x2="85" y2="70"/>
+      <line x1="92" y1="60" x2="92" y2="68"/>
+      <line x1="85" y1="142" x2="85" y2="130"/>
+      <line x1="92" y1="140" x2="92" y2="132"/>
+    </g>
+
+    <!-- ==================== 视神经 ==================== -->
+    <path d="M208,100 Q220,100 235,95 Q245,92 255,88"
+          fill="none" stroke="#fdd835" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
+    <path d="M208,100 Q220,100 235,95 Q245,92 255,88"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.4"/>
+
+    <!-- 视神经盘（盲点） -->
+    <circle cx="208" cy="100" r="6" fill="#fdd835" opacity="0.3" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+
+    <!-- ==================== 黄斑（中央凹） ==================== -->
+    <ellipse cx="190" cy="100" rx="5" ry="4" fill="#ff8a65" opacity="0.4"/>
+    <ellipse cx="190" cy="100" rx="2.5" ry="2" fill="#ff6e40" opacity="0.3"/>
+
+    <!-- ==================== 光线示意 ==================== -->
+    <g opacity="0.25" stroke="#fdd835" stroke-width="1" stroke-dasharray="3,2">
+      <line x1="10" y1="80" x2="78" y2="95"/>
+      <line x1="78" y1="95" x2="90" y2="97"/>
+      <line x1="90" y1="97" x2="190" y2="100"/>
+      <line x1="10" y1="120" x2="78" y2="105"/>
+      <line x1="78" y1="105" x2="90" y2="103"/>
+      <line x1="90" y1="103" x2="190" y2="100"/>
+    </g>
+
+    <!-- ==================== 标注 ==================== -->
+    <g class="eye__labels" font-size="6.5" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#37474f)" font-weight="600">
+
+      <!-- 角膜 -->
+      <line x1="50" y1="70" x2="20" y2="50" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="18" y="52" text-anchor="end" font-size="6.5" opacity="0.7">角膜</text>
+
+      <!-- 虹膜 -->
+      <line x1="75" y1="72" x2="20" y2="68" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="18" y="70" text-anchor="end" font-size="6.5" opacity="0.7">虹膜</text>
+
+      <!-- 瞳孔 -->
+      <line x1="78" y1="100" x2="20" y2="86" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="18" y="88" text-anchor="end" font-size="6" opacity="0.65">瞳孔</text>
+
+      <!-- 晶状体 -->
+      <line x1="88" y1="100" x2="20" y2="104" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="18" y="106" text-anchor="end" font-size="6.5" opacity="0.7">晶状体</text>
+
+      <!-- 睫状体 -->
+      <line x1="85" y1="55" x2="20" y2="36" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="18" y="38" text-anchor="end" font-size="6" opacity="0.6">睫状体</text>
+
+      <!-- 玻璃体 -->
+      <text x="140" y="102" text-anchor="middle" font-size="6.5" opacity="0.4">玻璃体</text>
+
+      <!-- 视网膜 -->
+      <line x1="180" y1="48" x2="200" y2="28" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="202" y="30" font-size="6.5" opacity="0.7">视网膜</text>
+
+      <!-- 脉络膜 -->
+      <line x1="195" y1="52" x2="220" y2="38" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="222" y="40" font-size="6" opacity="0.6">脉络膜</text>
+
+      <!-- 巩膜 -->
+      <line x1="205" y1="58" x2="238" y2="50" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="240" y="52" font-size="6.5" opacity="0.7">巩膜</text>
+
+      <!-- 黄斑 -->
+      <line x1="190" y1="106" x2="220" y2="120" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="222" y="122" font-size="6" opacity="0.6">黄斑</text>
+
+      <!-- 视神经 -->
+      <line x1="235" y1="92" x2="248" y2="78" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="250" y="80" font-size="6.5" opacity="0.7">视神经</text>
+
+      <!-- 前房 -->
+      <line x1="62" y1="100" x2="20" y2="122" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.4"/>
+      <text x="18" y="124" text-anchor="end" font-size="5.5" opacity="0.55">前房</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.organ.eye.basic") return;
+  const labels = root.querySelector(".eye__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.organ.eye.basic"] {
+  height: var(--cmp-size, 200px);
+  width: calc(var(--cmp-size, 200px) * 260 / 200);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.organ.eye.basic"] .eye__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

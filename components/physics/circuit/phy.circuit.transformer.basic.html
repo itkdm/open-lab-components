@@ -1,0 +1,132 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.transformer.basic",
+  "name": "变压器",
+  "nameEn": "Transformer",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 140, "h": 120 },
+  "tags": ["circuit", "transformer", "coil", "voltage", "electromagnetic", "induction"],
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 120, "min": 80, "max": 240, "desc": "组件高度" },
+    { "key": "primaryTurns", "type": "number", "default": 4, "min": 2, "max": 8, "desc": "初级线圈匝数" },
+    { "key": "secondaryTurns","type": "number","default": 8, "min": 2, "max": 8, "desc": "次级线圈匝数" },
+    { "key": "coreColor",    "type": "color",  "default": "#546e7a", "desc": "铁芯颜色" },
+    { "key": "primaryColor", "type": "color",  "default": "#e53935", "desc": "初级线圈颜色" },
+    { "key": "secondaryColor","type": "color", "default": "#1e88e5", "desc": "次级线圈颜色" },
+    { "key": "stroke",       "type": "color",  "default": "#263238", "desc": "描边颜色" },
+    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "coreColor": "--cmp-core",
+    "primaryColor": "--cmp-primary", "secondaryColor": "--cmp-secondary",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.transformer.basic" role="img" aria-label="变压器">
+  <svg class="xfm__svg" viewBox="0 0 140 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 铁芯（日字形） -->
+    <!-- 外框 -->
+    <rect x="20" y="10" width="100" height="100" rx="4"
+          fill="none" stroke="var(--cmp-core,#546e7a)"
+          stroke-width="10" stroke-linejoin="round"/>
+    <!-- 中柱 -->
+    <line x1="70" y1="10" x2="70" y2="110"
+          stroke="var(--cmp-core,#546e7a)" stroke-width="10"/>
+    <!-- 铁芯高光 -->
+    <rect x="22" y="12" width="96" height="4" rx="2" fill="#ffffff" opacity="0.12"/>
+    <line x1="70" y1="12" x2="70" y2="108" stroke="#ffffff" stroke-width="1.5" opacity="0.08"/>
+
+    <!-- 初级线圈（左侧，绕在左柱上） -->
+    <g class="xfm__primary"></g>
+
+    <!-- 次级线圈（右侧，绕在右柱上） -->
+    <g class="xfm__secondary"></g>
+
+    <!-- 初级引线 -->
+    <line x1="4" y1="30" x2="20" y2="30"
+          stroke="var(--cmp-primary,#e53935)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="4" y1="90" x2="20" y2="90"
+          stroke="var(--cmp-primary,#e53935)" stroke-width="2" stroke-linecap="round"/>
+    <!-- 引线端子 -->
+    <circle cx="4" cy="30" r="3" fill="var(--cmp-primary,#e53935)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+    <circle cx="4" cy="90" r="3" fill="var(--cmp-primary,#e53935)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+
+    <!-- 次级引线 -->
+    <line x1="120" y1="30" x2="136" y2="30"
+          stroke="var(--cmp-secondary,#1e88e5)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="120" y1="90" x2="136" y2="90"
+          stroke="var(--cmp-secondary,#1e88e5)" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="136" cy="30" r="3" fill="var(--cmp-secondary,#1e88e5)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+    <circle cx="136" cy="90" r="3" fill="var(--cmp-secondary,#1e88e5)" stroke="var(--cmp-stroke,#263238)" stroke-width="0.8"/>
+
+    <!-- 标注 -->
+    <text x="12" y="118" font-size="8" font-weight="600" font-family="sans-serif"
+          fill="var(--cmp-primary,#e53935)" text-anchor="middle" opacity="0.6" class="xfm__n1"></text>
+    <text x="128" y="118" font-size="8" font-weight="600" font-family="sans-serif"
+          fill="var(--cmp-secondary,#1e88e5)" text-anchor="middle" opacity="0.6" class="xfm__n2"></text>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.circuit.transformer.basic") return;
+  const NS = "http://www.w3.org/2000/svg";
+
+  function parseProps() {
+    try { const r = root.getAttribute("data-props"); return r ? JSON.parse(r) || {} : {}; } catch (e) { return {}; }
+  }
+
+  function drawCoils(g, n, x, color) {
+    g.innerHTML = "";
+    const yStart = 24, yEnd = 96;
+    const step = (yEnd - yStart) / n;
+    for (let i = 0; i < n; i++) {
+      const y = yStart + i * step;
+      const arc = document.createElementNS(NS, "path");
+      /* 半圆弧线圈 */
+      arc.setAttribute("d", `M${x},${y} Q${x - 14},${y + step / 2} ${x},${y + step}`);
+      arc.setAttribute("fill", "none");
+      arc.setAttribute("stroke", color);
+      arc.setAttribute("stroke-width", "2.5");
+      arc.setAttribute("stroke-linecap", "round");
+      g.appendChild(arc);
+    }
+  }
+
+  function render() {
+    const props = parseProps();
+    const n1 = Math.max(2, Math.min(8, Math.round(Number(props.primaryTurns) || 4)));
+    const n2 = Math.max(2, Math.min(8, Math.round(Number(props.secondaryTurns) || 8)));
+
+    const gPri = root.querySelector(".xfm__primary");
+    const gSec = root.querySelector(".xfm__secondary");
+    if (gPri) drawCoils(gPri, n1, 32, "var(--cmp-primary,#e53935)");
+    if (gSec) drawCoils(gSec, n2, 108, "var(--cmp-secondary,#1e88e5)");
+
+    const t1 = root.querySelector(".xfm__n1");
+    const t2 = root.querySelector(".xfm__n2");
+    if (t1) t1.textContent = "n₁=" + n1;
+    if (t2) t2.textContent = "n₂=" + n2;
+  }
+
+  render();
+  const obs = new MutationObserver(render);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.circuit.transformer.basic"] {
+  height: var(--cmp-size, 120px);
+  width: calc(var(--cmp-size, 120px) * 1.167);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.circuit.transformer.basic"] .xfm__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

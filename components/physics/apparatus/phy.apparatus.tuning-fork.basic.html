@@ -1,0 +1,164 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.apparatus.tuning-fork.basic",
+  "name": "音叉",
+  "nameEn": "Tuning Fork",
+  "category": "physics/apparatus",
+  "version": "1.0.0",
+  "viewport": { "w": 80, "h": 160 },
+  "tags": ["tuning-fork", "sound", "acoustics", "vibration", "wave", "apparatus"],
+  "props": [
+    { "key": "size",        "type": "number(px)",  "default": 160,       "min": 80, "max": 320, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "metalColor",  "type": "color",       "default": "#90a4ae", "desc": "金属主体颜色" },
+    { "key": "vibrating",   "type": "enum",        "default": "off",     "enum": ["on","off"], "desc": "振动状态" },
+    { "key": "stroke",      "type": "color",       "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number",      "default": 1.8,       "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0,         "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "metalColor":  "--cmp-metal",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.apparatus.tuning-fork.basic" role="img" aria-label="音叉">
+  <svg class="tf__svg" viewBox="0 0 80 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- ===== 左叉臂 ===== -->
+    <path class="tf__tine-l"
+          d="M24,8 C24,4 28,2 30,2 L30,2 C32,2 33,4 33,6 L33,72"
+          fill="var(--cmp-metal,#90a4ae)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- 左叉臂高光 -->
+    <path d="M26,10 C26,6 29,4 30,4 L30,4 L30,68"
+          fill="none" stroke="#ffffff" stroke-width="1.5"
+          stroke-linecap="round" opacity="0.22"/>
+
+    <!-- ===== 右叉臂 ===== -->
+    <path class="tf__tine-r"
+          d="M56,8 C56,4 52,2 50,2 L50,2 C48,2 47,4 47,6 L47,72"
+          fill="var(--cmp-metal,#90a4ae)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round" stroke-linecap="round"/>
+    <!-- 右叉臂高光 -->
+    <path d="M54,10 C54,6 51,4 50,4 L50,4 L50,68"
+          fill="none" stroke="#ffffff" stroke-width="1.5"
+          stroke-linecap="round" opacity="0.22"/>
+
+    <!-- ===== 叉根弧线（连接两臂底部） ===== -->
+    <path d="M33,72 C33,84 47,84 47,72"
+          fill="var(--cmp-metal,#90a4ae)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round"/>
+    <!-- 叉根内侧高光 -->
+    <path d="M35,72 C35,80 45,80 45,72"
+          fill="none" stroke="#ffffff" stroke-width="1"
+          opacity="0.15"/>
+
+    <!-- ===== 柄部 ===== -->
+    <rect x="36" y="82" width="8" height="68" rx="3"
+          fill="var(--cmp-metal,#90a4ae)"
+          stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.8)"/>
+    <!-- 柄部高光 -->
+    <rect x="37.5" y="84" width="3" height="64" rx="1.5"
+          fill="#ffffff" opacity="0.18"/>
+    <!-- 柄部阴影 -->
+    <rect x="41" y="84" width="2" height="64" rx="1"
+          fill="#000000" opacity="0.08"/>
+
+    <!-- ===== 柄底球（握持端） ===== -->
+    <circle cx="40" cy="153" r="5.5"
+            fill="var(--cmp-metal,#90a4ae)"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="var(--cmp-stroke-width,1.8)"/>
+    <!-- 球高光 -->
+    <circle cx="38.5" cy="151.5" r="2" fill="#ffffff" opacity="0.2"/>
+
+    <!-- ===== 振动波纹（vibrating 时显示） ===== -->
+    <g class="tf__waves" opacity="0">
+      <!-- 左侧波纹 -->
+      <path d="M18,20 C14,20 14,40 18,40" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.4"/>
+      <path d="M12,16 C6,16 6,44 12,44" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.25"/>
+      <!-- 右侧波纹 -->
+      <path d="M62,20 C66,20 66,40 62,40" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.4"/>
+      <path d="M68,16 C74,16 74,44 68,44" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.25"/>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.apparatus.tuning-fork.basic") return;
+
+  const tineL = root.querySelector(".tf__tine-l");
+  const tineR = root.querySelector(".tf__tine-r");
+  const waves = root.querySelector(".tf__waves");
+
+  function parseDataProps() {
+    const raw = root.getAttribute("data-props");
+    if (!raw) return {};
+    try { const p = JSON.parse(raw); return p && typeof p === "object" ? p : {}; } catch (e) { return {}; }
+  }
+
+  function render() {
+    const props = parseDataProps();
+    const vibrating = props.vibrating === "on";
+
+    if (tineL) tineL.style.animation = vibrating ? "tf-vibrate-l 0.05s ease-in-out infinite alternate" : "none";
+    if (tineR) tineR.style.animation = vibrating ? "tf-vibrate-r 0.05s ease-in-out infinite alternate" : "none";
+    if (waves) waves.style.opacity = vibrating ? "1" : "0";
+  }
+
+  render();
+
+  const observer = new MutationObserver(() => render());
+  observer.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => observer.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+  .cmp[data-cmp-id="phy.apparatus.tuning-fork.basic"] {
+    height: var(--cmp-size, 160px);
+    width: calc(var(--cmp-size, 160px) * 0.5);
+    display: inline-grid;
+    place-items: center;
+    transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+  }
+
+  .cmp[data-cmp-id="phy.apparatus.tuning-fork.basic"] .tf__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    filter: drop-shadow(0 0 calc(8px * var(--cmp-glow, 0))
+            rgba(255, 214, 102, calc(0.9 * var(--cmp-glow, 0))));
+  }
+
+  @keyframes tf-vibrate-l {
+    0%   { transform: translateX(-1px); }
+    100% { transform: translateX(1px); }
+  }
+
+  @keyframes tf-vibrate-r {
+    0%   { transform: translateX(1px); }
+    100% { transform: translateX(-1px); }
+  }
+
+  .cmp[data-cmp-id="phy.apparatus.tuning-fork.basic"] .tf__waves {
+    transition: opacity 0.3s ease;
+  }
+</style>

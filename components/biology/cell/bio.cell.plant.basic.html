@@ -1,0 +1,244 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.cell.plant.basic",
+  "name": "植物细胞",
+  "nameEn": "Plant Cell",
+  "category": "biology/cell",
+  "version": "1.0.0",
+  "viewport": { "w": 220, "h": 220 },
+  "tags": ["biology", "cell", "plant", "organelle", "chloroplast", "vacuole", "cell-wall"],
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 220, "min": 120, "max": 400, "desc": "组件尺寸" },
+    { "key": "wallColor",     "type": "color",  "default": "#a5d6a7", "desc": "细胞壁颜色" },
+    { "key": "cytoplasmColor","type": "color",  "default": "#e8f5e9", "desc": "细胞质颜色" },
+    { "key": "nucleusColor",  "type": "color",  "default": "#7e57c2", "desc": "细胞核颜色" },
+    { "key": "vacuoleColor",  "type": "color",  "default": "#bbdefb", "desc": "液泡颜色" },
+    { "key": "stroke",        "type": "color",  "default": "#33691e", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "wallColor": "--cmp-wall",
+    "cytoplasmColor": "--cmp-cytoplasm", "nucleusColor": "--cmp-nucleus",
+    "vacuoleColor": "--cmp-vacuole", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  布局说明（viewBox 0 0 220 220）：
+  - 细胞壁外框: x=10..210, y=10..210  (rect 200×200)
+  - 细胞膜:     x=19..201, y=19..201  (rect 182×182)
+  - 细胞器安全区: 中心 x=35..185, y=33..187（确保旋转后不超出细胞膜）
+  - 液泡:       中央区域 约 x=48..172, y=62..178
+  - 细胞核: 左上角贴壁，中心约 (42,42)
+-->
+<div class="cmp" data-cmp-id="bio.cell.plant.basic" role="img" aria-label="植物细胞">
+  <svg class="pc__svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+
+    <!-- ===== 第1层：细胞壁 ===== -->
+    <rect x="10" y="10" width="200" height="200" rx="6"
+          fill="var(--cmp-wall,#a5d6a7)" opacity="0.35"
+          stroke="var(--cmp-wall,#a5d6a7)" stroke-width="1"/>
+    <rect x="10" y="10" width="200" height="200" rx="6"
+          fill="none" stroke="#558b2f" stroke-width="3"/>
+    <rect x="16" y="16" width="188" height="188" rx="4"
+          fill="none" stroke="#558b2f" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- ===== 第2层：细胞膜 + 细胞质填充 ===== -->
+    <rect x="19" y="19" width="182" height="182" rx="3"
+          fill="var(--cmp-cytoplasm,#e8f5e9)"
+          stroke="#66bb6a" stroke-width="1"/>
+
+    <!-- ===== 第3层：液泡（中央大区域，边界不超过细胞器位置） ===== -->
+    <!-- 细胞器在四周 ~25px 环带内，液泡边界留在 x=48..172, y=62..178 -->
+    <path d="M80,62 Q48,68 48,110 Q48,160 80,178
+             Q110,190 145,178 Q172,165 172,110
+             Q172,68 145,62 Q115,55 80,62 Z"
+          fill="var(--cmp-vacuole,#bbdefb)" opacity="0.45"
+          stroke="#42a5f5" stroke-width="1.2"/>
+    <!-- 液泡膜 -->
+    <path d="M82,65 Q52,70 51,110 Q51,158 82,175
+             Q112,187 143,175 Q169,163 169,110
+             Q169,70 143,65 Q115,58 82,65 Z"
+          fill="none" stroke="#42a5f5" stroke-width="0.6" stroke-dasharray="2,2" opacity="0.35"/>
+
+    <!-- ===== 第4层：细胞器 ===== -->
+    <!--
+      安全区域计算（细胞膜 19..201）：
+      - 叶绿体 rx=11,ry=6 → 旋转后最大展幅≈11px → 中心至少 x=30/190, y=30/190
+      - 线粒体 rx=8,ry=4 → 旋转后最大展幅≈8px → 中心至少 x=27/193, y=27/193
+      - 所有细胞器中心放在 35..185 范围内确保安全
+    -->
+
+    <!-- 叶绿体1 - 上边偏左 (center 80,33) -->
+    <g transform="translate(80,33) rotate(-5)">
+      <ellipse cx="0" cy="0" rx="11" ry="6" fill="#66bb6a" opacity="0.7"
+               stroke="#2e7d32" stroke-width="0.8"/>
+      <ellipse cx="-5" cy="0" rx="2.5" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="0" cy="0" rx="2.5" ry="3.5" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="5" cy="0" rx="2.5" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <line x1="-5" y1="0" x2="0" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+      <line x1="0" y1="0" x2="5" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+    </g>
+    <!-- 叶绿体2 - 上边偏右 (center 155,33) -->
+    <g transform="translate(155,33) rotate(8)">
+      <ellipse cx="0" cy="0" rx="11" ry="6" fill="#66bb6a" opacity="0.7"
+               stroke="#2e7d32" stroke-width="0.8"/>
+      <ellipse cx="-5" cy="0" rx="2.5" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="0" cy="0" rx="2.5" ry="3.5" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="5" cy="0" rx="2.5" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <line x1="-5" y1="0" x2="0" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+      <line x1="0" y1="0" x2="5" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+    </g>
+    <!-- 叶绿体3 - 右边 (center 185,95) 竖放 -->
+    <g transform="translate(185,95) rotate(80)">
+      <ellipse cx="0" cy="0" rx="10" ry="5.5" fill="#66bb6a" opacity="0.7"
+               stroke="#2e7d32" stroke-width="0.8"/>
+      <ellipse cx="-4" cy="0" rx="2" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="2" cy="0" rx="2" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <line x1="-4" y1="0" x2="2" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+    </g>
+    <!-- 叶绿体4 - 下边 (center 130,187) -->
+    <g transform="translate(130,187) rotate(-6)">
+      <ellipse cx="0" cy="0" rx="11" ry="6" fill="#66bb6a" opacity="0.7"
+               stroke="#2e7d32" stroke-width="0.8"/>
+      <ellipse cx="-5" cy="0" rx="2.5" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="0" cy="0" rx="2.5" ry="3.5" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="5" cy="0" rx="2.5" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <line x1="-5" y1="0" x2="0" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+      <line x1="0" y1="0" x2="5" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+    </g>
+    <!-- 叶绿体5 - 左边 (center 35,145) 竖放 -->
+    <g transform="translate(35,145) rotate(75)">
+      <ellipse cx="0" cy="0" rx="10" ry="5.5" fill="#66bb6a" opacity="0.7"
+               stroke="#2e7d32" stroke-width="0.8"/>
+      <ellipse cx="-4" cy="0" rx="2" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <ellipse cx="2" cy="0" rx="2" ry="3" fill="#2e7d32" opacity="0.25"/>
+      <line x1="-4" y1="0" x2="2" y2="0" stroke="#2e7d32" stroke-width="0.5" opacity="0.3"/>
+    </g>
+
+    <!-- 线粒体1 - 右下 (center 183,155) -->
+    <g transform="translate(183,155) rotate(-40)">
+      <ellipse cx="0" cy="0" rx="8" ry="4" fill="#ef9a9a" stroke="#c62828" stroke-width="0.8" opacity="0.6"/>
+      <path d="M-5,0 L-5,-2.5 M-2,0 L-2,-3 M1,0 L1,-2.5 M4,0 L4,-2.5"
+            fill="none" stroke="#c62828" stroke-width="0.6" stroke-linecap="round" opacity="0.4"/>
+    </g>
+    <!-- 线粒体2 - 下边偏左 (center 70,187) -->
+    <g transform="translate(70,187) rotate(10)">
+      <ellipse cx="0" cy="0" rx="8" ry="4" fill="#ef9a9a" stroke="#c62828" stroke-width="0.8" opacity="0.6"/>
+      <path d="M-5,0 L-5,-2.5 M-2,0 L-2,-3 M1,0 L1,-2.5 M4,0 L4,-2.5"
+            fill="none" stroke="#c62828" stroke-width="0.6" stroke-linecap="round" opacity="0.4"/>
+    </g>
+
+    <!-- 内质网（左侧，靠近核 x≈28-42） -->
+    <g opacity="0.4">
+      <path d="M36,80 Q30,90 36,100 Q42,110 36,120 Q30,130 36,140" fill="none" stroke="#8d6e63" stroke-width="1.2"/>
+      <path d="M31,82 Q26,92 31,102 Q36,112 31,122 Q26,132 31,142" fill="none" stroke="#8d6e63" stroke-width="1.2"/>
+      <!-- 核糖体 -->
+      <circle cx="36" cy="84" r="1.2" fill="#5d4037"/>
+      <circle cx="31" cy="88" r="1.2" fill="#5d4037"/>
+      <circle cx="36" cy="94" r="1.2" fill="#5d4037"/>
+      <circle cx="31" cy="98" r="1.2" fill="#5d4037"/>
+      <circle cx="36" cy="104" r="1.2" fill="#5d4037"/>
+      <circle cx="31" cy="108" r="1.2" fill="#5d4037"/>
+      <circle cx="36" cy="114" r="1.2" fill="#5d4037"/>
+      <circle cx="31" cy="118" r="1.2" fill="#5d4037"/>
+      <circle cx="36" cy="124" r="1.2" fill="#5d4037"/>
+      <circle cx="31" cy="128" r="1.2" fill="#5d4037"/>
+    </g>
+
+    <!-- 高尔基体（右上 center≈182,58） -->
+    <g opacity="0.5" transform="translate(180,55)">
+      <path d="M0,0 Q-8,4 0,8" fill="none" stroke="#f9a825" stroke-width="2" stroke-linecap="round"/>
+      <path d="M1,3 Q-6,7 1,11" fill="none" stroke="#f9a825" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M2,6 Q-5,10 2,14" fill="none" stroke="#f9a825" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="5" cy="2" r="1.8" fill="#f9a825" opacity="0.35"/>
+      <circle cx="6" cy="10" r="1.5" fill="#f9a825" opacity="0.3"/>
+    </g>
+
+    <!-- ===== 细胞核（左上角，贴壁，中心约 42,42） ===== -->
+    <ellipse cx="42" cy="42" rx="20" ry="18"
+             fill="var(--cmp-nucleus,#7e57c2)" opacity="0.2"
+             stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="1.8"/>
+    <ellipse cx="42" cy="42" rx="17" ry="15" fill="none"
+             stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.6" stroke-dasharray="2,1.5" opacity="0.4"/>
+    <!-- 核仁 -->
+    <circle cx="40" cy="40" r="6" fill="var(--cmp-nucleus,#7e57c2)" opacity="0.4"/>
+    <circle cx="39" cy="39" r="2.5" fill="var(--cmp-nucleus,#7e57c2)" opacity="0.2"/>
+    <!-- 染色质 -->
+    <path d="M34,48 Q40,53 48,49 Q54,45 56,50"
+          fill="none" stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.8" opacity="0.2"/>
+    <!-- 核孔 -->
+    <circle cx="22" cy="40" r="1.5" fill="var(--cmp-cytoplasm,#e8f5e9)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.6"/>
+    <circle cx="62" cy="40" r="1.5" fill="var(--cmp-cytoplasm,#e8f5e9)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.6"/>
+    <circle cx="42" cy="24" r="1.5" fill="var(--cmp-cytoplasm,#e8f5e9)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.6"/>
+
+    <!-- ===== 标注 ===== -->
+    <g class="pc__labels" font-size="6.5" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#33691e)" font-weight="600">
+      <!-- 细胞壁 -->
+      <line x1="210" y1="14" x2="216" y2="6" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="218" y="8" font-size="6" opacity="0.7">细胞壁</text>
+      <!-- 细胞膜 -->
+      <line x1="201" y1="30" x2="216" y2="22" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="218" y="24" font-size="6" opacity="0.7">细胞膜</text>
+      <!-- 液泡 -->
+      <line x1="110" y1="120" x2="110" y2="148" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="110" y="156" text-anchor="middle" font-size="6.5" opacity="0.7">液泡</text>
+      <!-- 液泡膜 -->
+      <line x1="169" y1="130" x2="216" y2="136" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.4"/>
+      <text x="218" y="138" font-size="5.5" opacity="0.6">液泡膜</text>
+      <!-- 细胞核 -->
+      <line x1="42" y1="24" x2="42" y2="10" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="42" y="7" text-anchor="middle" font-size="6.5" opacity="0.7">细胞核</text>
+      <!-- 核仁 -->
+      <line x1="35" y1="36" x2="14" y2="28" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="0" y="28" font-size="5.5" opacity="0.6">核仁</text>
+      <!-- 叶绿体 -->
+      <line x1="166" y1="33" x2="216" y2="42" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="218" y="44" font-size="6" opacity="0.7">叶绿体</text>
+      <!-- 线粒体 -->
+      <line x1="183" y1="155" x2="216" y2="158" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="218" y="160" font-size="6" opacity="0.7">线粒体</text>
+      <!-- 内质网 -->
+      <line x1="30" y1="110" x2="4" y2="110" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="2" y="112" font-size="5.5" opacity="0.65" text-anchor="end">内质网</text>
+      <!-- 高尔基体 -->
+      <line x1="188" y1="62" x2="216" y2="62" stroke="var(--cmp-stroke,#33691e)" stroke-width="0.5"/>
+      <text x="218" y="64" font-size="5.5" opacity="0.65">高尔基体</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.cell.plant.basic") return;
+  const labels = root.querySelector(".pc__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.cell.plant.basic"] {
+  width: var(--cmp-size, 220px);
+  height: var(--cmp-size, 220px);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.cell.plant.basic"] .pc__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

@@ -1,0 +1,244 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.cell.animal.basic",
+  "name": "动物细胞",
+  "nameEn": "Animal Cell",
+  "category": "biology/cell",
+  "version": "1.0.0",
+  "viewport": { "w": 220, "h": 220 },
+  "tags": ["biology", "cell", "animal", "organelle", "nucleus", "membrane"],
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 220, "min": 120, "max": 400, "desc": "组件尺寸" },
+    { "key": "membraneColor", "type": "color",  "default": "#ffcc80", "desc": "细胞膜颜色" },
+    { "key": "cytoplasmColor","type": "color",  "default": "#fff8e1", "desc": "细胞质颜色" },
+    { "key": "nucleusColor",  "type": "color",  "default": "#7e57c2", "desc": "细胞核颜色" },
+    { "key": "stroke",        "type": "color",  "default": "#5d4037", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "membraneColor": "--cmp-membrane",
+    "cytoplasmColor": "--cmp-cytoplasm", "nucleusColor": "--cmp-nucleus",
+    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="bio.cell.animal.basic" role="img" aria-label="动物细胞">
+  <svg class="ac__svg" viewBox="0 0 220 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+
+    <!-- ===== 细胞膜（不规则波浪形，动物细胞特征） ===== -->
+    <path d="M110,16 C140,14 170,28 186,50 C200,70 206,95 200,118
+             C196,140 186,162 168,178 C150,192 128,200 108,198
+             C85,196 60,188 42,170 C26,154 16,132 16,108
+             C16,82 24,58 42,40 C60,24 84,18 110,16 Z"
+          fill="var(--cmp-cytoplasm,#fff8e1)"
+          stroke="var(--cmp-membrane,#ffcc80)" stroke-width="3"/>
+    <!-- 细胞膜磷脂双分子层效果 -->
+    <path d="M110,20 C138,18 166,32 182,52 C196,72 202,96 196,116
+             C192,138 182,158 166,174 C148,188 126,196 108,194
+             C88,192 64,184 46,168 C30,152 20,130 20,108
+             C20,84 28,62 46,44 C62,28 86,22 110,20 Z"
+          fill="none" stroke="var(--cmp-membrane,#ffcc80)"
+          stroke-width="0.7" stroke-dasharray="3,2" opacity="0.4"/>
+
+    <!-- ===== 内质网（粗面，与核膜相连的膜囊网络） ===== -->
+    <g opacity="0.4">
+      <!-- 粗面内质网（靠近核，多层弯曲膜囊） -->
+      <path d="M58,68 Q50,78 56,88 Q62,98 56,108 Q50,118 56,128" fill="none"
+            stroke="#8d6e63" stroke-width="1.5"/>
+      <path d="M52,70 Q44,80 50,90 Q56,100 50,110 Q44,120 50,130" fill="none"
+            stroke="#8d6e63" stroke-width="1.5"/>
+      <path d="M46,74 Q40,84 46,94 Q50,102 46,110" fill="none"
+            stroke="#8d6e63" stroke-width="1.2"/>
+      <!-- 核糖体（粗面内质网上的小点） -->
+      <circle cx="58" cy="72" r="1.3" fill="#5d4037"/>
+      <circle cx="52" cy="76" r="1.3" fill="#5d4037"/>
+      <circle cx="56" cy="82" r="1.3" fill="#5d4037"/>
+      <circle cx="50" cy="86" r="1.3" fill="#5d4037"/>
+      <circle cx="58" cy="92" r="1.3" fill="#5d4037"/>
+      <circle cx="52" cy="96" r="1.3" fill="#5d4037"/>
+      <circle cx="56" cy="102" r="1.3" fill="#5d4037"/>
+      <circle cx="50" cy="106" r="1.3" fill="#5d4037"/>
+      <circle cx="58" cy="112" r="1.3" fill="#5d4037"/>
+      <circle cx="52" cy="116" r="1.3" fill="#5d4037"/>
+      <circle cx="56" cy="122" r="1.3" fill="#5d4037"/>
+      <circle cx="46" cy="80" r="1.3" fill="#5d4037"/>
+      <circle cx="46" cy="90" r="1.3" fill="#5d4037"/>
+      <circle cx="46" cy="100" r="1.3" fill="#5d4037"/>
+
+      <!-- 滑面内质网（远离核，无核糖体） -->
+      <path d="M150,60 Q158,70 152,80 Q146,88 152,96" fill="none"
+            stroke="#8d6e63" stroke-width="1.2"/>
+      <path d="M156,62 Q162,72 156,82 Q150,90 156,98" fill="none"
+            stroke="#8d6e63" stroke-width="1.2"/>
+    </g>
+
+    <!-- ===== 高尔基体（凹面朝向细胞核的层叠扁囊） ===== -->
+    <g opacity="0.55" transform="translate(148,120)">
+      <!-- 层叠扁囊（凹面朝左/朝核） -->
+      <path d="M0,0 Q-14,6 0,12" fill="none" stroke="#f9a825" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M2,5 Q-12,11 2,17" fill="none" stroke="#f9a825" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M3,10 Q-10,16 3,22" fill="none" stroke="#f9a825" stroke-width="2" stroke-linecap="round"/>
+      <path d="M4,15 Q-8,21 4,27" fill="none" stroke="#f9a825" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- 分泌小泡（从凸面出芽） -->
+      <circle cx="8" cy="3" r="3" fill="#f9a825" opacity="0.35" stroke="#f9a825" stroke-width="0.5"/>
+      <circle cx="10" cy="12" r="2.5" fill="#f9a825" opacity="0.3" stroke="#f9a825" stroke-width="0.5"/>
+      <circle cx="12" cy="22" r="2" fill="#f9a825" opacity="0.25"/>
+    </g>
+
+    <!-- ===== 线粒体 ×3（椭圆形，内有多条嵴） ===== -->
+    <g transform="translate(150,70) rotate(-25)">
+      <ellipse cx="0" cy="0" rx="16" ry="8" fill="#ef9a9a" stroke="#c62828" stroke-width="1" opacity="0.65"/>
+      <!-- 嵴（内膜向内折叠） -->
+      <path d="M-10,0 L-10,-4 M-6,0 L-6,-5 M-2,0 L-2,-4 M2,0 L2,-5 M6,0 L6,-4 M10,0 L10,-3"
+            fill="none" stroke="#c62828" stroke-width="0.7" stroke-linecap="round" opacity="0.45"/>
+    </g>
+    <g transform="translate(60,155) rotate(35)">
+      <ellipse cx="0" cy="0" rx="14" ry="7" fill="#ef9a9a" stroke="#c62828" stroke-width="1" opacity="0.65"/>
+      <path d="M-8,0 L-8,-4 M-4,0 L-4,-4.5 M0,0 L0,-4 M4,0 L4,-4.5 M8,0 L8,-3"
+            fill="none" stroke="#c62828" stroke-width="0.7" stroke-linecap="round" opacity="0.45"/>
+    </g>
+    <g transform="translate(130,168) rotate(-10)">
+      <ellipse cx="0" cy="0" rx="12" ry="6" fill="#ef9a9a" stroke="#c62828" stroke-width="1" opacity="0.65"/>
+      <path d="M-7,0 L-7,-3.5 M-3,0 L-3,-4 M1,0 L1,-3.5 M5,0 L5,-4 M8,0 L8,-3"
+            fill="none" stroke="#c62828" stroke-width="0.7" stroke-linecap="round" opacity="0.45"/>
+    </g>
+
+    <!-- ===== 溶酶体（单层膜包裹的暗色小体） ===== -->
+    <circle cx="168" cy="100" r="7" fill="#ab47bc" opacity="0.35"
+            stroke="#6a1b9a" stroke-width="0.8"/>
+    <!-- 内部酶颗粒 -->
+    <circle cx="166" cy="98" r="1.5" fill="#6a1b9a" opacity="0.3"/>
+    <circle cx="170" cy="102" r="1.2" fill="#6a1b9a" opacity="0.3"/>
+    <circle cx="167" cy="103" r="1" fill="#6a1b9a" opacity="0.25"/>
+
+    <!-- ===== 中心体（两个互相垂直的中心粒） ===== -->
+    <g transform="translate(140,46)">
+      <!-- 中心粒1（水平短圆柱） -->
+      <rect x="-8" y="-2.5" width="16" height="5" rx="2"
+            fill="#78909c" stroke="#455a64" stroke-width="0.7" opacity="0.6"/>
+      <!-- 中心粒内微管横纹 -->
+      <line x1="-5" y1="-2" x2="-5" y2="2" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+      <line x1="-2" y1="-2" x2="-2" y2="2" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+      <line x1="1" y1="-2" x2="1" y2="2" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+      <line x1="4" y1="-2" x2="4" y2="2" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+      <!-- 中心粒2（垂直短圆柱） -->
+      <rect x="-2.5" y="-8" width="5" height="16" rx="2"
+            fill="#78909c" stroke="#455a64" stroke-width="0.7" opacity="0.6"/>
+      <line x1="-2" y1="-5" x2="2" y2="-5" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+      <line x1="-2" y1="-2" x2="2" y2="-2" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+      <line x1="-2" y1="1" x2="2" y2="1" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+      <line x1="-2" y1="4" x2="2" y2="4" stroke="#455a64" stroke-width="0.4" opacity="0.4"/>
+    </g>
+
+    <!-- ===== 游离核糖体 ===== -->
+    <g opacity="0.3">
+      <circle cx="80" cy="50" r="1.5" fill="#5d4037"/>
+      <circle cx="170" cy="55" r="1.5" fill="#5d4037"/>
+      <circle cx="38" cy="140" r="1.5" fill="#5d4037"/>
+      <circle cx="175" cy="160" r="1.5" fill="#5d4037"/>
+      <circle cx="100" cy="175" r="1.5" fill="#5d4037"/>
+      <circle cx="42" cy="55" r="1.5" fill="#5d4037"/>
+      <circle cx="85" cy="168" r="1.5" fill="#5d4037"/>
+    </g>
+
+    <!-- ===== 细胞核（居中偏左，较大） ===== -->
+    <ellipse cx="100" cy="100" rx="32" ry="30"
+             fill="var(--cmp-nucleus,#7e57c2)" opacity="0.2"
+             stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="2"/>
+    <!-- 核膜（双层，带核孔） -->
+    <ellipse cx="100" cy="100" rx="29" ry="27" fill="none"
+             stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.7" stroke-dasharray="2.5,2" opacity="0.45"/>
+    <!-- 核仁（深色实心圆） -->
+    <circle cx="96" cy="96" r="10" fill="var(--cmp-nucleus,#7e57c2)" opacity="0.45"/>
+    <!-- 核仁内部颗粒 -->
+    <circle cx="94" cy="94" r="4" fill="var(--cmp-nucleus,#7e57c2)" opacity="0.25"/>
+    <!-- 染色质（不规则丝状） -->
+    <path d="M82,105 Q88,112 96,108 Q104,104 110,110 Q116,116 120,108"
+          fill="none" stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="1.2" opacity="0.25"/>
+    <path d="M86,90 Q92,84 100,88 Q108,92 114,86"
+          fill="none" stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.8" opacity="0.2"/>
+
+    <!-- 核孔（在核膜椭圆边界上，cx=100,cy=100,rx=32,ry=30） -->
+    <circle cx="68" cy="98" r="2" fill="var(--cmp-cytoplasm,#fff8e1)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.7"/>
+    <circle cx="132" cy="98" r="2" fill="var(--cmp-cytoplasm,#fff8e1)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.7"/>
+    <circle cx="100" cy="70" r="2" fill="var(--cmp-cytoplasm,#fff8e1)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.7"/>
+    <circle cx="100" cy="130" r="2" fill="var(--cmp-cytoplasm,#fff8e1)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.7"/>
+    <circle cx="80" cy="76" r="1.8" fill="var(--cmp-cytoplasm,#fff8e1)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.6"/>
+    <circle cx="120" cy="124" r="1.8" fill="var(--cmp-cytoplasm,#fff8e1)"
+            stroke="var(--cmp-nucleus,#7e57c2)" stroke-width="0.6"/>
+
+    <!-- ===== 标注 ===== -->
+    <g class="ac__labels" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#5d4037)" font-weight="600">
+      <!-- 细胞膜 -->
+      <line x1="186" y1="50" x2="200" y2="36" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="202" y="38" font-size="6.5" opacity="0.7">细胞膜</text>
+      <!-- 细胞质 -->
+      <line x1="36" y1="48" x2="18" y2="36" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="2" y="38" font-size="6.5" opacity="0.7">细胞质</text>
+      <!-- 细胞核 -->
+      <line x1="100" y1="70" x2="100" y2="28" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="100" y="24" text-anchor="middle" font-size="6.5" opacity="0.7">细胞核</text>
+      <!-- 核仁 -->
+      <line x1="90" y1="88" x2="72" y2="56" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="60" y="54" font-size="6" opacity="0.6">核仁</text>
+      <!-- 线粒体 -->
+      <line x1="130" y1="168" x2="160" y2="192" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="162" y="195" font-size="6.5" opacity="0.7">线粒体</text>
+      <!-- 粗面内质网 -->
+      <line x1="44" y1="90" x2="18" y2="90" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="2" y="92" font-size="5.5" opacity="0.65">粗面内质网</text>
+      <!-- 滑面内质网 -->
+      <line x1="162" y1="80" x2="196" y2="80" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="198" y="82" font-size="5.5" opacity="0.65">滑面内质网</text>
+      <!-- 高尔基体 -->
+      <line x1="160" y1="134" x2="196" y2="140" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="198" y="142" font-size="6" opacity="0.7">高尔基体</text>
+      <!-- 中心体 -->
+      <line x1="140" y1="38" x2="140" y2="24" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="140" y="20" text-anchor="middle" font-size="6" opacity="0.6">中心体</text>
+      <!-- 溶酶体 -->
+      <line x1="168" y1="93" x2="196" y2="108" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.5"/>
+      <text x="198" y="110" font-size="6" opacity="0.6">溶酶体</text>
+      <!-- 核孔 -->
+      <line x1="132" y1="98" x2="148" y2="98" stroke="var(--cmp-stroke,#5d4037)" stroke-width="0.4"/>
+      <text x="150" y="100" font-size="5.5" opacity="0.55">核孔</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.cell.animal.basic") return;
+  const labels = root.querySelector(".ac__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.cell.animal.basic"] {
+  width: var(--cmp-size, 220px);
+  height: var(--cmp-size, 220px);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.cell.animal.basic"] .ac__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

@@ -1,0 +1,92 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.diode.basic",
+  "name": "二极管",
+  "nameEn": "Diode",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 108, "h": 40 },
+  "tags": ["diode", "circuit", "semiconductor", "rectifier"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 64,        "min": 16, "max": 256, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "aspect",      "type": "number",     "default": 2.7,       "min": 1.6, "max": 4.0, "desc": "宽高比（width = size × aspect）" },
+    { "key": "bodyColor",   "type": "color",      "default": "#1a1a1a", "desc": "管体颜色（深色玻璃/塑封）" },
+    { "key": "bandColor",   "type": "color",      "default": "#c0c0c0", "desc": "阴极色环颜色" },
+    { "key": "leadColor",   "type": "color",      "default": "#888888", "desc": "引脚颜色" },
+    { "key": "stroke",      "type": "color",      "default": "#111827", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number",     "default": 1.8,       "min": 0, "max": 5, "desc": "描边粗细" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0,        "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "aspect":      "--cmp-aspect",
+    "bodyColor":   "--cmp-body",
+    "bandColor":   "--cmp-band",
+    "leadColor":   "--cmp-lead",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow":        "--cmp-glow"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.diode.basic" role="img" aria-label="二极管">
+  <svg class="diode__svg" viewBox="0 0 108 40" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 阳极引脚（左） -->
+    <line x1="0" y1="20" x2="18" y2="20"
+          stroke="var(--cmp-lead, #888)" stroke-width="2.2" stroke-linecap="round"/>
+    <!-- 阴极引脚（右） -->
+    <line x1="90" y1="20" x2="108" y2="20"
+          stroke="var(--cmp-lead, #888)" stroke-width="2.2" stroke-linecap="round"/>
+
+    <!-- 管体（圆柱形塑封） -->
+    <rect x="18" y="8" width="72" height="24" rx="12"
+          fill="var(--cmp-body, #1a1a1a)"
+          stroke="var(--cmp-stroke, #111827)" stroke-width="var(--cmp-stroke-width, 1.8)"/>
+
+    <!-- 管体高光（顶部反光） -->
+    <rect x="22" y="10" width="64" height="8" rx="4"
+          fill="#ffffff" opacity="0.10"/>
+    <!-- 管体底部阴影 -->
+    <rect x="22" y="22" width="64" height="7" rx="4"
+          fill="#000000" opacity="0.12"/>
+
+    <!-- 阴极色环（靠近右侧引脚） -->
+    <rect x="76" y="8" width="7" height="24" rx="1"
+          fill="var(--cmp-band, #c0c0c0)" opacity="0.92"/>
+    <!-- 色环高光 -->
+    <rect x="76" y="10" width="7" height="5" rx="1"
+          fill="#ffffff" opacity="0.18"/>
+    <!-- 色环边缘描边 -->
+    <line x1="76" y1="8" x2="76" y2="32"
+          stroke="var(--cmp-stroke, #111827)"
+          stroke-width="calc(var(--cmp-stroke-width, 1.8) * 0.4)" opacity="0.25"/>
+    <line x1="83" y1="8" x2="83" y2="32"
+          stroke="var(--cmp-stroke, #111827)"
+          stroke-width="calc(var(--cmp-stroke-width, 1.8) * 0.4)" opacity="0.25"/>
+
+    <!-- +/− 标注 -->
+    <text x="8" y="36" font-size="8" font-weight="700" font-family="Arial, sans-serif"
+          fill="var(--cmp-stroke, #111827)" opacity="0.5" text-anchor="middle">+</text>
+    <text x="100" y="36" font-size="8" font-weight="700" font-family="Arial, sans-serif"
+          fill="var(--cmp-stroke, #111827)" opacity="0.5" text-anchor="middle">−</text>
+  </svg>
+</div>
+
+<style>
+  .cmp[data-cmp-id="phy.circuit.diode.basic"] {
+    height: var(--cmp-size, 64px);
+    width: calc(var(--cmp-size, 64px) * var(--cmp-aspect, 2.7));
+    display: inline-grid;
+    place-items: center;
+    transform: rotate(var(--cmp-rotate, 0deg)) scale(var(--cmp-scale, 1));
+  }
+
+  .cmp[data-cmp-id="phy.circuit.diode.basic"] .diode__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 0 calc(10px * var(--cmp-glow, 0))
+            rgba(255, 214, 102, calc(0.9 * var(--cmp-glow, 0))));
+  }
+</style>

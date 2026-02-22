@@ -1,0 +1,113 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.cart.flatbed",
+  "name": "平板小车",
+  "nameEn": "Flatbed Cart",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 140, "h": 56 },
+  "tags": ["physics", "mechanics", "cart", "flatbed", "friction", "load"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 240, "desc": "组件宽度" },
+    { "key": "bodyColor",   "type": "color",  "default": "#8d6e63", "desc": "平板颜色" },
+    { "key": "frameColor",  "type": "color",  "default": "#546e7a", "desc": "底架颜色" },
+    { "key": "wheelColor",  "type": "color",  "default": "#37474f", "desc": "车轮颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边宽度" },
+    { "key": "hookVisible", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示挂钩" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "bodyColor":   "--cmp-body",
+    "frameColor":  "--cmp-frame",
+    "wheelColor":  "--cmp-wheel",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.cart.flatbed" role="img" aria-label="平板小车">
+  <svg class="fc__svg" viewBox="0 0 140 56" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <!-- 底架横梁 -->
+    <rect x="18" y="28" width="104" height="6" rx="1.5"
+          fill="var(--cmp-frame,#546e7a)"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <!-- 左轴支架 -->
+    <rect x="24" y="32" width="4" height="10" rx="1"
+          fill="var(--cmp-frame,#546e7a)"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="calc(var(--cmp-stroke-width,1.5)*0.7)"/>
+    <!-- 右轴支架 -->
+    <rect x="112" y="32" width="4" height="10" rx="1"
+          fill="var(--cmp-frame,#546e7a)"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="calc(var(--cmp-stroke-width,1.5)*0.7)"/>
+
+    <!-- 平板面 -->
+    <rect x="10" y="18" width="120" height="12" rx="2"
+          fill="var(--cmp-body,#8d6e63)"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <!-- 平板高光 -->
+    <rect x="13" y="20" width="114" height="4" rx="1" fill="#ffffff" opacity="0.2"/>
+    <!-- 木纹线条 -->
+    <line x1="40" y1="19" x2="40" y2="29" stroke="#5d4037" stroke-width="0.5" opacity="0.25"/>
+    <line x1="70" y1="19" x2="70" y2="29" stroke="#5d4037" stroke-width="0.5" opacity="0.25"/>
+    <line x1="100" y1="19" x2="100" y2="29" stroke="#5d4037" stroke-width="0.5" opacity="0.25"/>
+
+    <!-- 前挂钩 -->
+    <path class="fc__hook" d="M130,24 L138,24 L138,28 L135,28" fill="none"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="var(--cmp-stroke-width,1.5)" stroke-linecap="round"/>
+    <!-- 后挂钩 -->
+    <path class="fc__hook" d="M10,24 L2,24 L2,28 L5,28" fill="none"
+          stroke="var(--cmp-stroke,#263238)"
+          stroke-width="var(--cmp-stroke-width,1.5)" stroke-linecap="round"/>
+
+    <!-- 四个轮子（前后各两个，侧视重叠显示一个） -->
+    <circle cx="26" cy="48" r="7"
+            fill="var(--cmp-wheel,#37474f)"
+            stroke="var(--cmp-stroke,#263238)"
+            stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <circle cx="26" cy="48" r="2.5" fill="#90a4ae"/>
+    <circle cx="114" cy="48" r="7"
+            fill="var(--cmp-wheel,#37474f)"
+            stroke="var(--cmp-stroke,#263238)"
+            stroke-width="var(--cmp-stroke-width,1.5)"/>
+    <circle cx="114" cy="48" r="2.5" fill="#90a4ae"/>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "phy.mechanics.cart.flatbed") return;
+
+  const hooks = root.querySelectorAll(".fc__hook");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    const show = props.hookVisible !== "off";
+    hooks.forEach(h => h.style.display = show ? "" : "none");
+  }
+
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="phy.mechanics.cart.flatbed"] {
+  width: var(--cmp-size, 140px);
+  height: calc(var(--cmp-size, 140px) * 0.4);
+  display: inline-block;
+}
+.cmp[data-cmp-id="phy.mechanics.cart.flatbed"] .fc__svg {
+  width: 100%; height: 100%; display: block;
+}
+</style>

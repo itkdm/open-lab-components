@@ -1,0 +1,269 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.ear.basic",
+  "name": "耳朵结构",
+  "nameEn": "Ear Anatomy",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 200 },
+  "tags": ["biology", "organ", "ear", "anatomy", "hearing", "cochlea", "auditory"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 140, "max": 400, "desc": "组件高度" },
+    { "key": "skinColor",   "type": "color",  "default": "#ffccbc", "desc": "皮肤颜色" },
+    { "key": "boneColor",   "type": "color",  "default": "#efebe9", "desc": "骨骼颜色" },
+    { "key": "fluidColor",  "type": "color",  "default": "#b3e5fc", "desc": "淋巴液颜色" },
+    { "key": "stroke",      "type": "color",  "default": "#4e342e", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "skinColor": "--cmp-skin", "boneColor": "--cmp-bone",
+    "fluidColor": "--cmp-fluid", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  人耳结构剖面图 — 教学示意
+  viewBox: 0 0 300 200
+  左侧：外耳（耳廓+外耳道）
+  中间：中耳（鼓膜+听小骨+鼓室）
+  右侧：内耳（耳蜗+前庭+半规管）
+-->
+<div class="cmp" data-cmp-id="bio.organ.ear.basic" role="img" aria-label="耳朵结构">
+  <svg class="ear__svg" viewBox="0 0 300 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <linearGradient id="ear_skinG" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffccbc"/>
+        <stop offset="100%" stop-color="#d7ccc8"/>
+      </linearGradient>
+      <linearGradient id="ear_boneG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#efebe9"/>
+        <stop offset="100%" stop-color="#d7ccc8"/>
+      </linearGradient>
+      <radialGradient id="ear_cochleaG" cx="0.4" cy="0.4" r="0.6">
+        <stop offset="0%" stop-color="#e1f5fe"/>
+        <stop offset="100%" stop-color="#81d4fa"/>
+      </radialGradient>
+    </defs>
+
+    <!-- ==================== 区域背景分隔 ==================== -->
+    <!-- 外耳区域 -->
+    <rect x="0" y="0" width="105" height="200" fill="#fff8e1" opacity="0.15"/>
+    <!-- 中耳区域 -->
+    <rect x="105" y="0" width="80" height="200" fill="#fce4ec" opacity="0.12"/>
+    <!-- 内耳区域 -->
+    <rect x="185" y="0" width="115" height="200" fill="#e8f5e9" opacity="0.12"/>
+
+    <!-- 区域标题 -->
+    <text x="52" y="14" text-anchor="middle" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="var(--cmp-stroke,#4e342e)" opacity="0.35" font-weight="600">外耳</text>
+    <text x="145" y="14" text-anchor="middle" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="var(--cmp-stroke,#4e342e)" opacity="0.35" font-weight="600">中耳</text>
+    <text x="242" y="14" text-anchor="middle" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="var(--cmp-stroke,#4e342e)" opacity="0.35" font-weight="600">内耳</text>
+
+    <!-- ==================== 耳廓（简化侧面轮廓） ==================== -->
+    <path d="M10,50 Q2,60 4,80 Q2,100 8,120 Q12,140 20,150
+             Q28,158 35,155 Q40,150 38,140 Q36,130 38,120
+             Q40,110 42,105 Q44,95 42,85 Q40,70 35,60 Q28,48 18,46 Q12,46 10,50 Z"
+          fill="url(#ear_skinG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.5"/>
+    <!-- 耳廓内部褶皱 -->
+    <path d="M14,58 Q10,70 12,85 Q10,100 14,115 Q18,130 24,140 Q30,148 34,145"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8" opacity="0.3"/>
+    <path d="M18,62 Q16,75 18,88 Q16,100 20,112 Q24,125 28,132"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.6" opacity="0.2"/>
+    <!-- 耳垂 -->
+    <path d="M20,150 Q16,158 20,164 Q26,168 32,162 Q35,155 35,155"
+          fill="url(#ear_skinG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1"/>
+
+    <!-- ==================== 外耳道 ==================== -->
+    <path d="M42,92 L105,92 L105,108 L42,108 Z"
+          fill="#5d4037" opacity="0.08"/>
+    <line x1="42" y1="92" x2="105" y2="92" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1" opacity="0.5"/>
+    <line x1="42" y1="108" x2="105" y2="108" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1" opacity="0.5"/>
+    <!-- 外耳道入口 -->
+    <path d="M38,88 Q42,90 42,92 L42,108 Q42,110 38,112"
+          fill="url(#ear_skinG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1"/>
+
+    <!-- ==================== 鼓膜 ==================== -->
+    <path d="M108,80 Q115,100 108,120"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="2"/>
+    <path d="M108,80 Q112,100 108,120"
+          fill="url(#ear_skinG)" opacity="0.5"/>
+    <!-- 鼓膜光锥 -->
+    <path d="M110,95 L112,100 L109,105" fill="none" stroke="#ffffff" stroke-width="0.5" opacity="0.3"/>
+
+    <!-- ==================== 鼓室（中耳腔） ==================== -->
+    <path d="M108,78 Q120,70 145,70 Q165,70 170,80 L170,120 Q165,130 145,130 Q120,130 108,122 Z"
+          fill="#fce4ec" opacity="0.15" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.5" stroke-dasharray="2,2" opacity="0.3"/>
+
+    <!-- ==================== 听小骨（锤骨→砧骨→镫骨） ==================== -->
+    <!-- 锤骨（附着在鼓膜上） -->
+    <g>
+      <path d="M112,95 L120,88 L124,86"
+            fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- 锤骨柄 -->
+      <path d="M112,95 L112,108"
+            fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="112" cy="95" r="2" fill="url(#ear_boneG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8"/>
+    </g>
+    <!-- 砧骨 -->
+    <g>
+      <path d="M124,86 L136,84 L142,88"
+            fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- 砧骨长突 -->
+      <path d="M136,84 L138,96 L140,104"
+            fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.8" stroke-linecap="round"/>
+      <circle cx="136" cy="84" r="3" fill="url(#ear_boneG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8"/>
+    </g>
+    <!-- 镫骨（最小的骨头，连接卵圆窗） -->
+    <g>
+      <path d="M140,104 L148,102 L156,100"
+            fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- 镫骨足板 -->
+      <ellipse cx="158" cy="100" rx="3" ry="6" fill="url(#ear_boneG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1"/>
+    </g>
+
+    <!-- ==================== 咽鼓管 ==================== -->
+    <path d="M125,128 Q120,145 105,160 Q90,172 75,178"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="3" opacity="0.4"/>
+    <path d="M125,128 Q120,145 105,160 Q90,172 75,178"
+          fill="none" stroke="url(#ear_skinG)" stroke-width="2" opacity="0.3"/>
+
+    <!-- ==================== 卵圆窗和圆窗 ==================== -->
+    <!-- 卵圆窗 -->
+    <ellipse cx="168" cy="100" rx="4" ry="7" fill="url(#ear_boneG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1"/>
+    <!-- 圆窗 -->
+    <ellipse cx="168" cy="118" rx="3" ry="5" fill="url(#ear_skinG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8"/>
+
+    <!-- ==================== 耳蜗（螺旋形，2.5圈） ==================== -->
+    <g transform="translate(210,115)">
+      <!-- 耳蜗外壳 -->
+      <path d="M0,-25 Q25,-25 28,-5 Q30,10 20,20 Q10,28 0,25
+               Q-15,22 -18,10 Q-20,0 -12,-8 Q-5,-14 2,-12
+               Q8,-10 8,-4 Q8,2 2,4 Q-2,5 -4,2"
+            fill="url(#ear_cochleaG)" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1.5" fill-opacity="0.5"/>
+      <!-- 耳蜗内部螺旋线 -->
+      <path d="M0,-20 Q20,-20 22,-5 Q24,8 15,15 Q6,20 -2,18
+               Q-12,15 -13,6 Q-14,-2 -6,-6 Q0,-8 4,-5 Q6,-2 4,1"
+            fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.6" opacity="0.3"/>
+    </g>
+
+    <!-- ==================== 前庭 ==================== -->
+    <ellipse cx="195" cy="95" rx="12" ry="15"
+             fill="url(#ear_cochleaG)" opacity="0.4" stroke="var(--cmp-stroke,#4e342e)" stroke-width="1"/>
+
+    <!-- ==================== 半规管（三个互相垂直的环） ==================== -->
+    <!-- 上半规管 -->
+    <path d="M195,80 Q195,40 220,38 Q245,38 245,65 Q245,78 235,82"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="3" opacity="0.5"/>
+    <path d="M195,80 Q195,40 220,38 Q245,38 245,65 Q245,78 235,82"
+          fill="none" stroke="var(--cmp-fluid,#b3e5fc)" stroke-width="2" opacity="0.4"/>
+    <!-- 后半规管 -->
+    <path d="M200,82 Q210,75 225,78 Q250,82 255,105 Q255,130 235,135 Q220,138 210,125"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="3" opacity="0.5"/>
+    <path d="M200,82 Q210,75 225,78 Q250,82 255,105 Q255,130 235,135 Q220,138 210,125"
+          fill="none" stroke="var(--cmp-fluid,#b3e5fc)" stroke-width="2" opacity="0.4"/>
+    <!-- 外半规管 -->
+    <path d="M207,95 Q220,85 240,90 Q258,95 258,105 Q258,115 240,118 Q220,120 210,112"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="2.5" opacity="0.45"/>
+    <path d="M207,95 Q220,85 240,90 Q258,95 258,105 Q258,115 240,118 Q220,120 210,112"
+          fill="none" stroke="var(--cmp-fluid,#b3e5fc)" stroke-width="1.5" opacity="0.35"/>
+
+    <!-- 壶腹（半规管膨大部） -->
+    <circle cx="235" cy="82" r="4" fill="var(--cmp-fluid,#b3e5fc)" opacity="0.4" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8"/>
+    <circle cx="210" cy="125" r="3.5" fill="var(--cmp-fluid,#b3e5fc)" opacity="0.4" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8"/>
+
+    <!-- ==================== 听神经（前庭蜗神经） ==================== -->
+    <path d="M210,120 Q215,140 220,155 Q225,168 235,175"
+          fill="none" stroke="#fdd835" stroke-width="5" stroke-linecap="round" opacity="0.5"/>
+    <path d="M210,120 Q215,140 220,155 Q225,168 235,175"
+          fill="none" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.8" opacity="0.4"/>
+
+    <!-- ==================== 标注 ==================== -->
+    <g class="ear__labels" font-size="6" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#4e342e)" font-weight="600">
+
+      <!-- 耳廓 -->
+      <line x1="20" y1="50" x2="10" y2="30" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="8" y="28" text-anchor="end" font-size="6" opacity="0.7">耳廓</text>
+
+      <!-- 外耳道 -->
+      <text x="72" y="88" text-anchor="middle" font-size="5.5" opacity="0.55">外耳道</text>
+
+      <!-- 鼓膜 -->
+      <line x1="110" y1="78" x2="110" y2="68" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="110" y="65" text-anchor="middle" font-size="6" opacity="0.7">鼓膜</text>
+
+      <!-- 锤骨 -->
+      <line x1="118" y1="86" x2="118" y2="76" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.3"/>
+      <text x="118" y="73" text-anchor="middle" font-size="5" opacity="0.6">锤骨</text>
+
+      <!-- 砧骨 -->
+      <line x1="136" y1="82" x2="136" y2="72" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.3"/>
+      <text x="136" y="69" text-anchor="middle" font-size="5" opacity="0.6">砧骨</text>
+
+      <!-- 镫骨 -->
+      <line x1="152" y1="100" x2="152" y2="72" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.3"/>
+      <text x="152" y="69" text-anchor="middle" font-size="5" opacity="0.6">镫骨</text>
+
+      <!-- 咽鼓管 -->
+      <line x1="90" y1="168" x2="72" y2="178" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="70" y="180" text-anchor="end" font-size="5.5" opacity="0.6">咽鼓管</text>
+
+      <!-- 前庭 -->
+      <line x1="195" y1="82" x2="195" y2="30" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="195" y="27" text-anchor="middle" font-size="6" opacity="0.7">前庭</text>
+
+      <!-- 半规管 -->
+      <line x1="248" y1="50" x2="270" y2="35" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="272" y="37" font-size="6" opacity="0.7">半规管</text>
+
+      <!-- 耳蜗 -->
+      <line x1="215" y1="130" x2="230" y2="148" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="232" y="150" font-size="6" opacity="0.7">耳蜗</text>
+
+      <!-- 听神经 -->
+      <line x1="230" y1="172" x2="260" y2="180" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.4"/>
+      <text x="262" y="182" font-size="6" opacity="0.7">听神经</text>
+
+      <!-- 卵圆窗 -->
+      <line x1="168" y1="92" x2="168" y2="56" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.3"/>
+      <text x="168" y="53" text-anchor="middle" font-size="5" opacity="0.55">卵圆窗</text>
+
+      <!-- 圆窗 -->
+      <line x1="168" y1="124" x2="168" y2="140" stroke="var(--cmp-stroke,#4e342e)" stroke-width="0.3"/>
+      <text x="168" y="147" text-anchor="middle" font-size="5" opacity="0.55">圆窗</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "bio.organ.ear.basic") return;
+  const labels = root.querySelector(".ear__labels");
+
+  function update() {
+    let props = {};
+    try { const r = root.getAttribute("data-props"); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+  }
+  update();
+  const obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ["data-props"] });
+  window.addEventListener("beforeunload", () => obs.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="bio.organ.ear.basic"] {
+  height: var(--cmp-size, 200px);
+  width: calc(var(--cmp-size, 200px) * 300 / 200);
+  display: inline-block;
+}
+.cmp[data-cmp-id="bio.organ.ear.basic"] .ear__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>
