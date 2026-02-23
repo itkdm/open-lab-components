@@ -4,7 +4,7 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Zero-dependency, host-agnostic HTML fragment component library for STEM education — 210+ interactive physics, chemistry, biology, math and science components.",
   "author": "布吉岛 (https://github.com/itkdm)",
   "license": "MIT",
