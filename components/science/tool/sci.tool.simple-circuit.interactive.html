@@ -1,0 +1,245 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.tool.simple-circuit.interactive",
+  "name": "简单电路",
+  "nameEn": "Simple Circuit",
+  "category": "science/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 240 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 200, "max": 600, "desc": "组件宽度" },
+    { "key": "switchClosed", "type": "boolean", "default": false, "desc": "开关是否闭合" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["circuit", "electricity", "battery", "bulb", "switch", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "switchClosed": "boolean", "bulbLit": "boolean" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.tool.simple-circuit.interactive" role="img" aria-label="简单电路">
+  <style>
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"] {
+      --_size: var(--cmp-size, 300px);
+      display: inline-block;
+      width: var(--_size);
+      height: auto;
+      user-select: none;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"] svg {
+      width: 100%; height: auto; display: block; overflow: visible;
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"] .sc__switch-area {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"] .sc__lever {
+      transition: transform 0.25s ease;
+      transform-origin: 130px 50px;
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"][data-closed="true"] .sc__lever {
+      transform: rotate(0deg);
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"][data-closed="false"] .sc__lever {
+      transform: rotate(-30deg);
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"] .sc__bulb-glass {
+      transition: fill 0.3s ease, filter 0.3s ease;
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"] .sc__filament {
+      transition: stroke 0.3s ease;
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"] .sc__current {
+      stroke-dasharray: 6 14;
+      animation: sc__flow 0.6s linear infinite;
+      animation-play-state: paused;
+    }
+    .cmp[data-cmp-id="sci.tool.simple-circuit.interactive"][data-closed="true"] .sc__current {
+      animation-play-state: running;
+    }
+    @keyframes sc__flow {
+      from { stroke-dashoffset: 0; }
+      to { stroke-dashoffset: -20; }
+    }
+  </style>
+
+  <svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient class="sc__glow-grad" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#FFEE58" stop-opacity="0.9"/>
+        <stop offset="40%" stop-color="#FFD54F" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#FFF9C4" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- ═══ Wires ═══ -->
+    <!-- Wire path: rectangular loop with gaps for components -->
+    <g stroke="var(--cmp-wire, #546E7A)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none">
+      <!-- Left side: bottom-left corner up to top-left corner -->
+      <path d="M60,190 L60,50"/>
+      <!-- Top left: to switch left contact -->
+      <path d="M60,50 L130,50"/>
+      <!-- Top right: from switch right contact -->
+      <path d="M170,50 L240,50"/>
+      <!-- Right side top: down to bulb -->
+      <path d="M240,50 L240,120"/>
+      <!-- Right side bottom: from bulb down -->
+      <path d="M240,150 L240,190"/>
+      <!-- Bottom right: to battery right -->
+      <path d="M240,190 L180,190"/>
+      <!-- Bottom left: from battery left -->
+      <path d="M120,190 L60,190"/>
+    </g>
+
+    <!-- ═══ Current flow overlay ═══ -->
+    <path class="sc__current"
+          d="M130,50 L60,50 L60,190 L120,190 M180,190 L240,190 L240,150 M240,120 L240,50 L170,50"
+          fill="none" stroke="#FFD54F" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+
+    <!-- ═══ Battery (bottom center) ═══ -->
+    <g class="sc__battery">
+      <!-- Positive terminal (left, long thin line) -->
+      <line x1="138" y1="178" x2="138" y2="202" stroke="#D32F2F" stroke-width="2.5"/>
+      <!-- Negative terminal (right, short thick line) -->
+      <line x1="146" y1="182" x2="146" y2="198" stroke="#333" stroke-width="4"/>
+      <!-- Connection wires to loop -->
+      <line x1="120" y1="190" x2="138" y2="190" stroke="var(--cmp-wire, #546E7A)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="146" y1="190" x2="180" y2="190" stroke="var(--cmp-wire, #546E7A)" stroke-width="3" stroke-linecap="round"/>
+      <!-- Labels -->
+      <text x="132" y="192" text-anchor="middle" font-size="9" font-weight="700" fill="#D32F2F">+</text>
+      <text x="153" y="192" text-anchor="middle" font-size="9" font-weight="700" fill="#555">−</text>
+      <text x="142" y="218" text-anchor="middle" font-size="10" fill="#546E7A">电池</text>
+    </g>
+
+    <!-- ═══ Switch (top center) ═══ -->
+    <g class="sc__switch">
+      <!-- Left contact -->
+      <circle cx="130" cy="50" r="4" fill="#546E7A" stroke="#333" stroke-width="1"/>
+      <!-- Right contact -->
+      <circle cx="170" cy="50" r="4" fill="#546E7A" stroke="#333" stroke-width="1"/>
+      <!-- Lever (pivots from left contact) -->
+      <line class="sc__lever" x1="130" y1="50" x2="170" y2="50"
+            stroke="#795548" stroke-width="3" stroke-linecap="round"/>
+      <!-- Clickable area -->
+      <rect class="sc__switch-area" x="120" y="24" width="60" height="36" fill="transparent"/>
+      <!-- Label -->
+      <text x="150" y="36" text-anchor="middle" font-size="10" fill="#546E7A">开关</text>
+    </g>
+
+    <!-- ═══ Light bulb (right side) ═══ -->
+    <g class="sc__bulb" transform="translate(240, 135)">
+      <!-- Glow (visible when lit) -->
+      <circle class="sc__bulb-glow" cx="0" cy="0" r="22" opacity="0"/>
+      <!-- Glass bulb -->
+      <circle class="sc__bulb-glass" cx="0" cy="0" r="12"
+              fill="#E0E0E0" stroke="#999" stroke-width="1.2"/>
+      <!-- Filament -->
+      <polyline class="sc__filament" points="-4,4 -2,-3 0,4 2,-3 4,4"
+                fill="none" stroke="#999" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Screw base -->
+      <rect x="-5" y="12" width="10" height="6" rx="1" fill="#999" stroke="#777" stroke-width="0.8"/>
+      <line x1="-5" y1="14" x2="5" y2="14" stroke="#777" stroke-width="0.6"/>
+      <line x1="-5" y1="16" x2="5" y2="16" stroke="#777" stroke-width="0.6"/>
+      <!-- Connection to wire -->
+      <line x1="0" y1="-12" x2="0" y2="-15" stroke="var(--cmp-wire, #546E7A)" stroke-width="3"/>
+      <line x1="0" y1="18" x2="0" y2="15" stroke="var(--cmp-wire, #546E7A)" stroke-width="3"/>
+      <!-- Label -->
+      <text x="20" y="4" text-anchor="start" font-size="10" fill="#546E7A">灯泡</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  while (root && !(root.classList && root.classList.contains('cmp'))) {
+    root = root.previousElementSibling;
+  }
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.tool.simple-circuit.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* Unique IDs for multi-instance safety */
+  var uid = 'sc_' + Math.random().toString(36).slice(2, 8);
+  var glowGrad = svg.querySelector('.sc__glow-grad');
+  if (glowGrad) glowGrad.setAttribute('id', uid + '_glow');
+
+  var bulbGlow = svg.querySelector('.sc__bulb-glow');
+  if (bulbGlow && glowGrad) bulbGlow.setAttribute('fill', 'url(#' + uid + '_glow)');
+
+  /* Parse props */
+  var closed = false;
+  try {
+    var raw = root.getAttribute('data-props');
+    if (raw) {
+      var o = JSON.parse(raw);
+      if (o && o.switchClosed === true) closed = true;
+    }
+  } catch(e) {}
+
+  var bulbGlass = svg.querySelector('.sc__bulb-glass');
+  var filament = svg.querySelector('.sc__filament');
+  var switchArea = svg.querySelector('.sc__switch-area');
+
+  function applyState() {
+    root.setAttribute('data-closed', closed ? 'true' : 'false');
+
+    /* Bulb appearance */
+    if (bulbGlass) {
+      bulbGlass.setAttribute('fill', closed ? '#FFF176' : '#E0E0E0');
+      bulbGlass.setAttribute('stroke', closed ? '#F9A825' : '#999');
+      bulbGlass.style.filter = closed ? 'drop-shadow(0 0 6px rgba(255,235,59,0.8))' : 'none';
+    }
+    if (filament) {
+      filament.setAttribute('stroke', closed ? '#FF8F00' : '#999');
+    }
+    if (bulbGlow) {
+      bulbGlow.setAttribute('opacity', closed ? '0.7' : '0');
+    }
+
+    root.setAttribute('aria-label', '简单电路（开关' + (closed ? '闭合' : '断开') +
+      '，灯泡' + (closed ? '亮' : '灭') + '）');
+  }
+
+  function emitChange() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: 'sci.tool.simple-circuit.interactive',
+        type: 'toggle',
+        values: { switchClosed: closed, bulbLit: closed }
+      }
+    }));
+  }
+
+  applyState();
+
+  if (switchArea) {
+    switchArea.addEventListener('click', function(e) {
+      e.preventDefault();
+      closed = !closed;
+      applyState();
+      emitChange();
+    });
+  }
+
+  /* Observe data-props changes */
+  var obs = new MutationObserver(function() {
+    try {
+      var raw = root.getAttribute('data-props');
+      if (raw) {
+        var o = JSON.parse(raw);
+        if (o && typeof o.switchClosed === 'boolean') {
+          closed = o.switchClosed;
+          applyState();
+        }
+      }
+    } catch(e) {}
+  });
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props'] });
+})();
+</script>

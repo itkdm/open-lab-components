@@ -1,0 +1,234 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.fraction-bar.interactive",
+  "name": "分数条",
+  "nameEn": "Fraction Bar",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "maxDenom", "type": "number", "default": 8, "min": 2, "max": 12, "desc": "最大分母" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["fraction", "bar", "comparison", "number", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "row": "number", "numerator": "number", "denominator": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.fraction-bar.interactive" role="img" aria-label="分数条">
+  <style>
+    .cmp[data-cmp-id="math.number.fraction-bar.interactive"]{
+      --w:var(--cmp-size,360px);
+      display:inline-block;width:var(--w);height:calc(var(--w)*280/360);
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="math.number.fraction-bar.interactive"] svg{
+      display:block;width:100%;height:100%;overflow:visible;
+    }
+    .cmp[data-cmp-id="math.number.fraction-bar.interactive"] .fb__seg{
+      cursor:pointer;transition:opacity .15s ease;
+    }
+    .cmp[data-cmp-id="math.number.fraction-bar.interactive"] .fb__seg:hover{
+      opacity:0.78;
+    }
+    .cmp[data-cmp-id="math.number.fraction-bar.interactive"] .fb__label{
+      font-family:'Courier New',monospace;font-weight:700;pointer-events:none;
+    }
+    .cmp[data-cmp-id="math.number.fraction-bar.interactive"] .fb__guide{
+      pointer-events:none;transition:opacity .12s ease;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter class="fb__shadow-f" x="-2%" y="-5%" width="104%" height="115%">
+        <feDropShadow dx="0" dy="0.5" stdDeviation="0.6" flood-color="#000" flood-opacity="0.10"/>
+      </filter>
+    </defs>
+    <!-- guide line (vertical dashed, hidden by default) -->
+    <line class="fb__guide" x1="0" y1="8" x2="0" y2="274" stroke="#455a64" stroke-width="0.8"
+          stroke-dasharray="3,2" opacity="0"/>
+    <!-- rows built by JS -->
+    <g class="fb__rows"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.number.fraction-bar.interactive')return;
+
+    var NS='http://www.w3.org/2000/svg';
+    var svg=root.querySelector('svg');
+    var rowsG=root.querySelector('.fb__rows');
+    var guideLine=root.querySelector('.fb__guide');
+
+    /* unique IDs */
+    var uid='fb-'+Math.random().toString(36).slice(2,8);
+    var shadowF=svg.querySelector('.fb__shadow-f');
+    if(shadowF)shadowF.setAttribute('id',uid+'-sh');
+
+    /* row config: [denominator, color] */
+    var ROWS=[
+      [1,'#EF5350'],[2,'#FF7043'],[3,'#FFA726'],[4,'#FFEE58'],
+      [5,'#66BB6A'],[6,'#26C6DA'],[8,'#42A5F5'],[10,'#7E57C2'],[12,'#EC407A']
+    ];
+    var BAR_X=40,BAR_W=300,BAR_H=22,ROW_Y0=15,ROW_DY=30;
+
+    /* state: numerator per row */
+    var numerators=[];
+    for(var i=0;i<ROWS.length;i++)numerators.push(0);
+
+    /* ── Build rows ── */
+    function build(){
+      rowsG.innerHTML='';
+      for(var r=0;r<ROWS.length;r++){
+        var den=ROWS[r][0],color=ROWS[r][1];
+        var y=ROW_Y0+r*ROW_DY;
+        var g=document.createElementNS(NS,'g');
+        g.setAttribute('data-row',String(r));
+
+        /* left label */
+        var lbl=document.createElementNS(NS,'text');
+        lbl.setAttribute('class','fb__label');
+        lbl.setAttribute('x','2');
+        lbl.setAttribute('y',String(y+BAR_H/2+4.5));
+        lbl.setAttribute('font-size',den>=10?'9':'10');
+        lbl.setAttribute('fill','#37474f');
+        lbl.textContent=den===1?'1':'1/'+den;
+        g.appendChild(lbl);
+
+        /* segments */
+        var segW=BAR_W/den;
+        for(var s=0;s<den;s++){
+          var rect=document.createElementNS(NS,'rect');
+          rect.setAttribute('class','fb__seg');
+          rect.setAttribute('data-row',String(r));
+          rect.setAttribute('data-seg',String(s));
+          rect.setAttribute('x',String(BAR_X+s*segW));
+          rect.setAttribute('y',String(y));
+          rect.setAttribute('width',String(segW));
+          rect.setAttribute('height',String(BAR_H));
+          rect.setAttribute('rx','2');
+          rect.setAttribute('ry','2');
+          rect.setAttribute('fill',s<numerators[r]?color:'#ffffff');
+          rect.setAttribute('stroke','#90a4ae');
+          rect.setAttribute('stroke-width','0.8');
+          if(shadowF)rect.setAttribute('filter','url(#'+uid+'-sh)');
+          g.appendChild(rect);
+        }
+
+        /* right fraction label */
+        var rLbl=document.createElementNS(NS,'text');
+        rLbl.setAttribute('class','fb__label fb__rlabel');
+        rLbl.setAttribute('data-row',String(r));
+        rLbl.setAttribute('x','344');
+        rLbl.setAttribute('y',String(y+BAR_H/2+4.5));
+        rLbl.setAttribute('font-size','9');
+        rLbl.setAttribute('fill','#546e7a');
+        rLbl.setAttribute('text-anchor','end');
+        rLbl.textContent=den===1?String(numerators[r]):numerators[r]+'/'+den;
+        g.appendChild(rLbl);
+
+        rowsG.appendChild(g);
+      }
+    }
+
+    /* ── Update a single row visually ── */
+    function updateRow(r){
+      var den=ROWS[r][0],color=ROWS[r][1];
+      var segs=rowsG.querySelectorAll('rect[data-row="'+r+'"]');
+      for(var s=0;s<segs.length;s++){
+        var idx=parseInt(segs[s].getAttribute('data-seg'),10);
+        segs[s].setAttribute('fill',idx<numerators[r]?color:'#ffffff');
+      }
+      /* update right label */
+      var rl=rowsG.querySelector('text.fb__rlabel[data-row="'+r+'"]');
+      if(rl){
+        rl.textContent=den===1?String(numerators[r]):numerators[r]+'/'+den;
+      }
+    }
+
+    /* ── Click handler ── */
+    function onSegClick(e){
+      var tgt=e.target;
+      if(!tgt.classList.contains('fb__seg'))return;
+      var r=parseInt(tgt.getAttribute('data-row'),10);
+      var s=parseInt(tgt.getAttribute('data-seg'),10);
+      var den=ROWS[r][0];
+
+      /* clicking the same segment that is the current boundary toggles off */
+      if(numerators[r]===s+1){
+        numerators[r]=s; /* unfill this segment (shrink) */
+      }else{
+        numerators[r]=s+1; /* fill up to and including this segment */
+      }
+
+      updateRow(r);
+      emitChange(r);
+    }
+
+    rowsG.addEventListener('click',onSegClick);
+    rowsG.addEventListener('touchend',function(e){
+      var t=e.changedTouches&&e.changedTouches[0];
+      if(!t)return;
+      var el=document.elementFromPoint(t.clientX,t.clientY);
+      if(el&&el.classList.contains('fb__seg')){
+        e.preventDefault();
+        onSegClick({target:el});
+      }
+    });
+
+    /* ── Guide line on hover ── */
+    svg.addEventListener('mousemove',function(e){
+      var pt=svg.createSVGPoint();
+      pt.x=e.clientX;pt.y=e.clientY;
+      var svgPt=pt.matrixTransform(svg.getScreenCTM().inverse());
+      var x=svgPt.x;
+      if(x>=BAR_X&&x<=BAR_X+BAR_W){
+        guideLine.setAttribute('x1',String(x));
+        guideLine.setAttribute('x2',String(x));
+        guideLine.setAttribute('opacity','0.5');
+      }else{
+        guideLine.setAttribute('opacity','0');
+      }
+    });
+    svg.addEventListener('mouseleave',function(){
+      guideLine.setAttribute('opacity','0');
+    });
+
+    /* ── Emit event ── */
+    function emitChange(r){
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'toggle',
+          values:{
+            row:r,
+            numerator:numerators[r],
+            denominator:ROWS[r][0]
+          }
+        }
+      }));
+    }
+
+    /* ── Init ── */
+    build();
+
+    /* ── Observe prop changes ── */
+    var obs=new MutationObserver(function(mutations){
+      for(var i=0;i<mutations.length;i++){
+        if(mutations[i].attributeName==='data-props'||mutations[i].attributeName==='style'){
+          build();
+        }
+      }
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){obs.disconnect();});
+  })();
+  </script>
+</div>

@@ -1,0 +1,554 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.function.graph.interactive",
+  "name": "函数图像（交互式）",
+  "nameEn": "Function Graph (Interactive)",
+  "category": "math/function",
+  "version": "1.0.0",
+  "viewport": { "w": 460, "h": 400 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "axisColor",   "type": "color",  "default": "#37474f", "desc": "坐标轴颜色" },
+    { "key": "gridColor",   "type": "color",  "default": "#e0e0e0", "desc": "网格颜色" },
+    { "key": "curveColor",  "type": "color",  "default": "#1565c0", "desc": "曲线颜色" },
+    { "key": "curveWidth",  "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "曲线粗细" },
+    { "key": "funcType",    "type": "enum",   "default": "quadratic", "enum": ["linear","quadratic","sine","cosine","exponential","absolute"], "desc": "函数类型" },
+    { "key": "paramA",      "type": "number", "default": 1,  "min": -5,  "max": 5,  "desc": "参数a" },
+    { "key": "paramB",      "type": "number", "default": 0,  "min": -10, "max": 10, "desc": "参数b" },
+    { "key": "paramC",      "type": "number", "default": 0,  "min": -10, "max": 10, "desc": "参数c" },
+    { "key": "xMin",        "type": "number", "default": -5, "desc": "X轴最小值" },
+    { "key": "xMax",        "type": "number", "default": 5,  "desc": "X轴最大值" },
+    { "key": "yMin",        "type": "number", "default": -5, "desc": "Y轴最小值" },
+    { "key": "yMax",        "type": "number", "default": 5,  "desc": "Y轴最大值" },
+    { "key": "showGrid",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示网格" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示轴标签" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "axisColor": "--cmp-axis", "gridColor": "--cmp-grid",
+    "curveColor": "--cmp-curve", "curveWidth": "--cmp-curve-width",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["math","function","graph","interactive","coordinate","curve"],
+  "events": [
+    { "name": "cmp:change", "type": "param", "values": { "funcType": "string", "paramA": "number", "paramB": "number", "paramC": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.function.graph.interactive" role="img" aria-label="函数图像（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.function.graph.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;width:calc(var(--h)*1.15);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(21,101,192,calc(.8*var(--cmp-glow,0))));
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="math.function.graph.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.function.graph.interactive"] .fg__eq{font-family:'Times New Roman',serif;font-style:italic;font-weight:700}
+    .cmp[data-cmp-id="math.function.graph.interactive"] .fg__lbl{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px}
+    .cmp[data-cmp-id="math.function.graph.interactive"] .fg__axis-lbl{font-family:'Times New Roman',serif;font-style:italic;font-size:13px;font-weight:700}
+    .cmp[data-cmp-id="math.function.graph.interactive"] .fg__origin{font-family:'Times New Roman',serif;font-style:italic;font-size:11px;font-weight:700}
+    .cmp[data-cmp-id="math.function.graph.interactive"] .fg__pt{cursor:default}
+  </style>
+
+  <svg viewBox="0 0 460 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="fg__arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="var(--cmp-axis,#37474f)"/>
+      </marker>
+    </defs>
+
+    <!-- grid group -->
+    <g class="fg__grid"></g>
+    <!-- axes group -->
+    <g class="fg__axes"></g>
+    <!-- curve group -->
+    <g class="fg__curve-g"></g>
+    <!-- key points group -->
+    <g class="fg__points"></g>
+    <!-- equation display -->
+    <text class="fg__eq fg__equation" x="230" y="24" font-size="15"
+          fill="var(--cmp-curve,#1565c0)" text-anchor="middle"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.function.graph.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    /* ─── Parse props ─── */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var funcType=String(P.funcType||'quadratic');
+    var validTypes=['linear','quadratic','sine','cosine','exponential','absolute'];
+    if(validTypes.indexOf(funcType)<0)funcType='quadratic';
+
+    var paramA=Math.max(-5,Math.min(5,Number(P.paramA)||1));
+    var paramB=Math.max(-10,Math.min(10,Number(P.paramB)||0));
+    var paramC=Math.max(-10,Math.min(10,Number(P.paramC)||0));
+
+    var xMin=Number(P.xMin)||-5, xMax=Number(P.xMax)||5;
+    var yMin=Number(P.yMin)||-5, yMax=Number(P.yMax)||5;
+    if(xMin>=xMax){xMin=-5;xMax=5;}
+    if(yMin>=yMax){yMin=-5;yMax=5;}
+
+    var showGrid=(P.showGrid!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    /* ─── Viewport constants ─── */
+    var VB_W=460, VB_H=400;
+    var PAD_L=40, PAD_R=25, PAD_T=40, PAD_B=30;
+    var plotW=VB_W-PAD_L-PAD_R;  /* 395 */
+    var plotH=VB_H-PAD_T-PAD_B;  /* 330 */
+
+    /* ─── Coordinate mapping ─── */
+    function toSvgX(wx){return PAD_L+((wx-xMin)/(xMax-xMin))*plotW;}
+    function toSvgY(wy){return PAD_T+((yMax-wy)/(yMax-yMin))*plotH;}
+
+    var originSX=toSvgX(0), originSY=toSvgY(0);
+
+    /* ─── SVG helpers ─── */
+    var NS='http://www.w3.org/2000/svg';
+    function mkEl(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    var gridG=root.querySelector('.fg__grid');
+    var axesG=root.querySelector('.fg__axes');
+    var curveG=root.querySelector('.fg__curve-g');
+    var pointsG=root.querySelector('.fg__points');
+    var eqText=root.querySelector('.fg__equation');
+
+    /* ─── Draw grid ─── */
+    function drawGrid(){
+      gridG.innerHTML='';
+      if(!showGrid)return;
+
+      /* Minor grid lines at 0.5 intervals */
+      for(var x=Math.ceil(xMin*2)/2;x<=xMax;x+=0.5){
+        var sx=toSvgX(x);
+        if(sx<PAD_L-1||sx>VB_W-PAD_R+1)continue;
+        var isInt=(Math.abs(x-Math.round(x))<0.01);
+        gridG.appendChild(mkEl('line',{
+          x1:sx,y1:PAD_T,x2:sx,y2:VB_H-PAD_B,
+          stroke:'var(--cmp-grid,#e0e0e0)',
+          'stroke-width':isInt?'0.8':'0.4',
+          opacity:isInt?'0.8':'0.5'
+        }));
+      }
+      for(var y=Math.ceil(yMin*2)/2;y<=yMax;y+=0.5){
+        var sy=toSvgY(y);
+        if(sy<PAD_T-1||sy>VB_H-PAD_B+1)continue;
+        var isInt=(Math.abs(y-Math.round(y))<0.01);
+        gridG.appendChild(mkEl('line',{
+          x1:PAD_L,y1:sy,x2:VB_W-PAD_R,y2:sy,
+          stroke:'var(--cmp-grid,#e0e0e0)',
+          'stroke-width':isInt?'0.8':'0.4',
+          opacity:isInt?'0.8':'0.5'
+        }));
+      }
+    }
+
+    /* ─── Draw axes ─── */
+    function drawAxes(){
+      axesG.innerHTML='';
+
+      /* Clamp origin to plot area for axis drawing */
+      var axOX=Math.max(PAD_L,Math.min(VB_W-PAD_R,originSX));
+      var axOY=Math.max(PAD_T,Math.min(VB_H-PAD_B,originSY));
+
+      /* X axis */
+      axesG.appendChild(mkEl('line',{
+        x1:PAD_L-5,y1:axOY,x2:VB_W-PAD_R+10,y2:axOY,
+        stroke:'var(--cmp-axis,#37474f)','stroke-width':'1.5',
+        'marker-end':'url(#fg__arrow)'
+      }));
+      /* Y axis */
+      axesG.appendChild(mkEl('line',{
+        x1:axOX,y1:VB_H-PAD_B+5,x2:axOX,y2:PAD_T-10,
+        stroke:'var(--cmp-axis,#37474f)','stroke-width':'1.5',
+        'marker-end':'url(#fg__arrow)'
+      }));
+
+      /* Axis labels: x, y */
+      var xlbl=mkEl('text',{
+        x:VB_W-PAD_R+15,y:axOY+4,
+        fill:'var(--cmp-axis,#37474f)','class':'fg__axis-lbl'
+      });
+      xlbl.textContent='x';
+      axesG.appendChild(xlbl);
+
+      var ylbl=mkEl('text',{
+        x:axOX+8,y:PAD_T-14,
+        fill:'var(--cmp-axis,#37474f)','class':'fg__axis-lbl'
+      });
+      ylbl.textContent='y';
+      axesG.appendChild(ylbl);
+
+      /* Origin "O" label */
+      if(xMin<=0&&xMax>=0&&yMin<=0&&yMax>=0){
+        var olbl=mkEl('text',{
+          x:axOX-8,y:axOY+14,
+          fill:'var(--cmp-axis,#37474f)','class':'fg__origin','text-anchor':'end'
+        });
+        olbl.textContent='O';
+        axesG.appendChild(olbl);
+      }
+
+      if(!showLabels)return;
+
+      /* Tick marks and numbers on X axis */
+      for(var i=Math.ceil(xMin);i<=Math.floor(xMax);i++){
+        var tx=toSvgX(i);
+        if(tx<PAD_L-1||tx>VB_W-PAD_R+1)continue;
+        /* tick */
+        axesG.appendChild(mkEl('line',{
+          x1:tx,y1:axOY-3,x2:tx,y2:axOY+3,
+          stroke:'var(--cmp-axis,#37474f)','stroke-width':'1'
+        }));
+        if(i!==0){
+          var nt=mkEl('text',{
+            x:tx,y:axOY+15,
+            'text-anchor':'middle',fill:'var(--cmp-axis,#37474f)','class':'fg__lbl'
+          });
+          nt.textContent=i;
+          axesG.appendChild(nt);
+        }
+      }
+
+      /* Tick marks and numbers on Y axis */
+      for(var j=Math.ceil(yMin);j<=Math.floor(yMax);j++){
+        var ty=toSvgY(j);
+        if(ty<PAD_T-1||ty>VB_H-PAD_B+1)continue;
+        /* tick */
+        axesG.appendChild(mkEl('line',{
+          x1:axOX-3,y1:ty,x2:axOX+3,y2:ty,
+          stroke:'var(--cmp-axis,#37474f)','stroke-width':'1'
+        }));
+        if(j!==0){
+          var nt2=mkEl('text',{
+            x:axOX-8,y:ty+3,
+            'text-anchor':'end',fill:'var(--cmp-axis,#37474f)','class':'fg__lbl'
+          });
+          nt2.textContent=j;
+          axesG.appendChild(nt2);
+        }
+      }
+    }
+
+    /* ─── Function evaluation ─── */
+    function evalFunc(x){
+      var a=paramA,b=paramB,c=paramC;
+      switch(funcType){
+        case 'linear':      return a*x+b;
+        case 'quadratic':   return a*x*x+b*x+c;
+        case 'sine':        return a*Math.sin(b*x+c);
+        case 'cosine':      return a*Math.cos(b*x+c);
+        case 'exponential': return a*Math.exp(b*x)+c;
+        case 'absolute':    return a*Math.abs(x+b)+c;
+        default:            return a*x*x+b*x+c;
+      }
+    }
+
+    /* ─── Build equation string ─── */
+    function buildEquation(){
+      var a=paramA,b=paramB,c=paramC;
+      function fmtN(v,omitOne){
+        if(omitOne&&v===1)return '';
+        if(omitOne&&v===-1)return '-';
+        return Number.isInteger(v)?String(v):v.toFixed(1);
+      }
+      function fmtTerm(v,suffix,first){
+        if(v===0)return '';
+        var s='';
+        if(first){
+          s=fmtN(v,!!suffix)+suffix;
+        }else{
+          s=(v>0?' + ':' - ')+fmtN(Math.abs(v),!!suffix)+suffix;
+        }
+        return s;
+      }
+
+      switch(funcType){
+        case 'linear':
+          if(a===0&&b===0)return 'y = 0';
+          if(a===0)return 'y = '+b;
+          return 'y = '+fmtTerm(a,'x',true)+fmtTerm(b,'',false);
+        case 'quadratic':
+          if(a===0&&b===0&&c===0)return 'y = 0';
+          if(a===0)return 'y = '+fmtTerm(b,'x',true)+fmtTerm(c,'',false);
+          return 'y = '+fmtTerm(a,'x\u00B2',true)+fmtTerm(b,'x',false)+fmtTerm(c,'',false);
+        case 'sine':
+          var inner=buildInner(b,c);
+          return 'y = '+fmtN(a,true)+'sin('+inner+')';
+        case 'cosine':
+          var inner2=buildInner(b,c);
+          return 'y = '+fmtN(a,true)+'cos('+inner2+')';
+        case 'exponential':
+          var bStr=(b===1)?'x':(b===-1)?'-x':b+'x';
+          var base='y = '+fmtN(a,true)+'e^('+bStr+')';
+          if(c!==0)base+=fmtTerm(c,'',false);
+          return base;
+        case 'absolute':
+          var absInner=(b===0)?'x':(b>0)?'x + '+b:(b<0)?'x - '+Math.abs(b):'x';
+          var base2='y = '+fmtN(a,true)+'|'+absInner+'|';
+          if(c!==0)base2+=fmtTerm(c,'',false);
+          return base2;
+      }
+      return 'y = f(x)';
+    }
+
+    function buildInner(b,c){
+      var s='';
+      if(b===1)s='x';
+      else if(b===-1)s='-x';
+      else if(b===0)s='';
+      else s=b+'x';
+      if(c!==0){
+        if(s==='')s=String(c);
+        else s+=(c>0?' + '+c:' - '+Math.abs(c));
+      }
+      if(s==='')s='0';
+      return s;
+    }
+
+    /* ─── Draw curve ─── */
+    function drawCurve(){
+      curveG.innerHTML='';
+
+      var SAMPLES=500;
+      var step=(xMax-xMin)/SAMPLES;
+      var segments=[];
+      var current=[];
+
+      for(var i=0;i<=SAMPLES;i++){
+        var wx=xMin+i*step;
+        var wy=evalFunc(wx);
+
+        /* Skip NaN/Infinity and values far outside viewport */
+        if(!isFinite(wy)||wy>yMax*3||wy<yMin*3){
+          if(current.length>1)segments.push(current);
+          current=[];
+          continue;
+        }
+
+        var sx=toSvgX(wx);
+        var sy=toSvgY(wy);
+
+        /* Clamp sy to reasonable range for rendering */
+        sy=Math.max(PAD_T-50,Math.min(VB_H-PAD_B+50,sy));
+
+        current.push(sx.toFixed(1)+','+sy.toFixed(1));
+      }
+      if(current.length>1)segments.push(current);
+
+      /* Render each continuous segment as a polyline */
+      for(var s=0;s<segments.length;s++){
+        var pl=mkEl('polyline',{
+          points:segments[s].join(' '),
+          fill:'none',
+          stroke:'var(--cmp-curve,#1565c0)',
+          'stroke-width':'var(--cmp-curve-width,2)',
+          'stroke-linecap':'round',
+          'stroke-linejoin':'round'
+        });
+        /* Clip to plot area */
+        pl.setAttribute('clip-path','url(#fg__clip)');
+        curveG.appendChild(pl);
+      }
+
+      /* Add clip-path if not present */
+      if(!svg.querySelector('#fg__clip')){
+        var defs=svg.querySelector('defs');
+        var cp=mkEl('clipPath',{id:'fg__clip'});
+        cp.appendChild(mkEl('rect',{
+          x:PAD_L,y:PAD_T,width:plotW,height:plotH
+        }));
+        defs.appendChild(cp);
+      }
+    }
+
+    /* ─── Draw key points ─── */
+    function drawKeyPoints(){
+      pointsG.innerHTML='';
+      var pts=[];
+
+      switch(funcType){
+        case 'linear':
+          /* Y-intercept */
+          if(xMin<=0&&xMax>=0){
+            var yInt=evalFunc(0);
+            if(yInt>=yMin&&yInt<=yMax)pts.push({x:0,y:yInt,label:'(0, '+fmtV(yInt)+')'});
+          }
+          /* X-intercept: ax+b=0 => x=-b/a */
+          if(paramA!==0){
+            var xInt=-paramB/paramA;
+            if(xInt>=xMin&&xInt<=xMax&&xInt!==0){
+              pts.push({x:xInt,y:0,label:'('+fmtV(xInt)+', 0)'});
+            }
+          }
+          break;
+
+        case 'quadratic':
+          /* Vertex: x = -b/(2a) */
+          if(paramA!==0){
+            var vx=-paramB/(2*paramA);
+            var vy=evalFunc(vx);
+            if(vx>=xMin&&vx<=xMax&&vy>=yMin&&vy<=yMax){
+              pts.push({x:vx,y:vy,label:'('+fmtV(vx)+', '+fmtV(vy)+')',color:'#e53935'});
+            }
+            /* X-intercepts: discriminant */
+            var disc=paramB*paramB-4*paramA*paramC;
+            if(disc>=0){
+              var x1r=(-paramB+Math.sqrt(disc))/(2*paramA);
+              var x2r=(-paramB-Math.sqrt(disc))/(2*paramA);
+              if(x1r>=xMin&&x1r<=xMax)pts.push({x:x1r,y:0,label:'('+fmtV(x1r)+', 0)'});
+              if(disc>0&&x2r>=xMin&&x2r<=xMax)pts.push({x:x2r,y:0,label:'('+fmtV(x2r)+', 0)'});
+            }
+          }
+          /* Y-intercept */
+          if(xMin<=0&&xMax>=0){
+            var yI=evalFunc(0);
+            if(yI>=yMin&&yI<=yMax)pts.push({x:0,y:yI,label:'(0, '+fmtV(yI)+')'});
+          }
+          break;
+
+        case 'sine':
+        case 'cosine':
+          /* Y-intercept */
+          if(xMin<=0&&xMax>=0){
+            var yI2=evalFunc(0);
+            if(yI2>=yMin&&yI2<=yMax)pts.push({x:0,y:yI2,label:'(0, '+fmtV(yI2)+')'});
+          }
+          break;
+
+        case 'exponential':
+          /* Y-intercept */
+          if(xMin<=0&&xMax>=0){
+            var yI3=evalFunc(0);
+            if(yI3>=yMin&&yI3<=yMax)pts.push({x:0,y:yI3,label:'(0, '+fmtV(yI3)+')'});
+          }
+          break;
+
+        case 'absolute':
+          /* Vertex at x = -b */
+          var avx=-paramB;
+          var avy=evalFunc(avx);
+          if(avx>=xMin&&avx<=xMax&&avy>=yMin&&avy<=yMax){
+            pts.push({x:avx,y:avy,label:'('+fmtV(avx)+', '+fmtV(avy)+')',color:'#e53935'});
+          }
+          /* Y-intercept */
+          if(xMin<=0&&xMax>=0){
+            var yI4=evalFunc(0);
+            if(yI4>=yMin&&yI4<=yMax)pts.push({x:0,y:yI4,label:'(0, '+fmtV(yI4)+')'});
+          }
+          break;
+      }
+
+      /* Deduplicate points that are very close */
+      var unique=[];
+      for(var i=0;i<pts.length;i++){
+        var dup=false;
+        for(var j=0;j<unique.length;j++){
+          if(Math.abs(pts[i].x-unique[j].x)<0.05&&Math.abs(pts[i].y-unique[j].y)<0.05){dup=true;break;}
+        }
+        if(!dup)unique.push(pts[i]);
+      }
+
+      for(var k=0;k<unique.length;k++){
+        var p=unique[k];
+        var sx=toSvgX(p.x), sy=toSvgY(p.y);
+        var col=p.color||'var(--cmp-curve,#1565c0)';
+
+        /* Dot */
+        pointsG.appendChild(mkEl('circle',{
+          cx:sx,cy:sy,r:'3.5',fill:col,opacity:'0.9','class':'fg__pt'
+        }));
+
+        /* Label */
+        var lbl=mkEl('text',{
+          x:sx+6,y:sy-8,
+          'font-size':'9','fill':col,'font-family':'Arial,sans-serif'
+        });
+        lbl.textContent=p.label;
+        pointsG.appendChild(lbl);
+      }
+    }
+
+    function fmtV(v){
+      if(Number.isInteger(v))return String(v);
+      return v.toFixed(2).replace(/\.?0+$/,'');
+    }
+
+    /* ─── Main render ─── */
+    function render(){
+      drawGrid();
+      drawAxes();
+      drawCurve();
+      drawKeyPoints();
+
+      /* Equation text */
+      if(eqText)eqText.textContent=buildEquation();
+
+      root.setAttribute('aria-label','函数图像 '+buildEquation());
+    }
+
+    render();
+
+    /* ─── Event dispatch ─── */
+    function emitCmp(name){
+      root.dispatchEvent(new CustomEvent(name,{
+        bubbles:true, composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'param',
+          values:{funcType:funcType,paramA:paramA,paramB:paramB,paramC:paramC}
+        }
+      }));
+    }
+
+    /* ─── MutationObserver for reactive prop updates ─── */
+    var observer=new MutationObserver(function(mutations){
+      for(var i=0;i<mutations.length;i++){
+        if(mutations[i].attributeName==='data-props'){
+          var newP={};
+          try{var raw=root.getAttribute('data-props');if(raw){var obj=JSON.parse(raw);if(obj&&typeof obj==='object')newP=obj;}}catch(e){}
+
+          var newType=String(newP.funcType||funcType);
+          if(validTypes.indexOf(newType)>=0)funcType=newType;
+
+          paramA=Math.max(-5,Math.min(5,Number(newP.paramA!=null?newP.paramA:paramA)));
+          paramB=Math.max(-10,Math.min(10,Number(newP.paramB!=null?newP.paramB:paramB)));
+          paramC=Math.max(-10,Math.min(10,Number(newP.paramC!=null?newP.paramC:paramC)));
+
+          var nxMin=Number(newP.xMin!=null?newP.xMin:xMin);
+          var nxMax=Number(newP.xMax!=null?newP.xMax:xMax);
+          var nyMin=Number(newP.yMin!=null?newP.yMin:yMin);
+          var nyMax=Number(newP.yMax!=null?newP.yMax:yMax);
+          if(nxMin<nxMax){xMin=nxMin;xMax=nxMax;}
+          if(nyMin<nyMax){yMin=nyMin;yMax=nyMax;}
+
+          showGrid=(newP.showGrid!==undefined?newP.showGrid:P.showGrid)!=='off';
+          showLabels=(newP.showLabels!==undefined?newP.showLabels:P.showLabels)!=='off';
+
+          /* Recalculate coordinate mapping */
+          originSX=toSvgX(0);originSY=toSvgY(0);
+
+          render();
+          emitCmp('cmp:change');
+        }
+      }
+    });
+    observer.observe(root,{attributes:true,attributeFilter:['data-props']});
+
+  })();
+  </script>
+</div>

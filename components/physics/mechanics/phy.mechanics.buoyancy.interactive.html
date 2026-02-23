@@ -1,0 +1,298 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.buoyancy.interactive",
+  "name": "浮力演示（交互式）",
+  "nameEn": "Buoyancy Demonstration (Interactive)",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 450 },
+  "tags": ["physics","mechanics","buoyancy","archimedes","fluid","density","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "waterColor",     "type": "color",  "default": "#42a5f5", "desc": "水颜色" },
+    { "key": "objectColor",    "type": "color",  "default": "#ff9800", "desc": "物体颜色" },
+    { "key": "objectDensity",  "type": "number", "default": 0.6, "min": 0.1, "max": 3, "desc": "物体密度(g/cm³)" },
+    { "key": "fluidDensity",   "type": "number", "default": 1.0, "min": 0.5, "max": 2, "desc": "液体密度(g/cm³)" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showForces",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示力" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "waterColor": "--cmp-water", "objectColor": "--cmp-object", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "density", "values": { "objectDensity": "number", "submergedRatio": "number(0-1)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.buoyancy.interactive" role="img" aria-label="浮力演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.mechanics.buoyancy.interactive"]{
+      --h:var(--cmp-size,450px);display:inline-block;
+      width:calc(var(--h)*400/450);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.mechanics.buoyancy.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.mechanics.buoyancy.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <clipPath id="buoy__tankClip"><rect x="70" y="80" width="200" height="280"/></clipPath>
+      <linearGradient id="buoy__waterG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-water,#42a5f5)" stop-opacity="0.3"/>
+        <stop offset="1" stop-color="var(--cmp-water,#42a5f5)" stop-opacity="0.6"/>
+      </linearGradient>
+      <linearGradient id="buoy__glass" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.15"/>
+        <stop offset="0.5" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0.1"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 水槽 -->
+    <rect x="70" y="80" width="200" height="280" rx="4" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="2.5"/>
+    <rect x="72" y="82" width="196" height="276" rx="3" fill="url(#buoy__glass)"/>
+
+    <!-- 水 -->
+    <rect class="buoy__water" x="71" y="140" width="198" height="219" fill="url(#buoy__waterG)" clip-path="url(#buoy__tankClip)"/>
+    <!-- 水面波纹 -->
+    <path class="buoy__wave" d="" fill="var(--cmp-water,#42a5f5)" opacity="0.2" clip-path="url(#buoy__tankClip)"/>
+
+    <!-- 物体 -->
+    <g class="buoy__object">
+      <rect class="buoy__block" x="135" y="160" width="70" height="70" rx="6"
+        fill="var(--cmp-object,#ff9800)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <!-- 高光 -->
+      <rect x="139" y="164" width="20" height="8" rx="3" fill="#fff" opacity="0.25"/>
+    </g>
+
+    <!-- 力箭头 -->
+    <g class="buoy__forces"></g>
+
+    <!-- 标注 -->
+    <g class="buoy__labels-g"></g>
+
+    <!-- 密度滑块 -->
+    <g class="buoy__slider" transform="translate(300,100)">
+      <text x="0" y="-8" font-size="9" fill="#78909c">物体密度</text>
+      <rect x="-3" y="0" width="6" height="240" rx="3" fill="#e0e0e0"/>
+      <rect class="buoy__sliderFill" x="-3" y="0" width="6" height="100" rx="3" fill="#ff9800"/>
+      <circle class="buoy__sliderThumb" cx="0" cy="100" r="10" fill="#ff9800" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="buoy__densityText" x="18" y="104" font-size="11" font-weight="600" fill="#e65100">0.6</text>
+      <!-- 刻度 -->
+      <text x="-15" y="8" text-anchor="end" font-size="7" fill="#999">0.1</text>
+      <text x="-15" y="128" text-anchor="end" font-size="7" fill="#999">1.0</text>
+      <text x="-15" y="248" text-anchor="end" font-size="7" fill="#999">3.0</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.mechanics.buoyancy.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var objDensity=Math.max(0.1,Math.min(3,Number(P.objectDensity)||0.6));
+    var fluidDensity=Math.max(0.5,Math.min(2,Number(P.fluidDensity)||1.0));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var showForces=(P.showForces!=='off');
+
+    var block=root.querySelector('.buoy__block');
+    var highlight=block.nextElementSibling;
+    var forcesG=root.querySelector('.buoy__forces');
+    var labelsG=root.querySelector('.buoy__labels-g');
+    var waveEl=root.querySelector('.buoy__wave');
+    var sliderFill=root.querySelector('.buoy__sliderFill');
+    var sliderThumb=root.querySelector('.buoy__sliderThumb');
+    var densityText=root.querySelector('.buoy__densityText');
+
+    var BLOCK_W=70,BLOCK_H=70;
+    var TANK_TOP=80,TANK_BOT=360;
+    var WATER_SURFACE=140;
+    var blockY=160; /* 当前y */
+    var targetY=160;
+    var vy=0;
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function calcTarget(){
+      /* 浮力平衡位置 */
+      var ratio=objDensity/fluidDensity; /* 浸没比例 */
+      if(ratio>=1){
+        /* 沉底 */
+        targetY=TANK_BOT-BLOCK_H;
+      }else{
+        /* 浮在水面: 浸没部分 = ratio * BLOCK_H */
+        var submerged=ratio*BLOCK_H;
+        targetY=WATER_SURFACE-BLOCK_H+submerged;
+      }
+    }
+
+    function updateSlider(){
+      /* 密度 0.1→3.0 映射到 0→240 */
+      var pos=(objDensity-0.1)/(3-0.1)*240;
+      sliderFill.setAttribute('height',pos);
+      sliderThumb.setAttribute('cy',pos);
+      densityText.textContent=objDensity.toFixed(1);
+      densityText.setAttribute('y',pos+4);
+    }
+
+    function drawForces(){
+      clear(forcesG);
+      if(!showForces)return;
+
+      var cx=170,blockTop=blockY,blockBot=blockY+BLOCK_H;
+      var submerged=Math.max(0,Math.min(BLOCK_H,blockBot-WATER_SURFACE));
+      var ratio=submerged/BLOCK_H;
+
+      /* 重力 G (向下) */
+      var gLen=40*objDensity;
+      forcesG.appendChild(elSvg('line',{x1:cx,y1:blockBot,x2:cx,y2:blockBot+gLen,
+        stroke:'#e53935','stroke-width':'2.5',
+        'marker-end':'url(#buoy__arrowDown)'}));
+      forcesG.appendChild(elSvg('text',{x:cx+8,y:blockBot+gLen/2+4,'font-size':'10','font-weight':'600',fill:'#e53935'})).textContent='G';
+
+      /* 浮力 F (向上) */
+      if(submerged>0){
+        var fLen=40*fluidDensity*ratio;
+        forcesG.appendChild(elSvg('line',{x1:cx,y1:blockTop,x2:cx,y2:blockTop-fLen,
+          stroke:'#42a5f5','stroke-width':'2.5',
+          'marker-end':'url(#buoy__arrowUp)'}));
+        forcesG.appendChild(elSvg('text',{x:cx+8,y:blockTop-fLen/2+4,'font-size':'10','font-weight':'600',fill:'#1565c0'})).textContent='F浮';
+      }
+    }
+
+    function drawLabels(){
+      clear(labelsG);
+      if(!showLabels)return;
+
+      var submerged=Math.max(0,Math.min(BLOCK_H,(blockY+BLOCK_H)-WATER_SURFACE));
+      var ratio=Math.min(1,submerged/BLOCK_H);
+      var state=ratio>=0.99?'沉没':ratio<=0.01?'漂浮（水面上）':'漂浮';
+
+      labelsG.appendChild(elSvg('text',{x:200,y:30,'text-anchor':'middle','font-size':'13','font-weight':'700',
+        fill:'var(--cmp-stroke,#37474f)'})).textContent='浮力演示 — 阿基米德原理';
+
+      labelsG.appendChild(elSvg('text',{x:200,y:50,'text-anchor':'middle','font-size':'10',
+        fill:'#78909c'})).textContent='ρ物='+objDensity.toFixed(1)+'g/cm³  ρ液='+fluidDensity.toFixed(1)+'g/cm³  状态:'+state;
+
+      labelsG.appendChild(elSvg('text',{x:200,y:400,'text-anchor':'middle','font-size':'10',
+        fill:'#546e7a'})).textContent='F浮 = ρ液·g·V排';
+
+      labelsG.appendChild(elSvg('text',{x:200,y:418,'text-anchor':'middle','font-size':'9',
+        fill:'#78909c'})).textContent='浸没比例: '+(ratio*100).toFixed(0)+'%';
+    }
+
+    /* 箭头marker */
+    var defs=svg.querySelector('defs');
+    var mkDown=elSvg('marker',{id:'buoy__arrowDown',markerWidth:'6',markerHeight:'4',refX:'3',refY:'2',orient:'auto'});
+    mkDown.appendChild(elSvg('polygon',{points:'0,0 6,2 0,4',fill:'#e53935'}));
+    defs.appendChild(mkDown);
+    var mkUp=elSvg('marker',{id:'buoy__arrowUp',markerWidth:'6',markerHeight:'4',refX:'3',refY:'2',orient:'auto'});
+    mkUp.appendChild(elSvg('polygon',{points:'0,0 6,2 0,4',fill:'#42a5f5'}));
+    defs.appendChild(mkUp);
+
+    calcTarget();updateSlider();
+
+    var animId=0,lastT=0,time=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.05);
+      lastT=t;
+      time+=dt;
+
+      /* 弹簧阻尼运动到目标位置 */
+      var k=3*speed,damp=4;
+      var ay=k*(targetY-blockY)-damp*vy;
+      vy+=ay*dt;
+      blockY+=vy*dt;
+
+      /* 限制范围 */
+      if(blockY+BLOCK_H>TANK_BOT){blockY=TANK_BOT-BLOCK_H;vy*=-0.3;}
+      if(blockY<TANK_TOP){blockY=TANK_TOP;vy*=-0.3;}
+
+      /* 更新物体位置 */
+      block.setAttribute('y',blockY);
+      highlight.setAttribute('y',blockY+4);
+
+      /* 水面波纹 */
+      var waveY=WATER_SURFACE;
+      var d='M71,'+waveY;
+      for(var x=71;x<=269;x+=4){
+        var amp=2*Math.abs(vy)*0.02;
+        d+=' L'+x+','+(waveY+amp*Math.sin((x-71)*0.08+time*4));
+      }
+      d+=' L269,'+waveY+' Z';
+      waveEl.setAttribute('d',d);
+
+      drawForces();
+      drawLabels();
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* 滑块拖拽 */
+    var dragging=false;
+    function startDrag(e){e.preventDefault();dragging=true;
+      document.addEventListener('mousemove',onDrag,{passive:false});
+      document.addEventListener('mouseup',endDrag);
+      document.addEventListener('touchmove',onDrag,{passive:false});
+      document.addEventListener('touchend',endDrag);
+    }
+    function onDrag(e){
+      if(!dragging)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var svgY=(pt.clientY-rect.top)/rect.height*450;
+      var pos=Math.max(0,Math.min(240,svgY-100));
+      objDensity=+(0.1+pos/240*(3-0.1)).toFixed(1);
+      calcTarget();updateSlider();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'phy.mechanics.buoyancy.interactive',type:'density',
+          values:{objectDensity:objDensity,submergedRatio:Math.min(1,objDensity/fluidDensity)}}}));
+    }
+    function endDrag(){dragging=false;
+      document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);
+      document.removeEventListener('touchmove',onDrag);document.removeEventListener('touchend',endDrag);
+    }
+    sliderThumb.addEventListener('mousedown',startDrag,{passive:false});
+    sliderThumb.addEventListener('touchstart',startDrag,{passive:false});
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');showForces=(P2.showForces!=='off');
+      if(P2.objectDensity!=null){objDensity=Math.max(0.1,Math.min(3,Number(P2.objectDensity)||0.6));calcTarget();updateSlider();}
+      if(P2.fluidDensity!=null){fluidDensity=Math.max(0.5,Math.min(2,Number(P2.fluidDensity)||1));calcTarget();}
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

@@ -1,0 +1,393 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.model.bonding.interactive",
+  "name": "化学键模型（交互式）",
+  "nameEn": "Chemical Bonding Model (Interactive)",
+  "category": "chemistry/model",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 400 },
+  "tags": ["chemistry","bonding","ionic","covalent","metallic","electron","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "mode",           "type": "enum",   "default": "ionic", "enum": ["ionic","covalent","metallic"], "desc": "键类型" },
+    { "key": "cationColor",    "type": "color",  "default": "#5c6bc0", "desc": "阳离子颜色" },
+    { "key": "anionColor",     "type": "color",  "default": "#66bb6a", "desc": "阴离子颜色" },
+    { "key": "electronColor",  "type": "color",  "default": "#fdd835", "desc": "电子颜色" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "cationColor": "--cmp-cation", "anionColor": "--cmp-anion", "electronColor": "--cmp-electron", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "mode", "values": { "mode": "string — ionic|covalent|metallic" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.model.bonding.interactive" role="img" aria-label="化学键模型（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.model.bonding.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;
+      width:calc(var(--h)*480/400);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(92,107,192,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="chem.model.bonding.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.model.bonding.interactive"] .bond__tab{cursor:pointer}
+    .cmp[data-cmp-id="chem.model.bonding.interactive"] .bond__tab:hover rect{opacity:0.9}
+    .cmp[data-cmp-id="chem.model.bonding.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 480 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="bond__gNa" cx="40%" cy="35%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.08"/>
+      </radialGradient>
+      <radialGradient id="bond__gCl" cx="40%" cy="35%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.08"/>
+      </radialGradient>
+      <filter id="bond__blur"><feGaussianBlur stdDeviation="6"/></filter>
+    </defs>
+
+    <!-- 主场景 -->
+    <g class="bond__scene"></g>
+    <!-- 标注 -->
+    <g class="bond__labels"></g>
+    <!-- 底部Tab栏 -->
+    <g class="bond__tabs">
+      <g class="bond__tab" data-mode="ionic" transform="translate(60,365)">
+        <rect x="-55" y="-14" width="110" height="28" rx="6" fill="#5c6bc0" opacity="0.85"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">离子键</text>
+      </g>
+      <g class="bond__tab" data-mode="covalent" transform="translate(240,365)">
+        <rect x="-55" y="-14" width="110" height="28" rx="6" fill="#78909c" opacity="0.6"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">共价键</text>
+      </g>
+      <g class="bond__tab" data-mode="metallic" transform="translate(420,365)">
+        <rect x="-55" y="-14" width="110" height="28" rx="6" fill="#78909c" opacity="0.6"/>
+        <text x="0" y="5" text-anchor="middle" font-size="12" font-weight="600" fill="#fff">金属键</text>
+      </g>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.model.bonding.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+    var sceneG=root.querySelector('.bond__scene');
+    var labelsG=root.querySelector('.bond__labels');
+    var tabsG=root.querySelector('.bond__tabs');
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var mode=P.mode||'ionic';
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    function el(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+    function txt(x,y,s,sz,c,anchor){
+      var t=el('text',{x:x,y:y,'font-size':sz||10,'font-weight':'600',fill:c||'var(--cmp-stroke,#37474f)','text-anchor':anchor||'middle'});
+      t.textContent=s;return t;
+    }
+
+    /* 更新Tab高亮 */
+    function updateTabs(){
+      var tabs=tabsG.querySelectorAll('.bond__tab');
+      for(var i=0;i<tabs.length;i++){
+        var m=tabs[i].getAttribute('data-mode');
+        var rect=tabs[i].querySelector('rect');
+        if(m===mode){
+          rect.setAttribute('fill',m==='ionic'?'#5c6bc0':m==='covalent'?'#ef5350':'#ff9800');
+          rect.setAttribute('opacity','0.85');
+        }else{
+          rect.setAttribute('fill','#78909c');
+          rect.setAttribute('opacity','0.6');
+        }
+      }
+    }
+
+    /* ===== 离子键 ===== */
+    var ionicPhase=0; /* 0=初始, 1=转移中, 2=完成 */
+    var ionicT=0;
+    var electronPos={x:0,y:0};
+
+    function renderIonic(dt){
+      clear(sceneG);clear(labelsG);
+      ionicT+=dt*speed*0.5;
+
+      var naX=160,clX=320,cy=170;
+      var naR,clR,eVisible=false,eX,eY;
+
+      if(ionicT<2){
+        /* 阶段1: 原子状态 */
+        naR=40;clR=45;
+        /* 外层电子绕Na */
+        eVisible=true;
+        var ea=ionicT*Math.PI*2;
+        eX=naX+48*Math.cos(ea);
+        eY=cy+48*Math.sin(ea);
+      }else if(ionicT<4){
+        /* 阶段2: 电子转移 */
+        var p=(ionicT-2)/2;
+        naR=40-8*p;clR=45+8*p;
+        eVisible=true;
+        eX=naX+(clX-naX)*p;
+        eY=cy-30*Math.sin(p*Math.PI);
+      }else if(ionicT<7){
+        /* 阶段3: 离子吸引 */
+        var p2=Math.min(1,(ionicT-4)/2);
+        naR=32;clR=53;
+        naX=160+30*p2;clX=320-30*p2;
+        eVisible=false;
+      }else{
+        ionicT=0;
+      }
+
+      /* Na原子/离子 */
+      sceneG.appendChild(el('circle',{cx:naX,cy:cy,r:naR,fill:'var(--cmp-cation,#5c6bc0)',opacity:'0.3'}));
+      sceneG.appendChild(el('circle',{cx:naX,cy:cy,r:naR,fill:'none',stroke:'var(--cmp-cation,#5c6bc0)','stroke-width':'2'}));
+      sceneG.appendChild(el('circle',{cx:naX,cy:cy,r:naR*0.5,fill:'var(--cmp-cation,#5c6bc0)',opacity:'0.6'}));
+      /* 高光 */
+      sceneG.appendChild(el('circle',{cx:naX-naR*0.2,cy:cy-naR*0.2,r:naR*0.2,fill:'#fff',opacity:'0.3'}));
+      var naLabel=ionicT>3?'Na⁺':'Na';
+      sceneG.appendChild(txt(naX,cy+5,naLabel,16,'#fff'));
+
+      /* Cl原子/离子 */
+      sceneG.appendChild(el('circle',{cx:clX,cy:cy,r:clR,fill:'var(--cmp-anion,#66bb6a)',opacity:'0.3'}));
+      sceneG.appendChild(el('circle',{cx:clX,cy:cy,r:clR,fill:'none',stroke:'var(--cmp-anion,#66bb6a)','stroke-width':'2'}));
+      sceneG.appendChild(el('circle',{cx:clX,cy:cy,r:clR*0.45,fill:'var(--cmp-anion,#66bb6a)',opacity:'0.6'}));
+      sceneG.appendChild(el('circle',{cx:clX-clR*0.2,cy:cy-clR*0.2,r:clR*0.2,fill:'#fff',opacity:'0.25'}));
+      var clLabel=ionicT>3?'Cl⁻':'Cl';
+      sceneG.appendChild(txt(clX,cy+5,clLabel,16,'#fff'));
+
+      /* 电子 */
+      if(eVisible){
+        sceneG.appendChild(el('circle',{cx:eX,cy:eY,r:6,fill:'var(--cmp-electron,#fdd835)',stroke:'#f57f17','stroke-width':'1'}));
+        sceneG.appendChild(el('circle',{cx:eX-1.5,cy:eY-1.5,r:2,fill:'#fff',opacity:'0.5'}));
+        sceneG.appendChild(txt(eX,eY-10,'e⁻',9,'#f57f17'));
+      }
+
+      /* 吸引力箭头 */
+      if(ionicT>4){
+        var op=Math.min(1,(ionicT-4)/1.5);
+        sceneG.appendChild(el('line',{x1:naX+naR+5,y1:cy-8,x2:clX-clR-5,y2:cy-8,
+          stroke:'#e53935','stroke-width':'1.5','stroke-dasharray':'4,3',opacity:op}));
+        sceneG.appendChild(el('line',{x1:clX-clR-5,y1:cy+8,x2:naX+naR+5,y2:cy+8,
+          stroke:'#e53935','stroke-width':'1.5','stroke-dasharray':'4,3',opacity:op}));
+        if(showLabels)labelsG.appendChild(txt(240,cy-20,'静电引力',10,'#e53935'));
+      }
+
+      if(showLabels){
+        labelsG.appendChild(txt(240,30,'离子键 — 电子转移',14,'var(--cmp-stroke,#37474f)'));
+        labelsG.appendChild(txt(naX,cy+naR+22,ionicT>3?'钠离子 Na⁺':'钠原子 Na',10));
+        labelsG.appendChild(txt(clX,cy+clR+22,ionicT>3?'氯离子 Cl⁻':'氯原子 Cl',10));
+        if(ionicT>=2&&ionicT<4)labelsG.appendChild(txt(240,cy-50,'电子转移中…',11,'#f57f17'));
+      }
+
+      /* 电子排布示意（外层） */
+      var naElectrons=ionicT<2?1:ionicT<4?0:0;
+      var clElectrons=ionicT<2?7:ionicT<4?7:8;
+      for(var i=0;i<naElectrons;i++){
+        var a=ionicT*3+i*Math.PI*2/Math.max(1,naElectrons);
+        sceneG.appendChild(el('circle',{cx:naX+(naR+8)*Math.cos(a),cy:cy+(naR+8)*Math.sin(a),r:3,
+          fill:'var(--cmp-electron,#fdd835)',opacity:'0.7'}));
+      }
+      for(var j=0;j<clElectrons;j++){
+        var a2=-ionicT*2+j*Math.PI*2/clElectrons;
+        sceneG.appendChild(el('circle',{cx:clX+(clR+8)*Math.cos(a2),cy:cy+(clR+8)*Math.sin(a2),r:3,
+          fill:'var(--cmp-electron,#fdd835)',opacity:'0.6'}));
+      }
+    }
+
+    /* ===== 共价键 ===== */
+    function renderCovalent(dt){
+      clear(sceneG);clear(labelsG);
+      var cx=240,cy=160;
+      var t=performance.now()/1000*speed;
+
+      /* O原子 */
+      sceneG.appendChild(el('circle',{cx:cx,cy:cy,r:38,fill:'#ef5350',opacity:'0.25'}));
+      sceneG.appendChild(el('circle',{cx:cx,cy:cy,r:38,fill:'none',stroke:'#ef5350','stroke-width':'2'}));
+      sceneG.appendChild(el('circle',{cx:cx,cy:cy,r:18,fill:'#ef5350',opacity:'0.5'}));
+      sceneG.appendChild(el('circle',{cx:cx-8,cy:cy-8,r:8,fill:'#fff',opacity:'0.2'}));
+      sceneG.appendChild(txt(cx,cy+5,'O',18,'#fff'));
+
+      /* H原子 - 104.5° 键角 */
+      var bondLen=65;
+      var halfAngle=52.25*Math.PI/180;
+      var h1x=cx-bondLen*Math.sin(halfAngle);
+      var h1y=cy-bondLen*Math.cos(halfAngle);
+      var h2x=cx+bondLen*Math.sin(halfAngle);
+      var h2y=cy-bondLen*Math.cos(halfAngle);
+
+      /* 共用电子对（电子云重叠区） */
+      var m1x=(cx+h1x)/2,m1y=(cy+h1y)/2;
+      var m2x=(cx+h2x)/2,m2y=(cy+h2y)/2;
+      sceneG.appendChild(el('ellipse',{cx:m1x,cy:m1y,rx:18,ry:10,
+        fill:'var(--cmp-electron,#fdd835)',opacity:0.2+0.1*Math.sin(t*3),
+        transform:'rotate(-37.25 '+m1x+' '+m1y+')'}));
+      sceneG.appendChild(el('ellipse',{cx:m2x,cy:m2y,rx:18,ry:10,
+        fill:'var(--cmp-electron,#fdd835)',opacity:0.2+0.1*Math.sin(t*3+1),
+        transform:'rotate(37.25 '+m2x+' '+m2y+')'}));
+
+      /* 键线 */
+      sceneG.appendChild(el('line',{x1:cx,y1:cy,x2:h1x,y2:h1y,stroke:'#546e7a','stroke-width':'2.5','stroke-linecap':'round'}));
+      sceneG.appendChild(el('line',{x1:cx,y1:cy,x2:h2x,y2:h2y,stroke:'#546e7a','stroke-width':'2.5','stroke-linecap':'round'}));
+
+      /* H原子 */
+      [h1x,h2x].forEach(function(hx,idx){
+        var hy=idx===0?h1y:h2y;
+        sceneG.appendChild(el('circle',{cx:hx,cy:hy,r:22,fill:'#42a5f5',opacity:'0.3'}));
+        sceneG.appendChild(el('circle',{cx:hx,cy:hy,r:22,fill:'none',stroke:'#42a5f5','stroke-width':'1.5'}));
+        sceneG.appendChild(el('circle',{cx:hx,cy:hy,r:12,fill:'#42a5f5',opacity:'0.5'}));
+        sceneG.appendChild(txt(hx,hy+5,'H',14,'#fff'));
+      });
+
+      /* 共用电子对中的电子 */
+      [[m1x,m1y,-37.25],[m2x,m2y,37.25]].forEach(function(pair){
+        var mx=pair[0],my=pair[1],rot=pair[2];
+        for(var e=0;e<2;e++){
+          var off=(e-0.5)*8;
+          var rad=rot*Math.PI/180;
+          var ex=mx+off*Math.cos(rad)+3*Math.sin(t*4+e*Math.PI);
+          var ey=my+off*Math.sin(rad)+3*Math.cos(t*4+e*Math.PI);
+          sceneG.appendChild(el('circle',{cx:ex,cy:ey,r:3.5,fill:'var(--cmp-electron,#fdd835)',stroke:'#f57f17','stroke-width':'0.5'}));
+        }
+      });
+
+      /* 键角标注 */
+      sceneG.appendChild(el('path',{d:'M'+(cx-15)+','+(cy-12)+' A18,18 0 0,1 '+(cx+15)+','+(cy-12),
+        fill:'none',stroke:'#78909c','stroke-width':'1','stroke-dasharray':'2,2'}));
+      sceneG.appendChild(txt(cx,cy-28,'104.5°',8,'#78909c'));
+
+      if(showLabels){
+        labelsG.appendChild(txt(240,30,'共价键 — 共用电子对',14,'var(--cmp-stroke,#37474f)'));
+        labelsG.appendChild(txt(m1x-25,m1y+25,'共用电子对',9,'#f57f17'));
+        labelsG.appendChild(txt(cx,cy+55,'水分子 H₂O',11));
+        labelsG.appendChild(txt(240,290,'电子云重叠区域表示共用电子对',10,'#78909c'));
+      }
+    }
+
+    /* ===== 金属键 ===== */
+    var metalElectrons=[];
+    function initMetalElectrons(){
+      metalElectrons=[];
+      for(var i=0;i<20;i++){
+        metalElectrons.push({
+          x:80+Math.random()*320,y:60+Math.random()*230,
+          vx:(Math.random()-0.5)*60,vy:(Math.random()-0.5)*60
+        });
+      }
+    }
+    initMetalElectrons();
+
+    function renderMetallic(dt){
+      clear(sceneG);clear(labelsG);
+
+      /* 金属阳离子晶格 */
+      var cols=5,rows=3,gx=80,gy=80,sp=80;
+      for(var r=0;r<rows;r++){
+        for(var c=0;c<cols;c++){
+          var x=gx+c*sp+(r%2)*40;
+          var y=gy+r*sp;
+          sceneG.appendChild(el('circle',{cx:x,cy:y,r:22,fill:'#ff9800',opacity:'0.3'}));
+          sceneG.appendChild(el('circle',{cx:x,cy:y,r:22,fill:'none',stroke:'#e65100','stroke-width':'1.5'}));
+          sceneG.appendChild(el('circle',{cx:x,cy:y,r:12,fill:'#ff9800',opacity:'0.5'}));
+          sceneG.appendChild(el('circle',{cx:x-5,cy:y-5,r:5,fill:'#fff',opacity:'0.2'}));
+          sceneG.appendChild(txt(x,y+4,'M⁺',10,'#fff'));
+        }
+      }
+
+      /* 自由电子运动 */
+      for(var i=0;i<metalElectrons.length;i++){
+        var e=metalElectrons[i];
+        e.x+=e.vx*dt*speed;
+        e.y+=e.vy*dt*speed;
+        /* 边界反弹 */
+        if(e.x<60||e.x>420){e.vx*=-1;e.x=Math.max(60,Math.min(420,e.x));}
+        if(e.y<50||e.y>300){e.vy*=-1;e.y=Math.max(50,Math.min(300,e.y));}
+        /* 随机扰动 */
+        e.vx+=(Math.random()-0.5)*20*dt;
+        e.vy+=(Math.random()-0.5)*20*dt;
+        var spd=Math.sqrt(e.vx*e.vx+e.vy*e.vy);
+        if(spd>80){e.vx*=80/spd;e.vy*=80/spd;}
+
+        sceneG.appendChild(el('circle',{cx:e.x,cy:e.y,r:4,fill:'var(--cmp-electron,#fdd835)',opacity:'0.8'}));
+        sceneG.appendChild(el('circle',{cx:e.x-1,cy:e.y-1,r:1.5,fill:'#fff',opacity:'0.4'}));
+      }
+
+      /* 电子海背景 */
+      sceneG.insertBefore(el('rect',{x:55,y:45,width:370,height:270,rx:12,
+        fill:'var(--cmp-electron,#fdd835)',opacity:'0.06'}),sceneG.firstChild);
+
+      if(showLabels){
+        labelsG.appendChild(txt(240,30,'金属键 — 自由电子（电子海）',14,'var(--cmp-stroke,#37474f)'));
+        labelsG.appendChild(txt(240,335,'金属阳离子 M⁺ 被自由电子海包围',10,'#78909c'));
+      }
+    }
+
+    /* 渲染调度 */
+    var animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.05);
+      lastT=t;
+
+      if(mode==='ionic')renderIonic(dt);
+      else if(mode==='covalent')renderCovalent(dt);
+      else renderMetallic(dt);
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* Tab切换 */
+    tabsG.addEventListener('click',function(e){
+      var tab=e.target.closest('.bond__tab');
+      if(!tab)return;
+      var newMode=tab.getAttribute('data-mode');
+      if(newMode===mode)return;
+      mode=newMode;
+      ionicT=0;
+      if(mode==='metallic')initMetalElectrons();
+      updateTabs();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'chem.model.bonding.interactive',type:'mode',values:{mode:mode}}}));
+    });
+    updateTabs();
+
+    /* Props变化 */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');
+      if(P2.mode&&P2.mode!==mode){mode=P2.mode;ionicT=0;if(mode==='metallic')initMetalElectrons();updateTabs();}
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

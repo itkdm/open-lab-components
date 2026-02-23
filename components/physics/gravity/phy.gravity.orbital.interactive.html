@@ -1,0 +1,326 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.gravity.orbital.interactive",
+  "name": "万有引力与轨道（交互式）",
+  "nameEn": "Gravitational Orbit (Interactive)",
+  "category": "physics/gravity",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 450 },
+  "tags": ["physics","gravity","orbit","Kepler","satellite","planet","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "planetColor",    "type": "color",  "default": "#42a5f5", "desc": "行星颜色" },
+    { "key": "sunColor",       "type": "color",  "default": "#ff9800", "desc": "恒星颜色" },
+    { "key": "trailColor",     "type": "color",  "default": "#90caf9", "desc": "轨迹颜色" },
+    { "key": "orbitRadius",    "type": "number", "default": 120, "min": 60, "max": 180, "desc": "轨道半径" },
+    { "key": "eccentricity",   "type": "number", "default": 0.3, "min": 0, "max": 0.85, "desc": "离心率" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showForce",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示引力" },
+    { "key": "showTrail",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示轨迹" },
+    { "key": "showKepler",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示开普勒面积" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "planetColor": "--cmp-planet", "sunColor": "--cmp-sun", "trailColor": "--cmp-trail", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "state", "values": { "angle": "number(rad)", "distance": "number", "velocity": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.gravity.orbital.interactive" role="img" aria-label="万有引力与轨道（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.gravity.orbital.interactive"]{
+      --h:var(--cmp-size,450px);display:inline-block;
+      width:calc(var(--h)*480/450);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,152,0,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.gravity.orbital.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.gravity.orbital.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 480 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="orb__sunG" cx="40%" cy="40%">
+        <stop offset="0" stop-color="#fff176"/><stop offset="0.4" stop-color="#ffb74d"/><stop offset="1" stop-color="#ff9800"/>
+      </radialGradient>
+      <radialGradient id="orb__planetG" cx="35%" cy="35%">
+        <stop offset="0" stop-color="#90caf9"/><stop offset="1" stop-color="#1e88e5"/>
+      </radialGradient>
+      <filter id="orb__sunGlow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+
+    <!-- 标题 -->
+    <text x="240" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="var(--cmp-stroke,#37474f)">万有引力与轨道运动</text>
+
+    <!-- 轨道椭圆 -->
+    <ellipse class="orb__orbit" cx="240" cy="210" rx="120" ry="100" fill="none" stroke="var(--cmp-trail,#90caf9)" stroke-width="0.8" stroke-dasharray="4,4" opacity="0.4"/>
+
+    <!-- 开普勒面积 -->
+    <path class="orb__keplerArea" d="" fill="var(--cmp-sun,#ff9800)" opacity="0.08"/>
+
+    <!-- 轨迹 -->
+    <path class="orb__trail" d="" fill="none" stroke="var(--cmp-trail,#90caf9)" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- 引力线 -->
+    <line class="orb__forceLine" x1="240" y1="210" x2="300" y2="210" stroke="#ef5350" stroke-width="2" stroke-dasharray="4,3" opacity="0"/>
+    <polygon class="orb__forceArrow" points="" fill="#ef5350" opacity="0"/>
+
+    <!-- 速度箭头 -->
+    <line class="orb__velLine" x1="300" y1="210" x2="300" y2="170" stroke="#66bb6a" stroke-width="2" opacity="0"/>
+    <polygon class="orb__velArrow" points="" fill="#66bb6a" opacity="0"/>
+
+    <!-- 恒星 -->
+    <circle class="orb__sun" cx="240" cy="210" r="22" fill="url(#orb__sunG)" filter="url(#orb__sunGlow)"/>
+    <text x="240" y="215" text-anchor="middle" font-size="10" fill="#e65100" font-weight="700">M</text>
+
+    <!-- 行星 -->
+    <circle class="orb__planet" cx="360" cy="210" r="10" fill="url(#orb__planetG)" stroke="#fff" stroke-width="1"/>
+    <text class="orb__planetLabel" x="360" y="195" text-anchor="middle" font-size="9" fill="var(--cmp-planet,#42a5f5)" font-weight="600">m</text>
+
+    <!-- 信息面板 -->
+    <g class="orb__info" transform="translate(10,350)">
+      <rect x="0" y="0" width="220" height="85" rx="6" fill="rgba(255,255,255,0.92)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="orb__distText" x="12" y="18" font-size="10" fill="var(--cmp-stroke,#37474f)">距离 r = 120</text>
+      <text class="orb__velText" x="12" y="35" font-size="10" fill="#66bb6a">速度 v = 1.00</text>
+      <text class="orb__forceText" x="12" y="52" font-size="10" fill="#ef5350">引力 F ∝ 1/r²</text>
+      <text class="orb__periodText" x="12" y="69" font-size="10" fill="#5c6bc0">周期 T ∝ r^(3/2)</text>
+      <text class="orb__eccText" x="12" y="82" font-size="9" fill="#999">e = 0.30</text>
+    </g>
+
+    <!-- 离心率滑块 -->
+    <g transform="translate(260,360)">
+      <text x="0" y="-5" font-size="9" fill="var(--cmp-stroke,#37474f)" font-weight="600">离心率 e</text>
+      <rect x="0" y="0" width="180" height="5" rx="2.5" fill="#e0e0e0"/>
+      <rect class="orb__eccFill" x="0" y="0" width="63" height="5" rx="2.5" fill="#ff9800"/>
+      <circle class="orb__eccThumb" cx="63" cy="2.5" r="8" fill="#ff9800" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="orb__eccSliderText" x="190" y="8" font-size="9" fill="#ff9800">0.30</text>
+    </g>
+
+    <!-- 速度滑块 -->
+    <g transform="translate(260,395)">
+      <text x="0" y="-5" font-size="9" fill="var(--cmp-stroke,#37474f)" font-weight="600">速度</text>
+      <rect x="0" y="0" width="180" height="5" rx="2.5" fill="#e0e0e0"/>
+      <rect class="orb__spdFill" x="0" y="0" width="51" height="5" rx="2.5" fill="#66bb6a"/>
+      <circle class="orb__spdThumb" cx="51" cy="2.5" r="8" fill="#66bb6a" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="orb__spdSliderText" x="190" y="8" font-size="9" fill="#66bb6a">1.0x</text>
+    </g>
+
+    <!-- 开普勒定律提示 -->
+    <text x="240" y="440" text-anchor="middle" font-size="9" fill="#999">开普勒第二定律：等时间扫过等面积</text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.gravity.orbital.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var orbitR=Math.max(60,Math.min(180,Number(P.orbitRadius)||120));
+    var ecc=Math.max(0,Math.min(0.85,Number(P.eccentricity)||0.3));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var showForce=(P.showForce!=='off');
+    var showTrail=(P.showTrail!=='off');
+    var showKepler=(P.showKepler!=='off');
+
+    var CX=240,CY=210;
+    var theta=0; /* 真近点角 */
+
+    var orbitEl=root.querySelector('.orb__orbit');
+    var trail=root.querySelector('.orb__trail');
+    var keplerArea=root.querySelector('.orb__keplerArea');
+    var forceLine=root.querySelector('.orb__forceLine');
+    var forceArrow=root.querySelector('.orb__forceArrow');
+    var velLine=root.querySelector('.orb__velLine');
+    var velArrow=root.querySelector('.orb__velArrow');
+    var planet=root.querySelector('.orb__planet');
+    var planetLabel=root.querySelector('.orb__planetLabel');
+    var distText=root.querySelector('.orb__distText');
+    var velText=root.querySelector('.orb__velText');
+    var forceText=root.querySelector('.orb__forceText');
+    var eccText=root.querySelector('.orb__eccText');
+    var eccFill=root.querySelector('.orb__eccFill');
+    var eccThumb=root.querySelector('.orb__eccThumb');
+    var eccSliderText=root.querySelector('.orb__eccSliderText');
+    var spdFill=root.querySelector('.orb__spdFill');
+    var spdThumb=root.querySelector('.orb__spdThumb');
+    var spdSliderText=root.querySelector('.orb__spdSliderText');
+
+    var trailPts=[];
+    var MAX_TRAIL=300;
+    var keplerStart=0;
+
+    function rAtTheta(th){
+      /* r = a(1-e²)/(1+e·cos θ) */
+      return orbitR*(1-ecc*ecc)/(1+ecc*Math.cos(th));
+    }
+
+    function updateOrbitEllipse(){
+      var a2=orbitR;
+      var b2=orbitR*Math.sqrt(1-ecc*ecc);
+      var cx=CX+orbitR*ecc; /* 焦点在CX,CY，椭圆中心偏移 */
+      orbitEl.setAttribute('cx',CX-orbitR*ecc);
+      orbitEl.setAttribute('rx',a2);
+      orbitEl.setAttribute('ry',b2);
+    }
+
+    function planetPos(th){
+      var r2=rAtTheta(th);
+      return{x:CX+r2*Math.cos(th),y:CY-r2*Math.sin(th),r:r2};
+    }
+
+    function updateSliders(){
+      var ep=ecc/0.85*180;
+      eccFill.setAttribute('width',ep);eccThumb.setAttribute('cx',ep);
+      eccSliderText.textContent=ecc.toFixed(2);
+
+      var sp=(speed-0.2)/2.8*180;
+      spdFill.setAttribute('width',sp);spdThumb.setAttribute('cx',sp);
+      spdSliderText.textContent=speed.toFixed(1)+'x';
+    }
+
+    var animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04);
+      lastT=t;
+
+      /* 开普勒第二定律: dθ/dt ∝ 1/r² */
+      var r2=rAtTheta(theta);
+      var angularSpeed=speed*0.8*orbitR*orbitR/(r2*r2);
+      theta+=angularSpeed*dt;
+      if(theta>Math.PI*2){theta-=Math.PI*2;trailPts=[];keplerStart=theta;}
+
+      var pos=planetPos(theta);
+      planet.setAttribute('cx',pos.x);planet.setAttribute('cy',pos.y);
+      planetLabel.setAttribute('x',pos.x);planetLabel.setAttribute('y',pos.y-15);
+
+      /* 轨迹 */
+      if(showTrail){
+        trailPts.push({x:pos.x,y:pos.y});
+        if(trailPts.length>MAX_TRAIL)trailPts.shift();
+        var d='';
+        for(var i=0;i<trailPts.length;i++)d+=(i===0?'M':'L')+trailPts[i].x.toFixed(1)+','+trailPts[i].y.toFixed(1);
+        trail.setAttribute('d',d);trail.style.display='';
+      }else{trail.style.display='none';}
+
+      /* 开普勒面积 */
+      if(showKepler){
+        var kd='M'+CX+','+CY;
+        var step=Math.max(0.02,(theta-keplerStart)/40);
+        for(var a2=keplerStart;a2<=theta;a2+=step){
+          var kp=planetPos(a2);
+          kd+=' L'+kp.x.toFixed(1)+','+kp.y.toFixed(1);
+        }
+        kd+=' Z';
+        keplerArea.setAttribute('d',kd);
+        keplerArea.style.display='';
+        /* 每隔一段重置 */
+        if(theta-keplerStart>Math.PI/3){keplerStart=theta;}
+      }else{keplerArea.style.display='none';}
+
+      /* 引力 */
+      if(showForce){
+        var dx=CX-pos.x,dy=CY-pos.y;
+        var dist=Math.sqrt(dx*dx+dy*dy);
+        var fLen=Math.min(50,3000/(dist*dist)*1000);
+        var fx=pos.x+fLen*dx/dist,fy=pos.y+fLen*dy/dist;
+        forceLine.setAttribute('x1',pos.x);forceLine.setAttribute('y1',pos.y);
+        forceLine.setAttribute('x2',fx);forceLine.setAttribute('y2',fy);
+        forceLine.setAttribute('opacity','0.7');
+        var fa=Math.atan2(fy-pos.y,fx-pos.x);
+        var a1x=fx-6*Math.cos(fa-0.4),a1y=fy-6*Math.sin(fa-0.4);
+        var a2x=fx-6*Math.cos(fa+0.4),a2y=fy-6*Math.sin(fa+0.4);
+        forceArrow.setAttribute('points',fx+','+fy+' '+a1x+','+a1y+' '+a2x+','+a2y);
+        forceArrow.setAttribute('opacity','0.7');
+      }else{forceLine.setAttribute('opacity','0');forceArrow.setAttribute('opacity','0');}
+
+      /* 速度方向（切线） */
+      if(showLabels){
+        var vAngle=theta+Math.PI/2;
+        var vMag=angularSpeed*r2;
+        var vLen=Math.min(40,vMag*15);
+        var vx=pos.x+vLen*Math.cos(vAngle),vy=pos.y-vLen*Math.sin(vAngle);
+        velLine.setAttribute('x1',pos.x);velLine.setAttribute('y1',pos.y);
+        velLine.setAttribute('x2',vx);velLine.setAttribute('y2',vy);
+        velLine.setAttribute('opacity','0.7');
+        var va=Math.atan2(vy-pos.y,vx-pos.x);
+        var v1x=vx-6*Math.cos(va-0.4),v1y=vy-6*Math.sin(va-0.4);
+        var v2x=vx-6*Math.cos(va+0.4),v2y=vy-6*Math.sin(va+0.4);
+        velArrow.setAttribute('points',vx+','+vy+' '+v1x+','+v1y+' '+v2x+','+v2y);
+        velArrow.setAttribute('opacity','0.7');
+      }else{velLine.setAttribute('opacity','0');velArrow.setAttribute('opacity','0');}
+
+      /* 信息 */
+      distText.textContent='距离 r = '+r2.toFixed(0);
+      velText.textContent='速度 v ∝ '+(angularSpeed*r2/speed).toFixed(2);
+      forceText.textContent='引力 F ∝ 1/r² = '+(1/(r2*r2)*10000).toFixed(2);
+      eccText.textContent='e = '+ecc.toFixed(2);
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+
+    updateOrbitEllipse();updateSliders();
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* 滑块拖拽 */
+    var dragType=null;
+    function startDrag(type){return function(e){e.preventDefault();dragType=type;
+      document.addEventListener('mousemove',onDrag,{passive:false});document.addEventListener('mouseup',endDrag);
+      document.addEventListener('touchmove',onDrag,{passive:false});document.addEventListener('touchend',endDrag);
+    };}
+    function onDrag(e){
+      if(!dragType)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*480;
+      var pos=Math.max(0,Math.min(180,sx-260));
+      if(dragType==='ecc'){
+        ecc=Math.round(pos/180*85)/100;
+        ecc=Math.max(0,Math.min(0.85,ecc));
+        updateOrbitEllipse();trailPts=[];
+      }else{
+        speed=Math.round((0.2+pos/180*2.8)*10)/10;
+      }
+      updateSliders();
+    }
+    function endDrag(){dragType=null;
+      document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);
+      document.removeEventListener('touchmove',onDrag);document.removeEventListener('touchend',endDrag);
+    }
+    eccThumb.addEventListener('mousedown',startDrag('ecc'),{passive:false});
+    eccThumb.addEventListener('touchstart',startDrag('ecc'),{passive:false});
+    spdThumb.addEventListener('mousedown',startDrag('spd'),{passive:false});
+    spdThumb.addEventListener('touchstart',startDrag('spd'),{passive:false});
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.eccentricity!=null){ecc=Math.max(0,Math.min(0.85,Number(P2.eccentricity)||0.3));updateOrbitEllipse();trailPts=[];}
+      if(P2.orbitRadius!=null)orbitR=Math.max(60,Math.min(180,Number(P2.orbitRadius)||120));
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');showForce=(P2.showForce!=='off');
+      showTrail=(P2.showTrail!=='off');showKepler=(P2.showKepler!=='off');
+      updateSliders();
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

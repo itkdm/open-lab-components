@@ -1,0 +1,340 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.shape-sorter.interactive",
+  "name": "图形分类",
+  "nameEn": "Shape Sorter",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["shapes", "sorting", "classification", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "drag", "values": { "sorted": "object", "correct": "number", "total": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.shape-sorter.interactive" role="img" aria-label="图形分类">
+  <style>
+    .cmp[data-cmp-id="math.geometry.shape-sorter.interactive"] {
+      --sz: var(--cmp-size, 360px);
+      display: inline-block; width: var(--sz); height: calc(var(--sz) * 300 / 360);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.shape-sorter.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.shape-sorter.interactive') return;
+    var svg = root.querySelector('svg'); if (!svg) return;
+    var uid = 'ss_' + Math.random().toString(36).slice(2, 8);
+    var NS = 'http://www.w3.org/2000/svg';
+
+    /* --- Shape data --- */
+    var SHAPES = [
+      { id: 0, type: 'circle',    color: '#E53935', label: '红圆',   r: 15 },
+      { id: 1, type: 'square',    color: '#1E88E5', label: '蓝方',   w: 24, h: 24 },
+      { id: 2, type: 'triangle',  color: '#43A047', label: '绿三',   side: 28 },
+      { id: 3, type: 'rectangle', color: '#FB8C00', label: '橙矩',   w: 32, h: 18 },
+      { id: 4, type: 'circle',    color: '#8E24AA', label: '紫圆',   r: 12 },
+      { id: 5, type: 'square',    color: '#FDD835', label: '黄方',   w: 20, h: 20 },
+      { id: 6, type: 'triangle',  color: '#EC407A', label: '粉三',   side: 24 },
+      { id: 7, type: 'rectangle', color: '#00897B', label: '青矩',   w: 28, h: 16 }
+    ];
+
+    var BINS = [
+      { type: 'circle',    label: '圆形',   x: 15,  y: 150, need: 2 },
+      { type: 'square',    label: '正方形', x: 100, y: 150, need: 2 },
+      { type: 'triangle',  label: '三角形', x: 190, y: 150, need: 2 },
+      { type: 'rectangle', label: '长方形', x: 275, y: 150, need: 2 }
+    ];
+    var BW = 70, BH = 110, BR = 6;
+
+    /* Initial random positions in top area */
+    function initPositions() {
+      var positions = [];
+      var seeds = [[40,35],[110,55],[175,30],[250,50],[310,40],[70,75],[200,75],[290,78]];
+      for (var i = 0; i < SHAPES.length; i++) {
+        var s = seeds[i];
+        positions.push({ x: s[0] + (Math.random() - 0.5) * 16, y: s[1] + (Math.random() - 0.5) * 10 });
+      }
+      return positions;
+    }
+
+    var pos = initPositions();       // current positions
+    var home = pos.map(function(p) { return { x: p.x, y: p.y }; }); // original positions
+    var sorted = {};                 // shapeId -> binIndex
+    var dragId = -1, dragOff = { x: 0, y: 0 };
+    var flash = null;                // { binIdx, color, t }
+    var doneShown = false;
+
+    /* --- Helpers --- */
+    function svgPt(e) {
+      var pt = svg.createSVGPoint();
+      var src = e.touches ? e.touches[0] : e;
+      pt.x = src.clientX; pt.y = src.clientY;
+      var ctm = svg.getScreenCTM();
+      return ctm ? pt.matrixTransform(ctm.inverse()) : { x: 0, y: 0 };
+    }
+
+    function triPts(cx, cy, side) {
+      var h = side * Math.sqrt(3) / 2;
+      return [[cx, cy - h * 2 / 3], [cx - side / 2, cy + h / 3], [cx + side / 2, cy + h / 3]];
+    }
+
+    function drawShape(s, cx, cy, scale, shadow) {
+      var h = '', sc = scale || 1, filt = shadow ? ' filter="url(#' + uid + (shadow === 2 ? '_shL' : '_sh') + ')"' : '';
+      if (s.type === 'circle') {
+        h += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (s.r * sc) + '" fill="' + s.color + '" stroke="#fff" stroke-width="0.8"' + filt + '/>';
+      } else if (s.type === 'square' || s.type === 'rectangle') {
+        var ww = s.w * sc, hh = s.h * sc;
+        h += '<rect x="' + (cx - ww / 2) + '" y="' + (cy - hh / 2) + '" width="' + ww + '" height="' + hh + '" rx="1.5" fill="' + s.color + '" stroke="#fff" stroke-width="0.8"' + filt + '/>';
+      } else if (s.type === 'triangle') {
+        var pts = triPts(cx, cy, s.side * sc);
+        h += '<polygon points="' + pts.map(function(p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') + '" fill="' + s.color + '" stroke="#fff" stroke-width="0.8"' + filt + '/>';
+      }
+      return h;
+    }
+
+    function binHintShape(bin) {
+      var cx = bin.x + BW / 2, cy = bin.y + 30;
+      var h = '';
+      if (bin.type === 'circle') {
+        h += '<circle cx="' + cx + '" cy="' + cy + '" r="14" fill="none" stroke="#9E9E9E" stroke-width="1.2" stroke-dasharray="4,3"/>';
+      } else if (bin.type === 'square') {
+        h += '<rect x="' + (cx - 12) + '" y="' + (cy - 12) + '" width="24" height="24" rx="1" fill="none" stroke="#9E9E9E" stroke-width="1.2" stroke-dasharray="4,3"/>';
+      } else if (bin.type === 'triangle') {
+        var pts = triPts(cx, cy, 28);
+        h += '<polygon points="' + pts.map(function(p) { return p[0].toFixed(1) + ',' + p[1].toFixed(1); }).join(' ') + '" fill="none" stroke="#9E9E9E" stroke-width="1.2" stroke-dasharray="4,3"/>';
+      } else if (bin.type === 'rectangle') {
+        h += '<rect x="' + (cx - 16) + '" y="' + (cy - 9) + '" width="32" height="18" rx="1" fill="none" stroke="#9E9E9E" stroke-width="1.2" stroke-dasharray="4,3"/>';
+      }
+      return h;
+    }
+
+    function countBin(binIdx) {
+      var c = 0;
+      for (var k in sorted) { if (sorted[k] === binIdx) c++; }
+      return c;
+    }
+
+    function correctCount() {
+      var c = 0;
+      for (var k in sorted) c++;
+      return c;
+    }
+
+    function hitBin(px, py) {
+      for (var i = 0; i < BINS.length; i++) {
+        var b = BINS[i];
+        if (px >= b.x && px <= b.x + BW && py >= b.y && py <= b.y + BH) return i;
+      }
+      return -1;
+    }
+
+    function emit() {
+      var s = { circle: 0, square: 0, triangle: 0, rectangle: 0 };
+      for (var k in sorted) { s[SHAPES[k].type]++; }
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'drag',
+          values: { sorted: s, correct: correctCount(), total: SHAPES.length } }
+      }));
+    }
+
+    /* --- Render --- */
+    function render() {
+      var h = '';
+      /* defs */
+      h += '<defs>';
+      h += '<filter id="' + uid + '_sh"><feDropShadow dx="0.5" dy="1" stdDeviation="1.2" flood-opacity="0.2"/></filter>';
+      h += '<filter id="' + uid + '_shL"><feDropShadow dx="1" dy="2" stdDeviation="2.5" flood-opacity="0.3"/></filter>';
+      h += '</defs>';
+
+      /* background */
+      h += '<rect width="360" height="300" fill="#FAFAFA" rx="5"/>';
+
+      /* top zone */
+      h += '<rect x="4" y="4" width="352" height="108" rx="4" fill="#FFF8E1" stroke="#FFE082" stroke-width="0.5"/>';
+      h += '<text x="180" y="16" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="9" fill="#BDBDBD">待分类</text>';
+
+      /* divider */
+      h += '<line x1="20" y1="122" x2="340" y2="122" stroke="#E0E0E0" stroke-width="0.8" stroke-dasharray="4,3"/>';
+      h += '<text x="180" y="136" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="9" fill="#BDBDBD">拖到下方分类</text>';
+
+      /* bins */
+      for (var i = 0; i < BINS.length; i++) {
+        var b = BINS[i];
+        var isHover = (dragId >= 0 && flash === null) ? hitBin(pos[dragId].x, pos[dragId].y) === i : false;
+        var bgFill = '#FFFFFF';
+        if (flash && flash.binIdx === i) bgFill = flash.color;
+        else if (isHover) bgFill = '#E3F2FD';
+
+        h += '<rect x="' + b.x + '" y="' + b.y + '" width="' + BW + '" height="' + BH + '" rx="' + BR + '" fill="' + bgFill + '" stroke="' + (isHover ? '#42A5F5' : '#BDBDBD') + '" stroke-width="' + (isHover ? '1.5' : '1') + '" stroke-dasharray="' + (isHover ? '0' : '5,3') + '"/>';
+        h += binHintShape(b);
+        h += '<text x="' + (b.x + BW / 2) + '" y="' + (b.y + 62) + '" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="10" font-weight="600" fill="#616161">' + b.label + '</text>';
+        h += '<text x="' + (b.x + BW / 2) + '" y="' + (b.y + 78) + '" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="9" fill="#9E9E9E">' + countBin(i) + '/' + b.need + '</text>';
+
+        /* draw sorted shapes inside bin */
+        var slotY = b.y + 92;
+        var slotX = b.x + BW / 2;
+        var cnt = 0;
+        for (var k in sorted) {
+          if (sorted[k] === i) {
+            var offX = cnt === 0 ? -12 : 12;
+            h += drawShape(SHAPES[k], slotX + offX, slotY, 0.65, 1);
+            cnt++;
+          }
+        }
+      }
+
+      /* unsorted shapes (not being dragged) */
+      for (var i = 0; i < SHAPES.length; i++) {
+        if (sorted[i] !== undefined || i === dragId) continue;
+        h += '<g style="cursor:grab">' + drawShape(SHAPES[i], pos[i].x, pos[i].y, 1, 1) + '</g>';
+      }
+
+      /* dragged shape on top */
+      if (dragId >= 0 && sorted[dragId] === undefined) {
+        h += '<g style="cursor:grabbing">' + drawShape(SHAPES[dragId], pos[dragId].x, pos[dragId].y, 1.1, 2) + '</g>';
+      }
+
+      /* completion message */
+      if (doneShown) {
+        h += '<rect x="80" y="120" width="200" height="40" rx="8" fill="rgba(76,175,80,0.92)"/>';
+        h += '<text x="180" y="146" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="15" font-weight="700" fill="#fff">全部正确! \uD83C\uDF89</text>';
+      }
+
+      svg.innerHTML = h;
+    }
+
+    /* --- Hit test for unsorted shapes --- */
+    function hitShape(px, py) {
+      for (var i = SHAPES.length - 1; i >= 0; i--) {
+        if (sorted[i] !== undefined) continue;
+        var s = SHAPES[i], cx = pos[i].x, cy = pos[i].y;
+        if (s.type === 'circle') {
+          if (Math.hypot(px - cx, py - cy) <= s.r + 2) return i;
+        } else if (s.type === 'square' || s.type === 'rectangle') {
+          if (Math.abs(px - cx) <= s.w / 2 + 2 && Math.abs(py - cy) <= s.h / 2 + 2) return i;
+        } else if (s.type === 'triangle') {
+          /* simple bounding circle */
+          var h = s.side * Math.sqrt(3) / 2;
+          if (Math.hypot(px - cx, py - cy) <= h * 0.75) return i;
+        }
+      }
+      return -1;
+    }
+
+    /* --- Animate return --- */
+    function animateReturn(idx) {
+      var sx = pos[idx].x, sy = pos[idx].y;
+      var tx = home[idx].x, ty = home[idx].y;
+      var start = null, dur = 250;
+      function step(ts) {
+        if (!start) start = ts;
+        var t = Math.min((ts - start) / dur, 1);
+        var ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        pos[idx].x = sx + (tx - sx) * ease;
+        pos[idx].y = sy + (ty - sy) * ease;
+        render();
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* --- Animate snap into bin --- */
+    function animateSnap(idx, binIdx) {
+      var sx = pos[idx].x, sy = pos[idx].y;
+      var b = BINS[binIdx];
+      var cnt = countBin(binIdx);
+      var tx = b.x + BW / 2 + (cnt === 0 ? -12 : 12);
+      var ty = b.y + 92;
+      var start = null, dur = 200;
+      function step(ts) {
+        if (!start) start = ts;
+        var t = Math.min((ts - start) / dur, 1);
+        var ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+        pos[idx].x = sx + (tx - sx) * ease;
+        pos[idx].y = sy + (ty - sy) * ease;
+        render();
+        if (t < 1) requestAnimationFrame(step);
+        else {
+          sorted[idx] = binIdx;
+          render(); emit();
+          if (correctCount() === SHAPES.length) {
+            doneShown = true; render();
+          }
+        }
+      }
+      requestAnimationFrame(step);
+    }
+
+    /* --- Flash feedback --- */
+    function flashBin(binIdx, color) {
+      flash = { binIdx: binIdx, color: color };
+      render();
+      setTimeout(function() { flash = null; render(); }, 300);
+    }
+
+    /* --- Pointer events --- */
+    svg.addEventListener('pointerdown', function(e) {
+      if (doneShown) return;
+      var p = svgPt(e);
+      var hi = hitShape(p.x, p.y);
+      if (hi >= 0) {
+        dragId = hi;
+        dragOff.x = p.x - pos[hi].x;
+        dragOff.y = p.y - pos[hi].y;
+        svg.setPointerCapture(e.pointerId);
+        render();
+      }
+    });
+
+    svg.addEventListener('pointermove', function(e) {
+      if (dragId < 0) return;
+      var p = svgPt(e);
+      pos[dragId].x = p.x - dragOff.x;
+      pos[dragId].y = p.y - dragOff.y;
+      render();
+    });
+
+    svg.addEventListener('pointerup', function(e) {
+      if (dragId < 0) return;
+      var idx = dragId;
+      dragId = -1;
+      var p = svgPt(e);
+      var bx = pos[idx].x, by = pos[idx].y;
+      var bi = hitBin(bx, by);
+      if (bi >= 0) {
+        var bin = BINS[bi];
+        if (SHAPES[idx].type === bin.type && countBin(bi) < bin.need) {
+          flashBin(bi, '#C8E6C9');
+          animateSnap(idx, bi);
+        } else {
+          flashBin(bi, '#FFCDD2');
+          animateReturn(idx);
+        }
+      } else {
+        animateReturn(idx);
+      }
+    });
+
+    svg.addEventListener('pointercancel', function() {
+      if (dragId >= 0) { var idx = dragId; dragId = -1; animateReturn(idx); }
+    });
+
+    render();
+  })();
+  </script>
+</div>

@@ -1,0 +1,309 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.vector.operations.interactive",
+  "name": "向量运算（交互式）",
+  "nameEn": "Vector Operations (Interactive)",
+  "category": "math/vector",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 450 },
+  "tags": ["math","vector","addition","subtraction","dot-product","cross-product","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "vecAColor",      "type": "color",  "default": "#e53935", "desc": "向量A颜色" },
+    { "key": "vecBColor",      "type": "color",  "default": "#1e88e5", "desc": "向量B颜色" },
+    { "key": "resultColor",    "type": "color",  "default": "#66bb6a", "desc": "结果向量颜色" },
+    { "key": "operation",      "type": "enum",   "default": "add", "enum": ["add","sub","dot","cross"], "desc": "运算类型" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showGrid",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示网格" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "vecAColor": "--cmp-va", "vecBColor": "--cmp-vb", "resultColor": "--cmp-vr", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "vector", "values": { "ax": "number", "ay": "number", "bx": "number", "by": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.vector.operations.interactive" role="img" aria-label="向量运算（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.vector.operations.interactive"]{
+      --h:var(--cmp-size,450px);display:inline-block;
+      width:calc(var(--h)*500/450);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(102,187,106,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="math.vector.operations.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.vector.operations.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="math.vector.operations.interactive"] .vec__opBtn{cursor:pointer}
+    .cmp[data-cmp-id="math.vector.operations.interactive"] .vec__opBtn:hover rect{opacity:0.9}
+  </style>
+
+  <svg viewBox="0 0 500 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="vec__arA" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0,0 10,3.5 0,7" fill="var(--cmp-va,#e53935)"/></marker>
+      <marker id="vec__arB" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0,0 10,3.5 0,7" fill="var(--cmp-vb,#1e88e5)"/></marker>
+      <marker id="vec__arR" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0,0 10,3.5 0,7" fill="var(--cmp-vr,#66bb6a)"/></marker>
+    </defs>
+
+    <!-- 网格 -->
+    <g class="vec__grid" opacity="0.08"></g>
+
+    <!-- 坐标轴 -->
+    <line x1="20" y1="210" x2="480" y2="210" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+    <line x1="250" y1="20" x2="250" y2="380" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+    <text x="485" y="215" font-size="10" fill="var(--cmp-stroke,#37474f)">x</text>
+    <text x="254" y="16" font-size="10" fill="var(--cmp-stroke,#37474f)">y</text>
+
+    <!-- 刻度 -->
+    <g class="vec__ticks" font-size="8" fill="#bbb"></g>
+
+    <!-- 平行四边形（加法） -->
+    <polygon class="vec__parallelogram" points="" fill="var(--cmp-vr,#66bb6a)" opacity="0.08" stroke="var(--cmp-vr,#66bb6a)" stroke-width="0.5" stroke-dasharray="4,3"/>
+
+    <!-- 向量 -->
+    <line class="vec__lineA" x1="250" y1="210" x2="350" y2="130" stroke="var(--cmp-va,#e53935)" stroke-width="2.5" marker-end="url(#vec__arA)"/>
+    <line class="vec__lineB" x1="250" y1="210" x2="310" y2="290" stroke="var(--cmp-vb,#1e88e5)" stroke-width="2.5" marker-end="url(#vec__arB)"/>
+    <line class="vec__lineR" x1="250" y1="210" x2="410" y2="210" stroke="var(--cmp-vr,#66bb6a)" stroke-width="3" marker-end="url(#vec__arR)" stroke-dasharray="6,3"/>
+
+    <!-- 拖拽手柄 -->
+    <circle class="vec__handleA" cx="350" cy="130" r="8" fill="var(--cmp-va,#e53935)" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+    <circle class="vec__handleB" cx="310" cy="290" r="8" fill="var(--cmp-vb,#1e88e5)" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+
+    <!-- 标注 -->
+    <g class="vec__dynLabels"></g>
+
+    <!-- 信息面板 -->
+    <g class="vec__info" transform="translate(10,390)">
+      <rect x="0" y="0" width="480" height="50" rx="6" fill="rgba(255,255,255,0.92)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="vec__infoA" x="15" y="18" font-size="10" fill="var(--cmp-va,#e53935)" font-weight="600">a⃗ = (2.0, 1.5)</text>
+      <text class="vec__infoB" x="15" y="35" font-size="10" fill="var(--cmp-vb,#1e88e5)" font-weight="600">b⃗ = (1.0, -1.5)</text>
+      <text class="vec__infoR" x="250" y="18" font-size="11" font-weight="700" fill="var(--cmp-vr,#66bb6a)">a⃗ + b⃗ = (3.0, 0.0)</text>
+      <text class="vec__infoExtra" x="250" y="35" font-size="9" fill="#999">|a⃗+b⃗| = 3.00</text>
+    </g>
+
+    <!-- 运算按钮 -->
+    <g class="vec__opBtns" transform="translate(250,420)">
+      <g class="vec__opBtn" data-op="add" transform="translate(-150,0)"><rect x="-45" y="-10" width="90" height="20" rx="5" fill="#5c6bc0" opacity="0.85"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">加法 a⃗+b⃗</text></g>
+      <g class="vec__opBtn" data-op="sub" transform="translate(-50,0)"><rect x="-45" y="-10" width="90" height="20" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">减法 a⃗−b⃗</text></g>
+      <g class="vec__opBtn" data-op="dot" transform="translate(50,0)"><rect x="-45" y="-10" width="90" height="20" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">点积 a⃗·b⃗</text></g>
+      <g class="vec__opBtn" data-op="cross" transform="translate(150,0)"><rect x="-45" y="-10" width="90" height="20" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">叉积 a⃗×b⃗</text></g>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.vector.operations.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var op=P.operation||'add';
+    var showLabels=(P.showLabels!=='off');
+    var showGrid=(P.showGrid!=='off');
+
+    var OX=250,OY=210,SCALE=50;
+    var ax=2,ay=1.5,bx=1,by=-1.5;
+
+    var lineA=root.querySelector('.vec__lineA');
+    var lineB=root.querySelector('.vec__lineB');
+    var lineR=root.querySelector('.vec__lineR');
+    var handleA=root.querySelector('.vec__handleA');
+    var handleB=root.querySelector('.vec__handleB');
+    var parallelogram=root.querySelector('.vec__parallelogram');
+    var dynLabels=root.querySelector('.vec__dynLabels');
+    var gridG=root.querySelector('.vec__grid');
+    var ticksG=root.querySelector('.vec__ticks');
+    var infoA=root.querySelector('.vec__infoA');
+    var infoB=root.querySelector('.vec__infoB');
+    var infoR=root.querySelector('.vec__infoR');
+    var infoExtra=root.querySelector('.vec__infoExtra');
+    var opBtns=root.querySelector('.vec__opBtns');
+
+    function toSvg(mx,my){return{x:OX+mx*SCALE,y:OY-my*SCALE};}
+    function toMath(sx,sy){return{x:(sx-OX)/SCALE,y:(OY-sy)/SCALE};}
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function drawGrid(){
+      clear(gridG);clear(ticksG);
+      if(!showGrid)return;
+      for(var i=-4;i<=4;i++){
+        var x=OX+i*SCALE;
+        gridG.appendChild(elSvg('line',{x1:x,y1:20,x2:x,y2:380,stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.5'}));
+        if(i!==0)ticksG.appendChild(elSvg('text',{x:x,y:OY+14,'text-anchor':'middle'})).textContent=i;
+      }
+      for(var j=-3;j<=3;j++){
+        var y=OY-j*SCALE;
+        gridG.appendChild(elSvg('line',{x1:20,y1:y,x2:480,y2:y,stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.5'}));
+        if(j!==0)ticksG.appendChild(elSvg('text',{x:OX-10,y:y+3,'text-anchor':'end'})).textContent=j;
+      }
+    }
+
+    function render(){
+      var sa=toSvg(ax,ay),sb=toSvg(bx,by);
+      lineA.setAttribute('x2',sa.x);lineA.setAttribute('y2',sa.y);
+      lineB.setAttribute('x2',sb.x);lineB.setAttribute('y2',sb.y);
+      handleA.setAttribute('cx',sa.x);handleA.setAttribute('cy',sa.y);
+      handleB.setAttribute('cx',sb.x);handleB.setAttribute('cy',sb.y);
+
+      var rx,ry,rLabel,extraLabel;
+      if(op==='add'){
+        rx=ax+bx;ry=ay+by;
+        rLabel='a⃗ + b⃗ = ('+rx.toFixed(1)+', '+ry.toFixed(1)+')';
+        extraLabel='|a⃗+b⃗| = '+Math.sqrt(rx*rx+ry*ry).toFixed(2);
+        lineR.style.display='';
+        /* 平行四边形 */
+        var sr=toSvg(rx,ry);
+        parallelogram.setAttribute('points',OX+','+OY+' '+sa.x+','+sa.y+' '+sr.x+','+sr.y+' '+sb.x+','+sb.y);
+        parallelogram.style.display='';
+      }else if(op==='sub'){
+        rx=ax-bx;ry=ay-by;
+        rLabel='a⃗ − b⃗ = ('+rx.toFixed(1)+', '+ry.toFixed(1)+')';
+        extraLabel='|a⃗−b⃗| = '+Math.sqrt(rx*rx+ry*ry).toFixed(2);
+        lineR.style.display='';
+        parallelogram.style.display='none';
+      }else if(op==='dot'){
+        var dot=ax*bx+ay*by;
+        rx=0;ry=0;
+        rLabel='a⃗ · b⃗ = '+dot.toFixed(2);
+        var magA=Math.sqrt(ax*ax+ay*ay),magB=Math.sqrt(bx*bx+by*by);
+        var cosTheta=magA*magB>0?dot/(magA*magB):0;
+        var angle=Math.acos(Math.max(-1,Math.min(1,cosTheta)))*180/Math.PI;
+        extraLabel='θ = '+angle.toFixed(1)+'°, cos θ = '+cosTheta.toFixed(3);
+        lineR.style.display='none';
+        parallelogram.style.display='none';
+      }else{
+        var cross=ax*by-ay*bx;
+        rx=0;ry=0;
+        rLabel='a⃗ × b⃗ = '+cross.toFixed(2)+' (z分量)';
+        extraLabel='面积 = |'+cross.toFixed(2)+'| = '+Math.abs(cross).toFixed(2);
+        lineR.style.display='none';
+        /* 平行四边形面积 */
+        parallelogram.setAttribute('points',OX+','+OY+' '+sa.x+','+sa.y+' '+(sa.x+sb.x-OX)+','+(sa.y+sb.y-OY)+' '+sb.x+','+sb.y);
+        parallelogram.style.display='';
+        parallelogram.setAttribute('opacity','0.15');
+      }
+
+      if(op==='add'||op==='sub'){
+        var sr2=toSvg(rx,ry);
+        lineR.setAttribute('x2',sr2.x);lineR.setAttribute('y2',sr2.y);
+      }
+
+      /* 标注 */
+      clear(dynLabels);
+      if(showLabels){
+        var la=elSvg('text',{x:sa.x+10,y:sa.y-8,'font-size':'10','font-weight':'600',fill:'var(--cmp-va,#e53935)'});
+        la.textContent='a⃗('+ax.toFixed(1)+','+ay.toFixed(1)+')';dynLabels.appendChild(la);
+        var lb=elSvg('text',{x:sb.x+10,y:sb.y+15,'font-size':'10','font-weight':'600',fill:'var(--cmp-vb,#1e88e5)'});
+        lb.textContent='b⃗('+bx.toFixed(1)+','+by.toFixed(1)+')';dynLabels.appendChild(lb);
+
+        /* 夹角弧 */
+        if(op==='dot'){
+          var angA=Math.atan2(ay,ax),angB=Math.atan2(by,bx);
+          var arcR=30;
+          var startA=Math.min(angA,angB),endA=Math.max(angA,angB);
+          if(endA-startA>Math.PI){var tmp=startA;startA=endA;endA=tmp+2*Math.PI;}
+          var sx1=OX+arcR*Math.cos(-startA),sy1=OY+arcR*Math.sin(-startA);
+          var sx2=OX+arcR*Math.cos(-endA),sy2=OY+arcR*Math.sin(-endA);
+          var large=(endA-startA)>Math.PI?1:0;
+          dynLabels.appendChild(elSvg('path',{
+            d:'M'+sx1+','+sy1+' A'+arcR+','+arcR+' 0 '+large+',1 '+sx2+','+sy2,
+            fill:'none',stroke:'#ff9800','stroke-width':'1.5'}));
+          var midA=(startA+endA)/2;
+          var lt=elSvg('text',{x:OX+40*Math.cos(-midA),y:OY+40*Math.sin(-midA)+3,
+            'text-anchor':'middle','font-size':'9','font-weight':'600',fill:'#ff9800'});
+          lt.textContent='θ';dynLabels.appendChild(lt);
+        }
+      }
+
+      infoA.textContent='a⃗ = ('+ax.toFixed(1)+', '+ay.toFixed(1)+')  |a⃗| = '+Math.sqrt(ax*ax+ay*ay).toFixed(2);
+      infoB.textContent='b⃗ = ('+bx.toFixed(1)+', '+by.toFixed(1)+')  |b⃗| = '+Math.sqrt(bx*bx+by*by).toFixed(2);
+      infoR.textContent=rLabel;
+      infoExtra.textContent=extraLabel;
+    }
+
+    function updateTabs(){
+      var btns=opBtns.querySelectorAll('.vec__opBtn');
+      for(var i=0;i<btns.length;i++){
+        var o2=btns[i].getAttribute('data-op');
+        var rect=btns[i].querySelector('rect');
+        rect.setAttribute('fill',o2===op?'#5c6bc0':'#78909c');
+        rect.setAttribute('opacity',o2===op?'0.85':'0.6');
+      }
+    }
+
+    drawGrid();render();updateTabs();
+
+    /* 拖拽 */
+    var dragTarget=null;
+    function onDown(e){
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var sy=(pt.clientY-rect.top)/rect.height*450;
+      var da=Math.pow(sx-parseFloat(handleA.getAttribute('cx')),2)+Math.pow(sy-parseFloat(handleA.getAttribute('cy')),2);
+      var db=Math.pow(sx-parseFloat(handleB.getAttribute('cx')),2)+Math.pow(sy-parseFloat(handleB.getAttribute('cy')),2);
+      if(da<400){e.preventDefault();dragTarget='A';bind();}
+      else if(db<400){e.preventDefault();dragTarget='B';bind();}
+    }
+    function bind(){
+      document.addEventListener('mousemove',onMove,{passive:false});
+      document.addEventListener('mouseup',onUp);
+      document.addEventListener('touchmove',onMove,{passive:false});
+      document.addEventListener('touchend',onUp);
+    }
+    function onMove(e){
+      if(!dragTarget)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var sy=(pt.clientY-rect.top)/rect.height*450;
+      var m=toMath(sx,sy);
+      /* 吸附到0.5格 */
+      m.x=Math.round(m.x*2)/2;m.y=Math.round(m.y*2)/2;
+      m.x=Math.max(-4,Math.min(4,m.x));m.y=Math.max(-3,Math.min(3,m.y));
+      if(dragTarget==='A'){ax=m.x;ay=m.y;}else{bx=m.x;by=m.y;}
+      render();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'math.vector.operations.interactive',type:'vector',values:{ax:ax,ay:ay,bx:bx,by:by}}}));
+    }
+    function onUp(){dragTarget=null;
+      document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
+    }
+    svg.addEventListener('mousedown',onDown,{passive:false});
+    svg.addEventListener('touchstart',onDown,{passive:false});
+
+    /* 运算切换 */
+    opBtns.addEventListener('click',function(e){
+      var btn=e.target.closest('.vec__opBtn');
+      if(!btn)return;
+      op=btn.getAttribute('data-op');
+      updateTabs();render();
+    });
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.operation)op=P2.operation;
+      showLabels=(P2.showLabels!=='off');showGrid=(P2.showGrid!=='off');
+      drawGrid();updateTabs();render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

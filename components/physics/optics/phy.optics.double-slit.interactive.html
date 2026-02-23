@@ -1,0 +1,466 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.optics.double-slit.interactive",
+  "name": "双缝干涉（交互式）",
+  "nameEn": "Double-Slit Interference (Interactive)",
+  "category": "physics/optics",
+  "version": "1.0.0",
+  "viewport": { "w": 520, "h": 360 },
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 360, "min": 240, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "lightColor",    "type": "color",  "default": "#ffeb3b", "desc": "光源颜色" },
+    { "key": "barrierColor",  "type": "color",  "default": "#455a64", "desc": "障碍物颜色" },
+    { "key": "screenColor",   "type": "color",  "default": "#fafafa", "desc": "屏幕颜色" },
+    { "key": "wavelength",    "type": "number", "default": 550, "min": 400, "max": 700, "desc": "波长（nm）" },
+    { "key": "slitSpacing",   "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "缝间距（mm）" },
+    { "key": "showWaves",     "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示波纹" },
+    { "key": "showPattern",   "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示干涉条纹" },
+    { "key": "showLabels",    "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "lightColor": "--cmp-light", "barrierColor": "--cmp-barrier", "screenColor": "--cmp-screen",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["optics","double-slit","interference","wave","interactive","animation"],
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "wavelength": "number(nm)", "slitSpacing": "number(mm)", "fringeSpacing": "number(mm)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.optics.double-slit.interactive" role="img" aria-label="双缝干涉（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.optics.double-slit.interactive"]{
+      --h:var(--cmp-size,360px);display:inline-block;width:calc(var(--h)*520/360);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,235,59,calc(.8*var(--cmp-glow,0))));
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="phy.optics.double-slit.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.optics.double-slit.interactive"] .ds__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+    .cmp[data-cmp-id="phy.optics.double-slit.interactive"] .ds__label{font-family:Arial,'Microsoft YaHei',sans-serif;font-weight:600}
+  </style>
+
+  <svg viewBox="0 0 520 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- background gradient -->
+      <linearGradient id="ds__bg" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#263238" stop-opacity=".06"/>
+        <stop offset="100%" stop-color="#263238" stop-opacity=".02"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ═══ 0. Background ═══ -->
+    <rect x="0" y="0" width="520" height="360" fill="url(#ds__bg)" rx="4"/>
+
+    <!-- ═══ 1. Light source ═══ -->
+    <g class="ds__source">
+      <circle class="ds__src-glow" cx="40" cy="180" r="14" fill="var(--cmp-light,#ffeb3b)" opacity=".25"/>
+      <circle class="ds__src-core" cx="40" cy="180" r="6" fill="var(--cmp-light,#ffeb3b)" opacity=".9"/>
+    </g>
+    <!-- Source wave arcs (animated in JS) -->
+    <g class="ds__src-waves" opacity=".35"></g>
+
+    <!-- ═══ 2. Barrier wall with two slits ═══ -->
+    <g class="ds__barrier"></g>
+
+    <!-- ═══ 3. Wavefronts from slits (animated in JS) ═══ -->
+    <g class="ds__slit-waves" opacity=".3"></g>
+
+    <!-- ═══ 4. Screen ═══ -->
+    <rect class="ds__screen-bg" x="430" y="30" width="36" height="300"
+          fill="var(--cmp-screen,#fafafa)" stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="var(--cmp-stroke-width,1.2)" rx="2"/>
+    <!-- Interference pattern rendered in JS -->
+    <g class="ds__pattern"></g>
+
+    <!-- ═══ 5. Labels ═══ -->
+    <g class="ds__labels">
+      <text class="ds__label ds__lbl-src" x="40" y="218" font-size="11"
+            fill="var(--cmp-stroke,#37474f)" text-anchor="middle">光源</text>
+      <text class="ds__label ds__lbl-slit" font-size="11"
+            fill="var(--cmp-stroke,#37474f)" text-anchor="middle">双缝</text>
+      <text class="ds__label ds__lbl-screen" x="448" y="348" font-size="11"
+            fill="var(--cmp-stroke,#37474f)" text-anchor="middle">屏幕</text>
+      <text class="ds__label ds__lbl-bright" font-size="10"
+            fill="var(--cmp-stroke,#37474f)" text-anchor="start">明纹</text>
+      <text class="ds__label ds__lbl-dark" font-size="10"
+            fill="var(--cmp-stroke,#37474f)" text-anchor="start">暗纹</text>
+    </g>
+
+    <!-- ═══ 6. Data panel ═══ -->
+    <g class="ds__panel">
+      <rect x="8" y="6" rx="4" width="180" height="62"
+            fill="rgba(255,255,255,.92)" stroke="var(--cmp-stroke,#37474f)" stroke-width=".8"/>
+      <text class="ds__data ds__d1" x="16" y="22" font-size="11" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="ds__data ds__d2" x="16" y="38" font-size="11" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="ds__data ds__d3" x="16" y="54" font-size="11" fill="var(--cmp-stroke,#37474f)"></text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.optics.double-slit.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    /* ─── Props ─── */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var wavelength=Math.max(400,Math.min(700,Number(P.wavelength)||550));
+    var slitSpacing=Math.max(0.5,Math.min(5,Number(P.slitSpacing)||2));
+    var showWaves=(P.showWaves!=='off');
+    var showPattern=(P.showPattern!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    /* ─── Constants ─── */
+    var VB_W=520, VB_H=360;
+    var SRC_X=40, SRC_Y=180;
+    var BARRIER_X=200;
+    var SCREEN_X=430;
+    var SCREEN_TOP=30, SCREEN_H=300;
+    var SCREEN_MID=SCREEN_TOP+SCREEN_H/2; /* 180 */
+    var L_PX=SCREEN_X-BARRIER_X; /* distance barrier→screen in px = 230 */
+
+    /* Physical: L = 1m (screen distance), scale factor */
+    var L_PHYS=1.0; /* 1 meter */
+
+    /* Slit geometry in SVG coords */
+    var SLIT_W=4; /* slit width in px */
+    var SLIT_GAP=26; /* base gap between slits in px for slitSpacing=2mm */
+
+    function q(c){return root.querySelector('.ds__'+c)}
+    var el={};
+    ['src-waves','slit-waves','barrier','pattern','panel',
+     'labels','lbl-src','lbl-slit','lbl-screen','lbl-bright','lbl-dark',
+     'd1','d2','d3'
+    ].forEach(function(k){el[k]=q(k)});
+
+    /* ─── Wavelength → RGB ─── */
+    function wlToRGB(wl){
+      var r=0,g=0,b=0;
+      if(wl>=380&&wl<440){r=-(wl-440)/(440-380);b=1;}
+      else if(wl>=440&&wl<490){g=(wl-440)/(490-440);b=1;}
+      else if(wl>=490&&wl<510){g=1;b=-(wl-510)/(510-490);}
+      else if(wl>=510&&wl<580){r=(wl-510)/(580-510);g=1;}
+      else if(wl>=580&&wl<645){r=1;g=-(wl-645)/(645-580);}
+      else if(wl>=645&&wl<=780){r=1;}
+      /* intensity falloff at edges */
+      var f=1.0;
+      if(wl>=380&&wl<420)f=0.3+0.7*(wl-380)/(420-380);
+      else if(wl>=645&&wl<=780)f=0.3+0.7*(780-wl)/(780-645);
+      r=Math.round(255*Math.pow(r*f,0.8));
+      g=Math.round(255*Math.pow(g*f,0.8));
+      b=Math.round(255*Math.pow(b*f,0.8));
+      return 'rgb('+r+','+g+','+b+')';
+    }
+
+    var lightRGB=wlToRGB(wavelength);
+
+    /* ─── Slit positions ─── */
+    function slitGapPx(){
+      return SLIT_GAP*(slitSpacing/2);
+    }
+    function slitY1(){return SRC_Y-slitGapPx()/2;}
+    function slitY2(){return SRC_Y+slitGapPx()/2;}
+
+    /* ─── Fringe spacing ─── */
+    /* Δy = λ·L / d  (all in SI: m, m, m → m) */
+    function fringeSpacingMM(){
+      var lam=wavelength*1e-6; /* nm → mm */
+      return lam*1000/slitSpacing; /* result in mm: (mm * mm) / mm */
+    }
+    /* In px on screen */
+    function fringeSpacingPx(){
+      /* Map physical fringe spacing to screen pixels */
+      /* Use a scale: 1mm slit spacing at 550nm gives ~0.275mm fringe spacing */
+      /* We want visible fringes, so scale generously */
+      var dyMM=fringeSpacingMM();
+      /* Scale: let 0.275mm → ~30px for nice visibility */
+      return dyMM*(30/0.275);
+    }
+
+    /* ─── Build barrier ─── */
+    function buildBarrier(){
+      var g=el['barrier'];if(!g)return;
+      g.innerHTML='';
+      var sy1=slitY1(), sy2=slitY2();
+      var bw=8;
+      /* Top section */
+      var r1=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      r1.setAttribute('x',BARRIER_X-bw/2);r1.setAttribute('y',0);
+      r1.setAttribute('width',bw);r1.setAttribute('height',sy1-SLIT_W/2);
+      r1.setAttribute('fill','var(--cmp-barrier,#455a64)');r1.setAttribute('rx','1');
+      g.appendChild(r1);
+      /* Middle section (between slits) */
+      var r2=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      r2.setAttribute('x',BARRIER_X-bw/2);r2.setAttribute('y',sy1+SLIT_W/2);
+      r2.setAttribute('width',bw);r2.setAttribute('height',(sy2-SLIT_W/2)-(sy1+SLIT_W/2));
+      r2.setAttribute('fill','var(--cmp-barrier,#455a64)');r2.setAttribute('rx','1');
+      g.appendChild(r2);
+      /* Bottom section */
+      var r3=document.createElementNS('http://www.w3.org/2000/svg','rect');
+      r3.setAttribute('x',BARRIER_X-bw/2);r3.setAttribute('y',sy2+SLIT_W/2);
+      r3.setAttribute('width',bw);r3.setAttribute('height',VB_H-(sy2+SLIT_W/2));
+      r3.setAttribute('fill','var(--cmp-barrier,#455a64)');r3.setAttribute('rx','1');
+      g.appendChild(r3);
+    }
+
+    /* ─── Build interference pattern on screen ─── */
+    function buildPattern(){
+      var g=el['pattern'];if(!g)return;
+      g.innerHTML='';
+      if(!showPattern)return;
+
+      var dy=fringeSpacingPx();
+      var nFringes=Math.ceil(SCREEN_H/(dy>0.5?dy:1))+4;
+      var halfN=Math.ceil(nFringes/2);
+      /* Gaussian width for each bright fringe (in px) */
+      var sigma=dy*0.22;
+      if(sigma<1.5)sigma=1.5;
+
+      /* Render as thin horizontal rects with varying opacity */
+      var step=1.5; /* px per strip */
+      for(var py=SCREEN_TOP;py<SCREEN_TOP+SCREEN_H;py+=step){
+        var yRel=py-SCREEN_MID; /* relative to center */
+        /* Intensity: sum of contributions from each order */
+        var intensity=0;
+        for(var m=-halfN;m<=halfN;m++){
+          var ym=m*dy;
+          var dist=yRel-ym;
+          intensity+=Math.exp(-(dist*dist)/(2*sigma*sigma));
+        }
+        if(intensity>1)intensity=1;
+
+        var rect=document.createElementNS('http://www.w3.org/2000/svg','rect');
+        rect.setAttribute('x','431');
+        rect.setAttribute('y',py.toFixed(1));
+        rect.setAttribute('width','34');
+        rect.setAttribute('height',(step+0.5).toFixed(1));
+        rect.setAttribute('fill',lightRGB);
+        rect.setAttribute('opacity',(intensity*0.95).toFixed(3));
+        rect.setAttribute('rx','0');
+        g.appendChild(rect);
+      }
+    }
+
+    /* ─── Labels ─── */
+    function updateLabels(){
+      if(!showLabels){
+        if(el['labels'])el['labels'].setAttribute('opacity','0');
+        return;
+      }
+      if(el['labels'])el['labels'].setAttribute('opacity','1');
+
+      /* Slit label */
+      if(el['lbl-slit']){
+        el['lbl-slit'].setAttribute('x',BARRIER_X);
+        el['lbl-slit'].setAttribute('y',slitY2()+slitGapPx()/2+18);
+      }
+
+      /* Bright/dark fringe labels */
+      var dy=fringeSpacingPx();
+      if(dy>8&&showPattern){
+        /* Point to center bright fringe */
+        if(el['lbl-bright']){
+          el['lbl-bright'].setAttribute('x','470');
+          el['lbl-bright'].setAttribute('y',(SCREEN_MID+2).toFixed(1));
+          el['lbl-bright'].setAttribute('opacity','1');
+        }
+        /* Point to first dark fringe */
+        if(el['lbl-dark']){
+          el['lbl-dark'].setAttribute('x','470');
+          el['lbl-dark'].setAttribute('y',(SCREEN_MID+dy/2+2).toFixed(1));
+          el['lbl-dark'].setAttribute('opacity','1');
+        }
+      }else{
+        if(el['lbl-bright'])el['lbl-bright'].setAttribute('opacity','0');
+        if(el['lbl-dark'])el['lbl-dark'].setAttribute('opacity','0');
+      }
+    }
+
+    /* ─── Data panel ─── */
+    function updateData(){
+      if(el['d1'])el['d1'].textContent='λ = '+wavelength+' nm';
+      if(el['d2'])el['d2'].textContent='d = '+slitSpacing.toFixed(1)+' mm';
+      if(el['d3'])el['d3'].textContent='Δy = '+(fringeSpacingMM()).toFixed(3)+' mm';
+    }
+
+    /* ─── Source wave arcs ─── */
+    var srcWavePhases=[];
+    var NUM_SRC_WAVES=4;
+    for(var i=0;i<NUM_SRC_WAVES;i++){
+      srcWavePhases.push(i/NUM_SRC_WAVES);
+    }
+
+    function buildSrcWaveArcs(g,t){
+      g.innerHTML='';
+      if(!showWaves)return;
+      var maxR=BARRIER_X-SRC_X-10;
+      for(var i=0;i<NUM_SRC_WAVES;i++){
+        var phase=((srcWavePhases[i]+t)%1);
+        var r=phase*maxR;
+        if(r<2)continue;
+        var opacity=0.5*(1-phase);
+        var arc=document.createElementNS('http://www.w3.org/2000/svg','path');
+        /* Right-facing semicircle arc */
+        var startY=SRC_Y-r*0.8;
+        var endY=SRC_Y+r*0.8;
+        arc.setAttribute('d',
+          'M'+SRC_X+','+(startY).toFixed(1)+
+          ' A'+r.toFixed(1)+','+r.toFixed(1)+' 0 0,1 '+SRC_X+','+(endY).toFixed(1));
+        arc.setAttribute('fill','none');
+        arc.setAttribute('stroke',lightRGB);
+        arc.setAttribute('stroke-width','1.2');
+        arc.setAttribute('opacity',opacity.toFixed(2));
+        g.appendChild(arc);
+      }
+    }
+
+    /* ─── Slit wavefronts ─── */
+    var NUM_SLIT_WAVES=6;
+    var slitWavePhases=[];
+    for(var i=0;i<NUM_SLIT_WAVES;i++){
+      slitWavePhases.push(i/NUM_SLIT_WAVES);
+    }
+
+    function buildSlitWaves(g,t){
+      g.innerHTML='';
+      if(!showWaves)return;
+      var maxR=SCREEN_X-BARRIER_X-10;
+      var sy1=slitY1(), sy2=slitY2();
+      var slits=[sy1,sy2];
+
+      for(var s=0;s<slits.length;s++){
+        var cy=slits[s];
+        for(var i=0;i<NUM_SLIT_WAVES;i++){
+          var phase=((slitWavePhases[i]+t)%1);
+          var r=phase*maxR;
+          if(r<2)continue;
+          var opacity=0.45*(1-phase);
+          var arc=document.createElementNS('http://www.w3.org/2000/svg','path');
+          /* Right-facing semicircle from each slit */
+          var topY=cy-r*0.9;
+          var botY=cy+r*0.9;
+          /* Clamp to viewport */
+          arc.setAttribute('d',
+            'M'+BARRIER_X+','+(topY).toFixed(1)+
+            ' A'+r.toFixed(1)+','+r.toFixed(1)+' 0 0,1 '+BARRIER_X+','+(botY).toFixed(1));
+          arc.setAttribute('fill','none');
+          arc.setAttribute('stroke',lightRGB);
+          arc.setAttribute('stroke-width','1');
+          arc.setAttribute('opacity',opacity.toFixed(2));
+          g.appendChild(arc);
+        }
+      }
+    }
+
+    /* ─── Full render ─── */
+    function render(){
+      lightRGB=wlToRGB(wavelength);
+      buildBarrier();
+      buildPattern();
+      updateLabels();
+      updateData();
+      /* Update source glow color */
+      var srcGlow=root.querySelector('.ds__src-glow');
+      var srcCore=root.querySelector('.ds__src-core');
+      if(srcGlow)srcGlow.setAttribute('fill',lightRGB);
+      if(srcCore)srcCore.setAttribute('fill',lightRGB);
+    }
+
+    render();
+
+    /* ─── Animation loop ─── */
+    var animId=null;
+    var startTime=null;
+    var WAVE_SPEED=0.3; /* cycles per second */
+
+    function animate(ts){
+      if(!startTime)startTime=ts;
+      var elapsed=(ts-startTime)/1000;
+      var t=(elapsed*WAVE_SPEED)%1;
+
+      if(el['src-waves'])buildSrcWaveArcs(el['src-waves'],t);
+      if(el['slit-waves'])buildSlitWaves(el['slit-waves'],t);
+
+      animId=requestAnimationFrame(animate);
+    }
+
+    if(showWaves){
+      animId=requestAnimationFrame(animate);
+    }
+
+    /* ─── Event dispatch ─── */
+    function emitChange(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true, composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'slide',
+          values:{
+            wavelength:wavelength,
+            slitSpacing:slitSpacing,
+            fringeSpacing:parseFloat(fringeSpacingMM().toFixed(3))
+          }
+        }
+      }));
+    }
+
+    /* ─── MutationObserver for prop changes ─── */
+    var observer=new MutationObserver(function(mutations){
+      mutations.forEach(function(m){
+        if(m.type==='attributes'&&m.attributeName==='data-props'){
+          var raw=root.getAttribute('data-props');
+          var np={};
+          try{if(raw){var o=JSON.parse(raw);if(o&&typeof o==='object')np=o;}}catch(e){}
+
+          var changed=false;
+          var nw=Math.max(400,Math.min(700,Number(np.wavelength)||wavelength));
+          if(nw!==wavelength){wavelength=nw;changed=true;}
+
+          var ns=Math.max(0.5,Math.min(5,Number(np.slitSpacing)||slitSpacing));
+          if(ns!==slitSpacing){slitSpacing=ns;changed=true;}
+
+          var sw=(np.showWaves!=='off');
+          if(sw!==showWaves){
+            showWaves=sw;changed=true;
+            if(showWaves&&!animId)animId=requestAnimationFrame(animate);
+            if(!showWaves&&animId){cancelAnimationFrame(animId);animId=null;
+              if(el['src-waves'])el['src-waves'].innerHTML='';
+              if(el['slit-waves'])el['slit-waves'].innerHTML='';
+            }
+          }
+
+          var sp=(np.showPattern!=='off');
+          if(sp!==showPattern){showPattern=sp;changed=true;}
+
+          var sl=(np.showLabels!=='off');
+          if(sl!==showLabels){showLabels=sl;changed=true;}
+
+          if(changed){render();emitChange();}
+        }
+        /* CSS variable changes via style attribute */
+        if(m.type==='attributes'&&m.attributeName==='style'){
+          /* Re-read glow etc. — CSS vars handled by browser automatically */
+        }
+      });
+    });
+    observer.observe(root,{attributes:true});
+
+    /* ─── Cleanup ─── */
+    window.addEventListener('beforeunload',function(){
+      if(animId)cancelAnimationFrame(animId);
+      observer.disconnect();
+    });
+
+    /* Initial event */
+    emitChange();
+  })();
+  </script>
+</div>

@@ -1,0 +1,323 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.ecology.food-web.interactive",
+  "name": "食物网（交互式）",
+  "nameEn": "Food Web (Interactive)",
+  "category": "biology/ecology",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 420 },
+  "tags": ["biology","ecology","food-web","trophic","energy-flow"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 420, "min": 280, "max": 700, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "producerColor",  "type": "color",  "default": "#66bb6a", "desc": "生产者颜色" },
+    { "key": "herbivoreColor", "type": "color",  "default": "#ffb74d", "desc": "初级消费者颜色" },
+    { "key": "carnivoreColor", "type": "color",  "default": "#ef5350", "desc": "高级消费者颜色" },
+    { "key": "arrowColor",     "type": "color",  "default": "#78909c", "desc": "箭头颜色" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showLevels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示营养级标签" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "producerColor": "--cmp-producer", "herbivoreColor": "--cmp-herbivore",
+    "carnivoreColor": "--cmp-carnivore", "arrowColor": "--cmp-arrow",
+    "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "hover", "values": { "organism": "string", "level": "string — producer|herbivore|carnivore" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.ecology.food-web.interactive" role="img" aria-label="食物网（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"]{
+      --h:var(--cmp-size,420px);display:inline-block;
+      width:calc(var(--h)*500/420);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(102,187,106,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] .fw__label{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px;font-weight:600;
+      pointer-events:none;text-anchor:middle;
+    }
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] .fw__emoji{
+      font-size:18px;pointer-events:none;text-anchor:middle;dominant-baseline:central;
+    }
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] .fw__level{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:11px;font-weight:700;
+      pointer-events:none;
+    }
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] .fw__node{cursor:pointer;transition:opacity .25s}
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] .fw__arrow{transition:opacity .25s}
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] .fw--dim{opacity:0.12}
+    .cmp[data-cmp-id="bio.ecology.food-web.interactive"] .fw--hl{opacity:1}
+  </style>
+
+  <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="fw__ah" viewBox="0 0 10 8" refX="10" refY="4"
+              markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,0 L10,4 L0,8 Z" fill="var(--cmp-arrow,#78909c)"/>
+      </marker>
+    </defs>
+
+    <!-- Trophic level labels -->
+    <g class="fw__levels">
+      <text class="fw__level" x="18" y="30" fill="var(--cmp-carnivore,#ef5350)">高级消费者</text>
+      <text class="fw__level" x="18" y="170" fill="var(--cmp-herbivore,#ffb74d)">初级消费者</text>
+      <text class="fw__level" x="18" y="315" fill="var(--cmp-producer,#66bb6a)">生产者</text>
+    </g>
+
+    <!-- Arrows (energy flow: prey → predator, drawn bottom-up) -->
+    <!-- Arrows are computed by JS to start/end at circle edges -->
+    <g class="fw__arrows"></g>
+
+    <!-- Top: Carnivores (高级消费者) y≈65 -->
+    <g class="fw__node" data-org="eagle" data-level="carnivore">
+      <circle cx="170" cy="65" r="26" fill="var(--cmp-carnivore,#ef5350)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="170" y="63">🦅</text>
+      <text class="fw__label" x="170" y="100" fill="var(--cmp-stroke,#37474f)">鹰</text>
+    </g>
+    <g class="fw__node" data-org="fox" data-level="carnivore">
+      <circle cx="295" cy="65" r="26" fill="var(--cmp-carnivore,#ef5350)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="295" y="63">🦊</text>
+      <text class="fw__label" x="295" y="100" fill="var(--cmp-stroke,#37474f)">狐</text>
+    </g>
+    <g class="fw__node" data-org="snake" data-level="carnivore">
+      <circle cx="410" cy="65" r="26" fill="var(--cmp-carnivore,#ef5350)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="410" y="63">🐍</text>
+      <text class="fw__label" x="410" y="100" fill="var(--cmp-stroke,#37474f)">蛇</text>
+    </g>
+
+    <!-- Middle: Herbivores (初级消费者) y≈200 -->
+    <g class="fw__node" data-org="rabbit" data-level="herbivore">
+      <circle cx="170" cy="200" r="26" fill="var(--cmp-herbivore,#ffb74d)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="170" y="198">🐇</text>
+      <text class="fw__label" x="170" y="235" fill="var(--cmp-stroke,#37474f)">兔</text>
+    </g>
+    <g class="fw__node" data-org="deer" data-level="herbivore">
+      <circle cx="295" cy="200" r="26" fill="var(--cmp-herbivore,#ffb74d)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="295" y="198">🦌</text>
+      <text class="fw__label" x="295" y="235" fill="var(--cmp-stroke,#37474f)">鹿</text>
+    </g>
+    <g class="fw__node" data-org="insect" data-level="herbivore">
+      <circle cx="410" cy="200" r="26" fill="var(--cmp-herbivore,#ffb74d)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="410" y="198">🐛</text>
+      <text class="fw__label" x="410" y="235" fill="var(--cmp-stroke,#37474f)">虫</text>
+    </g>
+
+    <!-- Bottom: Producers (生产者) y≈345 -->
+    <g class="fw__node" data-org="grass" data-level="producer">
+      <circle cx="170" cy="345" r="26" fill="var(--cmp-producer,#66bb6a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="170" y="343">🌿</text>
+      <text class="fw__label" x="170" y="380" fill="var(--cmp-stroke,#37474f)">草</text>
+    </g>
+    <g class="fw__node" data-org="tree" data-level="producer">
+      <circle cx="295" cy="345" r="26" fill="var(--cmp-producer,#66bb6a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="295" y="343">🌳</text>
+      <text class="fw__label" x="295" y="380" fill="var(--cmp-stroke,#37474f)">树</text>
+    </g>
+    <g class="fw__node" data-org="algae" data-level="producer">
+      <circle cx="410" cy="345" r="26" fill="var(--cmp-producer,#66bb6a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <text class="fw__emoji" x="410" y="343">🟢</text>
+      <text class="fw__label" x="410" y="380" fill="var(--cmp-stroke,#37474f)">藻类</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.ecology.food-web.interactive')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var showLabels=(P.showLabels!=='off');
+    var showLevels=(P.showLevels!=='off');
+
+    var svg=root.querySelector('svg');
+    var NS='http://www.w3.org/2000/svg';
+
+    /* Node center positions and radius */
+    var R=26;
+    var nodePos={
+      eagle:{x:170,y:65}, fox:{x:295,y:65}, snake:{x:410,y:65},
+      rabbit:{x:170,y:200}, deer:{x:295,y:200}, insect:{x:410,y:200},
+      grass:{x:170,y:345}, tree:{x:295,y:345}, algae:{x:410,y:345}
+    };
+
+    /* Edge definitions: [from, to] — energy flows from prey to predator */
+    var edges=[
+      ['grass','rabbit'],['grass','deer'],['grass','insect'],
+      ['tree','deer'],['tree','insect'],
+      ['algae','insect'],
+      ['rabbit','eagle'],['rabbit','fox'],
+      ['deer','fox'],
+      ['insect','snake'],['insect','eagle'],
+      ['snake','eagle']
+    ];
+
+    /* Compute line endpoints on circle edges */
+    function edgePoints(fromKey,toKey){
+      var f=nodePos[fromKey], t=nodePos[toKey];
+      var dx=t.x-f.x, dy=t.y-f.y;
+      var d=Math.sqrt(dx*dx+dy*dy);
+      if(d===0) return {x1:f.x,y1:f.y,x2:t.x,y2:t.y};
+      var nx=dx/d, ny=dy/d;
+      var pad=3; /* extra gap so arrow tip doesn't overlap stroke */
+      return {
+        x1:f.x+nx*(R+1), y1:f.y+ny*(R+1),
+        x2:t.x-nx*(R+pad), y2:t.y-ny*(R+pad)
+      };
+    }
+
+    /* Build arrows dynamically */
+    var arrowsG=root.querySelector('.fw__arrows');
+    var arrowEls=[];
+    edges.forEach(function(e){
+      var pts=edgePoints(e[0],e[1]);
+      var line=document.createElementNS(NS,'line');
+      line.setAttribute('class','fw__arrow');
+      line.setAttribute('data-from',e[0]);
+      line.setAttribute('data-to',e[1]);
+      line.setAttribute('x1',pts.x1);
+      line.setAttribute('y1',pts.y1);
+      line.setAttribute('x2',pts.x2);
+      line.setAttribute('y2',pts.y2);
+      line.setAttribute('stroke','var(--cmp-arrow,#78909c)');
+      line.setAttribute('stroke-width','var(--cmp-stroke-width,1.2)');
+      line.setAttribute('marker-end','url(#fw__ah)');
+      arrowsG.appendChild(line);
+      arrowEls.push(line);
+    });
+
+    var nodes=root.querySelectorAll('.fw__node');
+    var levelsG=root.querySelector('.fw__levels');
+
+    /* Apply initial visibility */
+    function applyVisibility(){
+      var i;
+      for(i=0;i<nodes.length;i++){
+        var lbl=nodes[i].querySelector('.fw__label');
+        if(lbl)lbl.style.display=showLabels?'':'none';
+      }
+      if(levelsG)levelsG.style.display=showLevels?'':'none';
+    }
+    applyVisibility();
+
+    /* Build adjacency: for each organism, which arrows touch it */
+    function getConnected(org){
+      var connected={};
+      connected[org]=true;
+      for(var i=0;i<arrowEls.length;i++){
+        var f=arrowEls[i].getAttribute('data-from');
+        var t=arrowEls[i].getAttribute('data-to');
+        if(f===org||t===org){
+          connected[f]=true;
+          connected[t]=true;
+        }
+      }
+      return connected;
+    }
+
+    function highlight(org){
+      var conn=getConnected(org);
+      var i;
+      for(i=0;i<nodes.length;i++){
+        var nOrg=nodes[i].getAttribute('data-org');
+        if(conn[nOrg]){
+          nodes[i].classList.remove('fw--dim');
+          nodes[i].classList.add('fw--hl');
+        }else{
+          nodes[i].classList.remove('fw--hl');
+          nodes[i].classList.add('fw--dim');
+        }
+      }
+      for(i=0;i<arrowEls.length;i++){
+        var f=arrowEls[i].getAttribute('data-from');
+        var t=arrowEls[i].getAttribute('data-to');
+        if(f===org||t===org){
+          arrowEls[i].classList.remove('fw--dim');
+          arrowEls[i].classList.add('fw--hl');
+        }else{
+          arrowEls[i].classList.remove('fw--hl');
+          arrowEls[i].classList.add('fw--dim');
+        }
+      }
+    }
+
+    function clearHighlight(){
+      var i;
+      for(i=0;i<nodes.length;i++){
+        nodes[i].classList.remove('fw--dim','fw--hl');
+      }
+      for(i=0;i<arrowEls.length;i++){
+        arrowEls[i].classList.remove('fw--dim','fw--hl');
+      }
+    }
+
+    /* Attach hover + touch events */
+    var activeOrg=null;
+    for(var n=0;n<nodes.length;n++){
+      (function(node){
+        node.addEventListener('mouseenter',function(){
+          var org=node.getAttribute('data-org');
+          var level=node.getAttribute('data-level');
+          activeOrg=org;
+          highlight(org);
+          root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+            detail:{id:root.getAttribute('data-cmp-id'),type:'hover',
+              values:{organism:org,level:level}}}));
+        });
+        node.addEventListener('mouseleave',function(){
+          activeOrg=null;
+          clearHighlight();
+        });
+        /* Touch: tap to toggle highlight */
+        node.addEventListener('touchstart',function(ev){
+          ev.preventDefault();
+          var org=node.getAttribute('data-org');
+          var level=node.getAttribute('data-level');
+          if(activeOrg===org){
+            activeOrg=null;
+            clearHighlight();
+          }else{
+            activeOrg=org;
+            highlight(org);
+            root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+              detail:{id:root.getAttribute('data-cmp-id'),type:'hover',
+                values:{organism:org,level:level}}}));
+          }
+        },{passive:false});
+      })(nodes[n]);
+    }
+
+    /* Tap outside nodes to clear on touch devices */
+    svg.addEventListener('touchstart',function(ev){
+      if(!ev.target.closest('.fw__node')){
+        activeOrg=null;
+        clearHighlight();
+      }
+    },{passive:true});
+
+    /* Props observer */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      showLabels=(P2.showLabels!=='off');
+      showLevels=(P2.showLevels!=='off');
+      applyVisibility();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      obs.disconnect();
+    });
+  })();
+  </script>
+</div>

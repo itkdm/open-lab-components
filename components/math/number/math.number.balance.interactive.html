@@ -1,0 +1,290 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.balance.interactive",
+  "name": "等式天平",
+  "nameEn": "Equation Balance",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 240 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "leftValue", "type": "number", "default": 0, "min": 0, "max": 20, "desc": "左盘数值" },
+    { "key": "rightValue", "type": "number", "default": 0, "min": 0, "max": 20, "desc": "右盘数值" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["balance", "equation", "equal", "number", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "leftValue": "number", "rightValue": "number", "balanced": "boolean" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.balance.interactive" role="img" aria-label="等式天平">
+  <style>
+    .cmp[data-cmp-id="math.number.balance.interactive"]{
+      --w:var(--cmp-size,360px);
+      display:inline-block;width:var(--w);height:calc(var(--w)*240/360);
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="math.number.balance.interactive"] svg{
+      display:block;width:100%;height:100%;overflow:visible;
+    }
+    .cmp[data-cmp-id="math.number.balance.interactive"] .eb__btn{
+      cursor:pointer;transition:opacity .12s ease;
+    }
+    .cmp[data-cmp-id="math.number.balance.interactive"] .eb__btn:hover{opacity:.78}
+    .cmp[data-cmp-id="math.number.balance.interactive"] .eb__btn:active{opacity:.6}
+    .cmp[data-cmp-id="math.number.balance.interactive"] .eb__beam{
+      transition:transform .4s cubic-bezier(.4,.2,.2,1);
+    }
+  </style>
+
+  <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="eb__wood-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#d4a056"/><stop offset="1" stop-color="#a0722a"/>
+      </linearGradient>
+      <linearGradient class="eb__metal-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#bdbdbd"/><stop offset=".5" stop-color="#9e9e9e"/><stop offset="1" stop-color="#757575"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Base -->
+    <rect x="130" y="218" width="100" height="10" rx="3" fill="#8d6e63" stroke="#5d4037" stroke-width="1"/>
+    <rect x="132" y="219" width="96" height="4" rx="2" fill="#fff" opacity=".1"/>
+    <!-- Fulcrum triangle -->
+    <polygon class="eb__fulcrum" points="180,195 165,218 195,218" stroke="#5d4037" stroke-width="1" stroke-linejoin="round"/>
+    <polygon points="180,200 170,216 190,216" fill="#fff" opacity=".08"/>
+
+    <!-- Beam group (rotates) -->
+    <g class="eb__beam">
+      <!-- Beam bar -->
+      <rect x="58" y="90" width="244" height="8" rx="3" stroke="#616161" stroke-width=".8"/>
+      <rect x="60" y="91" width="240" height="3" rx="1.5" fill="#fff" opacity=".15"/>
+      <!-- Pivot dot -->
+      <circle cx="180" cy="94" r="5" fill="#757575" stroke="#424242" stroke-width=".8"/>
+      <circle cx="180" cy="93" r="2" fill="#fff" opacity=".2"/>
+    </g>
+
+    <!-- Left chain + pan group (positioned by JS) -->
+    <g class="eb__left-group">
+      <line class="eb__left-chain1" stroke="#78909c" stroke-width="1"/>
+      <line class="eb__left-chain2" stroke="#78909c" stroke-width="1"/>
+      <polygon class="eb__left-pan" stroke="#78909c" stroke-width=".8" stroke-linejoin="round"/>
+      <polygon class="eb__left-pan-hi" fill="#fff" opacity=".12"/>
+      <g class="eb__left-blocks"></g>
+    </g>
+
+    <!-- Right chain + pan group -->
+    <g class="eb__right-group">
+      <line class="eb__right-chain1" stroke="#78909c" stroke-width="1"/>
+      <line class="eb__right-chain2" stroke="#78909c" stroke-width="1"/>
+      <polygon class="eb__right-pan" stroke="#78909c" stroke-width=".8" stroke-linejoin="round"/>
+      <polygon class="eb__right-pan-hi" fill="#fff" opacity=".12"/>
+      <g class="eb__right-blocks"></g>
+    </g>
+
+    <!-- Center symbol -->
+    <text class="eb__symbol" x="180" y="185" text-anchor="middle" font-size="22" font-weight="700"
+          font-family="'Segoe UI',Arial,sans-serif" fill="#37474f">=</text>
+
+    <!-- Value labels -->
+    <text class="eb__left-val" text-anchor="middle" font-size="13" font-weight="700"
+          font-family="'Segoe UI',Arial,sans-serif" fill="#1565c0"></text>
+    <text class="eb__right-val" text-anchor="middle" font-size="13" font-weight="700"
+          font-family="'Segoe UI',Arial,sans-serif" fill="#e65100"></text>
+
+    <!-- Left +/- buttons -->
+    <g class="eb__btn eb__btn-lp" data-action="lp">
+      <circle cx="42" cy="220" r="11" fill="#66bb6a" stroke="#2e7d32" stroke-width="1"/>
+      <line x1="37" y1="220" x2="47" y2="220" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="42" y1="215" x2="42" y2="225" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <g class="eb__btn eb__btn-lm" data-action="lm">
+      <circle cx="42" cy="195" r="11" fill="#ef5350" stroke="#c62828" stroke-width="1"/>
+      <line x1="37" y1="195" x2="47" y2="195" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <!-- Right +/- buttons -->
+    <g class="eb__btn eb__btn-rp" data-action="rp">
+      <circle cx="318" cy="220" r="11" fill="#66bb6a" stroke="#2e7d32" stroke-width="1"/>
+      <line x1="313" y1="220" x2="323" y2="220" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+      <line x1="318" y1="215" x2="318" y2="225" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <g class="eb__btn eb__btn-rm" data-action="rm">
+      <circle cx="318" cy="195" r="11" fill="#ef5350" stroke="#c62828" stroke-width="1"/>
+      <line x1="313" y1="195" x2="323" y2="195" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.number.balance.interactive')return;
+    var NS='http://www.w3.org/2000/svg';
+    var svg=root.querySelector('svg');
+
+    /* Unique IDs for defs */
+    var uid='eb-'+Math.random().toString(36).slice(2,8);
+    var woodG=svg.querySelector('.eb__wood-grad');
+    var metalG=svg.querySelector('.eb__metal-grad');
+    if(woodG)woodG.setAttribute('id',uid+'-wood');
+    if(metalG)metalG.setAttribute('id',uid+'-metal');
+
+    /* Apply gradient fills */
+    var fulcrum=svg.querySelector('.eb__fulcrum');
+    if(fulcrum)fulcrum.setAttribute('fill','url(#'+uid+'-wood)');
+    var beamBar=root.querySelector('.eb__beam rect');
+    if(beamBar)beamBar.setAttribute('fill','url(#'+uid+'-metal)');
+
+    /* Element refs */
+    function q(s){return root.querySelector('.eb__'+s)}
+    var beamG=q('beam');
+    var symEl=q('symbol');
+    var leftVal=q('left-val'), rightVal=q('right-val');
+    var lc1=q('left-chain1'),lc2=q('left-chain2'),lPan=q('left-pan'),lPanHi=q('left-pan-hi'),lBlocks=q('left-blocks');
+    var rc1=q('right-chain1'),rc2=q('right-chain2'),rPan=q('right-pan'),rPanHi=q('right-pan-hi'),rBlocks=q('right-blocks');
+
+    /* Props */
+    var P={};
+    try{var raw=root.getAttribute('data-props');if(raw){var o=JSON.parse(raw);if(o&&typeof o==='object')P=o;}}catch(e){}
+    var leftV=Math.max(0,Math.min(20,Math.round(Number(P.leftValue)||0)));
+    var rightV=Math.max(0,Math.min(20,Math.round(Number(P.rightValue)||0)));
+
+    /* Constants */
+    var CX=180,PIVOT_Y=94,BEAM_HALF=120;
+    var PAN_HANG=60,PAN_W=44,PAN_H=6;
+    var BLOCK_S=12;
+
+    /* Render */
+    function render(){
+      var diff=leftV-rightV;
+      var angle=Math.max(-15,Math.min(15,diff*3));
+      var rad=angle*Math.PI/180;
+
+      /* Beam rotation */
+      beamG.setAttribute('transform','rotate('+angle+' '+CX+' '+PIVOT_Y+')');
+
+      /* Beam endpoints after rotation */
+      var cosA=Math.cos(rad),sinA=Math.sin(rad);
+      var lx=CX-BEAM_HALF*cosA, ly=PIVOT_Y-BEAM_HALF*sinA;
+      var rx=CX+BEAM_HALF*cosA, ry=PIVOT_Y+BEAM_HALF*sinA;
+
+      /* Pan positions (hang vertically) */
+      var lpY=ly+PAN_HANG, rpY=ry+PAN_HANG;
+
+      /* Chains */
+      setChain(lc1,lc2,lx,ly+4,lpY);
+      setChain(rc1,rc2,rx,ry+4,rpY);
+
+      /* Pans (trapezoid) */
+      setPan(lPan,lPanHi,lx,lpY,'#b0bec5');
+      setPan(rPan,rPanHi,rx,rpY,'#b0bec5');
+
+      /* Blocks */
+      drawBlocks(lBlocks,lx,lpY,leftV,'#42A5F5');
+      drawBlocks(rBlocks,rx,rpY,rightV,'#FF9800');
+
+      /* Symbol */
+      if(symEl){
+        if(leftV===rightV) symEl.textContent='=';
+        else if(leftV>rightV) symEl.textContent='>';
+        else symEl.textContent='<';
+        symEl.setAttribute('fill',leftV===rightV?'#2e7d32':'#37474f');
+      }
+
+      /* Value labels */
+      if(leftVal){leftVal.textContent=String(leftV);leftVal.setAttribute('x',String(lx));leftVal.setAttribute('y',String(lpY+20));}
+      if(rightVal){rightVal.textContent=String(rightV);rightVal.setAttribute('x',String(rx));rightVal.setAttribute('y',String(rpY+20));}
+
+      root.setAttribute('aria-label','等式天平 左='+leftV+' 右='+rightV+(leftV===rightV?' 平衡':''));
+    }
+
+    function setChain(c1,c2,cx,topY,panY){
+      if(c1){c1.setAttribute('x1',cx-14);c1.setAttribute('y1',topY);c1.setAttribute('x2',cx-PAN_W/2+4);c1.setAttribute('y2',panY);}
+      if(c2){c2.setAttribute('x1',cx+14);c2.setAttribute('y1',topY);c2.setAttribute('x2',cx+PAN_W/2-4);c2.setAttribute('y2',panY);}
+    }
+
+    function setPan(pan,hi,cx,py,color){
+      var hw=PAN_W/2,hh=PAN_H;
+      var pts=(cx-hw)+','+py+' '+(cx-hw+6)+','+(py+hh)+' '+(cx+hw-6)+','+(py+hh)+' '+(cx+hw)+','+py;
+      if(pan){pan.setAttribute('points',pts);pan.setAttribute('fill',color);}
+      var pts2=(cx-hw+4)+','+py+' '+(cx-hw+8)+','+(py+hh-2)+' '+(cx+hw-8)+','+(py+hh-2)+' '+(cx+hw-4)+','+py;
+      if(hi)hi.setAttribute('points',pts2);
+    }
+
+    function drawBlocks(g,cx,panY,count,color){
+      if(!g)return;
+      g.innerHTML='';
+      var cols=Math.min(count,4);
+      if(cols===0)return;
+      var rows=Math.ceil(count/cols);
+      var totalW=cols*BLOCK_S;
+      var startX=cx-totalW/2;
+      for(var i=0;i<count;i++){
+        var col=i%cols, row=Math.floor(i/cols);
+        var bx=startX+col*BLOCK_S;
+        var by=panY-(row+1)*BLOCK_S;
+        var r=document.createElementNS(NS,'rect');
+        r.setAttribute('x',bx);r.setAttribute('y',by);
+        r.setAttribute('width',BLOCK_S);r.setAttribute('height',BLOCK_S);
+        r.setAttribute('rx','2');r.setAttribute('fill',color);
+        r.setAttribute('stroke','rgba(0,0,0,.18)');r.setAttribute('stroke-width','.6');
+        g.appendChild(r);
+        /* highlight */
+        var hl=document.createElementNS(NS,'rect');
+        hl.setAttribute('x',bx+1);hl.setAttribute('y',by+1);
+        hl.setAttribute('width',BLOCK_S-2);hl.setAttribute('height',4);
+        hl.setAttribute('rx','1');hl.setAttribute('fill','rgba(255,255,255,.25)');
+        g.appendChild(hl);
+        /* "1" label */
+        var t=document.createElementNS(NS,'text');
+        t.setAttribute('x',String(bx+BLOCK_S/2));t.setAttribute('y',String(by+BLOCK_S/2+3.5));
+        t.setAttribute('text-anchor','middle');t.setAttribute('font-size','8');
+        t.setAttribute('font-weight','700');t.setAttribute('fill','#fff');
+        t.setAttribute('font-family','Arial,sans-serif');t.setAttribute('pointer-events','none');
+        t.textContent='1';
+        g.appendChild(t);
+      }
+    }
+
+    render();
+
+    /* Events */
+    function emit(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{leftValue:leftV,rightValue:rightV,balanced:leftV===rightV}}}));
+    }
+
+    function onBtn(action){
+      if(action==='lp'&&leftV<20){leftV++;render();emit();}
+      else if(action==='lm'&&leftV>0){leftV--;render();emit();}
+      else if(action==='rp'&&rightV<20){rightV++;render();emit();}
+      else if(action==='rm'&&rightV>0){rightV--;render();emit();}
+    }
+
+    svg.addEventListener('click',function(e){
+      var t=e.target.closest('[data-action]');
+      if(t)onBtn(t.getAttribute('data-action'));
+    });
+    svg.addEventListener('touchend',function(e){
+      var touch=e.changedTouches&&e.changedTouches[0];if(!touch)return;
+      var el=document.elementFromPoint(touch.clientX,touch.clientY);
+      if(el){var t=el.closest('[data-action]');if(t){e.preventDefault();onBtn(t.getAttribute('data-action'));}}
+    });
+
+    /* Observe prop changes */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      leftV=Math.max(0,Math.min(20,Math.round(Number(P2.leftValue)||0)));
+      rightV=Math.max(0,Math.min(20,Math.round(Number(P2.rightValue)||0)));
+      render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){obs.disconnect();});
+  })();
+  </script>
+</div>

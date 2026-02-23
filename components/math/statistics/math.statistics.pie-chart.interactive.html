@@ -1,0 +1,252 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.statistics.pie-chart.interactive",
+  "name": "扇形统计图",
+  "nameEn": "Pie Chart",
+  "category": "math/statistics",
+  "version": "1.0.0",
+  "viewport": { "w": 340, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 340, "min": 220, "max": 600, "desc": "组件宽度" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["pie-chart", "statistics", "percentage", "data", "graph", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "data": "object", "selected": "string", "percentage": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.statistics.pie-chart.interactive" role="img" aria-label="扇形统计图">
+  <style>
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"]{
+      --w:var(--cmp-size,340px);
+      display:inline-block;width:var(--w);height:calc(var(--w)*300/340);
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] svg{
+      display:block;width:100%;height:100%;overflow:visible;
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] .pc__title{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:14px;font-weight:700;
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] .pc__pct{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:8.5px;font-weight:600;fill:#fff;
+      pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.4);
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] .pc__leg{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px;
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] .pc__info{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:11px;font-weight:600;
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] .pc__btn{
+      cursor:pointer;
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] .pc__btn:hover rect{
+      fill-opacity:.18;
+    }
+    .cmp[data-cmp-id="math.statistics.pie-chart.interactive"] .pc__slice{
+      cursor:pointer;transition:transform .25s ease;
+    }
+  </style>
+
+  <svg viewBox="0 0 340 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <text class="pc__title" x="170" y="18" fill="#37474f" text-anchor="middle">扇形统计图</text>
+    <g class="pc__shadow"></g>
+    <g class="pc__pie"></g>
+    <g class="pc__labels"></g>
+    <g class="pc__legend"></g>
+    <text class="pc__info" x="140" y="290" fill="#37474f" text-anchor="middle"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.statistics.pie-chart.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    var NS='http://www.w3.org/2000/svg';
+    var uid='pc-'+Math.random().toString(36).slice(2,8);
+
+    var CATS=['苹果','香蕉','橙子','葡萄','西瓜'];
+    var COLORS=['#EF5350','#FDD835','#FF9800','#AB47BC','#66BB6A'];
+    var DARK=['#C62828','#F9A825','#E65100','#7B1FA2','#2E7D32'];
+    var N=CATS.length;
+    var CX=140,CY=150,R=90;
+    var MIN_V=1,MAX_V=20;
+
+    var vals=[8,5,6,4,7];
+    var sel=0;
+
+    var pieG=root.querySelector('.pc__pie');
+    var shadowG=root.querySelector('.pc__shadow');
+    var labelsG=root.querySelector('.pc__labels');
+    var legendG=root.querySelector('.pc__legend');
+    var infoText=root.querySelector('.pc__info');
+
+    function mkEl(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    function total(){var s=0;for(var i=0;i<N;i++)s+=vals[i];return s;}
+
+    function arcPath(cx,cy,r,a0,a1){
+      var x0=cx+r*Math.cos(a0), y0=cy+r*Math.sin(a0);
+      var x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1);
+      var lg=(a1-a0>Math.PI)?1:0;
+      return 'M'+cx+','+cy+' L'+x0+','+y0+' A'+r+','+r+' 0 '+lg+',1 '+x1+','+y1+' Z';
+    }
+
+    function getAngles(){
+      var t=total(), angles=[], cum=-Math.PI/2;
+      for(var i=0;i<N;i++){
+        var a=vals[i]/t*2*Math.PI;
+        angles.push({s:cum,e:cum+a,mid:cum+a/2});
+        cum+=a;
+      }
+      return angles;
+    }
+
+    function render(){
+      pieG.innerHTML='';shadowG.innerHTML='';labelsG.innerHTML='';
+      var angles=getAngles(), t=total();
+
+      /* 3D shadow arcs */
+      for(var i=0;i<N;i++){
+        var sh=mkEl('path',{
+          d:arcPath(CX,CY+4,R,angles[i].s,angles[i].e),
+          fill:DARK[i],opacity:'0.35'
+        });
+        shadowG.appendChild(sh);
+      }
+
+      /* slices */
+      for(var i=0;i<N;i++){
+        var mid=angles[i].mid;
+        var dx=i===sel?8*Math.cos(mid):0;
+        var dy=i===sel?8*Math.sin(mid):0;
+        var g=mkEl('g',{
+          'class':'pc__slice','data-idx':i,
+          transform:'translate('+dx.toFixed(2)+','+dy.toFixed(2)+')'
+        });
+        var path=mkEl('path',{
+          d:arcPath(CX,CY,R,angles[i].s,angles[i].e),
+          fill:COLORS[i],stroke:'#fff','stroke-width':'2'
+        });
+        g.appendChild(path);
+        pieG.appendChild(g);
+      }
+
+      /* percentage labels */
+      for(var i=0;i<N;i++){
+        var mid=angles[i].mid;
+        var pct=(vals[i]/t*100);
+        var lr=R*0.62;
+        var dx=i===sel?8*Math.cos(mid):0;
+        var dy=i===sel?8*Math.sin(mid):0;
+        var lx=CX+lr*Math.cos(mid)+dx;
+        var ly=CY+lr*Math.sin(mid)+dy;
+        var txt=mkEl('text',{
+          'class':'pc__pct',x:lx.toFixed(1),y:(ly+3).toFixed(1),
+          'text-anchor':'middle'
+        });
+        txt.textContent=pct.toFixed(1)+'%';
+        labelsG.appendChild(txt);
+      }
+
+      /* info text */
+      var pct=(vals[sel]/t*100);
+      infoText.textContent=CATS[sel]+': '+vals[sel]+'人, 占 '+pct.toFixed(1)+'%';
+
+      drawLegend();
+    }
+
+    function drawLegend(){
+      legendG.innerHTML='';
+      var x0=252,y0=50,rowH=28;
+      for(var i=0;i<N;i++){
+        var y=y0+i*rowH;
+        /* color swatch */
+        legendG.appendChild(mkEl('rect',{
+          x:x0,y:y,width:12,height:12,rx:2,fill:COLORS[i],
+          stroke:i===sel?'#37474f':'none','stroke-width':'1.5'
+        }));
+        /* name + count */
+        var lbl=mkEl('text',{
+          'class':'pc__leg',x:x0+16,y:y+10,fill:'#37474f'
+        });
+        lbl.textContent=CATS[i]+' '+vals[i];
+        legendG.appendChild(lbl);
+
+        /* minus button */
+        var mg=mkEl('g',{'class':'pc__btn','data-idx':i,'data-dir':'-1'});
+        mg.appendChild(mkEl('rect',{x:x0+62,y:y-1,width:14,height:14,rx:3,fill:'#37474f','fill-opacity':'.1'}));
+        var mt=mkEl('text',{'class':'pc__leg',x:x0+69,y:y+10,fill:'#546e7a','text-anchor':'middle','font-weight':'700'});
+        mt.textContent='\u2212';
+        mg.appendChild(mt);
+        legendG.appendChild(mg);
+
+        /* plus button */
+        var pg=mkEl('g',{'class':'pc__btn','data-idx':i,'data-dir':'1'});
+        pg.appendChild(mkEl('rect',{x:x0+78,y:y-1,width:14,height:14,rx:3,fill:'#37474f','fill-opacity':'.1'}));
+        var pt=mkEl('text',{'class':'pc__leg',x:x0+85,y:y+10,fill:'#546e7a','text-anchor':'middle','font-weight':'700'});
+        pt.textContent='+';
+        pg.appendChild(pt);
+        legendG.appendChild(pg);
+      }
+    }
+
+    /* click slice to select */
+    pieG.addEventListener('click',function(e){
+      var t=e.target.closest('.pc__slice');
+      if(!t)return;
+      var i=parseInt(t.getAttribute('data-idx'),10);
+      if(isNaN(i))return;
+      sel=i;
+      render();
+      emitChange();
+    });
+
+    /* legend +/- buttons */
+    legendG.addEventListener('click',function(e){
+      var btn=e.target.closest('.pc__btn');
+      if(!btn)return;
+      var i=parseInt(btn.getAttribute('data-idx'),10);
+      var d=parseInt(btn.getAttribute('data-dir'),10);
+      if(isNaN(i)||isNaN(d))return;
+      var nv=vals[i]+d;
+      if(nv<MIN_V||nv>MAX_V)return;
+      vals[i]=nv;
+      sel=i;
+      render();
+      emitChange();
+    });
+
+    function emitChange(){
+      var d={},t=total();
+      for(var i=0;i<N;i++)d[CATS[i]]=vals[i];
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{data:d,selected:CATS[sel],percentage:Math.round(vals[sel]/t*1000)/10}
+        }
+      }));
+    }
+
+    render();
+
+    /* observe prop changes */
+    var obs=new MutationObserver(function(muts){
+      for(var i=0;i<muts.length;i++){
+        if(muts[i].attributeName==='data-props'){render();}
+      }
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props']});
+  })();
+  </script>
+</div>

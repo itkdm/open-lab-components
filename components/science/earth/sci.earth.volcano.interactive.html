@@ -1,0 +1,325 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.earth.volcano.interactive",
+  "name": "火山",
+  "nameEn": "Volcano",
+  "category": "science/earth",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "erupting", "type": "boolean", "default": false, "desc": "是否喷发中" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["volcano", "eruption", "magma", "lava", "earth-science", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "erupting": "boolean" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.earth.volcano.interactive" role="img" aria-label="火山">
+  <style>
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] {
+      --w: var(--cmp-size, 360px);
+      display: inline-block; width: var(--w); height: calc(var(--w) * 300 / 360);
+      user-select: none; position: relative;
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] svg {
+      width: 100%; height: 100%; display: block;
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-size: 9px; font-weight: 700; pointer-events: none; fill: var(--cmp-label, #333);
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__sublabel {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-size: 7px; pointer-events: none; fill: var(--cmp-label, #555); opacity: 0.8;
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__btn {
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__btn:hover { opacity: 0.85; }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__eruption { display: none; }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"][data-erupting="true"] .vo__eruption { display: block; }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"][data-erupting="true"] .vo__dormant { display: none; }
+    /* Lava blob rise */
+    @keyframes vo-blob-rise {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      60% { opacity: 0.8; }
+      100% { opacity: 0; transform: translateY(-55px) scale(0.3); }
+    }
+    /* Ash cloud expand */
+    @keyframes vo-ash-expand {
+      0% { opacity: 0.7; transform: scale(0.6) translateY(8px); }
+      50% { opacity: 0.5; }
+      100% { opacity: 0.15; transform: scale(1.5) translateY(-10px); }
+    }
+    /* Lava flow down slope */
+    @keyframes vo-lava-flow {
+      0% { stroke-dashoffset: 60; opacity: 0.9; }
+      100% { stroke-dashoffset: 0; opacity: 0.6; }
+    }
+    /* Steam wisp */
+    @keyframes vo-steam {
+      0% { opacity: 0.6; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-20px) scale(1.4); }
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__blob {
+      animation: vo-blob-rise 1.8s ease-out infinite;
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__ash {
+      animation: vo-ash-expand 3s ease-out infinite;
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__lava-stream {
+      stroke-dasharray: 60; animation: vo-lava-flow 2.5s linear infinite;
+    }
+    .cmp[data-cmp-id="sci.earth.volcano.interactive"] .vo__steam {
+      animation: vo-steam 2s ease-out infinite;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="vo__g-sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#d4ecf7"/>
+      </linearGradient>
+      <linearGradient class="vo__g-mtn" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#8D6E63"/><stop offset="40%" stop-color="#6D4C41"/>
+        <stop offset="100%" stop-color="#4E342E"/>
+      </linearGradient>
+      <linearGradient class="vo__g-magma" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#FF6D00"/><stop offset="50%" stop-color="#FF3D00"/>
+        <stop offset="100%" stop-color="#D50000"/>
+      </linearGradient>
+      <linearGradient class="vo__g-crust" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#795548"/><stop offset="50%" stop-color="#5D4037"/>
+        <stop offset="100%" stop-color="#3E2723"/>
+      </linearGradient>
+      <radialGradient class="vo__g-chamber" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#FFAB00"/><stop offset="50%" stop-color="#FF6D00"/>
+        <stop offset="100%" stop-color="#DD2C00"/>
+      </radialGradient>
+      <clipPath class="vo__clip-cs"><polygon points="180,60 180,220 330,220"/></clipPath>
+    </defs>
+
+    <!-- Sky -->
+    <rect class="vo__r-sky" x="0" y="0" width="360" height="80" fill="url(#__sky)"/>
+    <rect x="0" y="80" width="360" height="140" fill="#d4ecf7"/>
+
+    <!-- Underground layers -->
+    <rect class="vo__r-crust" x="0" y="220" width="360" height="80" fill="url(#__crust)"/>
+    <!-- Crust strata lines -->
+    <line x1="0" y1="240" x2="360" y2="240" stroke="#4E342E" stroke-width="0.5" opacity="0.4"/>
+    <line x1="0" y1="258" x2="360" y2="258" stroke="#3E2723" stroke-width="0.5" opacity="0.3"/>
+    <line x1="0" y1="275" x2="360" y2="275" stroke="#33211a" stroke-width="0.5" opacity="0.25"/>
+
+    <!-- Volcano exterior -->
+    <polygon class="vo__p-mtn" points="180,60 30,220 330,220" fill="url(#__mtn)"/>
+    <!-- Rocky texture lines -->
+    <g stroke="#5D4037" stroke-width="0.5" opacity="0.3">
+      <line x1="120" y1="160" x2="135" y2="155"/><line x1="220" y1="150" x2="240" y2="155"/>
+      <line x1="80" y1="195" x2="100" y2="190"/><line x1="260" y1="190" x2="280" y2="195"/>
+    </g>
+    <!-- Snow cap -->
+    <polygon points="168,75 180,60 192,75" fill="#fff" opacity="0.9"/>
+    <polygon points="164,82 180,63 196,82" fill="#fff" opacity="0.45"/>
+    <!-- Vegetation on lower slopes -->
+    <g fill="#4CAF50" opacity="0.7">
+      <ellipse cx="70" cy="208" rx="12" ry="5"/><ellipse cx="95" cy="205" rx="10" ry="4"/>
+      <ellipse cx="55" cy="213" rx="9" ry="4"/><ellipse cx="275" cy="207" rx="11" ry="5"/>
+      <ellipse cx="300" cy="212" rx="10" ry="4"/><ellipse cx="250" cy="213" rx="8" ry="4"/>
+    </g>
+
+    <!-- Interior cross-section -->
+    <g clip-path="url(#__clip-cs)">
+      <!-- Interior fill (lighter brown) -->
+      <polygon points="180,60 180,220 330,220" fill="#A1887F" opacity="0.6"/>
+      <!-- Crust layers inside mountain -->
+      <line x1="180" y1="140" x2="290" y2="190" stroke="#8D6E63" stroke-width="0.8" opacity="0.4"/>
+      <line x1="180" y1="170" x2="310" y2="210" stroke="#795548" stroke-width="0.6" opacity="0.35"/>
+
+      <!-- Magma chamber -->
+      <ellipse class="vo__r-chamber" cx="220" cy="260" rx="55" ry="22" fill="url(#__chamber)"/>
+      <!-- Magma chamber glow -->
+      <ellipse cx="220" cy="260" rx="40" ry="15" fill="#FFAB00" opacity="0.3"/>
+
+      <!-- Main vent / conduit -->
+      <rect x="195" y="80" width="18" height="175" fill="#5D4037" rx="2"/>
+      <!-- Vent magma fill (dormant: partial) -->
+      <g class="vo__dormant">
+        <rect x="197" y="180" width="14" height="75" fill="#FF6D00" opacity="0.6" rx="1"/>
+      </g>
+      <!-- Vent magma fill (erupting: full) -->
+      <g class="vo__eruption">
+        <rect class="vo__r-vent" x="197" y="82" width="14" height="173" fill="url(#__magma)" rx="1"/>
+      </g>
+
+      <!-- Side vent -->
+      <path d="M213,190 Q240,175 270,195" stroke="#5D4037" stroke-width="6" fill="none"/>
+      <path d="M213,190 Q240,178 268,196" stroke="#BF360C" stroke-width="3" fill="none" opacity="0.5"/>
+    </g>
+
+    <!-- Crater at top -->
+    <ellipse cx="180" cy="62" rx="14" ry="4" fill="#4E342E"/>
+    <ellipse cx="180" cy="62" rx="10" ry="2.5" fill="#3E2723"/>
+
+    <!-- === ERUPTION EFFECTS === -->
+    <g class="vo__eruption">
+      <!-- Lava fountain blobs -->
+      <circle class="vo__blob" cx="176" cy="55" r="4" fill="#FF6D00" style="animation-delay:0s"/>
+      <circle class="vo__blob" cx="183" cy="52" r="3.5" fill="#FF3D00" style="animation-delay:0.4s"/>
+      <circle class="vo__blob" cx="179" cy="48" r="3" fill="#FFAB00" style="animation-delay:0.8s"/>
+      <circle class="vo__blob" cx="185" cy="50" r="2.5" fill="#FF6D00" style="animation-delay:1.2s"/>
+      <circle class="vo__blob" cx="174" cy="46" r="2" fill="#DD2C00" style="animation-delay:0.6s"/>
+
+      <!-- Ash cloud -->
+      <g class="vo__ash" style="animation-delay:0s">
+        <ellipse cx="180" cy="22" rx="35" ry="14" fill="#616161" opacity="0.5"/>
+        <ellipse cx="168" cy="18" rx="22" ry="11" fill="#757575" opacity="0.45"/>
+        <ellipse cx="195" cy="20" rx="25" ry="10" fill="#616161" opacity="0.4"/>
+      </g>
+      <g class="vo__ash" style="animation-delay:1.5s">
+        <ellipse cx="180" cy="28" rx="28" ry="10" fill="#9E9E9E" opacity="0.35"/>
+      </g>
+
+      <!-- Lava flow left slope -->
+      <path class="vo__lava-stream" d="M172,65 Q140,120 90,200 Q75,215 60,220"
+            stroke="#FF6D00" stroke-width="4" fill="none" stroke-linecap="round" style="animation-delay:0s"/>
+      <path class="vo__lava-stream" d="M175,68 Q150,115 110,190 Q100,210 85,218"
+            stroke="#FF3D00" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.7" style="animation-delay:0.5s"/>
+
+      <!-- Steam wisps -->
+      <ellipse class="vo__steam" cx="170" cy="40" rx="6" ry="3" fill="#fff" opacity="0.5" style="animation-delay:0.3s"/>
+      <ellipse class="vo__steam" cx="190" cy="38" rx="5" ry="2.5" fill="#eee" opacity="0.4" style="animation-delay:1s"/>
+      <ellipse class="vo__steam" cx="178" cy="35" rx="4" ry="2" fill="#fff" opacity="0.35" style="animation-delay:1.8s"/>
+    </g>
+
+    <!-- === LABELS WITH LEADER LINES === -->
+    <!-- 火山口 (Crater) -->
+    <line x1="180" y1="62" x2="130" y2="45" stroke="#666" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <text class="vo__label" x="128" y="42" text-anchor="end">火山口</text>
+    <text class="vo__sublabel" x="128" y="50" text-anchor="end">Crater</text>
+
+    <!-- 火山通道 (Vent) -->
+    <line x1="212" y1="140" x2="260" y2="120" stroke="#666" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <text class="vo__label" x="262" y="117" text-anchor="start">火山通道</text>
+    <text class="vo__sublabel" x="262" y="125" text-anchor="start">Vent</text>
+
+    <!-- 岩浆房 (Magma Chamber) -->
+    <line x1="220" y1="260" x2="300" y2="268" stroke="#999" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <text class="vo__label" x="302" y="265" text-anchor="start" fill="#FFCC80">岩浆房</text>
+    <text class="vo__sublabel" x="302" y="273" text-anchor="start" fill="#FFCC80">Magma Chamber</text>
+
+    <!-- 地壳 (Crust) -->
+    <line x1="40" y1="248" x2="15" y2="240" stroke="#999" stroke-width="0.5" stroke-dasharray="2,2"/>
+    <text class="vo__label" x="13" y="237" text-anchor="start" fill="#BCAAA4">地壳</text>
+    <text class="vo__sublabel" x="13" y="245" text-anchor="start" fill="#BCAAA4">Crust</text>
+
+    <!-- Eruption-only labels -->
+    <g class="vo__eruption">
+      <!-- 熔岩 (Lava) -->
+      <line x1="100" y1="185" x2="50" y2="165" stroke="#666" stroke-width="0.5" stroke-dasharray="2,2"/>
+      <text class="vo__label" x="48" y="162" text-anchor="end" fill="#FF6D00">熔岩</text>
+      <text class="vo__sublabel" x="48" y="170" text-anchor="end" fill="#FF8F00">Lava</text>
+      <!-- 火山灰 (Ash) -->
+      <line x1="180" y1="22" x2="240" y2="12" stroke="#666" stroke-width="0.5" stroke-dasharray="2,2"/>
+      <text class="vo__label" x="242" y="10" text-anchor="start" fill="#757575">火山灰</text>
+      <text class="vo__sublabel" x="242" y="18" text-anchor="start" fill="#9E9E9E">Ash Cloud</text>
+    </g>
+
+    <!-- Erupt button -->
+    <g class="vo__btn" data-action="toggle">
+      <rect x="5" y="5" width="48" height="20" rx="10" fill="#D84315" opacity="0.9"/>
+      <text x="29" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="#fff"
+            font-family="'Microsoft YaHei',sans-serif" pointer-events="none">喷发</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.earth.volcano.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* Unique IDs for multi-instance safety */
+  var uid = 'vo_' + Math.random().toString(36).slice(2, 8);
+  var gradMap = {
+    'vo__g-sky': '__sky', 'vo__g-mtn': '__mtn', 'vo__g-magma': '__magma',
+    'vo__g-crust': '__crust', 'vo__g-chamber': '__chamber', 'vo__clip-cs': '__clip-cs'
+  };
+  var refMap = {};
+  Object.keys(gradMap).forEach(function(cls) {
+    var el = svg.querySelector('.' + cls);
+    if (!el) return;
+    var newId = uid + gradMap[cls];
+    el.setAttribute('id', newId);
+    refMap[gradMap[cls]] = newId;
+  });
+
+  /* Update fill/stroke url() references */
+  var skyR = svg.querySelector('.vo__r-sky');
+  if (skyR && refMap['__sky']) skyR.setAttribute('fill', 'url(#' + refMap['__sky'] + ')');
+  var mtnP = svg.querySelector('.vo__p-mtn');
+  if (mtnP && refMap['__mtn']) mtnP.setAttribute('fill', 'url(#' + refMap['__mtn'] + ')');
+  var crustR = svg.querySelector('.vo__r-crust');
+  if (crustR && refMap['__crust']) crustR.setAttribute('fill', 'url(#' + refMap['__crust'] + ')');
+  var chamberE = svg.querySelector('.vo__r-chamber');
+  if (chamberE && refMap['__chamber']) chamberE.setAttribute('fill', 'url(#' + refMap['__chamber'] + ')');
+  var ventR = svg.querySelector('.vo__r-vent');
+  if (ventR && refMap['__magma']) ventR.setAttribute('fill', 'url(#' + refMap['__magma'] + ')');
+  /* Clip path */
+  var csG = svg.querySelector('g[clip-path="url(#__clip-cs)"]');
+  if (csG && refMap['__clip-cs']) csG.setAttribute('clip-path', 'url(#' + refMap['__clip-cs'] + ')');
+
+  /* State */
+  var erupting = false;
+  try {
+    var p = JSON.parse(root.getAttribute('data-props') || '{}');
+    if (p.erupting === true) erupting = true;
+  } catch (e) {}
+
+  function update() {
+    root.setAttribute('data-erupting', erupting ? 'true' : 'false');
+    /* Update button text */
+    var btnText = svg.querySelector('.vo__btn text');
+    if (btnText) btnText.textContent = erupting ? '停止' : '喷发';
+    /* Update button color */
+    var btnRect = svg.querySelector('.vo__btn rect');
+    if (btnRect) btnRect.setAttribute('fill', erupting ? '#37474F' : '#D84315');
+  }
+
+  update();
+
+  function emitChange() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle', values: { erupting: erupting } }
+    }));
+  }
+
+  /* Click handler */
+  svg.addEventListener('click', function(e) {
+    var btn = e.target.closest('.vo__btn');
+    if (!btn) return;
+    erupting = !erupting;
+    update();
+    emitChange();
+  });
+
+  /* MutationObserver for external prop changes */
+  new MutationObserver(function() {
+    try {
+      var p = JSON.parse(root.getAttribute('data-props') || '{}');
+      if (p.erupting !== undefined && p.erupting !== erupting) {
+        erupting = !!p.erupting;
+        update();
+      }
+    } catch (e) {}
+  }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+})();
+</script>

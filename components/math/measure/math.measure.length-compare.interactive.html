@@ -1,0 +1,214 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.measure.length-compare.interactive",
+  "name": "长度比较",
+  "nameEn": "Length Comparison",
+  "category": "math/measure",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 260 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["length", "measurement", "unit", "conversion", "centimeter", "meter", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "topLength": "number", "topUnit": "string", "bottomLength": "number", "bottomUnit": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.measure.length-compare.interactive" role="img" aria-label="长度比较">
+  <style>
+    .cmp[data-cmp-id="math.measure.length-compare.interactive"] {
+      --s: var(--cmp-size, 360px);
+      display: inline-block; width: var(--s); user-select: none; -webkit-user-select: none;
+    }
+    .cmp[data-cmp-id="math.measure.length-compare.interactive"] svg { width: 100%; height: auto; display: block }
+    .cmp[data-cmp-id="math.measure.length-compare.interactive"] .lc__btn,
+    .cmp[data-cmp-id="math.measure.length-compare.interactive"] .lc__ubtn { cursor: pointer; transition: opacity .15s }
+    .cmp[data-cmp-id="math.measure.length-compare.interactive"] .lc__btn:hover,
+    .cmp[data-cmp-id="math.measure.length-compare.interactive"] .lc__ubtn:hover { opacity: .75 }
+    .cmp[data-cmp-id="math.measure.length-compare.interactive"] .lc__bar { transition: width .25s cubic-bezier(.4,0,.2,1) }
+  </style>
+  <svg viewBox="0 0 360 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="lc__gB" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#42A5F5"/><stop offset="1" stop-color="#1E88E5"/>
+      </linearGradient>
+      <linearGradient class="lc__gO" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#FF9800"/><stop offset="1" stop-color="#F57C00"/>
+      </linearGradient>
+    </defs>
+    <!-- Title -->
+    <text x="180" y="15" text-anchor="middle" font-size="13" font-weight="700" fill="#37474F"
+          font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif">长度比较</text>
+    <!-- Top bar -->
+    <g class="lc__btn" data-bar="top" data-delta="-1">
+      <rect x="2" y="35" width="18" height="18" rx="3" fill="#e53935"/>
+      <text x="11" y="48" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Arial,sans-serif" pointer-events="none">−</text>
+    </g>
+    <g class="lc__btn" data-bar="top" data-delta="1">
+      <rect x="2" y="55" width="18" height="18" rx="3" fill="#43a047"/>
+      <text x="11" y="68" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Arial,sans-serif" pointer-events="none">+</text>
+    </g>
+    <rect x="30" y="38" width="280" height="22" rx="3" fill="#E3F2FD" stroke="#90CAF9" stroke-width=".5"/>
+    <rect class="lc__bar" data-bar="top" x="30" y="38" width="0" height="22" rx="3"/>
+    <text class="lc__val" data-bar="top" x="32" y="53" font-size="11" font-weight="700" fill="#fff" font-family="Arial,sans-serif"/>
+    <g class="lc__ugrp" data-bar="top"/>
+    <!-- Ruler -->
+    <g class="lc__ruler"/>
+    <!-- Bottom bar -->
+    <g class="lc__btn" data-bar="bot" data-delta="-1">
+      <rect x="2" y="110" width="18" height="18" rx="3" fill="#e53935"/>
+      <text x="11" y="123" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Arial,sans-serif" pointer-events="none">−</text>
+    </g>
+    <g class="lc__btn" data-bar="bot" data-delta="1">
+      <rect x="2" y="130" width="18" height="18" rx="3" fill="#43a047"/>
+      <text x="11" y="143" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Arial,sans-serif" pointer-events="none">+</text>
+    </g>
+    <rect x="30" y="113" width="280" height="22" rx="3" fill="#FFF3E0" stroke="#FFCC80" stroke-width=".5"/>
+    <rect class="lc__bar" data-bar="bot" x="30" y="113" width="0" height="22" rx="3"/>
+    <text class="lc__val" data-bar="bot" x="32" y="128" font-size="11" font-weight="700" fill="#fff" font-family="Arial,sans-serif"/>
+    <g class="lc__ugrp" data-bar="bot"/>
+    <!-- Conversion display -->
+    <text class="lc__cvT" x="180" y="168" text-anchor="middle" font-size="9.5" fill="#1565C0" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <text class="lc__cvB" x="180" y="182" text-anchor="middle" font-size="9.5" fill="#E65100" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <text class="lc__cmp" x="180" y="197" text-anchor="middle" font-size="12" font-weight="700" fill="#37474F" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <!-- Unit reference -->
+    <text x="30" y="218" font-size="8" fill="#666" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif">单位参考：</text>
+    <rect x="75" y="222" width="2" height="8" fill="#78909C"/>
+    <text x="80" y="230" font-size="7" fill="#666" font-family="Arial,sans-serif">1mm</text>
+    <rect x="105" y="222" width="20" height="8" rx="1" fill="#42A5F5" opacity=".6"/>
+    <text x="128" y="230" font-size="7" fill="#666" font-family="Arial,sans-serif">1cm</text>
+    <rect x="150" y="222" width="120" height="8" rx="1" fill="#FF9800" opacity=".4"/>
+    <line x1="150" y1="222" x2="150" y2="230" stroke="#999" stroke-width=".5"/>
+    <line x1="270" y1="222" x2="270" y2="230" stroke="#999" stroke-width=".5"/>
+    <text x="210" y="244" text-anchor="middle" font-size="7" fill="#666" font-family="Arial,sans-serif">1dm = 10cm</text>
+    <text x="290" y="230" font-size="7" fill="#666" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif">1m = 100cm</text>
+  </svg>
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.measure.length-compare.interactive') return;
+    var svg = root.querySelector('svg'), NS = 'http://www.w3.org/2000/svg';
+    var uid = 'lc' + Math.random().toString(36).slice(2,8);
+    var gB = svg.querySelector('.lc__gB'), gO = svg.querySelector('.lc__gO');
+    if (gB) gB.setAttribute('id', uid + 'B');
+    if (gO) gO.setAttribute('id', uid + 'O');
+    var UNITS = ['mm','cm','dm','m'], PPU = {mm:2,cm:20,dm:200,m:2000};
+    var STEP = {mm:1,cm:1,dm:1,m:0.1}, TOMM = {mm:1,cm:10,dm:100,m:1000};
+    var MBW = 280, BX = 30;
+    var S = { top:{val:5,unit:'cm'}, bot:{val:3,unit:'cm'} };
+
+    function toMM(v,u){ return v * TOMM[u] }
+    function barPx(v,u){ return Math.min(MBW, Math.max(0, v * PPU[u])) }
+    function maxV(u){ return Math.round(MBW / PPU[u] * 10) / 10 }
+    function fmt(v){ return v === Math.floor(v) ? String(v) : v.toFixed(v<1?2:1).replace(/\.?0+$/,'') }
+    function convStr(v,u){
+      var mm = toMM(v,u);
+      return fmt(mm)+' mm = '+fmt(mm/10)+' cm = '+fmt(mm/100)+' dm = '+fmt(mm/1000)+' m';
+    }
+
+    function buildUnits(grp, bar, y){
+      grp.innerHTML = '';
+      var bw=22, gap=2, sx=360-(bw*4+gap*3)-6;
+      UNITS.forEach(function(u,i){
+        var g = document.createElementNS(NS,'g');
+        g.classList.add('lc__ubtn'); g.setAttribute('data-bar',bar); g.setAttribute('data-unit',u);
+        var act = S[bar].unit === u;
+        var r = document.createElementNS(NS,'rect');
+        var x = sx + i*(bw+gap);
+        r.setAttribute('x',x); r.setAttribute('y',y); r.setAttribute('width',bw);
+        r.setAttribute('height',16); r.setAttribute('rx','3');
+        r.setAttribute('fill', act ? (bar==='top'?'#1565C0':'#E65100') : '#E0E0E0');
+        var t = document.createElementNS(NS,'text');
+        t.setAttribute('x',x+bw/2); t.setAttribute('y',y+11.5);
+        t.setAttribute('text-anchor','middle'); t.setAttribute('font-size','8');
+        t.setAttribute('font-weight',act?'700':'500'); t.setAttribute('fill',act?'#fff':'#555');
+        t.setAttribute('font-family','Arial,sans-serif'); t.setAttribute('pointer-events','none');
+        t.textContent = u;
+        g.appendChild(r); g.appendChild(t); grp.appendChild(g);
+      });
+    }
+
+    function buildRuler(){
+      var rg = svg.querySelector('.lc__ruler'); rg.innerHTML = '';
+      var ln = document.createElementNS(NS,'line');
+      ln.setAttribute('x1',BX); ln.setAttribute('y1','90');
+      ln.setAttribute('x2',BX+MBW); ln.setAttribute('y2','90');
+      ln.setAttribute('stroke','#78909C'); ln.setAttribute('stroke-width','1');
+      rg.appendChild(ln);
+      for(var i=0;i<=MBW/20;i++){
+        var x=BX+i*20;
+        var tk=document.createElementNS(NS,'line');
+        tk.setAttribute('x1',x); tk.setAttribute('y1','84'); tk.setAttribute('x2',x); tk.setAttribute('y2','90');
+        tk.setAttribute('stroke','#546E7A'); tk.setAttribute('stroke-width','0.8');
+        rg.appendChild(tk);
+        if(i%5===0){
+          var lb=document.createElementNS(NS,'text');
+          lb.setAttribute('x',x); lb.setAttribute('y','100'); lb.setAttribute('text-anchor','middle');
+          lb.setAttribute('font-size','7'); lb.setAttribute('fill','#546E7A');
+          lb.setAttribute('font-family','Arial,sans-serif'); lb.textContent=i+'cm';
+          rg.appendChild(lb);
+        }
+        if(i<MBW/20){
+          var sx=x+10, st=document.createElementNS(NS,'line');
+          st.setAttribute('x1',sx); st.setAttribute('y1','87'); st.setAttribute('x2',sx); st.setAttribute('y2','90');
+          st.setAttribute('stroke','#90A4AE'); st.setAttribute('stroke-width','0.5');
+          rg.appendChild(st);
+        }
+      }
+    }
+
+    function render(){
+      ['top','bot'].forEach(function(b){
+        var bar=svg.querySelector('.lc__bar[data-bar="'+b+'"]');
+        var val=svg.querySelector('.lc__val[data-bar="'+b+'"]');
+        var w=barPx(S[b].val,S[b].unit);
+        bar.setAttribute('width',w);
+        bar.setAttribute('fill','url(#'+uid+(b==='top'?'B':'O')+')');
+        val.textContent=S[b].val+' '+S[b].unit;
+        val.setAttribute('x', w>50 ? BX+4 : BX+w+4);
+        val.setAttribute('fill', w>50 ? '#fff' : (b==='top'?'#1565C0':'#E65100'));
+      });
+      buildUnits(svg.querySelector('.lc__ugrp[data-bar="top"]'),'top',36);
+      buildUnits(svg.querySelector('.lc__ugrp[data-bar="bot"]'),'bot',113);
+      svg.querySelector('.lc__cvT').textContent='上: '+convStr(S.top.val,S.top.unit);
+      svg.querySelector('.lc__cvB').textContent='下: '+convStr(S.bot.val,S.bot.unit);
+      var tMM=toMM(S.top.val,S.top.unit), bMM=toMM(S.bot.val,S.bot.unit);
+      var c = tMM>bMM?'上 > 下':tMM<bMM?'上 < 下':'上 = 下';
+      svg.querySelector('.lc__cmp').textContent=c;
+      root.setAttribute('aria-label','长度比较 上:'+S.top.val+S.top.unit+' 下:'+S.bot.val+S.bot.unit+' '+c);
+    }
+
+    function emit(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{topLength:S.top.val,topUnit:S.top.unit,bottomLength:S.bot.val,bottomUnit:S.bot.unit}}}));
+    }
+
+    root.querySelectorAll('.lc__btn').forEach(function(btn){
+      btn.addEventListener('click',function(e){
+        e.preventDefault();
+        var b=btn.getAttribute('data-bar'), d=Number(btn.getAttribute('data-delta'));
+        var s=S[b], step=STEP[s.unit];
+        s.val=Math.max(0,Math.min(maxV(s.unit),Math.round((s.val+d*step)*100)/100));
+        render(); emit();
+      });
+    });
+
+    svg.addEventListener('click',function(e){
+      var g=e.target.closest('.lc__ubtn'); if(!g) return;
+      var b=g.getAttribute('data-bar'), u=g.getAttribute('data-unit');
+      if(S[b].unit===u) return;
+      var mm=toMM(S[b].val,S[b].unit);
+      var nv=Math.round(mm/TOMM[u]*100)/100;
+      S[b].unit=u; S[b].val=Math.min(maxV(u),nv);
+      render(); emit();
+    });
+
+    buildRuler(); render();
+  })();
+  </script>
+</div>

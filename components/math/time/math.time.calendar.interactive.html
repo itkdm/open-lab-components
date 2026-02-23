@@ -1,0 +1,248 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.time.calendar.interactive",
+  "name": "日历",
+  "nameEn": "Calendar",
+  "category": "math/time",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 320 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 200, "max": 500, "desc": "组件宽度" },
+    { "key": "year", "type": "number", "default": 2025, "min": 2000, "max": 2099, "desc": "年份" },
+    { "key": "month", "type": "number", "default": 1, "min": 1, "max": 12, "desc": "月份" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["calendar", "date", "year", "month", "day", "time", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "year": "number", "month": "number", "day": "number", "daysInMonth": "number", "isLeapYear": "boolean" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.time.calendar.interactive" role="img" aria-label="日历">
+  <style>
+    .cmp[data-cmp-id="math.time.calendar.interactive"]{
+      --w:var(--cmp-size,300px);
+      display:inline-block;width:var(--w);height:calc(var(--w)*320/300);
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="math.time.calendar.interactive"] svg{
+      display:block;width:100%;height:100%;
+    }
+    .cmp[data-cmp-id="math.time.calendar.interactive"] .cal__btn{
+      cursor:pointer;transition:opacity .12s ease;
+    }
+    .cmp[data-cmp-id="math.time.calendar.interactive"] .cal__btn:hover{opacity:0.65;}
+    .cmp[data-cmp-id="math.time.calendar.interactive"] .cal__cell{
+      cursor:pointer;transition:opacity .1s ease;
+    }
+    .cmp[data-cmp-id="math.time.calendar.interactive"] .cal__cell:hover{opacity:0.7;}
+  </style>
+
+  <svg viewBox="0 0 300 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="cal_hdr_g_mtci" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#4A90D9"/><stop offset="100%" stop-color="#357ABD"/>
+      </linearGradient>
+    </defs>
+    <!-- header bg -->
+    <rect x="0" y="0" width="300" height="55" rx="6" fill="url(#cal_hdr_g_mtci)"/>
+    <!-- nav buttons -->
+    <g class="cal__btn" data-dir="-1">
+      <rect x="4" y="6" width="32" height="26" rx="4" fill="rgba(255,255,255,0.15)"/>
+      <text x="20" y="24" text-anchor="middle" font-size="16" fill="#fff" font-family="sans-serif">&#9664;</text>
+    </g>
+    <g class="cal__btn" data-dir="1">
+      <rect x="264" y="6" width="32" height="26" rx="4" fill="rgba(255,255,255,0.15)"/>
+      <text x="280" y="24" text-anchor="middle" font-size="16" fill="#fff" font-family="sans-serif">&#9654;</text>
+    </g>
+    <!-- header texts -->
+    <text class="cal__title" x="150" y="24" text-anchor="middle" font-size="16" font-weight="700"
+          fill="#fff" font-family="'Microsoft YaHei','PingFang SC',sans-serif"></text>
+    <text class="cal__sub" x="150" y="46" text-anchor="middle" font-size="11"
+          fill="rgba(255,255,255,0.85)" font-family="'Microsoft YaHei','PingFang SC',sans-serif"></text>
+    <!-- weekday header -->
+    <g class="cal__weekdays"></g>
+    <!-- grid -->
+    <rect x="0" y="55" width="300" height="240" fill="#FAFBFC"/>
+    <g class="cal__grid"></g>
+    <!-- bottom info -->
+    <text class="cal__info" x="150" y="310" text-anchor="middle" font-size="11" fill="#666"
+          font-family="'Microsoft YaHei','PingFang SC',sans-serif"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.time.calendar.interactive')return;
+    var NS='http://www.w3.org/2000/svg';
+    var svg=root.querySelector('svg');
+    var gridG=root.querySelector('.cal__grid');
+    var wdG=root.querySelector('.cal__weekdays');
+    var titleEl=root.querySelector('.cal__title');
+    var subEl=root.querySelector('.cal__sub');
+    var infoEl=root.querySelector('.cal__info');
+
+    var cs=getComputedStyle(root);
+    var year=parseInt(cs.getPropertyValue('--cmp-year'))||2025;
+    var month=parseInt(cs.getPropertyValue('--cmp-month'))||1;
+    // also check data-props attribute
+    try{var dp=JSON.parse(root.getAttribute('data-props')||'{}');
+      if(dp.year)year=dp.year;if(dp.month)month=dp.month;
+    }catch(e){}
+    var selDay=1;
+
+    var DAYS=['日','一','二','三','四','五','六'];
+    var CX=[5,47,89,131,173,215,257],CW=40,CH=33;
+
+    function isLeap(y){return(y%4===0&&y%100!==0)||(y%400===0);}
+    function daysIn(y,m){return[31,isLeap(y)?29:28,31,30,31,30,31,31,30,31,30,31][m-1];}
+    function dayOfWeek(y,m,d){return new Date(y,m-1,d).getDay();}
+    function weekName(d){return['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][d];}
+
+    function drawWeekdays(){
+      wdG.innerHTML='';
+      for(var i=0;i<7;i++){
+        var t=document.createElementNS(NS,'text');
+        t.setAttribute('x',CX[i]+CW/2);t.setAttribute('y',74);
+        t.setAttribute('text-anchor','middle');t.setAttribute('font-size','11');
+        t.setAttribute('font-family',"'Microsoft YaHei','PingFang SC',sans-serif");
+        t.setAttribute('fill',i===0?'#E53935':i===6?'#1E88E5':'#555');
+        t.setAttribute('font-weight','600');
+        t.textContent=DAYS[i];
+        wdG.appendChild(t);
+      }
+    }
+
+    function render(){
+      gridG.innerHTML='';
+      var dim=daysIn(year,month);
+      var firstDow=dayOfWeek(year,month,1);
+      if(selDay>dim)selDay=dim;
+      // prev month trailing
+      var prevM=month===1?12:month-1,prevY=month===1?year-1:year;
+      var prevDim=daysIn(prevY,prevM);
+      // next month
+      var nextM=month===12?1:month+1;
+
+      titleEl.textContent=year+'年 '+month+'月';
+      var leap=isLeap(year);
+      var subTxt='共'+dim+'天';
+      if(month===2)subTxt+=leap?' (闰年)':' (平年)';
+      subEl.textContent=subTxt;
+
+      var row=0,col=firstDow;
+      // draw prev month days
+      for(var p=firstDow-1;p>=0;p--){
+        drawCell(0,p,prevDim-firstDow+1+p,true,false);
+      }
+      // draw current month
+      for(var d=1;d<=dim;d++){
+        var isSel=d===selDay;
+        drawCell(row,col,d,false,isSel);
+        col++;if(col>6){col=0;row++;}
+      }
+      // draw next month leading
+      var nd=1;
+      while(row<6||(row===5&&col>0&&col<=6)){
+        if(row>=6)break;
+        drawCell(row,col,nd,true,false);
+        nd++;col++;if(col>6){col=0;row++;if(row>=6)break;}
+      }
+
+      var dow=dayOfWeek(year,month,selDay);
+      infoEl.textContent='选中: '+month+'月'+selDay+'日 '+weekName(dow);
+    }
+
+    function drawCell(row,col,day,faded,selected){
+      var x=CX[col],y=82+row*CH;
+      var g=document.createElementNS(NS,'g');
+      g.setAttribute('class','cal__cell');
+      if(!faded)g.setAttribute('data-day',day);
+
+      var rect=document.createElementNS(NS,'rect');
+      rect.setAttribute('x',x);rect.setAttribute('y',y);
+      rect.setAttribute('width',CW);rect.setAttribute('height',CH);
+      rect.setAttribute('rx','4');
+
+      if(selected){
+        rect.setAttribute('fill','#4A90D9');
+      }else if(faded){
+        rect.setAttribute('fill','transparent');
+      }else if(col===0){
+        rect.setAttribute('fill','#FFF5F5');
+      }else if(col===6){
+        rect.setAttribute('fill','#F0F4FF');
+      }else{
+        rect.setAttribute('fill','#fff');
+      }
+      rect.setAttribute('stroke',faded?'none':'#E8ECF0');
+      rect.setAttribute('stroke-width','0.5');
+      g.appendChild(rect);
+
+      var t=document.createElementNS(NS,'text');
+      t.setAttribute('x',x+CW/2);t.setAttribute('y',y+CH/2+4);
+      t.setAttribute('text-anchor','middle');t.setAttribute('font-size','12');
+      t.setAttribute('font-family',"'Microsoft YaHei','PingFang SC',sans-serif");
+      t.setAttribute('pointer-events','none');
+      if(selected){
+        t.setAttribute('fill','#fff');t.setAttribute('font-weight','700');
+      }else if(faded){
+        t.setAttribute('fill','#D5D5D5');
+      }else if(col===0){
+        t.setAttribute('fill','#E53935');
+      }else if(col===6){
+        t.setAttribute('fill','#1E88E5');
+      }else{
+        t.setAttribute('fill','#333');
+      }
+      t.textContent=day;
+      g.appendChild(t);
+      gridG.appendChild(g);
+    }
+
+    function emitChange(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),type:'toggle',
+          values:{year:year,month:month,day:selDay,daysInMonth:daysIn(year,month),isLeapYear:isLeap(year)}
+        }
+      }));
+    }
+
+    // nav buttons
+    svg.addEventListener('click',function(e){
+      var btn=e.target.closest('.cal__btn');
+      if(btn){
+        var dir=parseInt(btn.getAttribute('data-dir'));
+        month+=dir;
+        if(month<1){month=12;year--;}
+        if(month>12){month=1;year++;}
+        if(year<2000)year=2000;if(year>2099)year=2099;
+        selDay=1;render();emitChange();return;
+      }
+      var cell=e.target.closest('.cal__cell');
+      if(cell){
+        var d=parseInt(cell.getAttribute('data-day'));
+        if(!isNaN(d)&&d>0){selDay=d;render();emitChange();}
+      }
+    });
+
+    drawWeekdays();render();
+
+    var obs=new MutationObserver(function(muts){
+      for(var i=0;i<muts.length;i++){
+        if(muts[i].attributeName==='data-props'||muts[i].attributeName==='style'){
+          try{var dp=JSON.parse(root.getAttribute('data-props')||'{}');
+            if(dp.year)year=dp.year;if(dp.month)month=dp.month;
+          }catch(e){}
+          selDay=1;render();
+        }
+      }
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

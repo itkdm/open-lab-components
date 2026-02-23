@@ -1,0 +1,464 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.reaction.acid-base.interactive",
+  "name": "酸碱中和反应（交互式）",
+  "nameEn": "Acid-Base Neutralization (Interactive)",
+  "category": "chemistry/reaction",
+  "version": "1.1.0",
+  "viewport": { "w": 500, "h": 440 },
+  "tags": ["chemistry","reaction","acid-base","neutralization","pH","indicator","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "acidColor",      "type": "color",  "default": "#ef5350", "desc": "酸性颜色" },
+    { "key": "baseColor",      "type": "color",  "default": "#5c6bc0", "desc": "碱性颜色" },
+    { "key": "neutralColor",   "type": "color",  "default": "#66bb6a", "desc": "中性颜色" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "滴落速度" },
+    { "key": "amount",         "type": "number", "default": 0, "min": 0, "max": 100, "desc": "碱添加量(%)" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showEquation",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示方程式" },
+    { "key": "showParticles",  "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示粒子" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "acidColor": "--cmp-acid", "baseColor": "--cmp-base", "neutralColor": "--cmp-neutral", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "amount": "number(0-100)", "pH": "number(0-14)" } },
+    { "name": "cmp:changeend", "type": "slide", "values": { "amount": "number(0-100)", "pH": "number(0-14)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.reaction.acid-base.interactive" role="img" aria-label="酸碱中和反应（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.reaction.acid-base.interactive"]{
+      --h:var(--cmp-size,440px);display:inline-block;
+      width:calc(var(--h)*500/440);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(92,107,192,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="chem.reaction.acid-base.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.reaction.acid-base.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 500 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- IDs will be patched to unique values by script -->
+      <clipPath id="ab__beakerClip"><rect x="120" y="140" width="160" height="210"/></clipPath>
+      <linearGradient id="ab__glass" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.15"/>
+        <stop offset="0.3" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="0.7" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="1" stop-color="#fff" stop-opacity="0.1"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 烧杯 -->
+    <g class="ab__beaker">
+      <path d="M130,140 L130,330 Q130,345 145,345 L255,345 Q270,345 270,330 L270,140"
+        fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- 玻璃高光 -->
+      <rect class="ab__glassRect" x="132" y="142" width="136" height="200" rx="2"/>
+      <!-- 刻度 -->
+      <line x1="130" y1="180" x2="140" y2="180" stroke="#90a4ae" stroke-width="0.8"/>
+      <line x1="130" y1="220" x2="140" y2="220" stroke="#90a4ae" stroke-width="0.8"/>
+      <line x1="130" y1="260" x2="140" y2="260" stroke="#90a4ae" stroke-width="0.8"/>
+      <line x1="130" y1="300" x2="140" y2="300" stroke="#90a4ae" stroke-width="0.8"/>
+    </g>
+
+    <!-- 溶液（颜色动态变化，y和height由JS控制） -->
+    <rect class="ab__solution" x="131" y="200" width="138" height="144" rx="1" fill="#ef5350" opacity="0.5"/>
+
+    <!-- 滴管 -->
+    <g class="ab__burette" transform="translate(200,20)">
+      <rect x="-4" y="0" width="8" height="80" rx="2" fill="#b0bec5" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <rect x="-8" y="0" width="16" height="12" rx="3" fill="#78909c" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <!-- 滴管液体 -->
+      <rect class="ab__buretteLiquid" x="-2" y="12" width="4" height="55" fill="#5c6bc0" opacity="0.6" rx="1"/>
+      <!-- 滴口 -->
+      <rect x="-1.5" y="80" width="3" height="8" fill="#90a4ae"/>
+    </g>
+
+    <!-- 液滴（动态） -->
+    <g class="ab__drops"></g>
+
+    <!-- 温度提示 -->
+    <g class="ab__tempHint" opacity="0">
+      <text x="290" y="280" font-size="10" fill="#e65100" font-weight="600">🌡</text>
+      <text class="ab__tempText" x="305" y="280" font-size="9" fill="#e65100"></text>
+    </g>
+
+    <!-- pH标尺 -->
+    <g class="ab__phScale" transform="translate(370,60)">
+      <text x="30" y="-5" text-anchor="middle" font-size="11" font-weight="700" fill="var(--cmp-stroke,#37474f)">pH</text>
+      <!-- 渐变色条 -->
+      <rect x="15" y="0" width="30" height="280" rx="4" fill="none" stroke="#ccc" stroke-width="0.5"/>
+      <!-- pH色段 -->
+      <rect x="16" y="1" width="28" height="20" rx="2" fill="#d32f2f"/>
+      <rect x="16" y="21" width="28" height="20" fill="#e53935"/>
+      <rect x="16" y="41" width="28" height="20" fill="#ef5350"/>
+      <rect x="16" y="61" width="28" height="20" fill="#ff7043"/>
+      <rect x="16" y="81" width="28" height="20" fill="#ffa726"/>
+      <rect x="16" y="101" width="28" height="20" fill="#ffca28"/>
+      <rect x="16" y="121" width="28" height="20" fill="#ffee58"/>
+      <rect x="16" y="141" width="28" height="20" fill="#66bb6a"/>
+      <rect x="16" y="161" width="28" height="20" fill="#26a69a"/>
+      <rect x="16" y="181" width="28" height="20" fill="#42a5f5"/>
+      <rect x="16" y="201" width="28" height="20" fill="#5c6bc0"/>
+      <rect x="16" y="221" width="28" height="20" fill="#7e57c2"/>
+      <rect x="16" y="241" width="28" height="20" fill="#ab47bc"/>
+      <rect x="16" y="261" width="28" height="18" rx="2" fill="#8e24aa"/>
+      <!-- 数字 -->
+      <text x="10" y="15" text-anchor="end" font-size="8" fill="#666">0</text>
+      <text x="10" y="75" text-anchor="end" font-size="8" fill="#666">3</text>
+      <text x="10" y="155" text-anchor="end" font-size="8" fill="#666">7</text>
+      <text x="10" y="215" text-anchor="end" font-size="8" fill="#666">10</text>
+      <text x="10" y="275" text-anchor="end" font-size="8" fill="#666">14</text>
+      <!-- 当前pH指示器 -->
+      <polygon class="ab__phPointer" points="-2,0 8,5 8,-5" fill="#333" transform="translate(15,20)"/>
+      <text class="ab__phValue" x="55" y="25" font-size="14" font-weight="700" fill="#333">1.0</text>
+    </g>
+
+    <!-- 滑块控制 -->
+    <g class="ab__slider" transform="translate(60,395)">
+      <text x="0" y="-8" font-size="9" fill="#78909c">碱添加量</text>
+      <rect class="ab__sliderTrack" x="0" y="0" width="280" height="6" rx="3" fill="#e0e0e0" style="cursor:pointer"/>
+      <rect class="ab__sliderFill" x="0" y="0" width="0" height="6" rx="3" fill="#5c6bc0" style="cursor:pointer"/>
+      <circle class="ab__sliderThumb" cx="0" cy="3" r="10" fill="#5c6bc0" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text x="290" y="8" font-size="9" fill="#78909c" class="ab__sliderPct">0%</text>
+    </g>
+
+    <!-- 标注 -->
+    <g class="ab__labels-g">
+      <text x="200" y="365" text-anchor="middle" font-size="10" fill="var(--cmp-stroke,#37474f)">HCl (盐酸)</text>
+      <text x="200" y="18" text-anchor="middle" font-size="10" fill="#5c6bc0" font-weight="600">NaOH (氢氧化钠)</text>
+    </g>
+
+    <!-- 方程式 -->
+    <g class="ab__equation">
+      <rect x="80" y="418" width="240" height="20" rx="4" fill="rgba(255,255,255,0.9)" stroke="#ccc" stroke-width="0.5"/>
+      <text x="200" y="432" text-anchor="middle" font-size="10" font-weight="600" fill="var(--cmp-stroke,#37474f)">HCl + NaOH → NaCl + H₂O</text>
+    </g>
+
+    <!-- 粒子层 -->
+    <g class="ab__particles"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.reaction.acid-base.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    /* ── 唯一ID，避免多实例冲突 ── */
+    var uid='ab_'+(Math.random().toString(36).slice(2,8));
+    var clipEl=svg.querySelector('#ab__beakerClip');
+    var gradEl=svg.querySelector('#ab__glass');
+    if(clipEl)clipEl.id=uid+'_clip';
+    if(gradEl)gradEl.id=uid+'_grad';
+    var solutionEl=root.querySelector('.ab__solution');
+    var glassRect=root.querySelector('.ab__glassRect');
+    var particlesG=root.querySelector('.ab__particles');
+    if(solutionEl)solutionEl.setAttribute('clip-path','url(#'+uid+'_clip)');
+    if(glassRect)glassRect.setAttribute('fill','url(#'+uid+'_grad)');
+    if(particlesG)particlesG.setAttribute('clip-path','url(#'+uid+'_clip)');
+
+    /* ── 读取Props ── */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var amount=Math.max(0,Math.min(100,Number(P.amount)||0));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var showLabels=(P.showLabels!=='off');
+    var showEquation=(P.showEquation!=='off');
+    var showParticles=(P.showParticles==='on');
+
+    var solution=solutionEl;
+    var dropsG=root.querySelector('.ab__drops');
+    var phPointer=root.querySelector('.ab__phPointer');
+    var phValue=root.querySelector('.ab__phValue');
+    var sliderFill=root.querySelector('.ab__sliderFill');
+    var sliderThumb=root.querySelector('.ab__sliderThumb');
+    var sliderTrack=root.querySelector('.ab__sliderTrack');
+    var sliderPct=root.querySelector('.ab__sliderPct');
+    var labelsGEl=root.querySelector('.ab__labels-g');
+    var eqEl=root.querySelector('.ab__equation');
+    var tempHint=root.querySelector('.ab__tempHint');
+    var tempText=root.querySelector('.ab__tempText');
+    var buretteLiquid=root.querySelector('.ab__buretteLiquid');
+
+    function el(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    /* ── pH计算：S形曲线模拟真实中和滴定 ── */
+    /* amount 0~100 映射为碱的体积比 V_b/V_eq (0~2)
+       等当量点在 amount=50 处
+       pH = 7 + 6*tanh(k*(x-1))  其中 x=amount/50, k控制陡峭度 */
+    function calcPH(a){
+      var x=a/50; /* 0~2, 等当量点 x=1 */
+      var k=3.5;  /* 陡峭度 */
+      var ph=7+6*Math.tanh(k*(x-1));
+      return Math.max(0,Math.min(14,ph));
+    }
+
+    /* pH→颜色 */
+    function phColor(ph){
+      var colors=[
+        [211,47,47],[229,57,53],[239,83,80],[255,112,67],[255,167,38],
+        [255,202,40],[255,238,88],[102,187,106],[38,166,154],[66,165,245],
+        [92,107,192],[126,87,194],[171,71,188],[142,36,170]
+      ];
+      var idx=Math.max(0,Math.min(13,Math.floor(ph)));
+      var frac=ph-idx;
+      if(idx>=13)return 'rgb(142,36,170)';
+      var c1=colors[idx],c2=colors[idx+1];
+      var rr=Math.round(c1[0]+(c2[0]-c1[0])*frac);
+      var gg=Math.round(c1[1]+(c2[1]-c1[1])*frac);
+      var bb=Math.round(c1[2]+(c2[2]-c1[2])*frac);
+      return 'rgb('+rr+','+gg+','+bb+')';
+    }
+
+    /* ── 稳定粒子位置（避免闪烁） ── */
+    var particlePool=[];
+    var lastParticleAmount=-1;
+    function initParticlePool(){
+      particlePool=[];
+      for(var i=0;i<40;i++){
+        particlePool.push({
+          x:140+Math.random()*120,
+          y:210+Math.random()*120
+        });
+      }
+    }
+    initParticlePool();
+
+    /* ── 中和放热温度提示 ── */
+    function calcTemp(a){
+      /* 等当量点附近放热最大，用高斯分布模拟 */
+      var x=(a-50)/15;
+      return 25+15*Math.exp(-x*x/2);
+    }
+
+    /* ── 溶液液面：加碱后液面上升 ── */
+    var BASE_Y=210, BASE_H=134; /* 初始液面 */
+    function solutionGeom(a){
+      /* 加碱后液面上升，最多上升20px */
+      var rise=a/100*20;
+      return {y:BASE_Y-rise, h:BASE_H+rise};
+    }
+
+    function update(){
+      var ph=calcPH(amount);
+      var color=phColor(ph);
+
+      /* 溶液颜色和液面 */
+      var sg=solutionGeom(amount);
+      solution.setAttribute('y',sg.y);
+      solution.setAttribute('height',sg.h);
+      solution.setAttribute('fill',color);
+      solution.setAttribute('opacity','0.55');
+
+      /* 滴管液体随添加量减少 */
+      var buretteH=Math.max(5,55*(1-amount/100));
+      buretteLiquid.setAttribute('height',buretteH);
+
+      /* pH指示器 */
+      var pointerY=Math.max(5,Math.min(275,ph*20));
+      phPointer.setAttribute('transform','translate(15,'+pointerY+')');
+      phValue.textContent=ph.toFixed(1);
+      phValue.setAttribute('y',pointerY+5);
+      phValue.setAttribute('fill',color);
+
+      /* 滑块 */
+      var sx=amount*280/100;
+      sliderFill.setAttribute('width',sx);
+      sliderThumb.setAttribute('cx',sx);
+      sliderPct.textContent=Math.round(amount)+'%';
+
+      /* 显示/隐藏 */
+      labelsGEl.style.display=showLabels?'':'none';
+      eqEl.style.display=showEquation?'':'none';
+
+      /* 温度提示 */
+      var temp=calcTemp(amount);
+      if(amount>2){
+        tempHint.setAttribute('opacity','1');
+        tempText.textContent=temp.toFixed(1)+'°C';
+      }else{
+        tempHint.setAttribute('opacity','0');
+      }
+
+      /* 粒子（稳定位置，只在数量变化时更新） */
+      var numH=Math.round(20*(1-amount/100));
+      var numOH=Math.round(20*amount/100);
+      var numNaCl=Math.min(numH,numOH);
+      var totalNeeded=numH+numOH;
+      if(showParticles&&lastParticleAmount!==Math.round(amount)){
+        lastParticleAmount=Math.round(amount);
+        while(particlesG.firstChild)particlesG.removeChild(particlesG.firstChild);
+        for(var i=0;i<numH;i++){
+          var pp=particlePool[i%particlePool.length];
+          particlesG.appendChild(el('circle',{cx:pp.x,cy:pp.y,r:3,fill:'#ef5350',opacity:'0.7'}));
+          var t=el('text',{x:pp.x+5,y:pp.y+2,'font-size':'6',fill:'#c62828'});
+          t.textContent='H\u207A';particlesG.appendChild(t);
+        }
+        for(var j=0;j<numOH;j++){
+          var pp2=particlePool[(20+j)%particlePool.length];
+          particlesG.appendChild(el('circle',{cx:pp2.x,cy:pp2.y,r:3.5,fill:'#5c6bc0',opacity:'0.7'}));
+          var t2=el('text',{x:pp2.x+5,y:pp2.y+2,'font-size':'6',fill:'#283593'});
+          t2.textContent='OH\u207B';particlesG.appendChild(t2);
+        }
+      }
+      if(!showParticles){
+        while(particlesG.firstChild)particlesG.removeChild(particlesG.firstChild);
+        lastParticleAmount=-1;
+      }
+    }
+    update();
+
+    /* ── 液滴动画：仅在拖拽时滴落 ── */
+    var drops=[];
+    var animId=0,lastT=0,dropTimer=0;
+    var dragging=false;
+    var animRunning=false;
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.05);
+      lastT=t;
+
+      /* 仅在拖拽中且amount<100时生成液滴 */
+      if(dragging&&amount<100){
+        dropTimer+=dt;
+        if(dropTimer>0.3/speed){
+          dropTimer=0;
+          var sg=solutionGeom(amount);
+          drops.push({y:108,el:el('ellipse',{cx:200,cy:108,rx:3,ry:4,fill:'#5c6bc0',opacity:'0.8'}),target:sg.y});
+          dropsG.appendChild(drops[drops.length-1].el);
+        }
+      }
+
+      /* 更新液滴 */
+      for(var i=drops.length-1;i>=0;i--){
+        var d=drops[i];
+        d.y+=150*dt*speed;
+        d.el.setAttribute('cy',d.y);
+        if(d.y>d.target){
+          if(d.el.parentNode)d.el.parentNode.removeChild(d.el);
+          drops.splice(i,1);
+        }
+      }
+
+      /* 如果没有液滴且不在拖拽，停止动画循环节省资源 */
+      if(!dragging&&drops.length===0){
+        animRunning=false;
+        animId=0;
+        return;
+      }
+      animId=requestAnimationFrame(tick);
+    }
+
+    function startAnim(){
+      if(animRunning)return;
+      animRunning=true;
+      lastT=0;
+      animId=requestAnimationFrame(tick);
+    }
+
+    /* ── 事件辅助 ── */
+    function emitValues(){
+      return {amount:Math.round(amount),pH:+calcPH(amount).toFixed(1)};
+    }
+    function emitChange(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'chem.reaction.acid-base.interactive',type:'slide',values:emitValues()}}));
+    }
+    function emitChangeEnd(){
+      root.dispatchEvent(new CustomEvent('cmp:changeend',{bubbles:true,composed:true,
+        detail:{id:'chem.reaction.acid-base.interactive',type:'slide',values:emitValues()}}));
+    }
+
+    /* ── 从屏幕坐标计算amount ── */
+    function amountFromEvent(e){
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var svgX=(pt.clientX-rect.left)/rect.width*500;
+      return Math.max(0,Math.min(100,(svgX-60)/280*100));
+    }
+
+    /* ── 滑块拖拽 ── */
+    function startDrag(e){
+      e.preventDefault();
+      dragging=true;
+      sliderThumb.style.cursor='grabbing';
+      amount=amountFromEvent(e);
+      update();
+      emitChange();
+      startAnim();
+      document.addEventListener('mousemove',onDrag,{passive:false});
+      document.addEventListener('mouseup',endDrag);
+      document.addEventListener('touchmove',onDrag,{passive:false});
+      document.addEventListener('touchend',endDrag);
+    }
+    function onDrag(e){
+      if(!dragging)return;
+      e.preventDefault();
+      amount=amountFromEvent(e);
+      update();
+      emitChange();
+    }
+    function endDrag(){
+      dragging=false;
+      sliderThumb.style.cursor='grab';
+      document.removeEventListener('mousemove',onDrag);
+      document.removeEventListener('mouseup',endDrag);
+      document.removeEventListener('touchmove',onDrag);
+      document.removeEventListener('touchend',endDrag);
+      emitChangeEnd();
+    }
+    sliderThumb.addEventListener('mousedown',startDrag,{passive:false});
+    sliderThumb.addEventListener('touchstart',startDrag,{passive:false});
+
+    /* ── 点击轨道跳转 ── */
+    function trackClick(e){
+      if(dragging)return;
+      e.preventDefault();
+      amount=amountFromEvent(e);
+      update();
+      emitChange();
+      emitChangeEnd();
+    }
+    sliderTrack.addEventListener('mousedown',trackClick,{passive:false});
+    sliderTrack.addEventListener('touchstart',trackClick,{passive:false});
+    sliderFill.addEventListener('mousedown',trackClick,{passive:false});
+    sliderFill.addEventListener('touchstart',trackClick,{passive:false});
+
+    /* ── Props变化监听 ── */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');
+      showEquation=(P2.showEquation!=='off');
+      showParticles=(P2.showParticles==='on');
+      if(P2.amount!=null)amount=Math.max(0,Math.min(100,Number(P2.amount)||0));
+      update();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    /* ── 清理 ── */
+    window.addEventListener('beforeunload',function(){
+      if(animId)cancelAnimationFrame(animId);
+      obs.disconnect();
+    });
+  })();
+  </script>
+</div>

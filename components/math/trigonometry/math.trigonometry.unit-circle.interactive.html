@@ -1,0 +1,322 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.trigonometry.unit-circle.interactive",
+  "name": "三角函数单位圆（交互式）",
+  "nameEn": "Trigonometric Unit Circle (Interactive)",
+  "category": "math/trigonometry",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 420 },
+  "tags": ["math","trigonometry","unit-circle","sin","cos","tan","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "sinColor",       "type": "color",  "default": "#ef5350", "desc": "sin颜色" },
+    { "key": "cosColor",       "type": "color",  "default": "#42a5f5", "desc": "cos颜色" },
+    { "key": "tanColor",       "type": "color",  "default": "#66bb6a", "desc": "tan颜色" },
+    { "key": "angle",          "type": "number", "default": 45, "min": 0, "max": 360, "desc": "角度(°)" },
+    { "key": "showSin",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示sin" },
+    { "key": "showCos",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示cos" },
+    { "key": "showTan",        "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示tan" },
+    { "key": "showWave",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示波形" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "sinColor": "--cmp-sin", "cosColor": "--cmp-cos", "tanColor": "--cmp-tan", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "angle", "values": { "angle": "number(°)", "sin": "number", "cos": "number", "tan": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.trigonometry.unit-circle.interactive" role="img" aria-label="三角函数单位圆（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.trigonometry.unit-circle.interactive"]{
+      --h:var(--cmp-size,420px);display:inline-block;
+      width:calc(var(--h)*500/420);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="math.trigonometry.unit-circle.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.trigonometry.unit-circle.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="trig__arrowX" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-stroke,#37474f)"/></marker>
+      <marker id="trig__arrowY" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-stroke,#37474f)"/></marker>
+    </defs>
+
+    <!-- 坐标轴 -->
+    <line x1="30" y1="210" x2="240" y2="210" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2" marker-end="url(#trig__arrowX)"/>
+    <line x1="130" y1="340" x2="130" y2="30" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2" marker-end="url(#trig__arrowY)"/>
+    <!-- 轴标签 -->
+    <text x="238" y="225" font-size="10" fill="var(--cmp-stroke,#37474f)">x</text>
+    <text x="135" y="38" font-size="10" fill="var(--cmp-stroke,#37474f)">y</text>
+
+    <!-- 单位圆 -->
+    <circle cx="130" cy="210" r="100" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.4"/>
+
+    <!-- 特殊角度刻度 -->
+    <g opacity="0.3">
+      <circle cx="230" cy="210" r="2" fill="var(--cmp-stroke,#37474f)"/>
+      <circle cx="130" cy="110" r="2" fill="var(--cmp-stroke,#37474f)"/>
+      <circle cx="30" cy="210" r="2" fill="var(--cmp-stroke,#37474f)"/>
+      <circle cx="130" cy="310" r="2" fill="var(--cmp-stroke,#37474f)"/>
+    </g>
+    <text x="233" y="225" font-size="7" fill="#999">0°</text>
+    <text x="133" y="107" font-size="7" fill="#999">90°</text>
+    <text x="15" y="225" font-size="7" fill="#999">180°</text>
+    <text x="133" y="323" font-size="7" fill="#999">270°</text>
+
+    <!-- 动态内容 -->
+    <g class="trig__dynamic"></g>
+
+    <!-- 波形区域 -->
+    <g class="trig__wave" transform="translate(270,30)">
+      <!-- 波形坐标 -->
+      <line x1="0" y1="90" x2="210" y2="90" stroke="#ccc" stroke-width="0.5"/>
+      <line x1="0" y1="0" x2="0" y2="180" stroke="#ccc" stroke-width="0.5"/>
+      <text x="215" y="94" font-size="7" fill="#999">θ</text>
+      <!-- 刻度 -->
+      <text x="-5" y="8" text-anchor="end" font-size="7" fill="#999">1</text>
+      <text x="-5" y="94" text-anchor="end" font-size="7" fill="#999">0</text>
+      <text x="-5" y="184" text-anchor="end" font-size="7" fill="#999">-1</text>
+      <line x1="0" y1="0" x2="210" y2="0" stroke="#eee" stroke-width="0.3"/>
+      <line x1="0" y1="180" x2="210" y2="180" stroke="#eee" stroke-width="0.3"/>
+      <!-- 波形路径 -->
+      <path class="trig__sinWave" d="" fill="none" stroke="var(--cmp-sin,#ef5350)" stroke-width="1.5"/>
+      <path class="trig__cosWave" d="" fill="none" stroke="var(--cmp-cos,#42a5f5)" stroke-width="1.5"/>
+      <!-- 当前角度标记 -->
+      <line class="trig__waveMark" x1="0" y1="0" x2="0" y2="180" stroke="#999" stroke-width="0.5" stroke-dasharray="2,2"/>
+      <!-- 图例 -->
+      <line x1="10" y1="195" x2="30" y2="195" stroke="var(--cmp-sin,#ef5350)" stroke-width="2"/>
+      <text x="34" y="198" font-size="8" fill="var(--cmp-sin,#ef5350)">sin</text>
+      <line x1="70" y1="195" x2="90" y2="195" stroke="var(--cmp-cos,#42a5f5)" stroke-width="2"/>
+      <text x="94" y="198" font-size="8" fill="var(--cmp-cos,#42a5f5)">cos</text>
+    </g>
+
+    <!-- 数值显示 -->
+    <g class="trig__values" transform="translate(270,260)">
+      <rect x="0" y="0" width="210" height="80" rx="6" fill="rgba(255,255,255,0.9)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="trig__angleText" x="105" y="20" text-anchor="middle" font-size="12" font-weight="700" fill="var(--cmp-stroke,#37474f)">θ = 45°</text>
+      <text class="trig__sinText" x="15" y="40" font-size="11" font-weight="600" fill="var(--cmp-sin,#ef5350)">sin = 0.707</text>
+      <text class="trig__cosText" x="15" y="58" font-size="11" font-weight="600" fill="var(--cmp-cos,#42a5f5)">cos = 0.707</text>
+      <text class="trig__tanText" x="15" y="74" font-size="11" font-weight="600" fill="var(--cmp-tan,#66bb6a)">tan = 1.000</text>
+    </g>
+
+    <!-- 提示 -->
+    <text x="130" y="410" text-anchor="middle" font-size="9" fill="#999">拖拽圆上的点改变角度</text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.trigonometry.unit-circle.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var angle=(Number(P.angle)||45)*Math.PI/180;
+    var showSin=(P.showSin!=='off');
+    var showCos=(P.showCos!=='off');
+    var showTan=(P.showTan==='on');
+    var showWave=(P.showWave!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    var dynG=root.querySelector('.trig__dynamic');
+    var sinWave=root.querySelector('.trig__sinWave');
+    var cosWave=root.querySelector('.trig__cosWave');
+    var waveMark=root.querySelector('.trig__waveMark');
+    var waveG=root.querySelector('.trig__wave');
+    var angleText=root.querySelector('.trig__angleText');
+    var sinText=root.querySelector('.trig__sinText');
+    var cosText=root.querySelector('.trig__cosText');
+    var tanText=root.querySelector('.trig__tanText');
+
+    var CX=130,CY=210,R=100;
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function render(){
+      clear(dynG);
+      var cosA=Math.cos(angle),sinA=Math.sin(angle);
+      var px=CX+R*cosA,py=CY-R*sinA;
+
+      /* 角度弧 */
+      var arcR=25;
+      var endX=CX+arcR*cosA,endY=CY-arcR*sinA;
+      var largeArc=angle>Math.PI?1:0;
+      dynG.appendChild(elSvg('path',{
+        d:'M'+(CX+arcR)+','+CY+' A'+arcR+','+arcR+' 0 '+largeArc+',0 '+endX+','+endY,
+        fill:'none',stroke:'#ff9800','stroke-width':'1.5'}));
+      /* 角度标注 */
+      var labelR=arcR+10;
+      var midA=angle/2;
+      dynG.appendChild(elSvg('text',{x:CX+labelR*Math.cos(midA),y:CY-labelR*Math.sin(midA)+3,
+        'text-anchor':'middle','font-size':'9','font-weight':'600',fill:'#ff9800'})).textContent=
+        Math.round(angle*180/Math.PI)+'°';
+
+      /* 半径线 */
+      dynG.appendChild(elSvg('line',{x1:CX,y1:CY,x2:px,y2:py,
+        stroke:'var(--cmp-stroke,#37474f)','stroke-width':'1.5'}));
+
+      /* sin线（垂直） */
+      if(showSin){
+        dynG.appendChild(elSvg('line',{x1:px,y1:CY,x2:px,y2:py,
+          stroke:'var(--cmp-sin,#ef5350)','stroke-width':'2.5','stroke-linecap':'round'}));
+        if(showLabels){
+          var sinLabelY=(CY+py)/2;
+          dynG.appendChild(elSvg('text',{x:px+8,y:sinLabelY+3,'font-size':'9','font-weight':'600',
+            fill:'var(--cmp-sin,#ef5350)'})).textContent='sin';
+        }
+      }
+
+      /* cos线（水平） */
+      if(showCos){
+        dynG.appendChild(elSvg('line',{x1:CX,y1:CY,x2:px,y2:CY,
+          stroke:'var(--cmp-cos,#42a5f5)','stroke-width':'2.5','stroke-linecap':'round'}));
+        if(showLabels){
+          var cosLabelX=(CX+px)/2;
+          dynG.appendChild(elSvg('text',{x:cosLabelX,y:CY+15,'text-anchor':'middle','font-size':'9','font-weight':'600',
+            fill:'var(--cmp-cos,#42a5f5)'})).textContent='cos';
+        }
+      }
+
+      /* tan线 */
+      if(showTan&&Math.abs(cosA)>0.01){
+        var tanVal=sinA/cosA;
+        var tanY=CY-R*tanVal;
+        tanY=Math.max(CY-200,Math.min(CY+200,tanY));
+        dynG.appendChild(elSvg('line',{x1:CX+R,y1:CY,x2:CX+R,y2:tanY,
+          stroke:'var(--cmp-tan,#66bb6a)','stroke-width':'2.5','stroke-linecap':'round'}));
+        /* 延长线 */
+        dynG.appendChild(elSvg('line',{x1:CX,y1:CY,x2:CX+R,y2:tanY,
+          stroke:'var(--cmp-tan,#66bb6a)','stroke-width':'1','stroke-dasharray':'3,3',opacity:'0.5'}));
+        if(showLabels){
+          dynG.appendChild(elSvg('text',{x:CX+R+8,y:(CY+tanY)/2+3,'font-size':'9','font-weight':'600',
+            fill:'var(--cmp-tan,#66bb6a)'})).textContent='tan';
+        }
+      }
+
+      /* 点 */
+      dynG.appendChild(elSvg('circle',{cx:px,cy:py,r:6,fill:'#ff9800',stroke:'#fff','stroke-width':'2',style:'cursor:grab'}));
+
+      /* 投影虚线 */
+      dynG.appendChild(elSvg('line',{x1:px,y1:py,x2:px,y2:CY,stroke:'#ccc','stroke-width':'0.8','stroke-dasharray':'3,3'}));
+      dynG.appendChild(elSvg('line',{x1:px,y1:py,x2:CX,y2:py,stroke:'#ccc','stroke-width':'0.8','stroke-dasharray':'3,3'}));
+
+      /* 波形 */
+      waveG.style.display=showWave?'':'none';
+      if(showWave){
+        var sinD='',cosD='';
+        for(var i=0;i<=200;i++){
+          var a=i/200*Math.PI*2;
+          var sy=90-80*Math.sin(a);
+          var cy2=90-80*Math.cos(a);
+          sinD+=(i===0?'M':'L')+i+','+sy;
+          cosD+=(i===0?'M':'L')+i+','+cy2;
+        }
+        sinWave.setAttribute('d',sinD);
+        sinWave.style.display=showSin?'':'none';
+        cosWave.setAttribute('d',cosD);
+        cosWave.style.display=showCos?'':'none';
+
+        /* 当前角度标记 */
+        var markX=angle/(Math.PI*2)*200;
+        waveMark.setAttribute('x1',markX);
+        waveMark.setAttribute('x2',markX);
+
+        /* 波形上的点 */
+        if(showSin){
+          dynG.appendChild(elSvg('circle',{cx:270+markX,cy:30+90-80*sinA,r:4,fill:'var(--cmp-sin,#ef5350)'}));
+          /* 连接线 */
+          dynG.appendChild(elSvg('line',{x1:px,y1:py,x2:270+markX,y2:30+90-80*sinA,
+            stroke:'var(--cmp-sin,#ef5350)','stroke-width':'0.5','stroke-dasharray':'2,3',opacity:'0.4'}));
+        }
+        if(showCos){
+          dynG.appendChild(elSvg('circle',{cx:270+markX,cy:30+90-80*cosA,r:4,fill:'var(--cmp-cos,#42a5f5)'}));
+        }
+      }
+
+      /* 数值 */
+      var deg=Math.round(angle*180/Math.PI);
+      angleText.textContent='θ = '+deg+'°';
+      sinText.textContent='sin = '+sinA.toFixed(3);
+      cosText.textContent='cos = '+cosA.toFixed(3);
+      var tanVal2=Math.abs(cosA)>0.001?(sinA/cosA):Infinity;
+      tanText.textContent='tan = '+(isFinite(tanVal2)?tanVal2.toFixed(3):'∞');
+    }
+    render();
+
+    /* 拖拽 */
+    var dragging=false;
+    function onDown(e){
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var sy=(pt.clientY-rect.top)/rect.height*420;
+      var dx=sx-CX,dy=sy-CY;
+      /* 检查是否点击在圆附近 */
+      var dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<R+30&&dist>20){
+        e.preventDefault();dragging=true;
+        document.addEventListener('mousemove',onMove,{passive:false});
+        document.addEventListener('mouseup',onUp);
+        document.addEventListener('touchmove',onMove,{passive:false});
+        document.addEventListener('touchend',onUp);
+      }
+    }
+    function onMove(e){
+      if(!dragging)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var sy=(pt.clientY-rect.top)/rect.height*420;
+      var a=Math.atan2(CY-sy,sx-CX);
+      if(a<0)a+=Math.PI*2;
+      angle=a;
+      render();
+      emit();
+    }
+    function onUp(){dragging=false;
+      document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
+    }
+    svg.addEventListener('mousedown',onDown,{passive:false});
+    svg.addEventListener('touchstart',onDown,{passive:false});
+
+    function emit(){
+      var deg=Math.round(angle*180/Math.PI);
+      var cosA=Math.cos(angle),sinA=Math.sin(angle);
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'math.trigonometry.unit-circle.interactive',type:'angle',
+          values:{angle:deg,sin:+sinA.toFixed(4),cos:+cosA.toFixed(4),
+            tan:Math.abs(cosA)>0.001?+(sinA/cosA).toFixed(4):null}}}));
+    }
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.angle!=null)angle=(Number(P2.angle)||0)*Math.PI/180;
+      showSin=(P2.showSin!=='off');showCos=(P2.showCos!=='off');
+      showTan=(P2.showTan==='on');showWave=(P2.showWave!=='off');
+      showLabels=(P2.showLabels!=='off');
+      render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

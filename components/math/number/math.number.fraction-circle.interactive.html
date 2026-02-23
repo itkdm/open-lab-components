@@ -1,0 +1,331 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.fraction-circle.interactive",
+  "name": "分数圆",
+  "nameEn": "Fraction Circle",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 240 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 240, "min": 140, "max": 400, "desc": "组件高度" },
+    { "key": "denominator", "type": "number",     "default": 4,   "min": 2,   "max": 12,  "desc": "分母（等分数）" },
+    { "key": "fillColor",   "type": "color",  "default": "#ff7043", "desc": "填充颜色" },
+    { "key": "emptyColor",  "type": "color",  "default": "#fff3e0", "desc": "未填充颜色" },
+    { "key": "strokeColor", "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "textColor",   "type": "color",  "default": "#37474f", "desc": "文字颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "fillColor": "--cmp-fill",
+    "emptyColor": "--cmp-empty",
+    "strokeColor": "--cmp-stroke",
+    "textColor": "--cmp-text"
+  },
+  "tags": ["fraction", "circle", "number", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change",    "type": "toggle", "values": { "numerator": "number", "denominator": "number", "simplified": "string" } },
+    { "name": "cmp:changeend", "type": "toggle", "values": { "numerator": "number", "denominator": "number", "simplified": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.fraction-circle.interactive" role="img" aria-label="分数圆">
+  <style>
+    .cmp[data-cmp-id="math.number.fraction-circle.interactive"]{
+      --h:var(--cmp-size,240px);
+      display:inline-block;
+      width:calc(var(--h)*200/240);
+      height:var(--h);
+      user-select:none;
+      touch-action:none;
+    }
+    .cmp[data-cmp-id="math.number.fraction-circle.interactive"] svg{
+      width:100%;height:100%;display:block;overflow:visible;
+    }
+    .cmp[data-cmp-id="math.number.fraction-circle.interactive"] .fc__slice{
+      cursor:pointer;
+      transition:opacity .25s ease, fill .35s ease;
+    }
+    .cmp[data-cmp-id="math.number.fraction-circle.interactive"] .fc__slice:hover{
+      opacity:0.82;
+    }
+    .cmp[data-cmp-id="math.number.fraction-circle.interactive"] .fc__frac{
+      font-family:'Courier New',monospace;
+      font-weight:700;
+      pointer-events:none;
+    }
+    .cmp[data-cmp-id="math.number.fraction-circle.interactive"] .fc__simplified{
+      font-family:'Courier New',monospace;
+      font-weight:600;
+      pointer-events:none;
+    }
+  </style>
+
+  <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter id="fc__shadow">
+        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+
+    <!-- pie group -->
+    <g class="fc__pie" filter="url(#fc__shadow)"></g>
+
+    <!-- outer ring -->
+    <circle class="fc__ring" cx="100" cy="95" r="78" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="2.2"/>
+
+    <!-- center fraction display -->
+    <g class="fc__center">
+      <circle cx="100" cy="95" r="24" fill="#ffffff" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5" opacity="0.92"/>
+      <text class="fc__frac fc__num" x="100" y="90" font-size="14"
+            fill="var(--cmp-text,#37474f)" text-anchor="middle">0</text>
+      <line class="fc__frac-line" x1="88" y1="93" x2="112" y2="93"
+            stroke="var(--cmp-text,#37474f)" stroke-width="1.5"/>
+      <text class="fc__frac fc__den" x="100" y="105" font-size="14"
+            fill="var(--cmp-text,#37474f)" text-anchor="middle">4</text>
+    </g>
+
+    <!-- simplified fraction below circle -->
+    <text class="fc__simplified" x="100" y="192" font-size="13"
+          fill="var(--cmp-text,#37474f)" text-anchor="middle" opacity="0.7"></text>
+
+    <!-- decimal value -->
+    <text class="fc__decimal" x="100" y="210" font-size="11"
+          fill="var(--cmp-text,#37474f)" text-anchor="middle" opacity="0.5"
+          font-family="'Courier New',monospace"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.number.fraction-circle.interactive')return;
+
+    var NS='http://www.w3.org/2000/svg';
+    var CX=100,CY=95,R=76;
+
+    var pieG=root.querySelector('.fc__pie');
+    var numText=root.querySelector('.fc__num');
+    var denText=root.querySelector('.fc__den');
+    var fracLine=root.querySelector('.fc__frac-line');
+    var simplifiedText=root.querySelector('.fc__simplified');
+    var decimalText=root.querySelector('.fc__decimal');
+    var ringEl=root.querySelector('.fc__ring');
+
+    /* ─── State ─── */
+    var denominator=4;
+    var filled=[];  /* boolean array */
+    var changeTimer=null;
+
+    /* ─── Parse props ─── */
+    function parseProps(){
+      try{var r=root.getAttribute('data-props');return r?JSON.parse(r)||{}:{};}catch(e){return {};}
+    }
+
+    /* ─── Math helpers ─── */
+    function gcd(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var t=b;b=a%b;a=t;}return a;}
+
+    function simplify(num,den){
+      if(num===0)return{n:0,d:1,str:'0'};
+      var g=gcd(num,den);
+      var sn=num/g,sd=den/g;
+      if(sd===1)return{n:sn,d:sd,str:String(sn)};
+      return{n:sn,d:sd,str:sn+'/'+sd};
+    }
+
+    /* ─── SVG arc path helper ─── */
+    function polarToCart(cx,cy,r,angleDeg){
+      var rad=(angleDeg-90)*Math.PI/180;
+      return{x:cx+r*Math.cos(rad),y:cy+r*Math.sin(rad)};
+    }
+
+    function slicePath(cx,cy,r,startAngle,endAngle){
+      var start=polarToCart(cx,cy,r,startAngle);
+      var end=polarToCart(cx,cy,r,endAngle);
+      var sweep=endAngle-startAngle;
+      var largeArc=sweep>180?1:0;
+      return 'M'+cx+','+cy+' L'+start.x+','+start.y+
+             ' A'+r+','+r+' 0 '+largeArc+',1 '+end.x+','+end.y+' Z';
+    }
+
+    /* ─── Bright palette for filled slices ─── */
+    var PALETTE=[
+      '#ff7043','#ff5252','#ff4081','#e040fb',
+      '#7c4dff','#536dfe','#448aff','#40c4ff',
+      '#18ffff','#64ffda','#69f0ae','#b2ff59'
+    ];
+
+    function getFillColor(index){
+      /* Use prop fillColor if set, otherwise cycle palette */
+      var props=parseProps();
+      if(props.fillColor)return props.fillColor;
+      return PALETTE[index%PALETTE.length];
+    }
+
+    /* ─── Build slices ─── */
+    function buildPie(){
+      if(!pieG)return;
+      pieG.innerHTML='';
+      var angle=360/denominator;
+
+      for(var i=0;i<denominator;i++){
+        var startAngle=i*angle;
+        var endAngle=(i+1)*angle;
+
+        var path=document.createElementNS(NS,'path');
+        path.setAttribute('d',slicePath(CX,CY,R,startAngle,endAngle));
+        path.setAttribute('class','fc__slice');
+        path.setAttribute('data-index',String(i));
+        path.setAttribute('stroke','var(--cmp-stroke,#37474f)');
+        path.setAttribute('stroke-width','1.5');
+        path.setAttribute('stroke-linejoin','round');
+
+        if(filled[i]){
+          path.setAttribute('fill',getFillColor(i));
+        }else{
+          path.setAttribute('fill','var(--cmp-empty,#fff3e0)');
+        }
+
+        /* Click handler */
+        (function(idx,el){
+          el.addEventListener('click',function(e){
+            e.stopPropagation();
+            toggleSlice(idx);
+          });
+          el.addEventListener('touchend',function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            toggleSlice(idx);
+          });
+        })(i,path);
+
+        pieG.appendChild(path);
+
+        /* Division line from center to edge for visual clarity */
+        var edgePt=polarToCart(CX,CY,R,startAngle);
+        var line=document.createElementNS(NS,'line');
+        line.setAttribute('x1',String(CX));
+        line.setAttribute('y1',String(CY));
+        line.setAttribute('x2',String(edgePt.x));
+        line.setAttribute('y2',String(edgePt.y));
+        line.setAttribute('stroke','var(--cmp-stroke,#37474f)');
+        line.setAttribute('stroke-width','1.5');
+        line.setAttribute('pointer-events','none');
+        pieG.appendChild(line);
+      }
+    }
+
+    /* ─── Toggle a slice ─── */
+    function toggleSlice(idx){
+      filled[idx]=!filled[idx];
+      updateDisplay();
+      emitChange('cmp:change');
+
+      /* Debounced changeend */
+      if(changeTimer)clearTimeout(changeTimer);
+      changeTimer=setTimeout(function(){
+        emitChange('cmp:changeend');
+      },300);
+    }
+
+    /* ─── Update display ─── */
+    function updateDisplay(){
+      var numerator=0;
+      for(var i=0;i<denominator;i++){
+        if(filled[i])numerator++;
+      }
+
+      /* Update slice fills */
+      var slices=pieG.querySelectorAll('.fc__slice');
+      for(var j=0;j<slices.length;j++){
+        var idx=parseInt(slices[j].getAttribute('data-index'),10);
+        if(filled[idx]){
+          slices[j].setAttribute('fill',getFillColor(idx));
+        }else{
+          slices[j].setAttribute('fill','var(--cmp-empty,#fff3e0)');
+        }
+      }
+
+      /* Update fraction text */
+      if(numText)numText.textContent=String(numerator);
+      if(denText)denText.textContent=String(denominator);
+
+      /* Simplified fraction */
+      var sim=simplify(numerator,denominator);
+      if(simplifiedText){
+        if(sim.n===numerator&&sim.d===denominator){
+          simplifiedText.textContent='';
+        }else{
+          simplifiedText.textContent='= '+sim.str;
+        }
+      }
+
+      /* Decimal */
+      if(decimalText){
+        if(numerator===0){
+          decimalText.textContent='= 0';
+        }else{
+          var dec=numerator/denominator;
+          decimalText.textContent='= '+dec.toFixed(3).replace(/0+$/,'').replace(/\.$/,'');
+        }
+      }
+
+      /* Update aria-label */
+      root.setAttribute('aria-label','分数圆: '+numerator+'/'+denominator+(sim.n!==numerator||sim.d!==denominator?' = '+sim.str:''));
+    }
+
+    /* ─── Emit events ─── */
+    function emitChange(eventName){
+      var numerator=0;
+      for(var i=0;i<denominator;i++){
+        if(filled[i])numerator++;
+      }
+      var sim=simplify(numerator,denominator);
+
+      root.dispatchEvent(new CustomEvent(eventName,{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'toggle',
+          values:{
+            numerator:numerator,
+            denominator:denominator,
+            simplified:sim.str
+          }
+        }
+      }));
+    }
+
+    /* ─── Full render ─── */
+    function render(){
+      var props=parseProps();
+      var newDen=Math.max(2,Math.min(12,Math.round(Number(props.denominator)||4)));
+
+      /* If denominator changed, reset filled state */
+      if(newDen!==denominator||filled.length!==newDen){
+        denominator=newDen;
+        filled=[];
+        for(var i=0;i<denominator;i++)filled.push(false);
+      }
+
+      buildPie();
+      updateDisplay();
+    }
+
+    /* ─── Init ─── */
+    render();
+
+    /* ─── Reactive prop updates ─── */
+    var observer=new MutationObserver(function(mutations){
+      for(var i=0;i<mutations.length;i++){
+        if(mutations[i].attributeName==='data-props'||mutations[i].attributeName==='style'){
+          render();
+        }
+      }
+    });
+    observer.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){observer.disconnect();});
+  })();
+  </script>
+</div>

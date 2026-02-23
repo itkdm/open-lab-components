@@ -1,0 +1,239 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.tool.shadow-length.interactive",
+  "name": "影子变化",
+  "nameEn": "Shadow Length",
+  "category": "science/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 240 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "sunAngle", "type": "number", "default": 45, "min": 10, "max": 170, "desc": "太阳高度角(度)" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["shadow", "light", "sun", "angle", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "sunAngle": "number", "shadowLength": "number", "timeOfDay": "string" } },
+    { "name": "cmp:changeend", "type": "slide", "values": { "sunAngle": "number", "shadowLength": "number", "timeOfDay": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.tool.shadow-length.interactive" role="img" aria-label="影子变化">
+  <style>
+    .cmp[data-cmp-id="sci.tool.shadow-length.interactive"] {
+      --_size: var(--cmp-size, 360px);
+      display: inline-block; width: var(--_size); height: auto;
+      user-select: none; font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    .cmp[data-cmp-id="sci.tool.shadow-length.interactive"] svg { width: 100%; height: auto; display: block; }
+    .cmp[data-cmp-id="sci.tool.shadow-length.interactive"] .sl__sun { cursor: grab; }
+    .cmp[data-cmp-id="sci.tool.shadow-length.interactive"] .sl__sun:active { cursor: grabbing; }
+    .cmp[data-cmp-id="sci.tool.shadow-length.interactive"] .sl__slider-thumb { cursor: pointer; }
+    .cmp[data-cmp-id="sci.tool.shadow-length.interactive"] .sl__slider-thumb:active { cursor: grabbing; }
+  </style>
+  <svg viewBox="0 0 360 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="sl__sky-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#87CEEB"/><stop offset="100%" stop-color="#d4eef7"/>
+      </linearGradient>
+      <radialGradient class="sl__sun-grad" cx="0.4" cy="0.35" r="0.6">
+        <stop offset="0%" stop-color="#FFF9C4"/><stop offset="50%" stop-color="#FFD54F"/><stop offset="100%" stop-color="#FF8F00"/>
+      </radialGradient>
+      <filter class="sl__sun-glow" x="-80%" y="-80%" width="260%" height="260%">
+        <feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <linearGradient class="sl__shadow-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="rgba(0,0,0,0.45)"/><stop offset="100%" stop-color="rgba(0,0,0,0.08)"/>
+      </linearGradient>
+    </defs>
+    <rect class="sl__sky" x="0" y="0" width="360" height="180"/>
+    <rect x="0" y="180" width="360" height="60" fill="#7CB342"/>
+    <line x1="0" y1="180" x2="360" y2="180" stroke="#558B2F" stroke-width="1.5"/>
+    <path class="sl__arc" fill="none" stroke="rgba(255,200,0,0.15)" stroke-width="0.8" stroke-dasharray="4,4"/>
+    <g class="sl__rays"></g>
+    <polygon class="sl__shadow" opacity="0.85"/>
+    <line class="sl__pole" stroke="#5D4037" stroke-width="4" stroke-linecap="round"/>
+    <circle class="sl__pole-top" r="3.5" fill="#8D6E63" stroke="#4E342E" stroke-width="0.8"/>
+    <g class="sl__sun">
+      <circle class="sl__sun-circle" r="18"/><g class="sl__sun-rays-g" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+    <text class="sl__info-angle" x="8" y="14" font-size="10" fill="#333" opacity="0.85"></text>
+    <text class="sl__info-shadow" x="8" y="26" font-size="10" fill="#333" opacity="0.85"></text>
+    <text class="sl__info-time" x="8" y="38" font-size="10" fill="#333" opacity="0.85"></text>
+    <rect x="40" y="215" width="280" height="6" rx="3" fill="#ddd" stroke="#bbb" stroke-width="0.5"/>
+    <rect class="sl__slider-fill" x="40" y="215" height="6" rx="3" fill="#FFB300" opacity="0.5"/>
+    <circle class="sl__slider-thumb" cy="218" r="8" fill="#FFD54F" stroke="#F9A825" stroke-width="1.5"/>
+    <text x="18" y="221" font-size="8" fill="#888" text-anchor="middle">早</text>
+    <text x="342" y="221" font-size="8" fill="#888" text-anchor="middle">晚</text>
+  </svg>
+</div>
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  while (root && !(root.classList && root.classList.contains('cmp'))) root = root.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.tool.shadow-length.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+  var NS = 'http://www.w3.org/2000/svg', DEG = Math.PI / 180;
+
+  /* Unique IDs for multi-instance SVG defs */
+  var uid = 'sl_' + Math.random().toString(36).slice(2, 8);
+  var gradSels = { '.sl__sky-grad': '_sk', '.sl__sun-grad': '_sg', '.sl__sun-glow': '_gw', '.sl__shadow-grad': '_sh' };
+  var ids = {};
+  for (var s in gradSels) { var el = svg.querySelector(s); if (el) { ids[s] = uid + gradSels[s]; el.setAttribute('id', ids[s]); } }
+
+  /* Element refs */
+  var $ = function(c) { return svg.querySelector(c); };
+  var skyRect = $('.sl__sky'), arcPath = $('.sl__arc'), raysG = $('.sl__rays');
+  var shadowEl = $('.sl__shadow'), pole = $('.sl__pole'), poleTop = $('.sl__pole-top');
+  var sunG = $('.sl__sun'), sunCircle = $('.sl__sun-circle'), sunRaysG = $('.sl__sun-rays-g');
+  var infoAngle = $('.sl__info-angle'), infoShadow = $('.sl__info-shadow'), infoTime = $('.sl__info-time');
+  var sliderFill = $('.sl__slider-fill'), sliderThumb = $('.sl__slider-thumb');
+
+  /* Bind gradient fills */
+  skyRect.setAttribute('fill', 'url(#' + ids['.sl__sky-grad'] + ')');
+  sunCircle.setAttribute('fill', 'url(#' + ids['.sl__sun-grad'] + ')');
+  sunCircle.setAttribute('stroke', '#F9A825'); sunCircle.setAttribute('stroke-width', '1');
+  sunG.setAttribute('filter', 'url(#' + ids['.sl__sun-glow'] + ')');
+  shadowEl.setAttribute('fill', 'url(#' + ids['.sl__shadow-grad'] + ')');
+
+  /* Draw static sun rays */
+  for (var i = 0; i < 8; i++) {
+    var a = i * 45 * DEG, ray = document.createElementNS(NS, 'line');
+    ray.setAttribute('x1', Math.cos(a) * 21); ray.setAttribute('y1', Math.sin(a) * 21);
+    ray.setAttribute('x2', Math.cos(a) * 27); ray.setAttribute('y2', Math.sin(a) * 27);
+    ray.setAttribute('stroke', '#FFB300'); sunRaysG.appendChild(ray);
+  }
+
+  /* Constants */
+  var ACX = 180, ACY = 180, AR = 140, POLE_X = 180, GY = 180, PH = 60, PTY = GY - PH;
+  var AMIN = 10, AMAX = 170, SL = 40, SW = 280;
+
+  /* Arc guide path */
+  var s0 = AMIN * DEG, e0 = AMAX * DEG;
+  arcPath.setAttribute('d', 'M' + (ACX - AR * Math.cos(s0)) + ',' + (ACY - AR * Math.sin(s0)) +
+    ' A' + AR + ',' + AR + ' 0 0,1 ' + (ACX - AR * Math.cos(e0)) + ',' + (ACY - AR * Math.sin(e0)));
+
+  /* State */
+  var sunAngle = 45;
+
+  function readAngle() {
+    var raw = root.getAttribute('data-props');
+    if (raw) try { var o = JSON.parse(raw); if (o && isFinite(Number(o.sunAngle))) return Number(o.sunAngle); } catch(e) {}
+    return 45;
+  }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function timeOfDay(a) { return a < 30 ? '早晨' : a < 60 ? '上午' : a <= 120 ? '中午' : a <= 150 ? '下午' : '傍晚'; }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function render() {
+    var angRad = sunAngle * DEG;
+    var sx = ACX - AR * Math.cos(angRad), sy = ACY - AR * Math.sin(angRad);
+    sunG.setAttribute('transform', 'translate(' + sx.toFixed(1) + ',' + sy.toFixed(1) + ')');
+
+    /* Shadow geometry: use elevation from horizon (symmetric about 90°) */
+    var elevDeg = sunAngle <= 90 ? sunAngle : 180 - sunAngle;
+    var tanE = Math.tan(elevDeg * DEG), sLen = tanE > 0.01 ? PH / tanE : PH * 100;
+    sLen = Math.min(sLen, 300);
+    var sDir = sunAngle <= 90 ? 1 : -1;
+    var tipHW = Math.min(4 + sLen * 0.04, 10);
+    var tipX = clamp(POLE_X + sDir * sLen, 5, 355);
+    var actualLen = Math.abs(tipX - POLE_X);
+    var depth = Math.min(3 + sLen * 0.02, 8);
+    shadowEl.setAttribute('points',
+      (POLE_X - 2.5) + ',' + GY + ' ' + (POLE_X + 2.5) + ',' + GY + ' ' +
+      (tipX + sDir * tipHW) + ',' + (GY + depth) + ' ' + (tipX - sDir * tipHW) + ',' + (GY + depth));
+
+    /* Shadow gradient direction */
+    var sgEl = svg.querySelector('#' + ids['.sl__shadow-grad']);
+    if (sgEl) { sgEl.setAttribute('x1', sDir > 0 ? '0' : '1'); sgEl.setAttribute('x2', sDir > 0 ? '1' : '0'); }
+
+    /* Pole */
+    pole.setAttribute('x1', POLE_X); pole.setAttribute('y1', GY);
+    pole.setAttribute('x2', POLE_X); pole.setAttribute('y2', PTY);
+    poleTop.setAttribute('cx', POLE_X); poleTop.setAttribute('cy', PTY);
+
+    /* Light rays */
+    while (raysG.firstChild) raysG.removeChild(raysG.firstChild);
+    var rd = [[sx, sy, POLE_X, PTY], [sx, sy, POLE_X, GY], [POLE_X, PTY, tipX, GY + 1]];
+    for (var r = 0; r < rd.length; r++) {
+      var ln = document.createElementNS(NS, 'line');
+      ln.setAttribute('x1', rd[r][0]); ln.setAttribute('y1', rd[r][1]);
+      ln.setAttribute('x2', rd[r][2]); ln.setAttribute('y2', rd[r][3]);
+      ln.setAttribute('stroke', r < 2 ? '#FFD54F' : '#FFA000');
+      ln.setAttribute('stroke-width', '1.2'); ln.setAttribute('stroke-dasharray', '5,3');
+      ln.setAttribute('opacity', '0.7'); raysG.appendChild(ln);
+    }
+
+    /* Sky color shift */
+    var skEl = svg.querySelector('#' + ids['.sl__sky-grad']);
+    if (skEl) {
+      var stops = skEl.querySelectorAll('stop');
+      var t = clamp(1 - Math.abs(sunAngle - 90) / 80, 0, 1);
+      if (stops[0]) stops[0].setAttribute('stop-color', 'rgb(' + Math.round(lerp(255,135,t)) + ',' + Math.round(lerp(183,206,t)) + ',' + Math.round(lerp(140,235,t)) + ')');
+      if (stops[1]) stops[1].setAttribute('stop-color', 'rgb(' + Math.round(lerp(255,212,t)) + ',' + Math.round(lerp(218,238,t)) + ',' + Math.round(lerp(185,247,t)) + ')');
+    }
+
+    /* Slider */
+    var thumbX = SL + ((sunAngle - AMIN) / (AMAX - AMIN)) * SW;
+    sliderThumb.setAttribute('cx', thumbX); sliderFill.setAttribute('width', thumbX - SL);
+
+    /* Info text */
+    infoAngle.textContent = '太阳高度角: ' + Math.round(sunAngle) + '\u00B0';
+    infoShadow.textContent = '影子长度: ' + Math.round(actualLen) + '单位';
+    infoTime.textContent = '时间: ' + timeOfDay(sunAngle);
+    root.setAttribute('aria-label', '影子变化，太阳高度角' + Math.round(sunAngle) + '度，影子长度' + Math.round(actualLen) + '单位，' + timeOfDay(sunAngle));
+  }
+
+  function emit(name) {
+    var elev = sunAngle <= 90 ? sunAngle : 180 - sunAngle;
+    var tanE = Math.tan(elev * DEG), sL = tanE > 0.01 ? Math.round(PH / tanE) : 9999;
+    root.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true, detail: {
+      id: 'sci.tool.shadow-length.interactive', type: 'slide',
+      values: { sunAngle: Math.round(sunAngle), shadowLength: Math.min(sL, 300), timeOfDay: timeOfDay(sunAngle) }
+    }}));
+  }
+
+  /* Interaction */
+  var dragTarget = null;
+  function svgPt(e) {
+    var rect = svg.getBoundingClientRect();
+    return { x: (e.clientX - rect.left) * 360 / rect.width, y: (e.clientY - rect.top) * 240 / rect.height };
+  }
+  function onDown(e) {
+    var pt = svgPt(e), sa = sunAngle * DEG;
+    var ssx = ACX - AR * Math.cos(sa), ssy = ACY - AR * Math.sin(sa);
+    var d = Math.sqrt((pt.x - ssx) * (pt.x - ssx) + (pt.y - ssy) * (pt.y - ssy));
+    if (d < 28) { dragTarget = 'sun'; e.preventDefault(); try { e.target.setPointerCapture(e.pointerId); } catch(_) {} return; }
+    if (pt.y > 205 && pt.y < 232 && pt.x > 30 && pt.x < 330) {
+      dragTarget = 'slider'; e.preventDefault();
+      sunAngle = clamp(AMIN + ((pt.x - SL) / SW) * (AMAX - AMIN), AMIN, AMAX);
+      render(); emit('cmp:change');
+      try { e.target.setPointerCapture(e.pointerId); } catch(_) {}
+    }
+  }
+  function onMove(e) {
+    if (!dragTarget) return; e.preventDefault();
+    var pt = svgPt(e);
+    if (dragTarget === 'sun') {
+      var dx = pt.x - ACX, dy = -(pt.y - ACY);
+      sunAngle = clamp(Math.atan2(dy, -dx) / DEG, AMIN, AMAX);
+    } else { sunAngle = clamp(AMIN + ((pt.x - SL) / SW) * (AMAX - AMIN), AMIN, AMAX); }
+    render(); emit('cmp:change');
+  }
+  function onUp() { if (!dragTarget) return; dragTarget = null; sunAngle = Math.round(sunAngle); render(); emit('cmp:changeend'); }
+
+  svg.addEventListener('pointerdown', onDown, { passive: false });
+  svg.addEventListener('pointermove', onMove, { passive: false });
+  svg.addEventListener('pointerup', onUp, { passive: false });
+  svg.addEventListener('pointercancel', onUp, { passive: false });
+
+  /* Init & observe */
+  sunAngle = clamp(readAngle(), AMIN, AMAX); render();
+  new MutationObserver(function() { sunAngle = clamp(readAngle(), AMIN, AMAX); render(); })
+    .observe(root, { attributes: true, attributeFilter: ['style', 'data-props'] });
+})();
+</script>

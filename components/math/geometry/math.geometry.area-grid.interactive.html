@@ -1,0 +1,200 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.area-grid.interactive",
+  "name": "面积网格",
+  "nameEn": "Area Grid",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 320 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
+    { "key": "cols", "type": "number", "default": 10, "min": 4, "max": 20, "desc": "列数" },
+    { "key": "rows", "type": "number", "default": 10, "min": 4, "max": 20, "desc": "行数" },
+    { "key": "gridColor", "type": "color", "default": "#B0BEC5", "desc": "网格线颜色" },
+    { "key": "fillColor", "type": "color", "default": "#42A5F5", "desc": "填充颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "gridColor": "--cmp-grid",
+    "fillColor": "--cmp-fill"
+  },
+  "tags": ["area", "grid", "counting", "measurement", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "filledCount": "number", "totalCells": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.area-grid.interactive" role="img" aria-label="面积网格">
+  <style>
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] {
+      --sz: var(--cmp-size, 320px);
+      display: inline-block; width: var(--sz); height: var(--sz);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] .ag__cell {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] .ag__cell:hover {
+      fill-opacity: 0.15;
+    }
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] .ag__cell--on:hover {
+      fill-opacity: 0.5;
+    }
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] .ag__btn {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] .ag__btn:hover rect {
+      fill: #e53935;
+    }
+    .cmp[data-cmp-id="math.geometry.area-grid.interactive"] .ag__lbl {
+      font-family: Arial, 'Microsoft YaHei', sans-serif; font-size: 9px;
+      fill: #78909C; pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+
+<script>
+(function() {
+  var sc = document.currentScript;
+  if (!sc) return;
+  var root = sc.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.area-grid.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'ag_' + Math.random().toString(36).slice(2, 8);
+  var P = {};
+  try { var d = root.getAttribute('data-props'); if (d) { var o = JSON.parse(d); if (o && typeof o === 'object') P = o; } } catch(e) {}
+
+  var cols = Math.max(4, Math.min(20, Number(P.cols) || 10));
+  var rows = Math.max(4, Math.min(20, Number(P.rows) || 10));
+  var total = cols * rows;
+  var filled = new Uint8Array(total);
+
+  /* layout constants */
+  var GX = 30, GY = 30, GW = 280, GH = 260;
+  var cw = GW / cols, ch = GH / rows;
+
+  function css(v, fb) {
+    var s = getComputedStyle(root).getPropertyValue(v).trim();
+    return s || fb;
+  }
+
+  function count() {
+    var n = 0; for (var i = 0; i < total; i++) if (filled[i]) n++;
+    return n;
+  }
+
+  function emit() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle',
+        values: { filledCount: count(), totalCells: total } }
+    }));
+  }
+
+  function render() {
+    var gc = css('--cmp-grid', '#B0BEC5');
+    var fc = css('--cmp-fill', '#42A5F5');
+    var h = '';
+
+    /* background */
+    h += '<rect width="320" height="320" fill="#FAFAFA" rx="4"/>';
+
+    /* title */
+    h += '<text x="160" y="16" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="12" font-weight="bold" fill="#455A64">面积网格</text>';
+
+    /* clear button */
+    h += '<g class="ag__btn" data-action="clear">';
+    h += '<rect x="272" y="4" width="40" height="18" rx="3" fill="#EF5350"/>';
+    h += '<text x="292" y="16" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="10" fill="#fff" pointer-events="none">清除</text>';
+    h += '</g>';
+
+    /* column labels */
+    for (var c = 0; c < cols; c++) {
+      var lx = GX + c * cw + cw / 2;
+      h += '<text class="ag__lbl" x="' + lx + '" y="' + (GY - 3) + '" text-anchor="middle">' + (c + 1) + '</text>';
+    }
+
+    /* row labels */
+    for (var r = 0; r < rows; r++) {
+      var ly = GY + r * ch + ch / 2 + 3;
+      h += '<text class="ag__lbl" x="' + (GX - 5) + '" y="' + ly + '" text-anchor="end">' + (r + 1) + '</text>';
+    }
+
+    /* cells */
+    for (var r = 0; r < rows; r++) {
+      for (var c = 0; c < cols; c++) {
+        var idx = r * cols + c;
+        var x = GX + c * cw, y = GY + r * ch;
+        var on = filled[idx];
+        h += '<rect class="ag__cell' + (on ? ' ag__cell--on' : '') + '" data-idx="' + idx + '" x="' + x + '" y="' + y + '" width="' + cw + '" height="' + ch + '" fill="' + (on ? fc : '#fff') + '" fill-opacity="' + (on ? '0.6' : '0') + '" stroke="none"/>';
+      }
+    }
+
+    /* grid lines */
+    for (var c = 0; c <= cols; c++) {
+      var lx = GX + c * cw;
+      h += '<line x1="' + lx + '" y1="' + GY + '" x2="' + lx + '" y2="' + (GY + GH) + '" stroke="' + gc + '" stroke-width="0.8"/>';
+    }
+    for (var r = 0; r <= rows; r++) {
+      var ly = GY + r * ch;
+      h += '<line x1="' + GX + '" y1="' + ly + '" x2="' + (GX + GW) + '" y2="' + ly + '" stroke="' + gc + '" stroke-width="0.8"/>';
+    }
+
+    /* bottom info */
+    var n = count();
+    h += '<text x="30" y="310" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="11" fill="#455A64">已填充: <tspan font-weight="bold" fill="' + fc + '">' + n + '</tspan> 格</text>';
+    h += '<text x="310" y="310" text-anchor="end" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="11" fill="#455A64">面积 = <tspan font-weight="bold" fill="' + fc + '">' + n + '</tspan> 平方单位</text>';
+
+    svg.innerHTML = h;
+  }
+
+  function cellAt(e) {
+    var pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    var ctm = svg.getScreenCTM();
+    if (!ctm) return -1;
+    var p = pt.matrixTransform(ctm.inverse());
+    var c = Math.floor((p.x - GX) / cw);
+    var r = Math.floor((p.y - GY) / ch);
+    if (c < 0 || c >= cols || r < 0 || r >= rows) return -1;
+    return r * cols + c;
+  }
+
+  var painting = false, paintVal = 0, lastIdx = -1;
+
+  svg.addEventListener('pointerdown', function(e) {
+    var btn = e.target.closest('[data-action="clear"]');
+    if (btn) { filled = new Uint8Array(total); render(); emit(); return; }
+    var idx = cellAt(e);
+    if (idx < 0) return;
+    painting = true;
+    paintVal = filled[idx] ? 0 : 1;
+    filled[idx] = paintVal;
+    lastIdx = idx;
+    render(); emit();
+    svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!painting) return;
+    var idx = cellAt(e);
+    if (idx < 0 || idx === lastIdx) return;
+    filled[idx] = paintVal;
+    lastIdx = idx;
+    render(); emit();
+  });
+
+  svg.addEventListener('pointerup', function() { painting = false; lastIdx = -1; });
+  svg.addEventListener('pointercancel', function() { painting = false; lastIdx = -1; });
+
+  render();
+})();
+</script>

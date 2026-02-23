@@ -9,6 +9,46 @@
       "name": "电路元件",
       "nameEn": "Circuit Components"
     },
+    "physics/atomic": {
+      "name": "原子与原子模型",
+      "nameEn": "Atomic Physics"
+    },
+    "physics/electric": {
+      "name": "电学基础",
+      "nameEn": "Electricity"
+    },
+    "physics/em": {
+      "name": "电磁学",
+      "nameEn": "Electromagnetism"
+    },
+    "physics/fluid": {
+      "name": "流体与压强",
+      "nameEn": "Fluid Mechanics"
+    },
+    "physics/gravity": {
+      "name": "重力与天体",
+      "nameEn": "Gravity & Astronomy"
+    },
+    "physics/magnet": {
+      "name": "磁学",
+      "nameEn": "Magnetism"
+    },
+    "physics/mechanics": {
+      "name": "力学",
+      "nameEn": "Mechanics"
+    },
+    "physics/optics": {
+      "name": "光学",
+      "nameEn": "Optics"
+    },
+    "physics/thermal": {
+      "name": "热学",
+      "nameEn": "Thermal Physics"
+    },
+    "physics/wave": {
+      "name": "波动与声学",
+      "nameEn": "Waves & Acoustics"
+    },
     "chemistry/labware": {
       "name": "化学器皿",
       "nameEn": "Chemistry Labware"
@@ -17,9 +57,41 @@
       "name": "化学物质",
       "nameEn": "Chemical Substances"
     },
-    "biology/model": {
-      "name": "生物模型",
-      "nameEn": "Biology Models"
+    "chemistry/gas": {
+      "name": "气体与分子",
+      "nameEn": "Gas & Molecules"
+    },
+    "chemistry/model": {
+      "name": "化学模型",
+      "nameEn": "Chemical Models"
+    },
+    "chemistry/reaction": {
+      "name": "化学反应",
+      "nameEn": "Chemical Reactions"
+    },
+    "chemistry/solution": {
+      "name": "溶液与浓度",
+      "nameEn": "Solutions & Concentration"
+    },
+    "biology/cell": {
+      "name": "细胞与分子",
+      "nameEn": "Cell & Molecular Biology"
+    },
+    "biology/ecology": {
+      "name": "生态与环境",
+      "nameEn": "Ecology & Environment"
+    },
+    "biology/genetics": {
+      "name": "遗传与变异",
+      "nameEn": "Genetics"
+    },
+    "biology/instrument": {
+      "name": "生物实验器材",
+      "nameEn": "Biology Labware"
+    },
+    "biology/organ": {
+      "name": "器官与系统",
+      "nameEn": "Organs & Systems"
     },
     "math/geometry": {
       "name": "几何图形",
@@ -28,6 +100,66 @@
     "math/clock": {
       "name": "钟表与时间",
       "nameEn": "Clock & Time"
+    },
+    "math/calculus": {
+      "name": "微积分",
+      "nameEn": "Calculus"
+    },
+    "math/complex": {
+      "name": "复数与复平面",
+      "nameEn": "Complex Numbers"
+    },
+    "math/coordinate": {
+      "name": "坐标与图像",
+      "nameEn": "Coordinate Systems"
+    },
+    "math/function": {
+      "name": "函数与图像",
+      "nameEn": "Functions"
+    },
+    "math/measure": {
+      "name": "测量",
+      "nameEn": "Measurement"
+    },
+    "math/number": {
+      "name": "数与运算",
+      "nameEn": "Numbers & Operations"
+    },
+    "math/probability": {
+      "name": "概率初步",
+      "nameEn": "Probability"
+    },
+    "math/statistics": {
+      "name": "统计与概率",
+      "nameEn": "Statistics & Probability"
+    },
+    "math/time": {
+      "name": "时间与日期",
+      "nameEn": "Time & Date"
+    },
+    "math/tool": {
+      "name": "数学工具",
+      "nameEn": "Math Tools"
+    },
+    "math/trigonometry": {
+      "name": "三角函数",
+      "nameEn": "Trigonometry"
+    },
+    "math/vector": {
+      "name": "向量",
+      "nameEn": "Vectors"
+    },
+    "science/tool": {
+      "name": "科学工具",
+      "nameEn": "Science Tools"
+    },
+    "science/life": {
+      "name": "生命科学",
+      "nameEn": "Life Science"
+    },
+    "science/earth": {
+      "name": "地球科学",
+      "nameEn": "Earth Science"
     },
     "general/ui": {
       "name": "通用UI",

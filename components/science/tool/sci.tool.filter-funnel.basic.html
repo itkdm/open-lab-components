@@ -1,0 +1,414 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.tool.filter-funnel.basic",
+  "name": "过滤装置",
+  "nameEn": "Filter Funnel",
+  "category": "science/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 280 },
+  "tags": ["funnel", "filter", "filtration", "separation", "science", "primary"],
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 280, "min": 160, "max": 560, "desc": "组件高度" },
+    { "key": "funnelColor",   "type": "color",  "default": "#e3f2fd", "desc": "漏斗玻璃颜色" },
+    { "key": "paperColor",    "type": "color",  "default": "#faf5e8", "desc": "滤纸颜色" },
+    { "key": "liquidColor",   "type": "color",  "default": "#8d6e4b", "desc": "待过滤液体颜色" },
+    { "key": "filtrateColor", "type": "color",  "default": "#bbdefb", "desc": "滤液颜色" },
+    { "key": "strokeColor",   "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size":          "--cmp-size",
+    "funnelColor":   "--cmp-funnel",
+    "paperColor":    "--cmp-paper",
+    "liquidColor":   "--cmp-liquid",
+    "filtrateColor": "--cmp-filtrate",
+    "strokeColor":   "--cmp-stroke",
+    "strokeWidth":   "--cmp-stroke-width"
+  }
+}
+-->
+<!--
+  过滤装置 — 小学科学教学用高质量示意图
+  viewBox: 0 0 160 280
+
+  结构布局：
+  - 铁架台:   左侧竖杆 x≈30, 底座 y≈268
+  - 铁圈:     从竖杆伸出，支撑漏斗，y≈105
+  - 漏斗:     锥形玻璃漏斗，中心 x≈90，口部 y≈68，管底 y≈168
+  - 滤纸:     折叠锥形，嵌在漏斗内
+  - 待滤液:   滤纸上方的浑浊液体
+  - 烧杯:     漏斗下方接收滤液，y≈178~268
+  - 滤液:     烧杯中的清澈液体
+  - 液滴:     漏斗管口滴落的液滴
+-->
+<div class="cmp" data-cmp-id="sci.tool.filter-funnel.basic" role="img" aria-label="过滤装置">
+  <svg class="ff__svg" viewBox="0 0 160 280" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <!-- 漏斗玻璃渐变 -->
+      <linearGradient class="ff__glass-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.55"/>
+        <stop offset="15%"  stop-color="var(--cmp-funnel, #e3f2fd)" stop-opacity="0.35"/>
+        <stop offset="45%"  stop-color="var(--cmp-funnel, #e3f2fd)" stop-opacity="0.15"/>
+        <stop offset="70%"  stop-color="var(--cmp-funnel, #e3f2fd)" stop-opacity="0.25"/>
+        <stop offset="85%"  stop-color="#ffffff" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="var(--cmp-funnel, #e3f2fd)" stop-opacity="0.2"/>
+      </linearGradient>
+
+      <!-- 漏斗管玻璃渐变 -->
+      <linearGradient class="ff__stem-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.4"/>
+        <stop offset="30%"  stop-color="var(--cmp-funnel, #e3f2fd)" stop-opacity="0.2"/>
+        <stop offset="70%"  stop-color="var(--cmp-funnel, #e3f2fd)" stop-opacity="0.15"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.3"/>
+      </linearGradient>
+
+      <!-- 滤纸渐变 -->
+      <linearGradient class="ff__paper-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.6"/>
+        <stop offset="30%"  stop-color="var(--cmp-paper, #faf5e8)" stop-opacity="0.9"/>
+        <stop offset="100%" stop-color="var(--cmp-paper, #faf5e8)" stop-opacity="1"/>
+      </linearGradient>
+
+      <!-- 浑浊液体渐变 -->
+      <linearGradient class="ff__dirty-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="var(--cmp-liquid, #8d6e4b)" stop-opacity="0.5"/>
+        <stop offset="40%"  stop-color="var(--cmp-liquid, #8d6e4b)" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="var(--cmp-liquid, #8d6e4b)" stop-opacity="0.85"/>
+      </linearGradient>
+
+      <!-- 滤液渐变 -->
+      <linearGradient class="ff__filtrate-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.2"/>
+        <stop offset="20%"  stop-color="var(--cmp-filtrate, #bbdefb)" stop-opacity="0.4"/>
+        <stop offset="80%"  stop-color="var(--cmp-filtrate, #bbdefb)" stop-opacity="0.55"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.08"/>
+      </linearGradient>
+
+      <!-- 烧杯玻璃渐变 -->
+      <linearGradient class="ff__beaker-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.45"/>
+        <stop offset="18%"  stop-color="#e8f4fd" stop-opacity="0.2"/>
+        <stop offset="50%"  stop-color="#dceefb" stop-opacity="0.1"/>
+        <stop offset="82%"  stop-color="#e8f4fd" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.12"/>
+      </linearGradient>
+
+      <!-- 铁架台金属渐变 -->
+      <linearGradient class="ff__metal-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#607d8b"/>
+        <stop offset="30%"  stop-color="#78909c"/>
+        <stop offset="50%"  stop-color="#90a4ae"/>
+        <stop offset="70%"  stop-color="#78909c"/>
+        <stop offset="100%" stop-color="#546e7a"/>
+      </linearGradient>
+
+      <!-- 投影滤镜 -->
+      <filter class="ff__shadow-filter" x="-8%" y="-4%" width="116%" height="112%">
+        <feDropShadow dx="1" dy="1.5" stdDeviation="1.5" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+
+      <!-- 烧杯裁剪区域 -->
+      <clipPath class="ff__beaker-clip">
+        <path d="M56,182 L52,262 Q52,268 58,268 L122,268 Q128,268 128,262 L124,182 Z"/>
+      </clipPath>
+
+      <!-- 漏斗锥体裁剪区域 -->
+      <clipPath class="ff__cone-clip">
+        <path d="M58,72 L86,138 L94,138 L122,72 Z"/>
+      </clipPath>
+    </defs>
+
+    <!-- ==================== 整体投影组 ==================== -->
+    <g class="ff__shadow-group">
+
+      <!-- ==================== 铁架台底座 ==================== -->
+      <g class="ff__stand">
+        <!-- 底座 -->
+        <rect x="10" y="268" width="50" height="6" rx="2"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+        <!-- 底座高光 -->
+        <rect x="14" y="269" width="42" height="2" rx="1" fill="#ffffff" opacity="0.12"/>
+
+        <!-- 竖杆 -->
+        <rect x="30" y="38" width="8" height="232" rx="1.5"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+        <!-- 竖杆高光 -->
+        <rect x="32" y="42" width="2.5" height="224" rx="0.8" fill="#ffffff" opacity="0.12"/>
+
+        <!-- 竖杆顶端球 -->
+        <circle cx="34" cy="38" r="5"
+                stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+        <circle cx="32.5" cy="36.5" r="1.5" fill="#ffffff" opacity="0.2"/>
+
+        <!-- 铁圈夹持器（连接竖杆到铁圈） -->
+        <rect x="36" y="100" width="8" height="10" rx="1.5"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="0.8"/>
+        <!-- 夹持器螺丝 -->
+        <circle cx="40" cy="105" r="2" fill="#90a4ae" stroke="#607d8b" stroke-width="0.5"/>
+        <line x1="39" y1="105" x2="41" y2="105" stroke="#546e7a" stroke-width="0.5"/>
+
+        <!-- 铁圈横杆 -->
+        <rect x="42" y="103" width="24" height="4" rx="1"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="0.8"/>
+        <rect x="44" y="104" width="20" height="1.2" rx="0.5" fill="#ffffff" opacity="0.1"/>
+
+        <!-- 铁圈（支撑漏斗的环） -->
+        <ellipse cx="90" cy="105" rx="28" ry="5"
+                 fill="none"
+                 stroke="var(--cmp-stroke, #37474f)" stroke-width="2.5"/>
+        <!-- 铁圈金属质感 -->
+        <ellipse cx="90" cy="104" rx="26" ry="3.5"
+                 fill="none" stroke="#ffffff" stroke-width="0.6" opacity="0.15"/>
+      </g>
+
+      <!-- ==================== 烧杯（下方接收容器） ==================== -->
+      <g class="ff__beaker">
+        <!-- 烧杯主体 -->
+        <path class="ff__beaker-body"
+              d="M56,182 L52,262 Q52,268 58,268 L122,268 Q128,268 128,262 L124,182 Z"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"
+              stroke-linejoin="round" opacity="0.9"/>
+
+        <!-- 烧杯玻璃质感叠加 -->
+        <path d="M56,182 L52,262 Q52,268 58,268 L122,268 Q128,268 128,262 L124,182 Z"
+              stroke="none"/>
+
+        <!-- 滤液（烧杯中的清澈液体） -->
+        <rect class="ff__filtrate-body" x="52" y="220" width="76" height="48" rx="0"/>
+
+        <!-- 滤液液面高光 -->
+        <ellipse class="ff__filtrate-meniscus" cx="90" cy="220" rx="32" ry="3"
+                 fill="var(--cmp-filtrate, #bbdefb)" opacity="0.25"/>
+        <ellipse cx="90" cy="220" rx="24" ry="1.5"
+                 fill="none" stroke="#ffffff" stroke-width="0.6" opacity="0.4"/>
+
+        <!-- 烧杯左侧高光 -->
+        <path d="M59,186 L56,258"
+              fill="none" stroke="#ffffff"
+              stroke-width="3" stroke-linecap="round" opacity="0.18"/>
+        <!-- 烧杯右侧微弱反光 -->
+        <path d="M121,186 L124,258"
+              fill="none" stroke="#ffffff"
+              stroke-width="1" stroke-linecap="round" opacity="0.06"/>
+
+        <!-- 烧杯口沿 -->
+        <ellipse cx="90" cy="182" rx="35" ry="4.5"
+                 fill="rgba(220,237,250,0.35)"
+                 stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+        <!-- 口沿高光 -->
+        <ellipse cx="90" cy="181" rx="28" ry="2.5"
+                 fill="#ffffff" opacity="0.25" stroke="none"/>
+
+        <!-- 烧杯底部厚度 -->
+        <path d="M52,262 Q52,272 58,272 L122,272 Q128,272 128,262"
+              fill="rgba(220,237,250,0.3)"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"
+              stroke-linejoin="round" opacity="0.5"/>
+        <rect x="64" y="264" width="52" height="1.5" rx="0.5" fill="#ffffff" opacity="0.1"/>
+      </g>
+
+      <!-- ==================== 漏斗 ==================== -->
+      <g class="ff__funnel">
+        <!-- 漏斗锥体（玻璃） -->
+        <path class="ff__cone-body"
+              d="M58,72 L86,138 L94,138 L122,72 Z"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"
+              stroke-linejoin="round"/>
+
+        <!-- 漏斗口沿（椭圆形） -->
+        <ellipse cx="90" cy="72" rx="32" ry="5"
+                 fill="rgba(220,237,250,0.4)"
+                 stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+        <!-- 口沿高光 -->
+        <ellipse cx="90" cy="71" rx="26" ry="3"
+                 fill="#ffffff" opacity="0.3" stroke="none"/>
+
+        <!-- 滤纸（折叠锥形，嵌在漏斗内） -->
+        <path class="ff__paper-body"
+              d="M62,76 L87,132 L93,132 L118,76 Z"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="0.6"
+              stroke-linejoin="round" opacity="0.95"/>
+        <!-- 滤纸折痕线 -->
+        <line x1="90" y1="76" x2="90" y2="132"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="0.4" opacity="0.25"/>
+        <line x1="76" y1="76" x2="88.5" y2="132"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="0.3" opacity="0.15"/>
+        <line x1="104" y1="76" x2="91.5" y2="132"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="0.3" opacity="0.15"/>
+        <!-- 滤纸纹理（细微水平线） -->
+        <g opacity="0.08" stroke="var(--cmp-stroke, #37474f)" stroke-width="0.3">
+          <line x1="66" y1="86" x2="114" y2="86"/>
+          <line x1="70" y1="96" x2="110" y2="96"/>
+          <line x1="74" y1="106" x2="106" y2="106"/>
+          <line x1="78" y1="116" x2="102" y2="116"/>
+          <line x1="82" y1="126" x2="98" y2="126"/>
+        </g>
+
+        <!-- 待过滤液体（滤纸上方的浑浊液） -->
+        <path class="ff__dirty-liquid"
+              d="M66,84 L85,126 L95,126 L114,84 Z"
+              opacity="0.85"/>
+        <!-- 浑浊液中的悬浮颗粒 -->
+        <g class="ff__particles" opacity="0.4">
+          <circle cx="82" cy="95" r="0.8" fill="#5d4037"/>
+          <circle cx="96" cy="92" r="0.6" fill="#6d4c41"/>
+          <circle cx="88" cy="100" r="0.9" fill="#5d4037"/>
+          <circle cx="78" cy="98" r="0.5" fill="#4e342e"/>
+          <circle cx="102" cy="90" r="0.7" fill="#6d4c41"/>
+          <circle cx="92" cy="88" r="0.6" fill="#5d4037"/>
+          <circle cx="85" cy="105" r="0.7" fill="#4e342e"/>
+          <circle cx="98" cy="97" r="0.5" fill="#5d4037"/>
+          <circle cx="75" cy="92" r="0.6" fill="#6d4c41"/>
+          <circle cx="90" cy="110" r="0.8" fill="#5d4037"/>
+          <circle cx="95" cy="108" r="0.5" fill="#4e342e"/>
+          <circle cx="84" cy="115" r="0.6" fill="#6d4c41"/>
+        </g>
+        <!-- 浑浊液液面高光 -->
+        <ellipse cx="90" cy="84" rx="22" ry="2"
+                 fill="var(--cmp-liquid, #8d6e4b)" opacity="0.2"/>
+        <ellipse cx="90" cy="84" rx="16" ry="1"
+                 fill="#ffffff" opacity="0.15"/>
+
+        <!-- 漏斗锥体左侧高光（玻璃反光） -->
+        <path d="M62,76 L87,134"
+              fill="none" stroke="#ffffff"
+              stroke-width="2" stroke-linecap="round" opacity="0.15"/>
+        <!-- 漏斗锥体右侧微弱反光 -->
+        <path d="M118,76 L94,134"
+              fill="none" stroke="#ffffff"
+              stroke-width="0.8" stroke-linecap="round" opacity="0.06"/>
+
+        <!-- 漏斗管（细长玻璃管） -->
+        <rect class="ff__stem-body" x="86" y="138" width="8" height="38" rx="1"
+              stroke="var(--cmp-stroke, #37474f)" stroke-width="var(--cmp-stroke-width, 1.2)"/>
+        <!-- 管内滤液 -->
+        <rect x="87.5" y="140" width="5" height="34" rx="0.5"
+              fill="var(--cmp-filtrate, #bbdefb)" opacity="0.4"/>
+        <!-- 管高光 -->
+        <rect x="87.5" y="140" width="1.8" height="34" rx="0.5"
+              fill="#ffffff" opacity="0.15"/>
+
+        <!-- 管口底部 -->
+        <ellipse cx="90" cy="176" rx="4" ry="1.2"
+                 fill="rgba(200,220,240,0.3)"
+                 stroke="var(--cmp-stroke, #37474f)" stroke-width="0.6"/>
+      </g>
+
+      <!-- ==================== 液滴（从管口滴落） ==================== -->
+      <g class="ff__drips" opacity="0.7">
+        <ellipse cx="90" cy="184" rx="2" ry="3"
+                 fill="var(--cmp-filtrate, #bbdefb)" opacity="0.6"/>
+        <ellipse cx="90" cy="183" rx="1" ry="1"
+                 fill="#ffffff" opacity="0.3"/>
+        <!-- 第二滴（更小，更下方） -->
+        <ellipse cx="90" cy="198" rx="1.5" ry="2.2"
+                 fill="var(--cmp-filtrate, #bbdefb)" opacity="0.4"/>
+        <ellipse cx="90" cy="197" rx="0.7" ry="0.7"
+                 fill="#ffffff" opacity="0.2"/>
+      </g>
+
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.tool.filter-funnel.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'ff_' + Math.random().toString(36).slice(2, 8);
+
+  /* 为渐变和滤镜分配唯一 ID */
+  var glassGrad   = svg.querySelector('.ff__glass-grad');
+  var stemGrad    = svg.querySelector('.ff__stem-grad');
+  var paperGrad   = svg.querySelector('.ff__paper-grad');
+  var dirtyGrad   = svg.querySelector('.ff__dirty-grad');
+  var filtrateGrad = svg.querySelector('.ff__filtrate-grad');
+  var beakerGrad  = svg.querySelector('.ff__beaker-grad');
+  var metalGrad   = svg.querySelector('.ff__metal-grad');
+  var shadowF     = svg.querySelector('.ff__shadow-filter');
+  var beakerClip  = svg.querySelector('.ff__beaker-clip');
+  var coneClip    = svg.querySelector('.ff__cone-clip');
+
+  if (glassGrad)    glassGrad.setAttribute('id', uid + '_gg');
+  if (stemGrad)     stemGrad.setAttribute('id', uid + '_sg');
+  if (paperGrad)    paperGrad.setAttribute('id', uid + '_pg');
+  if (dirtyGrad)    dirtyGrad.setAttribute('id', uid + '_dg');
+  if (filtrateGrad) filtrateGrad.setAttribute('id', uid + '_fg');
+  if (beakerGrad)   beakerGrad.setAttribute('id', uid + '_bg');
+  if (metalGrad)    metalGrad.setAttribute('id', uid + '_mg');
+  if (shadowF)      shadowF.setAttribute('id', uid + '_sf');
+  if (beakerClip)   beakerClip.setAttribute('id', uid + '_bc');
+  if (coneClip)     coneClip.setAttribute('id', uid + '_cc');
+
+  /* 绑定渐变引用 */
+  var coneBody = root.querySelector('.ff__cone-body');
+  if (coneBody) coneBody.setAttribute('fill', 'url(#' + uid + '_gg)');
+
+  var stemBody = root.querySelector('.ff__stem-body');
+  if (stemBody) stemBody.setAttribute('fill', 'url(#' + uid + '_sg)');
+
+  var paperBody = root.querySelector('.ff__paper-body');
+  if (paperBody) paperBody.setAttribute('fill', 'url(#' + uid + '_pg)');
+
+  var dirtyLiquid = root.querySelector('.ff__dirty-liquid');
+  if (dirtyLiquid) dirtyLiquid.setAttribute('fill', 'url(#' + uid + '_dg)');
+
+  var filtrateBody = root.querySelector('.ff__filtrate-body');
+  if (filtrateBody) filtrateBody.setAttribute('fill', 'url(#' + uid + '_fg)');
+
+  var beakerBody = root.querySelector('.ff__beaker-body');
+  if (beakerBody) beakerBody.setAttribute('fill', 'url(#' + uid + '_bg)');
+
+  /* 铁架台金属渐变绑定 */
+  var standParts = root.querySelectorAll('.ff__stand > rect, .ff__stand > circle');
+  standParts.forEach(function(el) {
+    var tag = el.tagName.toLowerCase();
+    if (tag === 'rect' || tag === 'circle') {
+      var currentFill = el.getAttribute('fill');
+      if (!currentFill || currentFill === 'null') {
+        el.setAttribute('fill', 'url(#' + uid + '_mg)');
+      }
+    }
+  });
+
+  /* 铁圈横杆和夹持器也用金属渐变 */
+  root.querySelectorAll('.ff__stand > g > rect, .ff__stand rect').forEach(function(el) {
+    if (!el.getAttribute('fill') || el.getAttribute('fill') === 'null') {
+      el.setAttribute('fill', 'url(#' + uid + '_mg)');
+    }
+  });
+
+  /* 烧杯裁剪 */
+  if (filtrateBody) filtrateBody.setAttribute('clip-path', 'url(#' + uid + '_bc)');
+
+  /* 投影 */
+  var shadowGroup = root.querySelector('.ff__shadow-group');
+  if (shadowGroup) shadowGroup.setAttribute('filter', 'url(#' + uid + '_sf)');
+
+  /* 烧杯玻璃叠加 */
+  var beakerGlassOverlay = beakerBody ? beakerBody.nextElementSibling : null;
+  if (beakerGlassOverlay && beakerGlassOverlay.tagName === 'path' && !beakerGlassOverlay.classList.length) {
+    beakerGlassOverlay.setAttribute('fill', 'url(#' + uid + '_bg)');
+  }
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="sci.tool.filter-funnel.basic"] {
+  --h: var(--cmp-size, 280px);
+  display: inline-block;
+  width: calc(var(--h) * 160 / 280);
+  height: var(--h);
+  user-select: none;
+}
+.cmp[data-cmp-id="sci.tool.filter-funnel.basic"] .ff__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+</style>

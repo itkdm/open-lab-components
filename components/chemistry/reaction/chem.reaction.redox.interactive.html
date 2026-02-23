@@ -1,0 +1,313 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.reaction.redox.interactive",
+  "name": "氧化还原反应（交互式）",
+  "nameEn": "Redox Reaction (Interactive)",
+  "category": "chemistry/reaction",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 420 },
+  "tags": ["chemistry","redox","oxidation","reduction","electron-transfer","galvanic","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "oxColor",        "type": "color",  "default": "#ef5350", "desc": "氧化颜色" },
+    { "key": "redColor",       "type": "color",  "default": "#42a5f5", "desc": "还原颜色" },
+    { "key": "electronColor",  "type": "color",  "default": "#ffeb3b", "desc": "电子颜色" },
+    { "key": "preset",         "type": "enum",   "default": "zn-cu", "enum": ["zn-cu","fe-cu","mg-hcl","na-cl"], "desc": "反应类型" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "oxColor": "--cmp-ox", "redColor": "--cmp-red", "electronColor": "--cmp-electron", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "preset", "values": { "preset": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.reaction.redox.interactive" role="img" aria-label="氧化还原反应（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.reaction.redox.interactive"]{
+      --h:var(--cmp-size,420px);display:inline-block;
+      width:calc(var(--h)*500/420);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,235,59,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="chem.reaction.redox.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.reaction.redox.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="chem.reaction.redox.interactive"] .rdx__btn{cursor:pointer}
+    .cmp[data-cmp-id="chem.reaction.redox.interactive"] .rdx__btn:hover rect{opacity:0.9}
+  </style>
+
+  <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="rdx__solL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3f2fd" stop-opacity="0.3"/><stop offset="1" stop-color="#90caf9" stop-opacity="0.5"/></linearGradient>
+      <linearGradient id="rdx__solR" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3f2fd" stop-opacity="0.3"/><stop offset="1" stop-color="#90caf9" stop-opacity="0.5"/></linearGradient>
+      <marker id="rdx__eArrow" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-electron,#ffeb3b)"/></marker>
+    </defs>
+
+    <!-- 标题 -->
+    <text x="250" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="var(--cmp-stroke,#37474f)">氧化还原反应</text>
+    <text class="rdx__equation" x="250" y="42" text-anchor="middle" font-size="10" fill="#78909c">Zn + Cu²⁺ → Zn²⁺ + Cu</text>
+
+    <!-- 左半电池（氧化） -->
+    <g class="rdx__leftCell">
+      <rect x="40" y="100" width="170" height="200" rx="6" fill="#fafafa" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <rect x="42" y="160" width="166" height="138" rx="4" fill="url(#rdx__solL)"/>
+      <text class="rdx__leftTitle" x="125" y="90" text-anchor="middle" font-size="11" font-weight="700" fill="var(--cmp-ox,#ef5350)">氧化（失电子）</text>
+      <!-- 电极 -->
+      <rect class="rdx__leftElectrode" x="110" y="110" width="30" height="150" rx="3" fill="#78909c" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text class="rdx__leftElLabel" x="125" y="275" text-anchor="middle" font-size="10" font-weight="600" fill="#78909c">Zn</text>
+      <!-- 离子 -->
+      <g class="rdx__leftIons"></g>
+    </g>
+
+    <!-- 右半电池（还原） -->
+    <g class="rdx__rightCell">
+      <rect x="290" y="100" width="170" height="200" rx="6" fill="#fafafa" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <rect x="292" y="160" width="166" height="138" rx="4" fill="url(#rdx__solR)"/>
+      <text class="rdx__rightTitle" x="375" y="90" text-anchor="middle" font-size="11" font-weight="700" fill="var(--cmp-red,#42a5f5)">还原（得电子）</text>
+      <!-- 电极 -->
+      <rect class="rdx__rightElectrode" x="360" y="110" width="30" height="150" rx="3" fill="#b87333" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text class="rdx__rightElLabel" x="375" y="275" text-anchor="middle" font-size="10" font-weight="600" fill="#b87333">Cu</text>
+      <!-- 离子 -->
+      <g class="rdx__rightIons"></g>
+    </g>
+
+    <!-- 盐桥 -->
+    <rect x="210" y="180" width="80" height="20" rx="10" fill="#e0e0e0" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+    <text x="250" y="194" text-anchor="middle" font-size="8" fill="#666">盐桥</text>
+    <!-- 盐桥离子 -->
+    <g class="rdx__bridgeIons"></g>
+
+    <!-- 导线 -->
+    <path d="M125,110 L125,65 L375,65 L375,110" fill="none" stroke="#555" stroke-width="2.5"/>
+    <!-- 电子流动 -->
+    <g class="rdx__electrons"></g>
+    <!-- 电流方向 -->
+    <path d="M200,55 L300,55" fill="none" stroke="var(--cmp-electron,#ffeb3b)" stroke-width="2" marker-end="url(#rdx__eArrow)" opacity="0.8"/>
+    <text x="250" y="52" text-anchor="middle" font-size="8" fill="var(--cmp-electron,#ffeb3b)" font-weight="600">e⁻ →</text>
+
+    <!-- 电压表 -->
+    <g transform="translate(250,65)">
+      <circle r="15" fill="#fff" stroke="#555" stroke-width="1.5"/>
+      <text x="0" y="-3" text-anchor="middle" font-size="6" fill="#999">V</text>
+      <text class="rdx__voltage" x="0" y="7" text-anchor="middle" font-size="8" font-weight="700" fill="#e53935">1.10</text>
+    </g>
+
+    <!-- 氧化数变化 -->
+    <g class="rdx__oxNumbers" transform="translate(250,330)">
+      <rect x="-220" y="0" width="440" height="50" rx="6" fill="rgba(255,255,255,0.92)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="-100" y="18" text-anchor="middle" font-size="10" font-weight="600" fill="var(--cmp-ox,#ef5350)">Zn → Zn²⁺ + 2e⁻</text>
+      <text x="-100" y="35" text-anchor="middle" font-size="9" fill="#999">氧化数: 0 → +2</text>
+      <text x="100" y="18" text-anchor="middle" font-size="10" font-weight="600" fill="var(--cmp-red,#42a5f5)">Cu²⁺ + 2e⁻ → Cu</text>
+      <text x="100" y="35" text-anchor="middle" font-size="9" fill="#999">氧化数: +2 → 0</text>
+    </g>
+
+    <!-- 预设按钮 -->
+    <g class="rdx__presets" transform="translate(250,405)">
+      <g class="rdx__btn" data-p="zn-cu" transform="translate(-150,0)"><rect x="-48" y="-12" width="96" height="24" rx="5" fill="#5c6bc0" opacity="0.85"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">Zn-Cu 电池</text></g>
+      <g class="rdx__btn" data-p="fe-cu" transform="translate(-50,0)"><rect x="-48" y="-12" width="96" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">Fe-Cu 电池</text></g>
+      <g class="rdx__btn" data-p="mg-hcl" transform="translate(50,0)"><rect x="-48" y="-12" width="96" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">Mg + HCl</text></g>
+      <g class="rdx__btn" data-p="na-cl" transform="translate(150,0)"><rect x="-48" y="-12" width="96" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">Na + Cl₂</text></g>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.reaction.redox.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var preset=P.preset||'zn-cu';
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+
+    var PRESETS={
+      'zn-cu':{eq:'Zn + Cu²⁺ → Zn²⁺ + Cu',lEl:'Zn',rEl:'Cu',lColor:'#78909c',rColor:'#b87333',
+        lOx:'Zn → Zn²⁺ + 2e⁻',lOxNum:'0 → +2',rRed:'Cu²⁺ + 2e⁻ → Cu',rRedNum:'+2 → 0',V:'1.10',
+        solL:'#bbdefb',solR:'#bbdefb'},
+      'fe-cu':{eq:'Fe + Cu²⁺ → Fe²⁺ + Cu',lEl:'Fe',rEl:'Cu',lColor:'#616161',rColor:'#b87333',
+        lOx:'Fe → Fe²⁺ + 2e⁻',lOxNum:'0 → +2',rRed:'Cu²⁺ + 2e⁻ → Cu',rRedNum:'+2 → 0',V:'0.78',
+        solL:'#c8e6c9',solR:'#bbdefb'},
+      'mg-hcl':{eq:'Mg + 2HCl → MgCl₂ + H₂↑',lEl:'Mg',rEl:'Pt',lColor:'#bdbdbd',rColor:'#9e9e9e',
+        lOx:'Mg → Mg²⁺ + 2e⁻',lOxNum:'0 → +2',rRed:'2H⁺ + 2e⁻ → H₂↑',rRedNum:'+1 → 0',V:'2.37',
+        solL:'#fff9c4',solR:'#fff9c4'},
+      'na-cl':{eq:'2Na + Cl₂ → 2NaCl',lEl:'Na',rEl:'C',lColor:'#ffcc80',rColor:'#424242',
+        lOx:'Na → Na⁺ + e⁻',lOxNum:'0 → +1',rRed:'Cl₂ + 2e⁻ → 2Cl⁻',rRedNum:'0 → −1',V:'4.07',
+        solL:'#fff3e0',solR:'#e8f5e9'}
+    };
+
+    var equation=root.querySelector('.rdx__equation');
+    var leftElectrode=root.querySelector('.rdx__leftElectrode');
+    var rightElectrode=root.querySelector('.rdx__rightElectrode');
+    var leftElLabel=root.querySelector('.rdx__leftElLabel');
+    var rightElLabel=root.querySelector('.rdx__rightElLabel');
+    var voltage=root.querySelector('.rdx__voltage');
+    var electronsG=root.querySelector('.rdx__electrons');
+    var leftIonsG=root.querySelector('.rdx__leftIons');
+    var rightIonsG=root.querySelector('.rdx__rightIons');
+    var bridgeIonsG=root.querySelector('.rdx__bridgeIons');
+    var oxNumbers=root.querySelector('.rdx__oxNumbers');
+    var presetsG=root.querySelector('.rdx__presets');
+
+    var electrons=[];
+    var ions=[];
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function loadPreset(name){
+      var p=PRESETS[name]||PRESETS['zn-cu'];
+      equation.textContent=p.eq;
+      leftElectrode.setAttribute('fill',p.lColor);
+      rightElectrode.setAttribute('fill',p.rColor);
+      leftElLabel.textContent=p.lEl;leftElLabel.setAttribute('fill',p.lColor);
+      rightElLabel.textContent=p.rEl;rightElLabel.setAttribute('fill',p.rColor);
+      voltage.textContent=p.V;
+
+      /* 氧化数 */
+      var texts=oxNumbers.querySelectorAll('text');
+      texts[0].textContent=p.lOx;texts[1].textContent='氧化数: '+p.lOxNum;
+      texts[2].textContent=p.rRed;texts[3].textContent='氧化数: '+p.rRedNum;
+
+      /* 溶液颜色 */
+      var solL=svg.querySelector('#rdx__solL stop:last-child');
+      var solR=svg.querySelector('#rdx__solR stop:last-child');
+      if(solL)solL.setAttribute('stop-color',p.solL);
+      if(solR)solR.setAttribute('stop-color',p.solR);
+
+      electrons=[];ions=[];
+      clear(electronsG);clear(leftIonsG);clear(rightIonsG);clear(bridgeIonsG);
+    }
+
+    function updateTabs(){
+      var btns=presetsG.querySelectorAll('.rdx__btn');
+      for(var i=0;i<btns.length;i++){
+        var p2=btns[i].getAttribute('data-p');
+        btns[i].querySelector('rect').setAttribute('fill',p2===preset?'#5c6bc0':'#78909c');
+        btns[i].querySelector('rect').setAttribute('opacity',p2===preset?'0.85':'0.6');
+      }
+    }
+
+    loadPreset(preset);updateTabs();
+
+    /* 电子沿导线路径 */
+    var wirePath=[{x:125,y:110},{x:125,y:65},{x:250,y:65},{x:375,y:65},{x:375,y:110}];
+    function wirePos(t){
+      /* t: 0→1 沿路径 */
+      var totalLen=0,segs=[];
+      for(var i=1;i<wirePath.length;i++){
+        var dx=wirePath[i].x-wirePath[i-1].x,dy=wirePath[i].y-wirePath[i-1].y;
+        var len=Math.sqrt(dx*dx+dy*dy);
+        segs.push({len:len,total:totalLen});totalLen+=len;
+      }
+      var d=t*totalLen;
+      for(var j=0;j<segs.length;j++){
+        if(d<=segs[j].len||j===segs.length-1){
+          var frac=d/segs[j].len;
+          return{
+            x:wirePath[j].x+(wirePath[j+1].x-wirePath[j].x)*frac,
+            y:wirePath[j].y+(wirePath[j+1].y-wirePath[j].y)*frac
+          };
+        }
+        d-=segs[j].len;
+      }
+      return wirePath[wirePath.length-1];
+    }
+
+    var NUM_E=6;
+    for(var i=0;i<NUM_E;i++){
+      var el=elSvg('circle',{r:'3',fill:'var(--cmp-electron,#ffeb3b)',opacity:'0.9'});
+      electronsG.appendChild(el);
+      electrons.push({el:el,t:i/NUM_E});
+    }
+
+    /* 溶液中离子 */
+    function spawnIon(g,x,y,label,color){
+      var el=elSvg('circle',{cx:x,cy:y,r:'5',fill:color,opacity:'0.6'});
+      g.appendChild(el);
+      var txt=elSvg('text',{x:x,y:y+3,'text-anchor':'middle','font-size':'6',fill:'#fff','font-weight':'600'});
+      txt.textContent=label;g.appendChild(txt);
+      ions.push({el:el,txt:txt,x:x,y:y,vx:(Math.random()-0.5)*20,vy:(Math.random()-0.5)*20,
+        minX:x-60,maxX:x+60,minY:y-40,maxY:y+40});
+    }
+    /* 初始离子 */
+    for(var j=0;j<4;j++){
+      spawnIon(leftIonsG,70+Math.random()*80,180+Math.random()*100,'²⁺','var(--cmp-ox,#ef5350)');
+      spawnIon(rightIonsG,310+Math.random()*80,180+Math.random()*100,'²⁺','var(--cmp-red,#42a5f5)');
+    }
+    /* 盐桥离子 */
+    for(var k=0;k<3;k++){
+      var bx=220+k*20,by=185+Math.random()*10;
+      var bel=elSvg('circle',{cx:bx,cy:by,r:'3',fill:'#9e9e9e',opacity:'0.5'});
+      bridgeIonsG.appendChild(bel);
+    }
+
+    var animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04);
+      lastT=t;
+
+      /* 电子沿导线 */
+      for(var i=0;i<electrons.length;i++){
+        electrons[i].t+=dt*speed*0.15;
+        if(electrons[i].t>1)electrons[i].t-=1;
+        var pos=wirePos(electrons[i].t);
+        electrons[i].el.setAttribute('cx',pos.x);
+        electrons[i].el.setAttribute('cy',pos.y);
+      }
+
+      /* 离子布朗运动 */
+      for(var j=0;j<ions.length;j++){
+        var ion=ions[j];
+        ion.x+=ion.vx*dt*speed;ion.y+=ion.vy*dt*speed;
+        if(ion.x<ion.minX||ion.x>ion.maxX)ion.vx=-ion.vx;
+        if(ion.y<ion.minY||ion.y>ion.maxY)ion.vy=-ion.vy;
+        ion.vx+=(Math.random()-0.5)*10*dt;
+        ion.vy+=(Math.random()-0.5)*10*dt;
+        ion.el.setAttribute('cx',ion.x);ion.el.setAttribute('cy',ion.y);
+        ion.txt.setAttribute('x',ion.x);ion.txt.setAttribute('y',ion.y+3);
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    presetsG.addEventListener('click',function(e){
+      var btn=e.target.closest('.rdx__btn');
+      if(!btn)return;
+      preset=btn.getAttribute('data-p');
+      loadPreset(preset);updateTabs();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'chem.reaction.redox.interactive',type:'preset',values:{preset:preset}}}));
+    });
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.preset&&PRESETS[P2.preset]){preset=P2.preset;loadPreset(preset);updateTabs();}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

@@ -1,0 +1,442 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.reaction.equilibrium.interactive",
+  "name": "化学平衡（交互式）",
+  "nameEn": "Chemical Equilibrium (Interactive)",
+  "category": "chemistry/reaction",
+  "version": "1.0.0",
+  "viewport": { "w": 520, "h": 430 },
+  "tags": ["chemistry","equilibrium","reaction","Le-Chatelier","concentration","rate","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 430, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "reactantColor",  "type": "color",  "default": "#42a5f5", "desc": "反应物颜色" },
+    { "key": "productColor",   "type": "color",  "default": "#ef5350", "desc": "生成物颜色" },
+    { "key": "temperature",    "type": "number", "default": 300, "min": 200, "max": 500, "desc": "温度(K)" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showGraph",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示浓度图" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "reactantColor": "--cmp-reactant", "productColor": "--cmp-product", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "state", "values": { "reactantConc": "number", "productConc": "number", "Keq": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.reaction.equilibrium.interactive" role="img" aria-label="化学平衡（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.reaction.equilibrium.interactive"]{
+      --h:var(--cmp-size,430px);display:inline-block;
+      width:calc(var(--h)*520/430);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="chem.reaction.equilibrium.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.reaction.equilibrium.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="chem.reaction.equilibrium.interactive"] .ceq__btn{cursor:pointer}
+    .cmp[data-cmp-id="chem.reaction.equilibrium.interactive"] .ceq__btn:active rect{opacity:1}
+  </style>
+
+  <svg viewBox="0 0 520 430" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <clipPath id="ceq__vesselClip"><rect x="40" y="80" width="200" height="200"/></clipPath>
+    </defs>
+
+    <!-- 标题 -->
+    <text class="ceq__title" x="260" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="var(--cmp-stroke,#37474f)">化学平衡演示</text>
+    <text class="ceq__subtitle" x="260" y="42" text-anchor="middle" font-size="10" fill="#78909c">A ⇌ B （可逆反应，正反应吸热）</text>
+
+    <!-- 反应容器 -->
+    <rect x="40" y="80" width="200" height="200" rx="6" fill="#f5f5f5" stroke="var(--cmp-stroke,#37474f)" stroke-width="2"/>
+    <g class="ceq__particles" clip-path="url(#ceq__vesselClip)"></g>
+
+    <!-- 反应方程标注 -->
+    <g class="ceq__eqLabel" transform="translate(140,300)">
+      <text x="-50" y="0" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-reactant,#42a5f5)">A</text>
+      <text x="0" y="0" text-anchor="middle" font-size="14" fill="#999">⇌</text>
+      <text x="50" y="0" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-product,#ef5350)">B</text>
+    </g>
+
+    <!-- 浓度柱状图 -->
+    <g class="ceq__barsG" transform="translate(40,318)">
+      <text class="ceq__barsTitle" x="100" y="-2" text-anchor="middle" font-size="9" font-weight="600" fill="var(--cmp-stroke,#37474f)">浓度</text>
+      <!-- 柱子底线 -->
+      <line x1="20" y1="80" x2="190" y2="80" stroke="#ccc" stroke-width="0.5"/>
+      <rect class="ceq__barA" x="30" y="20" width="55" height="60" rx="3" fill="var(--cmp-reactant,#42a5f5)" opacity="0.7"/>
+      <rect class="ceq__barB" x="110" y="40" width="55" height="40" rx="3" fill="var(--cmp-product,#ef5350)" opacity="0.7"/>
+      <text class="ceq__barAText" x="57" y="93" text-anchor="middle" font-size="9" fill="var(--cmp-reactant,#42a5f5)">[A]: 0.60</text>
+      <text class="ceq__barBText" x="137" y="93" text-anchor="middle" font-size="9" fill="var(--cmp-product,#ef5350)">[B]: 0.40</text>
+    </g>
+
+    <!-- 浓度-时间图 -->
+    <g class="ceq__graph" transform="translate(280,60)">
+      <rect x="0" y="0" width="220" height="150" rx="4" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="ceq__graphTitle" x="110" y="-5" text-anchor="middle" font-size="10" font-weight="600" fill="var(--cmp-stroke,#37474f)">浓度-时间图</text>
+      <line x1="30" y1="130" x2="210" y2="130" stroke="#ccc" stroke-width="0.5"/>
+      <line x1="30" y1="130" x2="30" y2="15" stroke="#ccc" stroke-width="0.5"/>
+      <text x="120" y="145" text-anchor="middle" font-size="7" fill="#999">时间 t</text>
+      <text x="10" y="75" font-size="7" fill="#999" transform="rotate(-90,10,75)">浓度</text>
+      <path class="ceq__graphA" d="" fill="none" stroke="var(--cmp-reactant,#42a5f5)" stroke-width="1.8"/>
+      <path class="ceq__graphB" d="" fill="none" stroke="var(--cmp-product,#ef5350)" stroke-width="1.8"/>
+      <!-- 图例 -->
+      <line x1="140" y1="15" x2="155" y2="15" stroke="var(--cmp-reactant,#42a5f5)" stroke-width="2"/>
+      <text x="158" y="18" font-size="7" fill="var(--cmp-reactant,#42a5f5)">[A]</text>
+      <line x1="178" y1="15" x2="193" y2="15" stroke="var(--cmp-product,#ef5350)" stroke-width="2"/>
+      <text x="196" y="18" font-size="7" fill="var(--cmp-product,#ef5350)">[B]</text>
+    </g>
+
+    <!-- 信息面板 -->
+    <g class="ceq__info" transform="translate(280,225)">
+      <rect x="0" y="0" width="220" height="82" rx="6" fill="rgba(255,255,255,0.92)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="ceq__keqText" x="15" y="20" font-size="11" font-weight="700" fill="var(--cmp-stroke,#37474f)">Keq = 0.67</text>
+      <text class="ceq__rateText" x="15" y="38" font-size="10" fill="#78909c">正反应速率 ≈ 逆反应速率</text>
+      <text class="ceq__stateText" x="15" y="55" font-size="10" font-weight="600" fill="#66bb6a">✓ 已达平衡</text>
+      <text class="ceq__tempText" x="15" y="72" font-size="9" fill="#e65100">T = 300K</text>
+    </g>
+
+    <!-- 操作按钮 -->
+    <g transform="translate(280,320)">
+      <g class="ceq__addA ceq__btn">
+        <rect x="0" y="0" width="68" height="26" rx="5" fill="var(--cmp-reactant,#42a5f5)" opacity="0.85"/>
+        <text x="34" y="17" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">+ 加A</text>
+      </g>
+      <g class="ceq__addB ceq__btn">
+        <rect x="76" y="0" width="68" height="26" rx="5" fill="var(--cmp-product,#ef5350)" opacity="0.85"/>
+        <text x="110" y="17" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">+ 加B</text>
+      </g>
+      <g class="ceq__reset ceq__btn">
+        <rect x="152" y="0" width="62" height="26" rx="5" fill="#9e9e9e" opacity="0.85"/>
+        <text x="183" y="17" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">重置</text>
+      </g>
+      <g class="ceq__heatUp ceq__btn">
+        <rect x="0" y="34" width="68" height="26" rx="5" fill="#ff9800" opacity="0.85"/>
+        <text x="34" y="51" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">↑ 升温</text>
+      </g>
+      <g class="ceq__coolDown ceq__btn">
+        <rect x="76" y="34" width="68" height="26" rx="5" fill="#5c6bc0" opacity="0.85"/>
+        <text x="110" y="51" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">↓ 降温</text>
+      </g>
+    </g>
+
+    <!-- 底部提示 -->
+    <text class="ceq__hint" x="260" y="420" text-anchor="middle" font-size="9" fill="#999">勒夏特列原理：改变条件，平衡移动以减弱该改变</text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.reaction.equilibrium.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    /* ── clipPath id 唯一化 ── */
+    var uid='ceq_'+Math.random().toString(36).slice(2,8);
+    var clip=root.querySelector('#ceq__vesselClip');
+    if(clip)clip.id=uid+'_clip';
+    root.querySelectorAll('[clip-path]').forEach(function(el){
+      el.setAttribute('clip-path','url(#'+uid+'_clip)');
+    });
+
+    /* ── Props ── */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var temperature=Math.max(200,Math.min(500,Number(P.temperature)||300));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var showGraph=(P.showGraph!=='off');
+
+    var INIT_TEMP=300;
+
+    /* ── DOM refs ── */
+    var particlesG=root.querySelector('.ceq__particles');
+    var barA=root.querySelector('.ceq__barA');
+    var barB=root.querySelector('.ceq__barB');
+    var barAText=root.querySelector('.ceq__barAText');
+    var barBText=root.querySelector('.ceq__barBText');
+    var graphA=root.querySelector('.ceq__graphA');
+    var graphB=root.querySelector('.ceq__graphB');
+    var graphG=root.querySelector('.ceq__graph');
+    var keqText=root.querySelector('.ceq__keqText');
+    var rateText=root.querySelector('.ceq__rateText');
+    var stateText=root.querySelector('.ceq__stateText');
+    var tempText=root.querySelector('.ceq__tempText');
+    var barsG=root.querySelector('.ceq__barsG');
+    var eqLabel=root.querySelector('.ceq__eqLabel');
+    var titleEl=root.querySelector('.ceq__title');
+    var subtitleEl=root.querySelector('.ceq__subtitle');
+    var hintEl=root.querySelector('.ceq__hint');
+    var graphTitle=root.querySelector('.ceq__graphTitle');
+    var barsTitle=root.querySelector('.ceq__barsTitle');
+
+    /*
+     * ── 浓度模型 ──
+     * 不再归一化为 concA+concB=1。
+     * 用真实浓度（mol/L），初始 A=0.8, B=0.2。
+     * A ⇌ B, Keq = [B]/[A]
+     * 加入物质 = 增加该物质浓度，另一种不变。
+     * 系统通过反应趋向新平衡。
+     */
+    var concA=0.8,concB=0.2;
+    var CONC_MAX=1.5; /* 显示上限 */
+
+    var history=[];
+    var MAX_HIST=180;
+
+    /* ── 粒子 ── */
+    var TOTAL=40;
+    var parts=[];
+
+    function initParticles(){
+      while(particlesG.firstChild)particlesG.removeChild(particlesG.firstChild);
+      parts=[];
+      for(var i=0;i<TOTAL;i++){
+        var isA=i<Math.round(concA/(concA+concB)*TOTAL);
+        var p={
+          x:50+Math.random()*180,y:90+Math.random()*180,
+          vx:(Math.random()-0.5)*60,vy:(Math.random()-0.5)*60,
+          type:isA?'A':'B',el:null
+        };
+        var c=document.createElementNS(NS,'circle');
+        c.setAttribute('r','5');
+        c.setAttribute('fill',isA?'var(--cmp-reactant,#42a5f5)':'var(--cmp-product,#ef5350)');
+        c.setAttribute('cx',p.x);c.setAttribute('cy',p.y);
+        c.setAttribute('opacity','0.8');
+        particlesG.appendChild(c);
+        p.el=c;
+        parts.push(p);
+      }
+    }
+
+    /* ── Keq：正反应吸热，升温 Keq 增大 ── */
+    function keq(){
+      return 0.25*Math.exp((temperature-300)/120);
+    }
+
+    /*
+     * 平衡目标浓度：
+     * 设反应进度 ξ，A → B 正向进行 ξ mol/L
+     * [A]eq = concA - ξ, [B]eq = concB + ξ
+     * Keq = (concB + ξ) / (concA - ξ)
+     * ξ = (Keq * concA - concB) / (1 + Keq)
+     */
+    function targetConc(){
+      var k=keq();
+      var xi=(k*concA-concB)/(1+k);
+      var aT=concA-xi;
+      var bT=concB+xi;
+      /* 防止负值 */
+      if(aT<0.01){aT=0.01;bT=concA+concB-0.01;}
+      if(bT<0.01){bT=0.01;aT=concA+concB-0.01;}
+      return{a:aT,b:bT};
+    }
+
+    /* ── 柱状图 ── */
+    var BAR_MAX_H=72;
+    function updateBars(){
+      var hA=Math.min(1,concA/CONC_MAX)*BAR_MAX_H;
+      var hB=Math.min(1,concB/CONC_MAX)*BAR_MAX_H;
+      barA.setAttribute('y',8+BAR_MAX_H-hA);barA.setAttribute('height',Math.max(1,hA));
+      barB.setAttribute('y',8+BAR_MAX_H-hB);barB.setAttribute('height',Math.max(1,hB));
+      barAText.textContent='[A]: '+concA.toFixed(2);
+      barBText.textContent='[B]: '+concB.toFixed(2);
+    }
+
+    /* ── 信息面板 ── */
+    function updateInfo(){
+      var k=keq();
+      keqText.textContent='Keq = '+k.toFixed(3);
+      var tgt=targetConc();
+      var diffA=Math.abs(concA-tgt.a);
+      var diffB=Math.abs(concB-tgt.b);
+      var diff=diffA+diffB;
+      if(diff<0.02){
+        stateText.textContent='✓ 已达平衡';stateText.setAttribute('fill','#66bb6a');
+        rateText.textContent='v(正) ≈ v(逆)';
+      }else if(concB<tgt.b){
+        stateText.textContent='→ 平衡正向移动中';stateText.setAttribute('fill','#ff9800');
+        rateText.textContent='v(正) > v(逆)';
+      }else{
+        stateText.textContent='← 平衡逆向移动中';stateText.setAttribute('fill','#5c6bc0');
+        rateText.textContent='v(正) < v(逆)';
+      }
+      tempText.textContent='T = '+Math.round(temperature)+'K';
+    }
+
+    /* ── 浓度-时间图（滚动窗口） ── */
+    function updateGraph(){
+      graphG.style.display=showGraph?'':'none';
+      if(!showGraph)return;
+      var len=history.length;
+      if(len<2)return;
+      /* 始终用最近 MAX_HIST 个点铺满图表 */
+      var dA='',dB='';
+      for(var i=0;i<len;i++){
+        var x=30+(i/(len-1))*175;
+        var yA=130-Math.min(1,history[i].a/CONC_MAX)*110;
+        var yB=130-Math.min(1,history[i].b/CONC_MAX)*110;
+        dA+=(i===0?'M':'L')+x.toFixed(1)+','+yA.toFixed(1);
+        dB+=(i===0?'M':'L')+x.toFixed(1)+','+yB.toFixed(1);
+      }
+      graphA.setAttribute('d',dA);
+      graphB.setAttribute('d',dB);
+    }
+
+    /* ── showLabels 控制 ── */
+    function updateLabelsVisibility(){
+      var d=showLabels?'':'none';
+      if(titleEl)titleEl.style.display=d;
+      if(subtitleEl)subtitleEl.style.display=d;
+      if(hintEl)hintEl.style.display=d;
+      if(eqLabel)eqLabel.style.display=d;
+      if(graphTitle)graphTitle.style.display=d;
+      if(barsTitle)barsTitle.style.display=d;
+    }
+
+    /* ── 事件派发 ── */
+    function emitChange(){
+      var k=keq();
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'state',
+          values:{reactantConc:Math.round(concA*1000)/1000,productConc:Math.round(concB*1000)/1000,Keq:Math.round(k*1000)/1000}
+        }
+      }));
+    }
+
+    /* ── 初始化 ── */
+    initParticles();updateBars();updateInfo();updateLabelsVisibility();
+
+    /* ── 动画 ── */
+    var animId=0,lastT=0,time=0,histTimer=0,emitTimer=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04);
+      lastT=t;
+      time+=dt;
+      histTimer+=dt;
+      emitTimer+=dt;
+
+      /* 浓度趋向平衡（速率与温度相关） */
+      var tgt=targetConc();
+      var relaxRate=0.8*speed*Math.sqrt(temperature/300)*dt;
+      concA+=(tgt.a-concA)*relaxRate;
+      concB+=(tgt.b-concB)*relaxRate;
+
+      /* 更新粒子类型（随机选择） */
+      var numA=Math.round(concA/(concA+concB)*TOTAL);
+      numA=Math.max(0,Math.min(TOTAL,numA));
+      var currentA=0;
+      for(var i=0;i<parts.length;i++)if(parts[i].type==='A')currentA++;
+
+      if(currentA<numA){
+        /* 需要把一些 B 转为 A，随机选 */
+        var bList=[];
+        for(var i=0;i<parts.length;i++)if(parts[i].type==='B')bList.push(i);
+        shuffle(bList);
+        var toConvert=Math.min(numA-currentA,bList.length);
+        for(var j=0;j<toConvert;j++){
+          var idx=bList[j];
+          parts[idx].type='A';
+          parts[idx].el.setAttribute('fill','var(--cmp-reactant,#42a5f5)');
+        }
+      }else if(currentA>numA){
+        var aList=[];
+        for(var i=0;i<parts.length;i++)if(parts[i].type==='A')aList.push(i);
+        shuffle(aList);
+        var toConvert2=Math.min(currentA-numA,aList.length);
+        for(var j=0;j<toConvert2;j++){
+          var idx2=aList[j];
+          parts[idx2].type='B';
+          parts[idx2].el.setAttribute('fill','var(--cmp-product,#ef5350)');
+        }
+      }
+
+      /* 粒子运动（速度与温度相关） */
+      var spd=Math.sqrt(temperature/300)*speed;
+      for(var k2=0;k2<parts.length;k2++){
+        var p=parts[k2];
+        p.x+=p.vx*dt*spd;p.y+=p.vy*dt*spd;
+        if(p.x<47){p.x=47;p.vx=Math.abs(p.vx);}
+        if(p.x>233){p.x=233;p.vx=-Math.abs(p.vx);}
+        if(p.y<87){p.y=87;p.vy=Math.abs(p.vy);}
+        if(p.y>273){p.y=273;p.vy=-Math.abs(p.vy);}
+        p.el.setAttribute('cx',p.x);p.el.setAttribute('cy',p.y);
+      }
+
+      /* 记录历史 */
+      if(histTimer>0.1){
+        histTimer=0;
+        history.push({a:concA,b:concB});
+        if(history.length>MAX_HIST)history.shift();
+      }
+
+      /* 定期派发事件 */
+      if(emitTimer>0.5){
+        emitTimer=0;
+        emitChange();
+      }
+
+      updateBars();updateInfo();updateGraph();
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* ── Fisher-Yates shuffle ── */
+    function shuffle(arr){
+      for(var i=arr.length-1;i>0;i--){
+        var j=Math.floor(Math.random()*(i+1));
+        var tmp=arr[i];arr[i]=arr[j];arr[j]=tmp;
+      }
+    }
+
+    /* ── 操作按钮 ── */
+    root.querySelector('.ceq__addA').addEventListener('click',function(){
+      /* 加入 A：A 浓度增加，B 不变 */
+      concA=Math.min(CONC_MAX,concA+0.2);
+    });
+    root.querySelector('.ceq__addB').addEventListener('click',function(){
+      concB=Math.min(CONC_MAX,concB+0.2);
+    });
+    root.querySelector('.ceq__heatUp').addEventListener('click',function(){
+      temperature=Math.min(500,temperature+30);
+    });
+    root.querySelector('.ceq__coolDown').addEventListener('click',function(){
+      temperature=Math.max(200,temperature-30);
+    });
+    root.querySelector('.ceq__reset').addEventListener('click',function(){
+      concA=0.8;concB=0.2;temperature=INIT_TEMP;
+      history=[];
+      initParticles();updateBars();updateInfo();updateGraph();
+      emitChange();
+    });
+
+    /* ── Props 变化 ── */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.temperature!=null)temperature=Math.max(200,Math.min(500,Number(P2.temperature)||300));
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');
+      showGraph=(P2.showGraph!=='off');
+      updateLabelsVisibility();
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

@@ -1,0 +1,462 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.statistics.histogram.interactive",
+  "name": "直方图（交互式）",
+  "nameEn": "Histogram (Interactive)",
+  "category": "math/statistics",
+  "version": "1.0.0",
+  "viewport": { "w": 460, "h": 380 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 380, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 4, "desc": "描边粗细" },
+    { "key": "barColor",    "type": "color",  "default": "#42a5f5", "desc": "柱体颜色" },
+    { "key": "axisColor",   "type": "color",  "default": "#37474f", "desc": "坐标轴颜色" },
+    { "key": "gridColor",   "type": "color",  "default": "#e0e0e0", "desc": "网格颜色" },
+    { "key": "dataset",     "type": "enum",   "default": "normal", "enum": ["normal","uniform","skewed","bimodal"], "desc": "数据集类型" },
+    { "key": "bins",        "type": "number", "default": 10, "min": 5, "max": 20, "desc": "分组数" },
+    { "key": "showMean",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示均值线" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标签" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "barColor": "--cmp-bar", "axisColor": "--cmp-axis", "gridColor": "--cmp-grid",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["math","statistics","histogram","interactive","distribution","data"],
+  "events": [
+    { "name": "cmp:change", "type": "param", "values": { "dataset": "string", "bins": "number", "mean": "number", "stddev": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.statistics.histogram.interactive" role="img" aria-label="直方图（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.statistics.histogram.interactive"]{
+      --h:var(--cmp-size,380px);display:inline-block;width:calc(var(--h)*1.21);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.8*var(--cmp-glow,0))));
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="math.statistics.histogram.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.statistics.histogram.interactive"] .hg__title{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:14px;font-weight:700}
+    .cmp[data-cmp-id="math.statistics.histogram.interactive"] .hg__lbl{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:9px}
+    .cmp[data-cmp-id="math.statistics.histogram.interactive"] .hg__axis-lbl{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:11px;font-weight:600}
+    .cmp[data-cmp-id="math.statistics.histogram.interactive"] .hg__bar-lbl{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:8px;font-weight:600}
+    .cmp[data-cmp-id="math.statistics.histogram.interactive"] .hg__mean-lbl{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:9px;font-weight:600}
+  </style>
+
+  <svg viewBox="0 0 460 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="hg__arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="var(--cmp-axis,#37474f)"/>
+      </marker>
+    </defs>
+
+    <!-- title -->
+    <text class="hg__title hg__title-text" x="230" y="22" fill="var(--cmp-axis,#37474f)" text-anchor="middle"></text>
+    <!-- grid group -->
+    <g class="hg__grid"></g>
+    <!-- axes group -->
+    <g class="hg__axes"></g>
+    <!-- bars group -->
+    <g class="hg__bars"></g>
+    <!-- mean line group -->
+    <g class="hg__mean"></g>
+    <!-- labels group -->
+    <g class="hg__labels"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.statistics.histogram.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    /* ─── Parse props ─── */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var dataset=String(P.dataset||'normal');
+    var validDatasets=['normal','uniform','skewed','bimodal'];
+    if(validDatasets.indexOf(dataset)<0)dataset='normal';
+
+    var bins=Math.max(5,Math.min(20,Math.round(Number(P.bins)||10)));
+    var showMean=(P.showMean!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    /* ─── Viewport constants ─── */
+    var VB_W=460, VB_H=380;
+    var PAD_L=52, PAD_R=20, PAD_T=36, PAD_B=52;
+    var plotW=VB_W-PAD_L-PAD_R;
+    var plotH=VB_H-PAD_T-PAD_B;
+
+    /* ─── SVG helpers ─── */
+    var NS='http://www.w3.org/2000/svg';
+    function mkEl(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    var gridG=root.querySelector('.hg__grid');
+    var axesG=root.querySelector('.hg__axes');
+    var barsG=root.querySelector('.hg__bars');
+    var meanG=root.querySelector('.hg__mean');
+    var labelsG=root.querySelector('.hg__labels');
+    var titleText=root.querySelector('.hg__title-text');
+
+    /* ─── Dataset name map ─── */
+    var datasetNames={
+      normal:'正态分布',
+      uniform:'均匀分布',
+      skewed:'右偏分布',
+      bimodal:'双峰分布'
+    };
+
+    /* ─── Seeded PRNG for reproducibility ─── */
+    var seed=42;
+    function seededRandom(){
+      seed=(seed*16807+0)%2147483647;
+      return(seed-1)/2147483646;
+    }
+
+    /* ─── Data generation ─── */
+    var SAMPLE_N=200;
+
+    function boxMuller(){
+      var u1=seededRandom(),u2=seededRandom();
+      return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+    }
+
+    function generateData(){
+      seed=42;
+      var data=[];
+      var i;
+      switch(dataset){
+        case 'normal':
+          for(i=0;i<SAMPLE_N;i++)data.push(50+15*boxMuller());
+          break;
+        case 'uniform':
+          for(i=0;i<SAMPLE_N;i++)data.push(seededRandom()*100);
+          break;
+        case 'skewed':
+          /* Chi-squared-like: sum of squared normals */
+          for(i=0;i<SAMPLE_N;i++){
+            var v=0;
+            for(var j=0;j<3;j++){var n=boxMuller();v+=n*n;}
+            data.push(v*10);
+          }
+          break;
+        case 'bimodal':
+          for(i=0;i<SAMPLE_N;i++){
+            if(seededRandom()<0.5)data.push(30+8*boxMuller());
+            else data.push(70+8*boxMuller());
+          }
+          break;
+      }
+      return data;
+    }
+
+    /* ─── Statistics ─── */
+    function calcStats(data){
+      var n=data.length,sum=0;
+      for(var i=0;i<n;i++)sum+=data[i];
+      var mean=sum/n;
+      var varSum=0;
+      for(var j=0;j<n;j++)varSum+=(data[j]-mean)*(data[j]-mean);
+      var stddev=Math.sqrt(varSum/n);
+      return{mean:mean,stddev:stddev};
+    }
+
+    /* ─── Histogram binning ─── */
+    function buildHistogram(data){
+      var min=data[0],max=data[0];
+      for(var i=1;i<data.length;i++){
+        if(data[i]<min)min=data[i];
+        if(data[i]>max)max=data[i];
+      }
+      /* Slight padding so edge values fall inside */
+      var range=max-min;
+      if(range===0)range=1;
+      min=min-range*0.01;
+      max=max+range*0.01;
+      range=max-min;
+
+      var binWidth=range/bins;
+      var edges=[];
+      for(var b=0;b<=bins;b++)edges.push(min+b*binWidth);
+
+      var counts=[];
+      for(var c=0;c<bins;c++)counts.push(0);
+
+      for(var d=0;d<data.length;d++){
+        var idx=Math.floor((data[d]-min)/binWidth);
+        if(idx<0)idx=0;
+        if(idx>=bins)idx=bins-1;
+        counts[idx]++;
+      }
+
+      return{edges:edges,counts:counts,min:min,max:max,binWidth:binWidth};
+    }
+
+    /* ─── Coordinate mapping ─── */
+    function toSvgX(dataVal,dMin,dMax){
+      return PAD_L+((dataVal-dMin)/(dMax-dMin))*plotW;
+    }
+    function toSvgY(freq,maxFreq){
+      if(maxFreq===0)return PAD_T+plotH;
+      return PAD_T+plotH-(freq/maxFreq)*plotH;
+    }
+
+    /* ─── Draw grid ─── */
+    function drawGrid(maxFreq){
+      gridG.innerHTML='';
+      /* Horizontal grid lines for frequency */
+      var yTicks=calcNiceTicks(0,maxFreq,5);
+      for(var i=0;i<yTicks.length;i++){
+        var sy=toSvgY(yTicks[i],maxFreq);
+        gridG.appendChild(mkEl('line',{
+          x1:PAD_L,y1:sy,x2:VB_W-PAD_R,y2:sy,
+          stroke:'var(--cmp-grid,#e0e0e0)','stroke-width':'0.6'
+        }));
+      }
+    }
+
+    /* ─── Nice tick calculation ─── */
+    function calcNiceTicks(lo,hi,approxCount){
+      if(hi<=lo)return[0];
+      var range=hi-lo;
+      var rough=range/approxCount;
+      var mag=Math.pow(10,Math.floor(Math.log10(rough)));
+      var residual=rough/mag;
+      var nice;
+      if(residual<=1.5)nice=1;
+      else if(residual<=3)nice=2;
+      else if(residual<=7)nice=5;
+      else nice=10;
+      var step=nice*mag;
+      var ticks=[];
+      var start=Math.ceil(lo/step)*step;
+      for(var v=start;v<=hi+step*0.01;v+=step){
+        ticks.push(Math.round(v*1e6)/1e6);
+      }
+      return ticks;
+    }
+
+    /* ─── Draw axes ─── */
+    function drawAxes(hist,maxFreq){
+      axesG.innerHTML='';
+
+      /* Y axis */
+      axesG.appendChild(mkEl('line',{
+        x1:PAD_L,y1:PAD_T+plotH+2,x2:PAD_L,y2:PAD_T-8,
+        stroke:'var(--cmp-axis,#37474f)','stroke-width':'1.5',
+        'marker-end':'url(#hg__arrow)'
+      }));
+      /* X axis */
+      axesG.appendChild(mkEl('line',{
+        x1:PAD_L-2,y1:PAD_T+plotH,x2:VB_W-PAD_R+8,y2:PAD_T+plotH,
+        stroke:'var(--cmp-axis,#37474f)','stroke-width':'1.5',
+        'marker-end':'url(#hg__arrow)'
+      }));
+
+      /* Y axis label */
+      var yLbl=mkEl('text',{
+        x:14,y:PAD_T+plotH/2,
+        fill:'var(--cmp-axis,#37474f)','class':'hg__axis-lbl',
+        'text-anchor':'middle',
+        transform:'rotate(-90,14,'+(PAD_T+plotH/2)+')'
+      });
+      yLbl.textContent='频次';
+      axesG.appendChild(yLbl);
+
+      /* X axis label */
+      var xLbl=mkEl('text',{
+        x:PAD_L+plotW/2,y:VB_H-6,
+        fill:'var(--cmp-axis,#37474f)','class':'hg__axis-lbl',
+        'text-anchor':'middle'
+      });
+      xLbl.textContent='数据区间';
+      axesG.appendChild(xLbl);
+
+      /* Y axis ticks */
+      var yTicks=calcNiceTicks(0,maxFreq,5);
+      for(var i=0;i<yTicks.length;i++){
+        var sy=toSvgY(yTicks[i],maxFreq);
+        axesG.appendChild(mkEl('line',{
+          x1:PAD_L-3,y1:sy,x2:PAD_L,y2:sy,
+          stroke:'var(--cmp-axis,#37474f)','stroke-width':'1'
+        }));
+        var yt=mkEl('text',{
+          x:PAD_L-6,y:sy+3,
+          'text-anchor':'end',fill:'var(--cmp-axis,#37474f)','class':'hg__lbl'
+        });
+        yt.textContent=yTicks[i];
+        axesG.appendChild(yt);
+      }
+
+      /* X axis tick labels: bin edges */
+      var edges=hist.edges;
+      var labelStep=1;
+      if(bins>12)labelStep=2;
+      if(bins>16)labelStep=3;
+      for(var j=0;j<=bins;j+=labelStep){
+        var sx=toSvgX(edges[j],hist.min,hist.max);
+        axesG.appendChild(mkEl('line',{
+          x1:sx,y1:PAD_T+plotH,x2:sx,y2:PAD_T+plotH+3,
+          stroke:'var(--cmp-axis,#37474f)','stroke-width':'1'
+        }));
+        var xt=mkEl('text',{
+          x:sx,y:PAD_T+plotH+14,
+          'text-anchor':'middle',fill:'var(--cmp-axis,#37474f)','class':'hg__lbl'
+        });
+        xt.textContent=fmtEdge(edges[j]);
+        axesG.appendChild(xt);
+      }
+    }
+
+    function fmtEdge(v){
+      if(Math.abs(v)<0.01)return '0';
+      if(Math.abs(v-Math.round(v))<0.01)return String(Math.round(v));
+      return v.toFixed(1);
+    }
+
+    /* ─── Draw bars ─── */
+    function drawBars(hist,maxFreq){
+      barsG.innerHTML='';
+      var gap=1.5;
+
+      for(var i=0;i<bins;i++){
+        var x1=toSvgX(hist.edges[i],hist.min,hist.max);
+        var x2=toSvgX(hist.edges[i+1],hist.min,hist.max);
+        var barW=x2-x1-gap;
+        if(barW<1)barW=1;
+        var barH=(maxFreq===0)?0:(hist.counts[i]/maxFreq)*plotH;
+        var barX=x1+gap/2;
+        var barY=PAD_T+plotH-barH;
+
+        barsG.appendChild(mkEl('rect',{
+          x:barX,y:barY,width:barW,height:barH,
+          fill:'var(--cmp-bar,#42a5f5)',
+          stroke:'var(--cmp-stroke,#37474f)',
+          'stroke-width':'var(--cmp-stroke-width,1.2)',
+          opacity:'0.85',
+          rx:'1'
+        }));
+      }
+    }
+
+    /* ─── Draw bar labels ─── */
+    function drawLabels(hist,maxFreq){
+      labelsG.innerHTML='';
+      if(!showLabels)return;
+
+      var gap=1.5;
+      for(var i=0;i<bins;i++){
+        if(hist.counts[i]===0)continue;
+        var x1=toSvgX(hist.edges[i],hist.min,hist.max);
+        var x2=toSvgX(hist.edges[i+1],hist.min,hist.max);
+        var cx=x1+(x2-x1)/2;
+        var barH=(maxFreq===0)?0:(hist.counts[i]/maxFreq)*plotH;
+        var barY=PAD_T+plotH-barH;
+
+        var lbl=mkEl('text',{
+          x:cx,y:barY-3,
+          'text-anchor':'middle',fill:'var(--cmp-axis,#37474f)','class':'hg__bar-lbl'
+        });
+        lbl.textContent=hist.counts[i];
+        labelsG.appendChild(lbl);
+      }
+    }
+
+    /* ─── Draw mean line ─── */
+    function drawMean(stats,hist,maxFreq){
+      meanG.innerHTML='';
+      if(!showMean)return;
+
+      var mx=toSvgX(stats.mean,hist.min,hist.max);
+      if(mx<PAD_L||mx>VB_W-PAD_R)return;
+
+      meanG.appendChild(mkEl('line',{
+        x1:mx,y1:PAD_T,x2:mx,y2:PAD_T+plotH,
+        stroke:'#e53935','stroke-width':'1.8',
+        'stroke-dasharray':'6,3',opacity:'0.9'
+      }));
+
+      /* Mean label */
+      var lbl=mkEl('text',{
+        x:mx+4,y:PAD_T+12,
+        fill:'#e53935','class':'hg__mean-lbl'
+      });
+      lbl.textContent='\u03BC='+stats.mean.toFixed(1);
+      meanG.appendChild(lbl);
+    }
+
+    /* ─── Main render ─── */
+    function render(){
+      var data=generateData();
+      var stats=calcStats(data);
+      var hist=buildHistogram(data);
+
+      var maxFreq=0;
+      for(var i=0;i<hist.counts.length;i++){
+        if(hist.counts[i]>maxFreq)maxFreq=hist.counts[i];
+      }
+      /* Add 10% headroom */
+      var yMax=Math.ceil(maxFreq*1.1);
+      if(yMax<1)yMax=1;
+
+      drawGrid(yMax);
+      drawAxes(hist,yMax);
+      drawBars(hist,yMax);
+      drawLabels(hist,yMax);
+      drawMean(stats,hist,yMax);
+
+      /* Title */
+      if(titleText)titleText.textContent=datasetNames[dataset]||'直方图';
+
+      root.setAttribute('aria-label','直方图 - '+( datasetNames[dataset]||dataset));
+
+      /* Dispatch event */
+      emitCmp('cmp:change',stats);
+    }
+
+    render();
+
+    /* ─── Event dispatch ─── */
+    function emitCmp(name,stats){
+      root.dispatchEvent(new CustomEvent(name,{
+        bubbles:true, composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'param',
+          values:{dataset:dataset,bins:bins,mean:Math.round(stats.mean*100)/100,stddev:Math.round(stats.stddev*100)/100}
+        }
+      }));
+    }
+
+    /* ─── MutationObserver for reactive prop updates ─── */
+    var observer=new MutationObserver(function(mutations){
+      for(var i=0;i<mutations.length;i++){
+        if(mutations[i].attributeName==='data-props'){
+          var newP={};
+          try{var raw=root.getAttribute('data-props');if(raw){var obj=JSON.parse(raw);if(obj&&typeof obj==='object')newP=obj;}}catch(e){}
+
+          var newDS=String(newP.dataset||dataset);
+          if(validDatasets.indexOf(newDS)>=0)dataset=newDS;
+
+          bins=Math.max(5,Math.min(20,Math.round(Number(newP.bins!=null?newP.bins:bins))));
+          showMean=(newP.showMean!==undefined?newP.showMean:P.showMean)!=='off';
+          showLabels=(newP.showLabels!==undefined?newP.showLabels:P.showLabels)!=='off';
+
+          render();
+        }
+      }
+    });
+    observer.observe(root,{attributes:true,attributeFilter:['data-props']});
+
+  })();
+  </script>
+</div>

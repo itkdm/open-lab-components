@@ -1,0 +1,201 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.wave.doppler.interactive",
+  "name": "多普勒效应（交互式）",
+  "nameEn": "Doppler Effect (Interactive)",
+  "category": "physics/wave",
+  "version": "1.0.0",
+  "viewport": { "w": 560, "h": 380 },
+  "tags": ["wave","doppler","frequency","sound","motion","interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "sourceColor", "type": "color",  "default": "#e53935", "desc": "声源颜色" },
+    { "key": "waveColor",   "type": "color",  "default": "#42a5f5", "desc": "波纹颜色" },
+    { "key": "observerColor","type": "color", "default": "#43a047", "desc": "观察者颜色" },
+    { "key": "sourceSpeed", "type": "number", "default": 80, "min": 0, "max": 300, "desc": "声源速度(m/s)" },
+    { "key": "waveSpeed",   "type": "number", "default": 340, "min": 300, "max": 400, "desc": "声速(m/s)" },
+    { "key": "frequency",   "type": "number", "default": 440, "min": 200, "max": 800, "desc": "声源频率(Hz)" },
+    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",       "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "sourceColor": "--cmp-source", "waveColor": "--cmp-wave", "observerColor": "--cmp-observer", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "tick", "values": { "fFront": "number(Hz)", "fBehind": "number(Hz)", "sourceX": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.wave.doppler.interactive" role="img" aria-label="多普勒效应（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.wave.doppler.interactive"]{
+      --h:var(--cmp-size,380px);display:inline-block;
+      width:calc(var(--h)*560/380);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.wave.doppler.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.wave.doppler.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="phy.wave.doppler.interactive"] .dp__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 560 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="dp__srcG"><stop offset="0" stop-color="#ffcdd2"/><stop offset="1" stop-color="var(--cmp-source,#e53935)"/></radialGradient>
+      <marker id="dp__arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-stroke,#37474f)"/></marker>
+    </defs>
+
+    <text x="280" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">多普勒效应</text>
+
+    <!-- 波纹容器 -->
+    <g class="dp__waves" transform="translate(0,0)"></g>
+
+    <!-- 声源 -->
+    <g class="dp__source">
+      <circle class="dp__srcGlow" r="18" fill="var(--cmp-source,#e53935)" opacity="0.15"/>
+      <circle class="dp__srcBody" r="10" fill="url(#dp__srcG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2"/>
+      <text class="dp__srcLabel" dy="4" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">S</text>
+      <!-- 速度箭头 -->
+      <line class="dp__srcArrow" x1="14" y1="0" x2="40" y2="0" stroke="var(--cmp-stroke,#37474f)" stroke-width="2" marker-end="url(#dp__arr)"/>
+      <text class="dp__srcVLabel" x="28" y="-8" text-anchor="middle" font-size="8" fill="var(--cmp-stroke,#37474f)" font-weight="600">v_s</text>
+    </g>
+
+    <!-- 前方观察者 -->
+    <g class="dp__obsFront" transform="translate(480,190)">
+      <rect x="-12" y="-16" width="24" height="32" rx="4" fill="var(--cmp-observer,#43a047)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text x="0" y="4" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">O₁</text>
+      <text class="dp__fFrontLabel dp__data" x="0" y="32" text-anchor="middle" font-size="10" fill="var(--cmp-observer,#43a047)">--- Hz</text>
+      <text x="0" y="44" text-anchor="middle" font-size="8" fill="#999">前方</text>
+    </g>
+
+    <!-- 后方观察者 -->
+    <g class="dp__obsBehind" transform="translate(80,190)">
+      <rect x="-12" y="-16" width="24" height="32" rx="4" fill="var(--cmp-observer,#43a047)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text x="0" y="4" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">O₂</text>
+      <text class="dp__fBehindLabel dp__data" x="0" y="32" text-anchor="middle" font-size="10" fill="var(--cmp-observer,#43a047)">--- Hz</text>
+      <text x="0" y="44" text-anchor="middle" font-size="8" fill="#999">后方</text>
+    </g>
+
+    <!-- 数据面板 -->
+    <g transform="translate(280,300)">
+      <rect x="-240" y="0" width="480" height="65" rx="8" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="-220" y="20" font-size="10" fill="#666">声源频率 f₀:</text>
+      <text class="dp__f0Val dp__data" x="-120" y="20" font-size="11" fill="var(--cmp-source,#e53935)">440 Hz</text>
+      <text x="-220" y="40" font-size="10" fill="#666">声源速度 v_s:</text>
+      <text class="dp__vsVal dp__data" x="-120" y="40" font-size="11" fill="var(--cmp-stroke,#37474f)">80 m/s</text>
+      <text x="20" y="20" font-size="10" fill="#666">前方频率 f₁:</text>
+      <text class="dp__f1Val dp__data" x="130" y="20" font-size="11" fill="var(--cmp-observer,#43a047)" font-weight="700">--- Hz</text>
+      <text x="20" y="40" font-size="10" fill="#666">后方频率 f₂:</text>
+      <text class="dp__f2Val dp__data" x="130" y="40" font-size="11" fill="var(--cmp-observer,#43a047)" font-weight="700">--- Hz</text>
+      <text x="-220" y="58" font-size="9" fill="#999">公式: f' = f₀ × v / (v ± v_s)</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.wave.doppler.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var vs=Math.max(0,Math.min(300,Number(P.sourceSpeed)||80));
+    var vw=Math.max(300,Math.min(400,Number(P.waveSpeed)||340));
+    var f0=Math.max(200,Math.min(800,Number(P.frequency)||440));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+
+    var NS='http://www.w3.org/2000/svg';
+    var wavesG=root.querySelector('.dp__waves');
+    var sourceG=root.querySelector('.dp__source');
+    var fFrontLabel=root.querySelector('.dp__fFrontLabel');
+    var fBehindLabel=root.querySelector('.dp__fBehindLabel');
+    var f0Val=root.querySelector('.dp__f0Val');
+    var vsVal=root.querySelector('.dp__vsVal');
+    var f1Val=root.querySelector('.dp__f1Val');
+    var f2Val=root.querySelector('.dp__f2Val');
+
+    f0Val.textContent=f0+' Hz';
+    vsVal.textContent=vs+' m/s';
+
+    /* 多普勒频率 */
+    var fFront=f0*vw/(vw-vs);
+    var fBehind=f0*vw/(vw+vs);
+    f1Val.textContent=fFront.toFixed(0)+' Hz';
+    f2Val.textContent=fBehind.toFixed(0)+' Hz';
+    fFrontLabel.textContent=fFront.toFixed(0)+' Hz';
+    fBehindLabel.textContent=fBehind.toFixed(0)+' Hz';
+
+    /* 波纹数据 */
+    var waves=[];
+    var maxWaves=25;
+    var emitInterval=1/f0;
+    var cy=190;
+    var scaleV=0.4; /* 像素/米 缩放 */
+
+    var time=0,lastEmit=0;
+    var srcX=180;
+    var fieldW=560;
+
+    var animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04)*speed;
+      lastT=t;
+      time+=dt;
+
+      /* 声源移动 */
+      srcX+=vs*scaleV*dt;
+      if(srcX>fieldW-60)srcX=100;
+
+      sourceG.setAttribute('transform','translate('+srcX.toFixed(1)+','+cy+')');
+
+      /* 发射波纹 */
+      if(time-lastEmit>=emitInterval){
+        lastEmit=time;
+        waves.push({cx:srcX,cy:cy,born:time});
+        if(waves.length>maxWaves)waves.shift();
+      }
+
+      /* 更新波纹 */
+      while(wavesG.firstChild)wavesG.removeChild(wavesG.firstChild);
+      for(var i=0;i<waves.length;i++){
+        var w=waves[i];
+        var age=time-w.born;
+        var r=vw*scaleV*age;
+        if(r>400){waves.splice(i,1);i--;continue;}
+        var c=document.createElementNS(NS,'circle');
+        c.setAttribute('cx',w.cx.toFixed(1));
+        c.setAttribute('cy',w.cy);
+        c.setAttribute('r',r.toFixed(1));
+        c.setAttribute('fill','none');
+        c.setAttribute('stroke','var(--cmp-wave,#42a5f5)');
+        c.setAttribute('stroke-width','1.5');
+        c.setAttribute('opacity',Math.max(0,0.6-age*0.8).toFixed(2));
+        wavesG.appendChild(c);
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

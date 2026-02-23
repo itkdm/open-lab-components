@@ -1,0 +1,382 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.life.plant-growth.interactive",
+  "name": "植物生长",
+  "nameEn": "Plant Growth",
+  "category": "science/life",
+  "version": "1.0.0",
+  "viewport": { "w": 240, "h": 320 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 240, "min": 120, "max": 480, "desc": "组件宽度" },
+    { "key": "stage", "type": "number", "default": 1, "min": 1, "max": 6, "desc": "生长阶段（1-6）" },
+    { "key": "soilColor", "type": "color", "default": "#8B4513", "desc": "土壤颜色" },
+    { "key": "stemColor", "type": "color", "default": "#228B22", "desc": "茎颜色" },
+    { "key": "leafColor", "type": "color", "default": "#32CD32", "desc": "叶子颜色" },
+    { "key": "flowerColor", "type": "color", "default": "#FF69B4", "desc": "花朵颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "soilColor": "--cmp-soil",
+    "stemColor": "--cmp-stem",
+    "leafColor": "--cmp-leaf",
+    "flowerColor": "--cmp-flower"
+  },
+  "tags": ["plant", "growth", "lifecycle", "biology", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "stage": "number(1-6)", "stageName": "string" } },
+    { "name": "cmp:changeend", "type": "slide", "values": { "stage": "number(1-6)", "stageName": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.life.plant-growth.interactive" role="img" aria-label="植物生长">
+  <svg class="pg__svg" viewBox="0 0 240 320" aria-hidden="true">
+    <defs>
+      <linearGradient class="pg__sky-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#87CEEB"/>
+        <stop offset="100%" stop-color="#E0F7FA"/>
+      </linearGradient>
+      <radialGradient class="pg__sun-grad" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#FFF9C4"/>
+        <stop offset="40%" stop-color="#FFD54F"/>
+        <stop offset="100%" stop-color="#FFB300" stop-opacity="0"/>
+      </radialGradient>
+      <linearGradient class="pg__soil-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--cmp-soil, #8B4513)"/>
+        <stop offset="30%" stop-color="#6D3410"/>
+        <stop offset="100%" stop-color="#3E2723"/>
+      </linearGradient>
+      <linearGradient class="pg__soil-top" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5D4037"/>
+        <stop offset="100%" stop-color="var(--cmp-soil, #8B4513)"/>
+      </linearGradient>
+    </defs>
+    <!-- Sky -->
+    <rect class="pg__sky" x="0" y="0" width="240" height="200" fill="url(#pg__sky-grad)"/>
+    <!-- Sun -->
+    <circle class="pg__sun-glow" cx="200" cy="40" r="35" fill="url(#pg__sun-grad)" opacity="0.3"/>
+    <circle class="pg__sun" cx="200" cy="40" r="16" fill="#FFD54F"/>
+    <!-- Soil cross-section -->
+    <rect x="0" y="190" width="240" height="130" fill="url(#pg__soil-grad)"/>
+    <rect x="0" y="190" width="240" height="12" fill="url(#pg__soil-top)"/>
+    <!-- Soil texture dots -->
+    <g opacity="0.15">
+      <circle cx="30" cy="220" r="2" fill="#3E2723"/><circle cx="80" cy="235" r="1.5" fill="#3E2723"/>
+      <circle cx="150" cy="225" r="2.5" fill="#3E2723"/><circle cx="200" cy="240" r="1.8" fill="#3E2723"/>
+      <circle cx="60" cy="260" r="2" fill="#3E2723"/><circle cx="170" cy="270" r="2.2" fill="#3E2723"/>
+      <circle cx="110" cy="250" r="1.5" fill="#3E2723"/><circle cx="45" cy="280" r="2" fill="#3E2723"/>
+    </g>
+    <!-- Ground line -->
+    <line x1="0" y1="190" x2="240" y2="190" stroke="#5D4037" stroke-width="1.5"/>
+    <!-- Plant group (drawn by JS) -->
+    <g class="pg__plant"></g>
+    <!-- Slider track -->
+    <g class="pg__slider">
+      <rect x="30" y="298" width="180" height="4" rx="2" fill="#BCAAA4"/>
+      <g class="pg__ticks"></g>
+      <circle class="pg__handle" cx="30" cy="300" r="8" fill="#FF7043" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+    </g>
+    <!-- Stage label -->
+    <text class="pg__label" x="120" y="290" text-anchor="middle" font-size="12" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">种子</text>
+  </svg>
+
+  <style>
+    .cmp[data-cmp-id="sci.life.plant-growth.interactive"] {
+      width: var(--cmp-size, 240px);
+      display: inline-block;
+    }
+    .cmp[data-cmp-id="sci.life.plant-growth.interactive"] .pg__svg {
+      width: 100%; height: auto; display: block;
+    }
+    .cmp[data-cmp-id="sci.life.plant-growth.interactive"] .pg__handle {
+      filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+      transition: r 0.15s;
+    }
+    .cmp[data-cmp-id="sci.life.plant-growth.interactive"] .pg__handle:hover {
+      r: 10;
+    }
+  </style>
+
+  <script>
+  (function(){
+    var root = document.currentScript && document.currentScript.closest
+      ? document.currentScript.closest('[data-cmp-id="sci.life.plant-growth.interactive"]')
+      : null;
+    if(!root) return;
+
+    var svg = root.querySelector('.pg__svg');
+    var plantG = root.querySelector('.pg__plant');
+    var handle = root.querySelector('.pg__handle');
+    var label = root.querySelector('.pg__label');
+    var ticksG = root.querySelector('.pg__ticks');
+    var sunGlow = root.querySelector('.pg__sun-glow');
+    if(!svg||!plantG||!handle||!label||!ticksG) return;
+
+    // Unique IDs for gradients
+    var uid = 'pg' + Math.random().toString(36).slice(2,8);
+    svg.querySelectorAll('[class^="pg__"]').forEach(function(el){
+      if(el.tagName==='linearGradient'||el.tagName==='radialGradient'){
+        var cls = el.getAttribute('class');
+        var newId = uid + '_' + cls;
+        el.setAttribute('id', newId);
+      }
+    });
+    // Fix fill references
+    root.querySelector('.pg__sky').setAttribute('fill','url(#'+uid+'_pg__sky-grad)');
+    root.querySelector('.pg__sun-glow').setAttribute('fill','url(#'+uid+'_pg__sun-grad)');
+    svg.querySelectorAll('[fill^="url(#pg__"]').forEach(function(el){
+      var f = el.getAttribute('fill');
+      el.setAttribute('fill', f.replace('url(#pg__','url(#'+uid+'_pg__'));
+    });
+
+    var STAGES = ['种子','发芽','幼苗','生长','开花','结果'];
+    var TRACK_X0 = 30, TRACK_X1 = 210, TRACK_W = 180;
+    var NS = 'http://www.w3.org/2000/svg';
+
+    // Draw tick marks
+    for(var i=0;i<6;i++){
+      var tx = TRACK_X0 + i * TRACK_W / 5;
+      var tick = document.createElementNS(NS,'line');
+      tick.setAttribute('x1',tx); tick.setAttribute('y1',294);
+      tick.setAttribute('x2',tx); tick.setAttribute('y2',306);
+      tick.setAttribute('stroke','#8D6E63'); tick.setAttribute('stroke-width','1.5');
+      ticksG.appendChild(tick);
+    }
+
+    // Read initial props
+    var props = {};
+    try { props = JSON.parse(root.getAttribute('data-props')||'{}'); } catch(e){}
+    var currentStage = Math.max(1, Math.min(6, props.stage||1));
+
+    function lerp(a,b,t){ return a + (b-a)*t; }
+
+    function createEl(tag, attrs){
+      var el = document.createElementNS(NS, tag);
+      for(var k in attrs) el.setAttribute(k, attrs[k]);
+      return el;
+    }
+
+    // Stage parameters: [stemH, stemW, leafCount, leafSize, rootDepth, rootBranches, flowerOpen, seedVis]
+    var PARAMS = [
+      {stemH:0, stemW:0, leaves:0, leafSz:0, rootD:0, roots:0, flower:0, seed:1, crack:0},    // 1: seed
+      {stemH:5, stemW:2, leaves:0, leafSz:0, rootD:25, roots:2, flower:0, seed:0.7, crack:1},  // 2: germination
+      {stemH:30, stemW:3, leaves:2, leafSz:8, rootD:35, roots:3, flower:0, seed:0, crack:0},   // 3: sprout
+      {stemH:65, stemW:4.5, leaves:4, leafSz:16, rootD:50, roots:5, flower:0, seed:0, crack:0},// 4: seedling
+      {stemH:95, stemW:5.5, leaves:6, leafSz:22, rootD:60, roots:6, flower:0.3, seed:0, crack:0},// 5: budding
+      {stemH:110, stemW:6, leaves:6, leafSz:24, rootD:65, roots:7, flower:1, seed:0, crack:0}  // 6: flowering
+    ];
+
+    function getInterp(t){
+      // t: 0-5 maps to stages 1-6
+      var idx = Math.floor(t);
+      var frac = t - idx;
+      if(idx >= 5) return PARAMS[5];
+      var a = PARAMS[idx], b = PARAMS[idx+1];
+      var r = {};
+      for(var k in a) r[k] = lerp(a[k], b[k], frac);
+      return r;
+    }
+
+    var soilColor = getComputedStyle(root).getPropertyValue('--cmp-soil').trim() || '#8B4513';
+    var stemColor = getComputedStyle(root).getPropertyValue('--cmp-stem').trim() || '#228B22';
+    var leafColor = getComputedStyle(root).getPropertyValue('--cmp-leaf').trim() || '#32CD32';
+    var flowerColor = getComputedStyle(root).getPropertyValue('--cmp-flower').trim() || '#FF69B4';
+
+    function render(t){
+      // t: 0.0 (stage1) to 5.0 (stage6)
+      while(plantG.firstChild) plantG.removeChild(plantG.firstChild);
+      var p = getInterp(t);
+      var cx = 120, groundY = 190;
+
+      // Sun glow intensity
+      if(sunGlow) sunGlow.setAttribute('opacity', (0.2 + 0.15 * (t/5)).toFixed(2));
+
+      // Roots
+      if(p.rootD > 1){
+        var rootCount = Math.round(p.roots);
+        for(var i=0;i<rootCount;i++){
+          var angle = -90 + (i - (rootCount-1)/2) * (120 / Math.max(rootCount-1,1));
+          var rad = angle * Math.PI / 180;
+          var rx = cx + Math.cos(rad) * p.rootD * 0.6;
+          var ry = groundY + Math.sin(rad) * p.rootD * 0.4 + p.rootD * 0.7;
+          var rPath = 'M'+cx+','+groundY+' Q'+(cx+(rx-cx)*0.5)+','+(groundY+p.rootD*0.3)+' '+rx.toFixed(1)+','+ry.toFixed(1);
+          plantG.appendChild(createEl('path',{
+            d: rPath, fill:'none', stroke:'#6D4C41',
+            'stroke-width': Math.max(0.8, 2 - i*0.2).toFixed(1),
+            'stroke-linecap':'round', opacity:'0.7'
+          }));
+        }
+      }
+
+      // Seed
+      if(p.seed > 0.01){
+        var seedY = groundY + 15;
+        plantG.appendChild(createEl('ellipse',{
+          cx:cx, cy:seedY, rx:8, ry:5.5,
+          fill:'#A1887F', stroke:'#6D4C41', 'stroke-width':'1',
+          opacity: p.seed.toFixed(2)
+        }));
+        // Seed line
+        plantG.appendChild(createEl('line',{
+          x1:cx-3, y1:seedY, x2:cx+3, y2:seedY,
+          stroke:'#5D4037', 'stroke-width':'0.8', opacity: p.seed.toFixed(2)
+        }));
+        // Crack
+        if(p.crack > 0.1){
+          var crackH = p.crack * 8;
+          plantG.appendChild(createEl('path',{
+            d:'M'+cx+','+(seedY-5.5)+' L'+(cx+1)+','+(seedY-5.5-crackH),
+            fill:'none', stroke:'#228B22', 'stroke-width':'1.5', 'stroke-linecap':'round',
+            opacity: Math.min(1, p.crack).toFixed(2)
+          }));
+        }
+      }
+
+      // Stem
+      if(p.stemH > 1){
+        var stemTop = groundY - p.stemH;
+        // Main stem with slight curve
+        var stemPath = 'M'+cx+','+groundY+' Q'+(cx+2)+','+(groundY - p.stemH*0.5)+' '+cx+','+stemTop;
+        plantG.appendChild(createEl('path',{
+          d: stemPath, fill:'none', stroke: stemColor,
+          'stroke-width': p.stemW.toFixed(1), 'stroke-linecap':'round'
+        }));
+        // Stem highlight
+        plantG.appendChild(createEl('path',{
+          d: stemPath, fill:'none', stroke:'rgba(255,255,255,0.2)',
+          'stroke-width': (p.stemW*0.4).toFixed(1), 'stroke-linecap':'round'
+        }));
+      }
+
+      // Leaves
+      if(p.leaves >= 1){
+        var stemTop = groundY - p.stemH;
+        var leafCount = Math.round(p.leaves);
+        for(var i=0;i<leafCount;i++){
+          var leafY = groundY - p.stemH * (0.3 + 0.6 * i / Math.max(leafCount-1,1));
+          if(i===0 && leafCount<=2) leafY = groundY - p.stemH * 0.7;
+          var side = (i % 2 === 0) ? 1 : -1;
+          var sz = p.leafSz * (0.6 + 0.4 * i / Math.max(leafCount-1,1));
+          var lx = cx + side * sz * 0.9;
+          var ly = leafY - sz * 0.3;
+          // Leaf shape
+          var leafPath = 'M'+cx+','+leafY.toFixed(1)+
+            ' Q'+(cx+side*sz*0.5).toFixed(1)+','+(leafY-sz*0.6).toFixed(1)+
+            ' '+lx.toFixed(1)+','+ly.toFixed(1)+
+            ' Q'+(cx+side*sz*0.5).toFixed(1)+','+(leafY+sz*0.1).toFixed(1)+
+            ' '+cx+','+leafY.toFixed(1);
+          plantG.appendChild(createEl('path',{
+            d:leafPath, fill:leafColor, stroke:'#1B5E20',
+            'stroke-width':'0.6', opacity:'0.9'
+          }));
+          // Leaf vein
+          plantG.appendChild(createEl('line',{
+            x1:cx, y1:leafY.toFixed(1),
+            x2:(cx+side*sz*0.7).toFixed(1), y2:((leafY+ly)/2).toFixed(1),
+            stroke:'#1B5E20', 'stroke-width':'0.5', opacity:'0.4'
+          }));
+        }
+      }
+
+      // Flower
+      if(p.flower > 0.05){
+        var fcy = groundY - p.stemH - 5;
+        var petalR = 8 * p.flower;
+        var petalCount = 5;
+        for(var i=0;i<petalCount;i++){
+          var angle = (i * 360 / petalCount - 90) * Math.PI / 180;
+          var px = cx + Math.cos(angle) * petalR * 1.2;
+          var py = fcy + Math.sin(angle) * petalR * 1.2;
+          plantG.appendChild(createEl('ellipse',{
+            cx:px.toFixed(1), cy:py.toFixed(1),
+            rx:(petalR*0.7).toFixed(1), ry:(petalR*0.5).toFixed(1),
+            fill:flowerColor, opacity: Math.min(1, p.flower*1.2).toFixed(2),
+            transform:'rotate('+(i*360/petalCount)+' '+px.toFixed(1)+' '+py.toFixed(1)+')'
+          }));
+        }
+        // Center
+        plantG.appendChild(createEl('circle',{
+          cx:cx, cy:fcy, r:(petalR*0.35).toFixed(1),
+          fill:'#FFD54F', stroke:'#F9A825', 'stroke-width':'0.5',
+          opacity: Math.min(1, p.flower).toFixed(2)
+        }));
+      }
+
+      // Update label
+      var stageIdx = Math.round(t);
+      label.textContent = STAGES[Math.min(stageIdx, 5)];
+
+      // Update handle position
+      var hx = TRACK_X0 + (t / 5) * TRACK_W;
+      handle.setAttribute('cx', hx.toFixed(1));
+    }
+
+    // Initial render
+    render(currentStage - 1);
+
+    // Slider interaction
+    var dragging = false;
+    function getT(clientX){
+      var rect = svg.getBoundingClientRect();
+      var svgX = (clientX - rect.left) / rect.width * 240;
+      var t = (svgX - TRACK_X0) / TRACK_W * 5;
+      return Math.max(0, Math.min(5, t));
+    }
+
+    function emitEvt(name, t){
+      var stageIdx = Math.round(t);
+      root.dispatchEvent(new CustomEvent(name, {
+        bubbles:true, composed:true,
+        detail:{ id:root.getAttribute('data-cmp-id'), type:'slide',
+          values:{ stage: stageIdx+1, stageName: STAGES[Math.min(stageIdx,5)] }
+        }
+      }));
+    }
+
+    handle.addEventListener('pointerdown', function(e){
+      e.preventDefault(); dragging = true;
+      handle.setPointerCapture(e.pointerId);
+      handle.style.cursor = 'grabbing';
+    });
+    handle.addEventListener('pointermove', function(e){
+      if(!dragging) return;
+      var t = getT(e.clientX);
+      render(t);
+      emitEvt('cmp:change', t);
+    });
+    handle.addEventListener('pointerup', function(e){
+      if(!dragging) return;
+      dragging = false;
+      handle.style.cursor = 'grab';
+      var t = getT(e.clientX);
+      var snapped = Math.round(t);
+      render(snapped);
+      emitEvt('cmp:changeend', snapped);
+    });
+
+    // Click on track to jump
+    svg.addEventListener('pointerdown', function(e){
+      if(e.target === handle) return;
+      var rect = svg.getBoundingClientRect();
+      var svgY = (e.clientY - rect.top) / rect.height * 320;
+      if(svgY < 285 || svgY > 315) return;
+      var t = getT(e.clientX);
+      var snapped = Math.round(t);
+      render(snapped);
+      emitEvt('cmp:change', snapped);
+      emitEvt('cmp:changeend', snapped);
+    });
+
+    // MutationObserver for data-props
+    new MutationObserver(function(muts){
+      try{
+        var p = JSON.parse(root.getAttribute('data-props')||'{}');
+        if(p.stage !== undefined){
+          var s = Math.max(1, Math.min(6, p.stage));
+          render(s - 1);
+        }
+      }catch(e){}
+    }).observe(root, {attributes:true, attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

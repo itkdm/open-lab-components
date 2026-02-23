@@ -1,0 +1,399 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.number-line.interactive",
+  "name": "数轴",
+  "nameEn": "Number Line",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 80 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 500, "min": 200, "max": 1000, "desc": "组件宽度" },
+    { "key": "min",         "type": "number",     "default": 0,   "min": -100, "max": 100, "desc": "数轴最小值" },
+    { "key": "max",         "type": "number",     "default": 10,  "min": -100, "max": 100, "desc": "数轴最大值" },
+    { "key": "value",       "type": "number",     "default": 0,   "min": -100, "max": 100, "desc": "标记初始位置" },
+    { "key": "lineColor",   "type": "color",      "default": "#37474f", "desc": "数轴线条颜色" },
+    { "key": "markerColor", "type": "color",      "default": "#e53935", "desc": "标记颜色" },
+    { "key": "numberColor", "type": "color",      "default": "#37474f", "desc": "数字颜色" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "lineColor":   "--cmp-line-color",
+    "markerColor": "--cmp-marker-color",
+    "numberColor": "--cmp-number-color"
+  },
+  "tags": ["number-line", "counting", "integers", "math", "primary", "interactive"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "position": "number — 当前标记所在整数位置"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "position": "number — 最终标记所在整数位置"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.number-line.interactive" role="img" aria-label="数轴 0–10">
+  <svg class="cmp__svg" viewBox="0 0 500 80" aria-hidden="true">
+    <defs>
+      <!-- 标记投影 -->
+      <filter class="nl__filter-shadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000" flood-opacity="0.18"/>
+      </filter>
+    </defs>
+
+    <!-- 主轴线 -->
+    <line class="nl__axis" x1="20" y1="36" x2="480" y2="36"
+          stroke="var(--cmp-line-color, #37474f)" stroke-width="2"
+          stroke-linecap="round"/>
+    <!-- 左箭头 -->
+    <polygon class="nl__arrow-l" points="20,36 28,31 28,41"
+             fill="var(--cmp-line-color, #37474f)"/>
+    <!-- 右箭头 -->
+    <polygon class="nl__arrow-r" points="480,36 472,31 472,41"
+             fill="var(--cmp-line-color, #37474f)"/>
+
+    <!-- 刻度与数字（由 JS 动态生成） -->
+    <g class="nl__ticks"></g>
+
+    <!-- 可拖拽标记（坐标相对于轴线 y=0 为锚点） -->
+    <g class="nl__marker" data-role="marker">
+      <!-- 倒三角指针：尖端指向 y=0（轴线），底边在 y=-14 -->
+      <polygon class="nl__pointer" points="0,0 -8,-14 8,-14"
+               fill="var(--cmp-marker-color, #e53935)"
+               stroke="#fff" stroke-width="1.2" stroke-linejoin="round"/>
+      <!-- 高光 -->
+      <polygon points="-4,-10 0,-3 4,-10" fill="#fff" opacity="0.25"/>
+      <!-- 数值标签背景 -->
+      <rect class="nl__label-bg" x="-12" y="-30" width="24" height="14" rx="4"
+            fill="var(--cmp-marker-color, #e53935)" opacity="0.9"/>
+      <!-- 数值标签文字 -->
+      <text class="nl__label-text" x="0" y="-20" text-anchor="middle"
+            font-size="9" font-weight="700" fill="#ffffff"
+            font-family="'Nunito', 'Segoe UI', Arial, sans-serif">0</text>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .cmp[data-cmp-id="math.number.number-line.interactive"] {
+    width: var(--cmp-size, 500px);
+    height: calc(var(--cmp-size, 500px) * 80 / 500);
+    display: inline-block;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  .cmp[data-cmp-id="math.number.number-line.interactive"] .cmp__svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    touch-action: none;
+  }
+
+  .cmp[data-cmp-id="math.number.number-line.interactive"] .nl__marker {
+    cursor: grab;
+    transition: filter 0.15s ease;
+  }
+
+  .cmp[data-cmp-id="math.number.number-line.interactive"] .nl__marker:active {
+    cursor: grabbing;
+  }
+
+  .cmp[data-cmp-id="math.number.number-line.interactive"] .nl__marker:hover .nl__pointer {
+    filter: brightness(1.15);
+  }
+</style>
+
+<script>
+(() => {
+  const script = document.currentScript;
+  if (!script) return;
+
+  /* ── 找根节点 ── */
+  let root = script.previousElementSibling;
+  while (root && root.tagName === 'STYLE') root = root.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.number.number-line.interactive') return;
+
+  const svg = root.querySelector('.cmp__svg');
+  if (!svg) return;
+
+  const NS = 'http://www.w3.org/2000/svg';
+
+  /* ── 为 defs 中的 filter 生成唯一 ID（避免多实例冲突） ── */
+  const uid = 'nl-' + Math.random().toString(36).slice(2, 8);
+  const filterEl = svg.querySelector('.nl__filter-shadow');
+  if (filterEl) {
+    filterEl.setAttribute('id', uid + '-shadow');
+  }
+
+  /* ── viewBox 常量 ── */
+  const VB_W = 500;
+  const VB_H = 80;
+  const AXIS_Y = 36;          /* 轴线 y 坐标 */
+  const PAD_LEFT = 36;        /* 第一个刻度 x */
+  const PAD_RIGHT = 464;      /* 最后一个刻度 x */
+  const TICK_MAJOR_H = 10;    /* 整数刻度高度 */
+  const TICK_MINOR_H = 5;     /* 次刻度高度（预留） */
+
+  /* ── 读取参数 ── */
+  const DEFAULTS = { min: 0, max: 10, value: 0 };
+  let P = { ...DEFAULTS };
+  try {
+    const raw = root.getAttribute('data-props');
+    if (raw) {
+      const o = JSON.parse(raw);
+      if (o && typeof o === 'object') P = { ...P, ...o };
+    }
+  } catch (e) { /* ignore */ }
+
+  let numMin = Math.round(Number(P.min) ?? DEFAULTS.min);
+  let numMax = Math.round(Number(P.max) ?? DEFAULTS.max);
+  if (numMin >= numMax) { numMin = DEFAULTS.min; numMax = DEFAULTS.max; }
+  const count = numMax - numMin;  /* 整数间隔数 */
+
+  let currentValue = Math.max(numMin, Math.min(numMax, Math.round(Number(P.value) ?? DEFAULTS.value)));
+
+  /* ── 关键 DOM ── */
+  const ticksG = svg.querySelector('.nl__ticks');
+  const markerG = svg.querySelector('[data-role="marker"]');
+  const labelText = svg.querySelector('.nl__label-text');
+  const labelBg = svg.querySelector('.nl__label-bg');
+
+  if (!ticksG || !markerG) return;
+
+  /* 应用唯一 filter */
+  markerG.setAttribute('filter', 'url(#' + uid + '-shadow)');
+
+  /* ── 坐标转换 ── */
+  function valueToX(v) {
+    const t = (v - numMin) / count;
+    return PAD_LEFT + t * (PAD_RIGHT - PAD_LEFT);
+  }
+
+  function xToValue(x) {
+    const t = (x - PAD_LEFT) / (PAD_RIGHT - PAD_LEFT);
+    const raw = numMin + t * count;
+    return Math.max(numMin, Math.min(numMax, Math.round(raw)));
+  }
+
+  /* ── 生成刻度与数字 ── */
+  function buildTicks() {
+    ticksG.innerHTML = '';
+    const step = (PAD_RIGHT - PAD_LEFT) / count;
+
+    for (let i = 0; i <= count; i++) {
+      const val = numMin + i;
+      const x = PAD_LEFT + i * step;
+
+      /* 刻度线 */
+      const tick = document.createElementNS(NS, 'line');
+      tick.setAttribute('x1', x);
+      tick.setAttribute('y1', AXIS_Y - TICK_MAJOR_H / 2);
+      tick.setAttribute('x2', x);
+      tick.setAttribute('y2', AXIS_Y + TICK_MAJOR_H / 2);
+      tick.setAttribute('stroke', 'var(--cmp-line-color, #37474f)');
+      tick.setAttribute('stroke-width', '1.6');
+      tick.setAttribute('stroke-linecap', 'round');
+      ticksG.appendChild(tick);
+
+      /* 数字标签 */
+      const txt = document.createElementNS(NS, 'text');
+      txt.setAttribute('x', x);
+      txt.setAttribute('y', AXIS_Y + TICK_MAJOR_H / 2 + 14);
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('font-size', count > 15 ? '9' : '11');
+      txt.setAttribute('font-weight', '600');
+      txt.setAttribute('fill', 'var(--cmp-number-color, #37474f)');
+      txt.setAttribute('font-family', "'Nunito', 'Segoe UI', Arial, sans-serif");
+      txt.textContent = String(val);
+      ticksG.appendChild(txt);
+    }
+  }
+
+  /* ── 更新标记位置 ── */
+  function updateMarker(animate) {
+    const x = valueToX(currentValue);
+    if (animate) {
+      markerG.style.transition = 'transform 0.12s cubic-bezier(.4,0,.2,1)';
+    } else {
+      markerG.style.transition = 'none';
+    }
+    markerG.setAttribute('transform', 'translate(' + x + ',' + AXIS_Y + ')');
+
+    /* 更新标签 */
+    if (labelText) {
+      labelText.textContent = String(currentValue);
+    }
+
+    /* 自适应标签宽度 */
+    if (labelBg) {
+      const textLen = String(currentValue).length;
+      const w = Math.max(24, textLen * 8 + 8);
+      labelBg.setAttribute('width', w);
+      labelBg.setAttribute('x', -w / 2);
+    }
+
+    /* 更新 aria-label */
+    root.setAttribute('aria-label', '数轴 ' + numMin + '–' + numMax + '，当前位置 ' + currentValue);
+  }
+
+  /* ── 事件派发 ── */
+  function emitChange() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'slide',
+        values: { position: currentValue }
+      }
+    }));
+  }
+
+  function emitChangeEnd() {
+    root.dispatchEvent(new CustomEvent('cmp:changeend', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'slide',
+        values: { position: currentValue }
+      }
+    }));
+  }
+
+  /* ── 初始化渲染 ── */
+  buildTicks();
+  updateMarker(false);
+
+  /* ════════════════════════════════════════════
+     拖拽交互（pointer events，兼容鼠标 + 触摸）
+     ════════════════════════════════════════════ */
+  let dragging = false;
+
+  function svgPointX(clientX) {
+    const pt = svg.createSVGPoint();
+    pt.x = clientX;
+    pt.y = 0;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return null;
+    return pt.matrixTransform(ctm.inverse()).x;
+  }
+
+  function handleDragMove(clientX) {
+    const svgX = svgPointX(clientX);
+    if (svgX === null) return;
+    const newVal = xToValue(svgX);
+    if (newVal !== currentValue) {
+      currentValue = newVal;
+      updateMarker(true);
+      emitChange();
+    }
+  }
+
+  function onPointerDown(e) {
+    e.preventDefault();
+    dragging = true;
+    markerG.style.cursor = 'grabbing';
+    if (e.pointerId !== undefined) {
+      svg.setPointerCapture(e.pointerId);
+    }
+    /* 立即跳到点击位置 */
+    const clientX = e.clientX;
+    if (clientX !== undefined) handleDragMove(clientX);
+  }
+
+  function onPointerMove(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    const clientX = e.clientX !== undefined ? e.clientX : null;
+    if (clientX === null) return;
+    handleDragMove(clientX);
+  }
+
+  function onPointerUp(e) {
+    if (!dragging) return;
+    dragging = false;
+    markerG.style.cursor = '';
+    if (e.pointerId !== undefined) {
+      try { svg.releasePointerCapture(e.pointerId); } catch (ex) { /* ignore */ }
+    }
+    updateMarker(true);
+    emitChangeEnd();
+  }
+
+  /* 绑定到标记和轴线（点击轴线也可跳转） */
+  markerG.addEventListener('pointerdown', onPointerDown);
+  svg.addEventListener('pointerdown', function (e) {
+    /* 点击轴线区域也触发跳转 */
+    if (e.target === markerG || markerG.contains(e.target)) return;
+    const svgX = svgPointX(e.clientX);
+    if (svgX === null) return;
+    /* 只在轴线附近响应 */
+    const pt = svg.createSVGPoint();
+    pt.x = e.clientX;
+    pt.y = e.clientY;
+    const ctm = svg.getScreenCTM();
+    if (!ctm) return;
+    const svgPt = pt.matrixTransform(ctm.inverse());
+    if (Math.abs(svgPt.y - AXIS_Y) > 20) return;
+    if (svgX < PAD_LEFT - 10 || svgX > PAD_RIGHT + 10) return;
+
+    e.preventDefault();
+    const newVal = xToValue(svgX);
+    if (newVal !== currentValue) {
+      currentValue = newVal;
+      updateMarker(true);
+      emitChange();
+    }
+    /* 开始拖拽 */
+    dragging = true;
+    markerG.style.cursor = 'grabbing';
+    if (e.pointerId !== undefined) {
+      svg.setPointerCapture(e.pointerId);
+    }
+  });
+
+  svg.addEventListener('pointermove', onPointerMove);
+  svg.addEventListener('pointerup', onPointerUp);
+  svg.addEventListener('pointercancel', onPointerUp);
+
+  /* 防止文本选中干扰拖拽 */
+  svg.addEventListener('selectstart', function (e) {
+    if (dragging) e.preventDefault();
+  });
+
+  /* ── 响应外部属性变更 ── */
+  const obs = new MutationObserver(function () {
+    try {
+      const raw = root.getAttribute('data-props');
+      if (raw) {
+        const o = JSON.parse(raw);
+        if (o && typeof o === 'object') {
+          const newMin = Math.round(Number(o.min) ?? numMin);
+          const newMax = Math.round(Number(o.max) ?? numMax);
+          if (newMin < newMax) {
+            /* 重新计算需要完全重建 — 简单起见直接更新 */
+          }
+          if (o.value !== undefined) {
+            const v = Math.max(numMin, Math.min(numMax, Math.round(Number(o.value))));
+            if (v !== currentValue) {
+              currentValue = v;
+              updateMarker(true);
+            }
+          }
+        }
+      }
+    } catch (e) { /* ignore */ }
+  });
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+})();
+</script>

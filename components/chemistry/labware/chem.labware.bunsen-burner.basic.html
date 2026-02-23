@@ -1,0 +1,375 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.labware.bunsen-burner.basic",
+  "name": "本生灯",
+  "nameEn": "Bunsen Burner",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 160, "h": 320 },
+  "tags": ["chemistry", "labware", "bunsen", "burner", "heat", "flame", "gas"],
+  "props": [
+    { "key": "size",            "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",          "type": "color",      "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",     "type": "number",     "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "bodyColor",       "type": "color",      "default": "#78909c", "desc": "灯管颜色" },
+    { "key": "baseColor",       "type": "color",      "default": "#546e7a", "desc": "底座颜色" },
+    { "key": "flameColor",      "type": "color",      "default": "#2196f3", "desc": "外焰颜色" },
+    { "key": "innerFlameColor", "type": "color",      "default": "#64b5f6", "desc": "内焰颜色" },
+    { "key": "airHoleOpen",     "type": "enum",       "default": "open", "enum": ["open", "half", "closed"], "desc": "空气调节环状态" },
+    { "key": "lit",             "type": "enum",       "default": "on",   "enum": ["on", "off"], "desc": "点火状态" },
+    { "key": "showLabels",      "type": "enum",       "default": "on",   "enum": ["on", "off"], "desc": "显示标注" },
+    { "key": "glow",            "type": "number(0-1)","default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "bodyColor": "--cmp-body",
+    "baseColor": "--cmp-base",
+    "flameColor": "--cmp-flame",
+    "innerFlameColor": "--cmp-inner-flame",
+    "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "state", "values": { "lit": "on|off", "airHoleOpen": "open|half|closed" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.labware.bunsen-burner.basic" role="img" aria-label="本生灯">
+  <svg class="bb__svg" viewBox="0 0 160 320" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <!-- 灯管金属渐变 -->
+      <linearGradient id="bb__bodyG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#90a4ae"/>
+        <stop offset="35%"  stop-color="#b0bec5"/>
+        <stop offset="50%"  stop-color="#cfd8dc"/>
+        <stop offset="65%"  stop-color="#b0bec5"/>
+        <stop offset="100%" stop-color="#78909c"/>
+      </linearGradient>
+      <!-- 底座金属渐变 -->
+      <linearGradient id="bb__baseG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#607d8b"/>
+        <stop offset="30%"  stop-color="#78909c"/>
+        <stop offset="50%"  stop-color="#90a4ae"/>
+        <stop offset="70%"  stop-color="#78909c"/>
+        <stop offset="100%" stop-color="#546e7a"/>
+      </linearGradient>
+      <!-- 蓝色火焰渐变（空气充足） -->
+      <radialGradient id="bb__flameBlueG" cx="0.5" cy="0.9" r="0.7">
+        <stop offset="0%"   stop-color="#bbdefb" stop-opacity="0.9"/>
+        <stop offset="40%"  stop-color="#64b5f6" stop-opacity="0.8"/>
+        <stop offset="70%"  stop-color="#2196f3" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#1565c0" stop-opacity="0.1"/>
+      </radialGradient>
+      <!-- 黄色火焰渐变（空气不足） -->
+      <radialGradient id="bb__flameYellowG" cx="0.5" cy="0.9" r="0.7">
+        <stop offset="0%"   stop-color="#fff9c4" stop-opacity="0.95"/>
+        <stop offset="35%"  stop-color="#ffee58" stop-opacity="0.85"/>
+        <stop offset="65%"  stop-color="#ffa726" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#e65100" stop-opacity="0.1"/>
+      </radialGradient>
+      <!-- 内焰渐变 -->
+      <radialGradient id="bb__innerG" cx="0.5" cy="0.85" r="0.5">
+        <stop offset="0%"   stop-color="#e3f2fd" stop-opacity="0.9"/>
+        <stop offset="60%"  stop-color="#90caf9" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#42a5f5" stop-opacity="0.2"/>
+      </radialGradient>
+      <!-- 火焰发光滤镜 -->
+      <filter id="bb__glowF" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+
+    <!-- ==================== 底座 ==================== -->
+    <!-- 底座主体 — 厚重的六角形底盘 -->
+    <path class="bb__base-body"
+          d="M38,290 L38,280 L42,275 L118,275 L122,280 L122,290
+             Q122,298 80,298 Q38,298 38,290 Z"
+          fill="url(#bb__baseG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- 底座顶面椭圆 -->
+    <ellipse cx="80" cy="275" rx="40" ry="6"
+             fill="#90a4ae" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- 底座底面椭圆 -->
+    <ellipse cx="80" cy="296" rx="42" ry="7"
+             fill="#455a64" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.6"/>
+    <!-- 底座高光 -->
+    <path d="M50,282 Q48,288 52,294" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <!-- ==================== 灯管（竖直管） ==================== -->
+    <!-- 灯管主体 -->
+    <rect class="bb__barrel" x="70" y="130" width="20" height="145" rx="2"
+          fill="url(#bb__bodyG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- 灯管顶部开口 -->
+    <ellipse cx="80" cy="130" rx="10" ry="3"
+             fill="#546e7a" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    <!-- 灯管底部与底座连接 -->
+    <rect x="68" y="268" width="24" height="10" rx="2"
+          fill="#607d8b" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    <!-- 灯管高光 -->
+    <rect x="73" y="135" width="3" height="130" rx="1"
+          fill="rgba(255,255,255,0.15)" pointer-events="none"/>
+
+    <!-- ==================== 空气调节环 ==================== -->
+    <g class="bb__air-ring">
+      <!-- 调节环主体 -->
+      <rect class="bb__ring-body" x="66" y="248" width="28" height="14" rx="3"
+            fill="#455a64" stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.9"/>
+      <!-- 空气孔指示 -->
+      <g class="bb__air-holes">
+        <!-- open 状态: 两个可见的孔 -->
+        <ellipse class="bb__hole-left"  cx="73" cy="255" rx="3" ry="4" fill="#263238" opacity="0.8"/>
+        <ellipse class="bb__hole-right" cx="87" cy="255" rx="3" ry="4" fill="#263238" opacity="0.8"/>
+      </g>
+      <!-- 调节环纹理 -->
+      <line x1="66" y1="252" x2="94" y2="252" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+      <line x1="66" y1="258" x2="94" y2="258" stroke="rgba(0,0,0,0.15)" stroke-width="0.5"/>
+    </g>
+
+    <!-- ==================== 进气管（侧面） ==================== -->
+    <!-- 水平进气管 -->
+    <rect class="bb__gas-inlet" x="90" y="264" width="35" height="8" rx="2"
+          fill="url(#bb__bodyG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- 进气管接头 -->
+    <rect x="122" y="262" width="8" height="12" rx="2"
+          fill="#607d8b" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    <!-- 进气管与灯管连接处 -->
+    <ellipse cx="92" cy="268" rx="3" ry="5" fill="#546e7a" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6"/>
+
+    <!-- ==================== 火焰 ==================== -->
+    <g class="bb__flame-group" filter="url(#bb__glowF)">
+      <!-- 外焰 -->
+      <path class="bb__flame-outer"
+            d="M80,40 Q92,60 90,80 Q88,100 85,115 Q83,125 80,130
+               Q77,125 75,115 Q72,100 70,80 Q68,60 80,40 Z"
+            fill="url(#bb__flameBlueG)" opacity="0.85"/>
+      <!-- 内焰（锥形） -->
+      <path class="bb__flame-inner"
+            d="M80,70 Q87,85 85,100 Q83,115 80,125
+               Q77,115 75,100 Q73,85 80,70 Z"
+            fill="url(#bb__innerG)" opacity="0.8"/>
+      <!-- 焰心（最亮点） -->
+      <ellipse class="bb__flame-core" cx="80" cy="120" rx="4" ry="6"
+               fill="#e3f2fd" opacity="0.6"/>
+    </g>
+
+    <!-- ==================== 标注 ==================== -->
+    <g class="bb__labels" font-size="8" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="var(--cmp-stroke,#37474f)" font-weight="600">
+
+      <!-- 火焰 -->
+      <line x1="92" y1="80" x2="130" y2="65" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="132" y="68" font-size="7" opacity="0.7">火焰</text>
+
+      <!-- 灯管 -->
+      <line x1="70" y1="190" x2="30" y2="185" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="28" y="188" text-anchor="end" font-size="7" opacity="0.7">灯管</text>
+
+      <!-- 空气调节环 -->
+      <line x1="66" y1="255" x2="22" y2="248" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="20" y="251" text-anchor="end" font-size="7" opacity="0.7">空气调节环</text>
+
+      <!-- 进气口 -->
+      <line x1="130" y1="268" x2="145" y2="255" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="140" y="252" font-size="7" opacity="0.7">进气口</text>
+
+      <!-- 底座 -->
+      <line x1="50" y1="290" x2="22" y2="295" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <text x="20" y="298" text-anchor="end" font-size="7" opacity="0.7">底座</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "chem.labware.bunsen-burner.basic") return;
+
+  var flameGroup  = root.querySelector(".bb__flame-group");
+  var flameOuter  = root.querySelector(".bb__flame-outer");
+  var flameInner  = root.querySelector(".bb__flame-inner");
+  var flameCore   = root.querySelector(".bb__flame-core");
+  var labels      = root.querySelector(".bb__labels");
+  var holeLeft    = root.querySelector(".bb__hole-left");
+  var holeRight   = root.querySelector(".bb__hole-right");
+
+  /* ---- helpers ---- */
+  function parseProps() {
+    var raw = root.getAttribute("data-props");
+    if (!raw) return {};
+    try { var p = JSON.parse(raw); return p && typeof p === "object" ? p : {}; } catch (e) { return {}; }
+  }
+
+  function emitChange(props) {
+    root.dispatchEvent(new CustomEvent("cmp:change", {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute("data-cmp-id"),
+        type: "state",
+        values: {
+          lit: props.lit !== "off" ? "on" : "off",
+          airHoleOpen: props.airHoleOpen || "open"
+        }
+      }
+    }));
+  }
+
+  /* ---- flame path generators with subtle randomness ---- */
+  var baseOuterLeft  = [92, 90, 85, 80];
+  var baseOuterRight = [68, 70, 75, 80];
+  var baseInnerLeft  = [87, 85, 80];
+  var baseInnerRight = [73, 75, 80];
+
+  function jitter(v, range) {
+    return v + (Math.random() - 0.5) * range;
+  }
+
+  function makeOuterPath(j) {
+    return "M80," + jitter(40, j) +
+           " Q" + jitter(baseOuterLeft[0], j) + "," + jitter(60, j) +
+           " " + jitter(baseOuterLeft[1], j) + "," + jitter(80, j) +
+           " Q" + jitter(88, j) + "," + jitter(100, j) +
+           " " + jitter(baseOuterLeft[2], j) + "," + jitter(115, j) +
+           " Q" + jitter(83, j * 0.5) + "," + jitter(125, j * 0.3) +
+           " 80,130" +
+           " Q" + jitter(77, j * 0.5) + "," + jitter(125, j * 0.3) +
+           " " + jitter(baseOuterRight[2], j) + "," + jitter(115, j) +
+           " Q" + jitter(72, j) + "," + jitter(100, j) +
+           " " + jitter(baseOuterRight[1], j) + "," + jitter(80, j) +
+           " Q" + jitter(baseOuterRight[0], j) + "," + jitter(60, j) +
+           " 80," + jitter(40, j) + " Z";
+  }
+
+  function makeInnerPath(j) {
+    return "M80," + jitter(70, j) +
+           " Q" + jitter(baseInnerLeft[0], j) + "," + jitter(85, j) +
+           " " + jitter(baseInnerLeft[1], j) + "," + jitter(100, j) +
+           " Q" + jitter(83, j * 0.5) + "," + jitter(115, j * 0.3) +
+           " 80,125" +
+           " Q" + jitter(77, j * 0.5) + "," + jitter(115, j * 0.3) +
+           " " + jitter(baseInnerRight[1], j) + "," + jitter(100, j) +
+           " Q" + jitter(baseInnerRight[0], j) + "," + jitter(85, j) +
+           " 80," + jitter(70, j) + " Z";
+  }
+
+  /* ---- flame color by air hole state ---- */
+  var flameColors = {
+    open:   { outer: "url(#bb__flameBlueG)",   inner: "url(#bb__innerG)",   core: "#e3f2fd" },
+    half:   { outer: "url(#bb__flameBlueG)",   inner: "url(#bb__flameYellowG)", core: "#fff9c4" },
+    closed: { outer: "url(#bb__flameYellowG)", inner: "url(#bb__flameYellowG)", core: "#fff9c4" }
+  };
+
+  /* ---- animation state ---- */
+  var animId = null;
+  var lastTime = 0;
+  var flickerInterval = 60; /* ms between flicker updates */
+
+  function animateFlame(ts) {
+    if (ts - lastTime > flickerInterval) {
+      lastTime = ts;
+      var j = 2.5; /* jitter amount */
+      if (flameOuter) flameOuter.setAttribute("d", makeOuterPath(j));
+      if (flameInner) flameInner.setAttribute("d", makeInnerPath(j * 0.7));
+      if (flameCore) {
+        flameCore.setAttribute("rx", (3.5 + Math.random() * 1.5).toFixed(1));
+        flameCore.setAttribute("ry", (5 + Math.random() * 2).toFixed(1));
+        flameCore.setAttribute("opacity", (0.5 + Math.random() * 0.2).toFixed(2));
+      }
+    }
+    animId = requestAnimationFrame(animateFlame);
+  }
+
+  function startFlame() {
+    if (!animId) animId = requestAnimationFrame(animateFlame);
+  }
+
+  function stopFlame() {
+    if (animId) { cancelAnimationFrame(animId); animId = null; }
+  }
+
+  /* ---- air hole visual ---- */
+  function updateAirHoles(state) {
+    if (!holeLeft || !holeRight) return;
+    switch (state) {
+      case "open":
+        holeLeft.setAttribute("opacity", "0.8");
+        holeRight.setAttribute("opacity", "0.8");
+        holeLeft.setAttribute("rx", "3");
+        holeRight.setAttribute("rx", "3");
+        break;
+      case "half":
+        holeLeft.setAttribute("opacity", "0.5");
+        holeRight.setAttribute("opacity", "0.5");
+        holeLeft.setAttribute("rx", "1.5");
+        holeRight.setAttribute("rx", "1.5");
+        break;
+      case "closed":
+        holeLeft.setAttribute("opacity", "0.1");
+        holeRight.setAttribute("opacity", "0.1");
+        holeLeft.setAttribute("rx", "0.5");
+        holeRight.setAttribute("rx", "0.5");
+        break;
+    }
+  }
+
+  /* ---- main render ---- */
+  function render() {
+    var props = parseProps();
+
+    /* lit state */
+    var isLit = props.lit !== "off";
+    if (flameGroup) flameGroup.style.display = isLit ? "" : "none";
+    if (isLit) startFlame(); else stopFlame();
+
+    /* air hole */
+    var airState = props.airHoleOpen || "open";
+    if (airState !== "open" && airState !== "half" && airState !== "closed") airState = "open";
+    updateAirHoles(airState);
+
+    /* flame color based on air hole */
+    var colors = flameColors[airState] || flameColors.open;
+    if (flameOuter) flameOuter.setAttribute("fill", colors.outer);
+    if (flameInner) flameInner.setAttribute("fill", colors.inner);
+    if (flameCore)  flameCore.setAttribute("fill", colors.core);
+
+    /* labels */
+    if (labels) labels.style.display = props.showLabels === "off" ? "none" : "";
+
+    emitChange(props);
+  }
+
+  render();
+
+  /* ---- observe prop changes ---- */
+  var observer = new MutationObserver(function() { render(); });
+  observer.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", function() {
+    observer.disconnect();
+    stopFlame();
+  }, { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="chem.labware.bunsen-burner.basic"] {
+  --h: var(--cmp-size, 320px);
+  display: inline-block;
+  width: calc(var(--h) * 160 / 320);
+  height: var(--h);
+  filter: drop-shadow(0 0 calc(6px * var(--cmp-glow, 0))
+          rgba(33,150,243, calc(0.8 * var(--cmp-glow, 0))));
+  user-select: none;
+}
+.cmp[data-cmp-id="chem.labware.bunsen-burner.basic"] .bb__svg {
+  width: 100%; height: 100%; display: block; overflow: visible;
+}
+.cmp[data-cmp-id="chem.labware.bunsen-burner.basic"] .bb__flame-group {
+  pointer-events: none;
+}
+</style>

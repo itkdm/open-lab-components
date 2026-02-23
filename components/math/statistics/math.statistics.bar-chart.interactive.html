@@ -1,0 +1,296 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.statistics.bar-chart.interactive",
+  "name": "条形统计图",
+  "nameEn": "Bar Chart",
+  "category": "math/statistics",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "maxValue", "type": "number", "default": 10, "min": 5, "max": 100, "desc": "Y轴最大值" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["bar-chart", "statistics", "data", "graph", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "data": "object", "category": "string", "value": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.statistics.bar-chart.interactive" role="img" aria-label="条形统计图">
+  <style>
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"]{
+      --w:var(--cmp-size,360px);
+      display:inline-block;width:var(--w);height:calc(var(--w)*280/360);
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] svg{
+      display:block;width:100%;height:100%;overflow:visible;
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] .bc__title{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:14px;font-weight:700;
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] .bc__lbl{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:9px;
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] .bc__cat{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px;
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] .bc__val{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:9px;font-weight:600;
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] .bc__bar{
+      cursor:pointer;transition:y .25s ease,height .25s ease;
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] .bc__bar:hover{
+      filter:brightness(1.1);
+    }
+    .cmp[data-cmp-id="math.statistics.bar-chart.interactive"] .bc__handle{
+      cursor:ns-resize;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <text class="bc__title" x="180" y="18" fill="#37474f" text-anchor="middle">条形统计图</text>
+    <g class="bc__grid"></g>
+    <g class="bc__axes"></g>
+    <g class="bc__bars"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.statistics.bar-chart.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    var NS='http://www.w3.org/2000/svg';
+    var uid='bc-'+Math.random().toString(36).slice(2,8);
+
+    /* props */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+    var maxVal=Math.max(5,Math.min(100,Math.round(Number(P.maxValue)||10)));
+
+    /* layout constants */
+    var CX0=50,CX1=340,CY0=30,CY1=230;
+    var PLOT_W=CX1-CX0,PLOT_H=CY1-CY0;
+    var CATS=['苹果','香蕉','橙子','葡萄','西瓜'];
+    var COLORS=['#EF5350','#FF9800','#FFEE58','#66BB6A','#42A5F5'];
+    var BAR_W=36,GAP=22,N=CATS.length;
+    var totalW=N*BAR_W+(N-1)*GAP;
+    var barX0=CX0+(PLOT_W-totalW)/2;
+
+    /* state */
+    var vals=[3,7,5,4,8];
+    var curMax=maxVal;
+
+    var gridG=root.querySelector('.bc__grid');
+    var axesG=root.querySelector('.bc__axes');
+    var barsG=root.querySelector('.bc__bars');
+
+    function mkEl(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    function calcMax(){
+      var m=maxVal;
+      for(var i=0;i<N;i++)if(vals[i]>m)m=vals[i];
+      return m;
+    }
+
+    function niceStep(max){
+      if(max<=10)return 2;
+      if(max<=20)return 4;
+      if(max<=50)return 10;
+      return 20;
+    }
+
+    function yPos(v){return CY1-(v/curMax)*PLOT_H;}
+
+    /* draw grid + axes */
+    function drawAxes(){
+      gridG.innerHTML='';axesG.innerHTML='';
+      var step=niceStep(curMax);
+      /* grid lines + Y labels */
+      for(var v=0;v<=curMax;v+=step){
+        var y=yPos(v);
+        gridG.appendChild(mkEl('line',{
+          x1:CX0,y1:y,x2:CX1,y2:y,
+          stroke:'#e0e0e0','stroke-width':'0.7','stroke-dasharray':'4,3'
+        }));
+        var lbl=mkEl('text',{x:CX0-6,y:y+3,'text-anchor':'end',fill:'#546e7a','class':'bc__lbl'});
+        lbl.textContent=v;
+        axesG.appendChild(lbl);
+      }
+      /* Y axis */
+      axesG.appendChild(mkEl('line',{x1:CX0,y1:CY1,x2:CX0,y2:CY0-6,stroke:'#37474f','stroke-width':'1.2'}));
+      /* X axis */
+      axesG.appendChild(mkEl('line',{x1:CX0,y1:CY1,x2:CX1,y2:CY1,stroke:'#37474f','stroke-width':'1.2'}));
+      /* category labels */
+      for(var i=0;i<N;i++){
+        var cx=barX0+i*(BAR_W+GAP)+BAR_W/2;
+        var cat=mkEl('text',{x:cx,y:CY1+15,'text-anchor':'middle',fill:'#37474f','class':'bc__cat'});
+        cat.textContent=CATS[i];
+        axesG.appendChild(cat);
+      }
+    }
+
+    /* draw bars */
+    function drawBars(){
+      barsG.innerHTML='';
+      for(var i=0;i<N;i++){
+        var x=barX0+i*(BAR_W+GAP);
+        var h=Math.max(0,(vals[i]/curMax)*PLOT_H);
+        var y=CY1-h;
+        var g=mkEl('g',{'data-idx':i});
+
+        /* bar rect */
+        var bar=mkEl('rect',{
+          'class':'bc__bar',x:x,y:y,width:BAR_W,height:h,
+          rx:'3',fill:COLORS[i],stroke:'rgba(0,0,0,0.12)','stroke-width':'0.8',
+          'data-idx':i
+        });
+        g.appendChild(bar);
+
+        /* value label */
+        var vt=mkEl('text',{
+          'class':'bc__val','data-idx':i,
+          x:x+BAR_W/2,y:y-5,'text-anchor':'middle',fill:'#37474f'
+        });
+        vt.textContent=vals[i];
+        g.appendChild(vt);
+
+        /* invisible drag handle at top edge */
+        var handle=mkEl('rect',{
+          'class':'bc__handle','data-idx':i,
+          x:x-2,y:y-6,width:BAR_W+4,height:12,
+          fill:'transparent'
+        });
+        g.appendChild(handle);
+
+        /* click zones: top half = increase, bottom half = decrease */
+        var topZone=mkEl('rect',{
+          'class':'bc__click-zone','data-idx':i,'data-dir':'up',
+          x:x,y:y,width:BAR_W,height:Math.max(h/2,10),
+          fill:'transparent'
+        });
+        var botZone=mkEl('rect',{
+          'class':'bc__click-zone','data-idx':i,'data-dir':'down',
+          x:x,y:y+Math.max(h/2,10),width:BAR_W,height:Math.max(h/2,10),
+          fill:'transparent'
+        });
+        g.appendChild(topZone);
+        g.appendChild(botZone);
+
+        barsG.appendChild(g);
+      }
+    }
+
+    function updateBar(i){
+      var g=barsG.querySelector('g[data-idx="'+i+'"]');if(!g)return;
+      var h=Math.max(0,(vals[i]/curMax)*PLOT_H);
+      var y=CY1-h;
+      var x=barX0+i*(BAR_W+GAP);
+      var bar=g.querySelector('.bc__bar');
+      bar.setAttribute('y',y);bar.setAttribute('height',h);
+      var vt=g.querySelector('.bc__val');
+      vt.setAttribute('y',y-5);vt.textContent=vals[i];
+      /* reposition handle and click zones */
+      var handle=g.querySelector('.bc__handle');
+      handle.setAttribute('y',y-6);
+      var zones=g.querySelectorAll('.bc__click-zone');
+      if(zones[0]){zones[0].setAttribute('y',y);zones[0].setAttribute('height',Math.max(h/2,10));}
+      if(zones[1]){zones[1].setAttribute('y',y+Math.max(h/2,10));zones[1].setAttribute('height',Math.max(h/2,10));}
+    }
+
+    function setVal(i,v){
+      v=Math.max(0,Math.round(v));
+      vals[i]=v;
+      var newMax=calcMax();
+      if(newMax!==curMax){curMax=newMax;drawAxes();drawBars();}
+      else{updateBar(i);}
+      emitChange(i);
+    }
+
+    /* click handler */
+    barsG.addEventListener('click',function(e){
+      var t=e.target;
+      if(!t.classList.contains('bc__click-zone'))return;
+      var i=parseInt(t.getAttribute('data-idx'),10);
+      var dir=t.getAttribute('data-dir');
+      setVal(i,vals[i]+(dir==='up'?1:-1));
+    });
+
+    /* drag handler */
+    var dragIdx=-1,dragStartY=0,dragStartVal=0;
+
+    function toSvgY(clientY){
+      var pt=svg.createSVGPoint();pt.x=0;pt.y=clientY;
+      return pt.matrixTransform(svg.getScreenCTM().inverse()).y;
+    }
+
+    function onDragStart(e){
+      var t=e.target;
+      if(!t.classList.contains('bc__handle'))return;
+      e.preventDefault();
+      dragIdx=parseInt(t.getAttribute('data-idx'),10);
+      var ev=e.touches?e.touches[0]:e;
+      dragStartY=toSvgY(ev.clientY);
+      dragStartVal=vals[dragIdx];
+    }
+    function onDragMove(e){
+      if(dragIdx<0)return;
+      e.preventDefault();
+      var ev=e.touches?e.touches[0]:e;
+      var sy=toSvgY(ev.clientY);
+      var dy=dragStartY-sy;
+      var dv=dy/(PLOT_H/curMax);
+      setVal(dragIdx,dragStartVal+dv);
+    }
+    function onDragEnd(){
+      dragIdx=-1;
+    }
+
+    svg.addEventListener('mousedown',onDragStart);
+    svg.addEventListener('mousemove',onDragMove);
+    svg.addEventListener('mouseup',onDragEnd);
+    svg.addEventListener('mouseleave',onDragEnd);
+    svg.addEventListener('touchstart',onDragStart,{passive:false});
+    svg.addEventListener('touchmove',onDragMove,{passive:false});
+    svg.addEventListener('touchend',onDragEnd);
+
+    /* emit */
+    function emitChange(i){
+      var d={};for(var j=0;j<N;j++)d[CATS[j]]=vals[j];
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{data:d,category:CATS[i],value:vals[i]}
+        }
+      }));
+    }
+
+    /* init */
+    curMax=calcMax();
+    drawAxes();drawBars();
+
+    /* observe prop changes */
+    var obs=new MutationObserver(function(muts){
+      for(var i=0;i<muts.length;i++){
+        if(muts[i].attributeName==='data-props'){
+          var np={};
+          try{var raw=root.getAttribute('data-props');if(raw){var obj=JSON.parse(raw);if(obj&&typeof obj==='object')np=obj;}}catch(e){}
+          maxVal=Math.max(5,Math.min(100,Math.round(Number(np.maxValue)||10)));
+          curMax=calcMax();drawAxes();drawBars();
+        }
+      }
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props']});
+  })();
+  </script>
+</div>

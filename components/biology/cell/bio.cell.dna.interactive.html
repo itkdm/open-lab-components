@@ -1,0 +1,337 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.cell.dna.interactive",
+  "name": "DNA双螺旋结构（交互式）",
+  "nameEn": "DNA Double Helix (Interactive)",
+  "category": "biology/cell",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 500 },
+  "tags": ["biology","cell","DNA","double-helix","genetics","nucleotide","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 500, "min": 300, "max": 700, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "backbone1",      "type": "color",  "default": "#5c6bc0", "desc": "链1颜色（糖-磷酸骨架）" },
+    { "key": "backbone2",      "type": "color",  "default": "#26a69a", "desc": "链2颜色（糖-磷酸骨架）" },
+    { "key": "atColor",        "type": "color",  "default": "#ef5350", "desc": "A-T碱基对颜色" },
+    { "key": "gcColor",        "type": "color",  "default": "#42a5f5", "desc": "G-C碱基对颜色" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "旋转速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "backbone1": "--cmp-bb1", "backbone2": "--cmp-bb2",
+    "atColor": "--cmp-at", "gcColor": "--cmp-gc", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "rotate", "values": { "angle": "number — 当前旋转角度(°)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.cell.dna.interactive" role="img" aria-label="DNA双螺旋结构（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.cell.dna.interactive"]{
+      --h:var(--cmp-size,500px);display:inline-block;
+      width:calc(var(--h)*300/500);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(92,107,192,calc(.7*var(--cmp-glow,0))));
+      user-select:none;cursor:grab;
+    }
+    .cmp[data-cmp-id="bio.cell.dna.interactive"]:active{cursor:grabbing}
+    .cmp[data-cmp-id="bio.cell.dna.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="bio.cell.dna.interactive"] .dna__label{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:9px;font-weight:600;
+    }
+  </style>
+
+  <svg viewBox="0 0 300 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="dna__bg1" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-bb1,#5c6bc0)" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="var(--cmp-bb1,#5c6bc0)" stop-opacity="0.5"/>
+      </linearGradient>
+      <linearGradient id="dna__bg2" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-bb2,#26a69a)" stop-opacity="0.9"/>
+        <stop offset="1" stop-color="var(--cmp-bb2,#26a69a)" stop-opacity="0.5"/>
+      </linearGradient>
+    </defs>
+    <!-- 动态内容由JS绘制 -->
+    <g class="dna__scene"></g>
+    <g class="dna__labels"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.cell.dna.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+    var sceneG=root.querySelector('.dna__scene');
+    var labelsG=root.querySelector('.dna__labels');
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    /* 螺旋参数 */
+    var CX=150,W=55; /* 中心x, 螺旋半径 */
+    var NUM_BP=12; /* 碱基对数量 */
+    var YSTEP=35; /* 每对间距 */
+    var YSTART=30;
+    var angle=0; /* 当前旋转角度 */
+
+    /* 碱基对序列 */
+    var bpSeq=['AT','GC','AT','GC','GC','AT','GC','AT','AT','GC','AT','GC'];
+
+    function el(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function render(){
+      clear(sceneG);clear(labelsG);
+
+      /* 收集所有绘制元素并按z排序 */
+      var items=[];
+
+      for(var i=0;i<NUM_BP;i++){
+        var y=YSTART+i*YSTEP;
+        var a=angle+i*(Math.PI/5); /* 每对旋转36° */
+
+        var cosA=Math.cos(a);
+        var sinA=Math.sin(a);
+
+        /* 两条链的x坐标 */
+        var x1=CX+W*cosA;
+        var x2=CX-W*cosA;
+
+        /* z深度(用于透视) */
+        var z1=sinA; /* -1到1 */
+        var z2=-sinA;
+
+        /* 骨架节点大小和透明度随深度变化 */
+        var s1=5+2*z1, op1=0.4+0.6*(z1+1)/2;
+        var s2=5+2*z2, op2=0.4+0.6*(z2+1)/2;
+
+        /* 碱基对颜色 */
+        var isAT=(bpSeq[i]==='AT');
+        var bpColor=isAT?'var(--cmp-at,#ef5350)':'var(--cmp-gc,#42a5f5)';
+        var bpOp=0.3+0.5*Math.abs(cosA); /* 正面亮，侧面暗 */
+
+        /* 碱基对连接线（横杠） */
+        items.push({z:(z1+z2)/2,type:'bp',x1:x1,y1:y,x2:x2,y2:y,color:bpColor,op:bpOp,isAT:isAT,idx:i});
+
+        /* 骨架节点 */
+        items.push({z:z1,type:'node',x:x1,y:y,r:s1,op:op1,chain:1});
+        items.push({z:z2,type:'node',x:x2,y:y,r:s2,op:op2,chain:2});
+
+        /* 骨架连线（连接相邻节点） */
+        if(i>0){
+          var prevA=angle+(i-1)*(Math.PI/5);
+          var px1=CX+W*Math.cos(prevA);
+          var py1=YSTART+(i-1)*YSTEP;
+          var px2=CX-W*Math.cos(prevA);
+          var pz1=Math.sin(prevA);
+          var pz2=-Math.sin(prevA);
+
+          items.push({z:(z1+pz1)/2,type:'bone',x1:px1,y1:py1,x2:x1,y2:y,chain:1,op:(op1+0.4+0.6*(pz1+1)/2)/2});
+          items.push({z:(z2+pz2)/2,type:'bone',x1:px2,y1:py1,x2:x2,y2:y,chain:2,op:(op2+0.4+0.6*(pz2+1)/2)/2});
+        }
+      }
+
+      /* 按z排序（远处先画） */
+      items.sort(function(a,b){return a.z-b.z;});
+
+      for(var j=0;j<items.length;j++){
+        var it=items[j];
+        if(it.type==='bp'){
+          /* 碱基对：两段+中间氢键 */
+          var mx=(it.x1+it.x2)/2;
+          /* 左半碱基 */
+          sceneG.appendChild(el('line',{x1:it.x1,y1:it.y1,x2:mx-3,y2:it.y1,
+            stroke:it.color,'stroke-width':'3','stroke-linecap':'round',opacity:it.op}));
+          /* 右半碱基 */
+          sceneG.appendChild(el('line',{x1:mx+3,y1:it.y1,x2:it.x2,y2:it.y2,
+            stroke:it.color,'stroke-width':'3','stroke-linecap':'round',opacity:it.op}));
+          /* 氢键（虚线） */
+          var numH=it.isAT?2:3;
+          for(var h=0;h<numH;h++){
+            var hx=mx-2+h*2;
+            sceneG.appendChild(el('circle',{cx:hx,cy:it.y1,r:0.8,
+              fill:it.color,opacity:it.op*0.8}));
+          }
+        }else if(it.type==='node'){
+          var fill=it.chain===1?'var(--cmp-bb1,#5c6bc0)':'var(--cmp-bb2,#26a69a)';
+          sceneG.appendChild(el('circle',{cx:it.x,cy:it.y,r:it.r,
+            fill:fill,stroke:'var(--cmp-stroke,#37474f)',
+            'stroke-width':'0.6',opacity:it.op}));
+          /* 高光 */
+          sceneG.appendChild(el('circle',{cx:it.x-it.r*0.25,cy:it.y-it.r*0.25,r:it.r*0.35,
+            fill:'#fff',opacity:it.op*0.3}));
+        }else if(it.type==='bone'){
+          var bfill=it.chain===1?'var(--cmp-bb1,#5c6bc0)':'var(--cmp-bb2,#26a69a)';
+          sceneG.appendChild(el('line',{x1:it.x1,y1:it.y1,x2:it.x2,y2:it.y2,
+            stroke:bfill,'stroke-width':'2.5','stroke-linecap':'round',opacity:it.op*0.8}));
+        }
+      }
+
+      /* 标注 — 使用固定碱基对索引，避免每帧切换导致闪烁 */
+      if(showLabels){
+        /* 固定选取中间区域的两对碱基对用于标注 */
+        var atIdx=-1,gcIdx=-1;
+        for(var i=4;i<NUM_BP-2;i++){
+          if(atIdx<0&&bpSeq[i]==='AT')atIdx=i;
+          if(gcIdx<0&&bpSeq[i]==='GC')gcIdx=i;
+          if(atIdx>=0&&gcIdx>=0)break;
+        }
+        if(atIdx<0)atIdx=0;if(gcIdx<0)gcIdx=1;
+        /* 选取靠近中间的那个作为碱基对/氢键标注 */
+        var labelIdx=atIdx;
+
+        var by=YSTART+labelIdx*YSTEP;
+        var ba=angle+labelIdx*(Math.PI/5);
+        var bCos=Math.cos(ba);
+        var bx1=CX+W*bCos;
+        var bx2=CX-W*bCos;
+        var labelOp=Math.abs(bCos); /* 正面时清晰，侧面时淡出 */
+        labelOp=Math.max(0,Math.min(1,labelOp));
+
+        /* 碱基对标注 */
+        var bpType=bpSeq[labelIdx];
+        var labelText=bpType==='AT'?'碱基对 A—T':'碱基对 G—C';
+        addLabel((bx1+bx2)/2,by,250,by-15,labelText,labelOp);
+
+        /* 氢键标注 */
+        var numHLabel=bpType==='AT'?'氢键(2条)':'氢键(3条)';
+        addLabel((bx1+bx2)/2,by+2,250,by+18,numHLabel,labelOp);
+
+        /* 骨架标注 — 固定在第一个节点 */
+        var topY=YSTART;
+        var topCos=Math.cos(angle);
+        var boneOp=Math.abs(topCos);
+        boneOp=Math.max(0,Math.min(1,boneOp));
+        addLabel(CX+W*topCos,topY,30,topY-10,'磷酸-脱氧核糖',boneOp);
+        addLabel(CX-W*topCos,topY,270,topY+20,'糖-磷酸骨架',boneOp);
+      }
+
+      /* 底部图例 */
+      var ly=475;
+      sceneG.appendChild(el('rect',{x:50,y:ly-5,width:200,height:22,rx:4,
+        fill:'rgba(255,255,255,0.85)',stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.5'}));
+      /* AT */
+      sceneG.appendChild(el('rect',{x:60,y:ly,width:12,height:12,rx:2,fill:'var(--cmp-at,#ef5350)'}));
+      var t1=el('text',{x:76,y:ly+10,'font-size':'9','font-family':"Arial,'Microsoft YaHei',sans-serif",
+        fill:'var(--cmp-stroke,#37474f)'});
+      t1.textContent='A-T';sceneG.appendChild(t1);
+      /* GC */
+      sceneG.appendChild(el('rect',{x:115,y:ly,width:12,height:12,rx:2,fill:'var(--cmp-gc,#42a5f5)'}));
+      var t2=el('text',{x:131,y:ly+10,'font-size':'9','font-family':"Arial,'Microsoft YaHei',sans-serif",
+        fill:'var(--cmp-stroke,#37474f)'});
+      t2.textContent='G-C';sceneG.appendChild(t2);
+      /* 骨架 */
+      sceneG.appendChild(el('circle',{cx:175,cy:ly+6,r:4,fill:'var(--cmp-bb1,#5c6bc0)'}));
+      sceneG.appendChild(el('circle',{cx:185,cy:ly+6,r:4,fill:'var(--cmp-bb2,#26a69a)'}));
+      var t3=el('text',{x:193,y:ly+10,'font-size':'9','font-family':"Arial,'Microsoft YaHei',sans-serif",
+        fill:'var(--cmp-stroke,#37474f)'});
+      t3.textContent='骨架';sceneG.appendChild(t3);
+    }
+
+    function addLabel(x,y,tx,ty,text,op){
+      var o=op!=null?op:1;
+      labelsG.appendChild(el('line',{x1:x,y1:y,x2:tx,y2:ty-4,
+        stroke:'#546e7a','stroke-width':'0.6','stroke-dasharray':'2,2',opacity:o}));
+      var t=el('text',{x:tx,y:ty,'text-anchor':tx>150?'start':'end',
+        fill:'var(--cmp-stroke,#37474f)','class':'dna__label',opacity:o});
+      t.textContent=text;
+      labelsG.appendChild(t);
+    }
+
+    render();
+
+    /* 动画 */
+    var animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=(t-lastT)/1000;
+      lastT=t;
+      angle+=dt*speed*0.8;
+      render();
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* 拖拽旋转 */
+    var dragging=false,dragStartX=0,dragAngle=0;
+    function onDown(e){
+      e.preventDefault();
+      dragging=true;
+      var pt=e.touches?e.touches[0]:e;
+      dragStartX=pt.clientX;
+      dragAngle=angle;
+      /* 暂停自动旋转 */
+      if(running){cancelAnimationFrame(animId);animId=0;}
+      document.addEventListener('mousemove',onMove,{passive:false});
+      document.addEventListener('mouseup',onUp);
+      document.addEventListener('touchmove',onMove,{passive:false});
+      document.addEventListener('touchend',onUp);
+    }
+    function onMove(e){
+      if(!dragging)return;
+      e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var dx=pt.clientX-dragStartX;
+      angle=dragAngle+dx*0.02;
+      render();
+    }
+    function onUp(){
+      dragging=false;
+      if(running){lastT=0;animId=requestAnimationFrame(tick);}
+      document.removeEventListener('mousemove',onMove);
+      document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchmove',onMove);
+      document.removeEventListener('touchend',onUp);
+    }
+    root.addEventListener('mousedown',onDown,{passive:false});
+    root.addEventListener('touchstart',onDown,{passive:false});
+
+    /* 点击暂停/恢复 */
+    root.addEventListener('dblclick',function(){
+      running=!running;
+      if(running){lastT=0;animId=requestAnimationFrame(tick);}
+      else{cancelAnimationFrame(animId);animId=0;}
+    });
+
+    /* 事件 */
+    function emit(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'rotate',
+          values:{angle:Math.round(angle*180/Math.PI*10)/10}}}));
+    }
+
+    /* Props变化 */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+      render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

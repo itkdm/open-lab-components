@@ -1,0 +1,292 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.life.leaf-structure.basic",
+  "name": "叶片结构",
+  "nameEn": "Leaf Structure",
+  "category": "science/life",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 500, "desc": "组件宽度" },
+    { "key": "showLabels", "type": "boolean", "default": true, "desc": "显示标注" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["leaf", "structure", "plant", "photosynthesis", "science", "primary"]
+}
+-->
+<div class="cmp" data-cmp-id="sci.life.leaf-structure.basic" role="img" aria-label="叶片结构">
+  <svg class="lf__svg" viewBox="0 0 300 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="lf__leaf-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#66BB6A"/>
+        <stop offset="100%" stop-color="#388E3C"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ===== 上半部：叶片外观 (y=10-100) ===== -->
+    <g>
+      <!-- 叶柄 (Petiole) -->
+      <path d="M150,95 L150,105" stroke="#5D4037" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M150,95 L150,105" stroke="#795548" stroke-width="1.5" opacity="0.3"/>
+
+      <!-- 叶片 (Leaf blade) -->
+      <path class="lf__blade" d="M150,15 Q200,20 235,45 Q260,65 250,80 Q235,95 200,95
+           Q175,95 150,95 Q125,95 100,95 Q65,95 50,80 Q40,65 65,45 Q100,20 150,15Z"
+           stroke="#2E7D32" stroke-width="1.2"/>
+      <!-- 叶缘高光 -->
+      <path d="M150,15 Q200,20 235,45 Q260,65 250,80" fill="none" stroke="#A5D6A7" stroke-width="0.6" opacity="0.5"/>
+
+      <!-- 主脉 (Main vein) -->
+      <line x1="150" y1="20" x2="150" y2="95" stroke="#2E7D32" stroke-width="1.8"/>
+      <!-- 侧脉 (Side veins) -->
+      <g stroke="#388E3C" stroke-width="0.8" fill="none">
+        <path d="M150,32 Q170,30 195,38"/>
+        <path d="M150,32 Q130,30 105,38"/>
+        <path d="M150,48 Q175,44 215,55"/>
+        <path d="M150,48 Q125,44 85,55"/>
+        <path d="M150,62 Q178,58 225,68"/>
+        <path d="M150,62 Q122,58 75,68"/>
+        <path d="M150,76 Q175,73 220,82"/>
+        <path d="M150,76 Q125,73 80,82"/>
+      </g>
+    </g>
+
+    <!-- 上半部标注 -->
+    <g class="lf__labels" font-size="7.5" font-family="Arial,'Microsoft YaHei',sans-serif" fill="#333" font-weight="600">
+      <line x1="210" y1="50" x2="260" y2="30" stroke="#999" stroke-width="0.6"/>
+      <circle cx="210" cy="50" r="1.2" fill="#999"/>
+      <text x="262" y="33" font-size="7.5" opacity="0.85">叶片</text>
+
+      <line x1="190" y1="68" x2="262" y2="58" stroke="#999" stroke-width="0.6"/>
+      <circle cx="190" cy="68" r="1.2" fill="#999"/>
+      <text x="264" y="61" font-size="7.5" opacity="0.85">叶脉</text>
+
+      <line x1="150" y1="102" x2="185" y2="105" stroke="#999" stroke-width="0.6"/>
+      <circle cx="150" cy="102" r="1.2" fill="#999"/>
+      <text x="187" y="108" font-size="7.5" opacity="0.85">叶柄</text>
+    </g>
+
+    <!-- ===== 下半部：横切面 (y=120-260) ===== -->
+    <!-- 横切面标题 -->
+    <text class="lf__labels" x="150" y="118" text-anchor="middle" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif"
+          fill="#666" opacity="0.7">— 横切面 —</text>
+
+    <g>
+      <!-- 角质层 (Cuticle) — 最顶部薄线 -->
+      <rect x="40" y="125" width="220" height="2" fill="#A5D6A7" stroke="#81C784" stroke-width="0.3"/>
+
+      <!-- 上表皮 (Upper Epidermis) -->
+      <rect x="40" y="127" width="220" height="8" fill="#C8E6C9" stroke="#A5D6A7" stroke-width="0.5"/>
+      <!-- 上表皮细胞分隔线 -->
+      <g stroke="#A5D6A7" stroke-width="0.4" opacity="0.6">
+        <line x1="60" y1="127" x2="60" y2="135"/><line x1="80" y1="127" x2="80" y2="135"/>
+        <line x1="100" y1="127" x2="100" y2="135"/><line x1="120" y1="127" x2="120" y2="135"/>
+        <line x1="140" y1="127" x2="140" y2="135"/><line x1="160" y1="127" x2="160" y2="135"/>
+        <line x1="180" y1="127" x2="180" y2="135"/><line x1="200" y1="127" x2="200" y2="135"/>
+        <line x1="220" y1="127" x2="220" y2="135"/><line x1="240" y1="127" x2="240" y2="135"/>
+      </g>
+
+      <!-- 栅栏组织 (Palisade Mesophyll) -->
+      <rect x="40" y="135" width="220" height="35" fill="#4CAF50" opacity="0.15"/>
+      <!-- 栅栏细胞：紧密排列的柱状细胞 -->
+      <g>
+        <rect x="44" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="54" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="64" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="74" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="84" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="94" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="104" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="114" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <!-- 叶脉位置留空 (x=124-176) -->
+        <rect x="178" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="188" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="198" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="208" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="218" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="228" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="238" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+        <rect x="248" y="137" width="8" height="30" rx="2" fill="#388E3C" stroke="#2E7D32" stroke-width="0.4" opacity="0.85"/>
+      </g>
+      <!-- 叶绿体 (Chloroplasts) — 栅栏细胞内的深绿色小点 -->
+      <g fill="#1B5E20" opacity="0.8">
+        <circle cx="48" cy="143" r="1.2"/><circle cx="48" cy="150" r="1.2"/><circle cx="48" cy="157" r="1.2"/>
+        <circle cx="58" cy="145" r="1.2"/><circle cx="58" cy="152" r="1.2"/><circle cx="58" cy="159" r="1.2"/>
+        <circle cx="68" cy="143" r="1.2"/><circle cx="68" cy="150" r="1.2"/><circle cx="68" cy="157" r="1.2"/>
+        <circle cx="78" cy="145" r="1.2"/><circle cx="78" cy="152" r="1.2"/><circle cx="78" cy="159" r="1.2"/>
+        <circle cx="88" cy="143" r="1.2"/><circle cx="88" cy="150" r="1.2"/><circle cx="88" cy="157" r="1.2"/>
+        <circle cx="98" cy="145" r="1.2"/><circle cx="98" cy="152" r="1.2"/><circle cx="98" cy="159" r="1.2"/>
+        <circle cx="108" cy="143" r="1.2"/><circle cx="108" cy="150" r="1.2"/><circle cx="108" cy="157" r="1.2"/>
+        <circle cx="118" cy="145" r="1.2"/><circle cx="118" cy="152" r="1.2"/><circle cx="118" cy="159" r="1.2"/>
+        <circle cx="182" cy="143" r="1.2"/><circle cx="182" cy="150" r="1.2"/><circle cx="182" cy="157" r="1.2"/>
+        <circle cx="192" cy="145" r="1.2"/><circle cx="192" cy="152" r="1.2"/><circle cx="192" cy="159" r="1.2"/>
+        <circle cx="202" cy="143" r="1.2"/><circle cx="202" cy="150" r="1.2"/><circle cx="202" cy="157" r="1.2"/>
+        <circle cx="212" cy="145" r="1.2"/><circle cx="212" cy="152" r="1.2"/><circle cx="212" cy="159" r="1.2"/>
+        <circle cx="222" cy="143" r="1.2"/><circle cx="222" cy="150" r="1.2"/><circle cx="222" cy="157" r="1.2"/>
+        <circle cx="232" cy="145" r="1.2"/><circle cx="232" cy="152" r="1.2"/><circle cx="232" cy="159" r="1.2"/>
+        <circle cx="242" cy="143" r="1.2"/><circle cx="242" cy="150" r="1.2"/><circle cx="242" cy="157" r="1.2"/>
+        <circle cx="252" cy="145" r="1.2"/><circle cx="252" cy="152" r="1.2"/><circle cx="252" cy="159" r="1.2"/>
+      </g>
+
+      <!-- 海绵组织 (Spongy Mesophyll) -->
+      <rect x="40" y="170" width="220" height="35" fill="#E8F5E9" stroke="none"/>
+      <!-- 海绵细胞：不规则形状，有间隙 -->
+      <g fill="#66BB6A" stroke="#4CAF50" stroke-width="0.4" opacity="0.8">
+        <ellipse cx="52" cy="178" rx="7" ry="5"/><ellipse cx="70" cy="182" rx="6" ry="6"/>
+        <ellipse cx="55" cy="192" rx="8" ry="4"/><ellipse cx="86" cy="176" rx="5" ry="6"/>
+        <ellipse cx="90" cy="192" rx="7" ry="5"/><ellipse cx="75" cy="198" rx="6" ry="4"/>
+        <ellipse cx="105" cy="180" rx="6" ry="5"/><ellipse cx="108" cy="196" rx="7" ry="5"/>
+        <ellipse cx="50" cy="200" rx="5" ry="4"/>
+        <!-- 叶脉位置留空 -->
+        <ellipse cx="185" cy="178" rx="6" ry="5"/><ellipse cx="200" cy="183" rx="7" ry="5"/>
+        <ellipse cx="190" cy="196" rx="6" ry="5"/><ellipse cx="218" cy="177" rx="5" ry="6"/>
+        <ellipse cx="215" cy="194" rx="7" ry="5"/><ellipse cx="235" cy="180" rx="6" ry="5"/>
+        <ellipse cx="250" cy="178" rx="5" ry="5"/><ellipse cx="240" cy="196" rx="7" ry="4"/>
+        <ellipse cx="205" cy="200" rx="5" ry="4"/><ellipse cx="252" cy="194" rx="5" ry="5"/>
+      </g>
+      <!-- 海绵细胞叶绿体（较少） -->
+      <g fill="#1B5E20" opacity="0.5">
+        <circle cx="52" cy="178" r="1"/><circle cx="86" cy="176" r="1"/>
+        <circle cx="105" cy="180" r="1"/><circle cx="70" cy="182" r="1"/>
+        <circle cx="200" cy="183" r="1"/><circle cx="218" cy="177" r="1"/>
+        <circle cx="235" cy="180" r="1"/><circle cx="250" cy="178" r="1"/>
+      </g>
+
+      <!-- 叶脉 (Vein bundle) — 横切面中央 -->
+      <g>
+        <rect x="126" y="138" width="48" height="64" rx="6" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="0.8"/>
+        <!-- 导管 (Xylem) — 上部红色 -->
+        <circle cx="140" cy="152" r="5" fill="#EF5350" stroke="#E53935" stroke-width="0.5"/>
+        <circle cx="155" cy="150" r="4" fill="#EF5350" stroke="#E53935" stroke-width="0.5"/>
+        <circle cx="148" cy="158" r="3.5" fill="#EF5350" stroke="#E53935" stroke-width="0.5"/>
+        <circle cx="162" cy="155" r="3" fill="#EF9A9A" stroke="#E53935" stroke-width="0.4"/>
+        <!-- 筛管 (Phloem) — 下部蓝色 -->
+        <circle cx="138" cy="178" r="3.5" fill="#42A5F5" stroke="#1E88E5" stroke-width="0.5"/>
+        <circle cx="148" cy="175" r="3" fill="#42A5F5" stroke="#1E88E5" stroke-width="0.5"/>
+        <circle cx="158" cy="178" r="3.5" fill="#42A5F5" stroke="#1E88E5" stroke-width="0.5"/>
+        <circle cx="148" cy="185" r="3" fill="#42A5F5" stroke="#1E88E5" stroke-width="0.5"/>
+        <circle cx="165" cy="183" r="2.5" fill="#90CAF9" stroke="#1E88E5" stroke-width="0.4"/>
+        <!-- 分隔线 -->
+        <line x1="128" y1="167" x2="172" y2="167" stroke="#BDBDBD" stroke-width="0.5" stroke-dasharray="2,2"/>
+      </g>
+
+      <!-- 下表皮 (Lower Epidermis) -->
+      <rect x="40" y="205" width="220" height="8" fill="#C8E6C9" stroke="#A5D6A7" stroke-width="0.5"/>
+      <!-- 下表皮细胞分隔线 -->
+      <g stroke="#A5D6A7" stroke-width="0.4" opacity="0.6">
+        <line x1="60" y1="205" x2="60" y2="213"/><line x1="80" y1="205" x2="80" y2="213"/>
+        <line x1="120" y1="205" x2="120" y2="213"/><line x1="160" y1="205" x2="160" y2="213"/>
+        <line x1="200" y1="205" x2="200" y2="213"/><line x1="220" y1="205" x2="220" y2="213"/>
+        <line x1="240" y1="205" x2="240" y2="213"/>
+      </g>
+
+      <!-- 气孔 (Stomata) — 下表皮上的两个开口 -->
+      <!-- 左气孔 -->
+      <g>
+        <ellipse cx="95" cy="211" rx="6" ry="4" fill="#43A047" stroke="#2E7D32" stroke-width="0.5"/>
+        <ellipse cx="110" cy="211" rx="6" ry="4" fill="#43A047" stroke="#2E7D32" stroke-width="0.5"/>
+        <ellipse cx="102.5" cy="211" rx="3" ry="2" fill="#E8F5E9" stroke="#66BB6A" stroke-width="0.3"/>
+      </g>
+      <!-- 右气孔 -->
+      <g>
+        <ellipse cx="175" cy="211" rx="6" ry="4" fill="#43A047" stroke="#2E7D32" stroke-width="0.5"/>
+        <ellipse cx="190" cy="211" rx="6" ry="4" fill="#43A047" stroke="#2E7D32" stroke-width="0.5"/>
+        <ellipse cx="182.5" cy="211" rx="3" ry="2" fill="#E8F5E9" stroke="#66BB6A" stroke-width="0.3"/>
+      </g>
+    </g>
+
+    <!-- ===== 横切面标注 ===== -->
+    <g class="lf__labels" font-size="7" font-family="Arial,'Microsoft YaHei',sans-serif" fill="#333" font-weight="600">
+      <!-- 角质层 -->
+      <line x1="42" y1="126" x2="14" y2="122" stroke="#999" stroke-width="0.6"/>
+      <circle cx="42" cy="126" r="1" fill="#999"/>
+      <text x="12" y="124" text-anchor="end" font-size="6.5" opacity="0.85">角质层</text>
+
+      <!-- 上表皮 -->
+      <line x1="42" y1="131" x2="14" y2="135" stroke="#999" stroke-width="0.6"/>
+      <circle cx="42" cy="131" r="1" fill="#999"/>
+      <text x="12" y="138" text-anchor="end" font-size="7" opacity="0.85">上表皮</text>
+
+      <!-- 栅栏组织 -->
+      <line x1="42" y1="152" x2="14" y2="155" stroke="#999" stroke-width="0.6"/>
+      <circle cx="42" cy="152" r="1" fill="#999"/>
+      <text x="12" y="158" text-anchor="end" font-size="7" opacity="0.85">栅栏组织</text>
+
+      <!-- 海绵组织 -->
+      <line x1="42" y1="188" x2="14" y2="188" stroke="#999" stroke-width="0.6"/>
+      <circle cx="42" cy="188" r="1" fill="#999"/>
+      <text x="12" y="191" text-anchor="end" font-size="7" opacity="0.85">海绵组织</text>
+
+      <!-- 下表皮 -->
+      <line x1="42" y1="209" x2="14" y2="209" stroke="#999" stroke-width="0.6"/>
+      <circle cx="42" cy="209" r="1" fill="#999"/>
+      <text x="12" y="212" text-anchor="end" font-size="7" opacity="0.85">下表皮</text>
+
+      <!-- 气孔 -->
+      <line x1="102" y1="215" x2="90" y2="230" stroke="#999" stroke-width="0.6"/>
+      <circle cx="102" cy="215" r="1" fill="#999"/>
+      <text x="88" y="240" text-anchor="middle" font-size="7" opacity="0.85">气孔</text>
+
+      <!-- 叶脉 -->
+      <line x1="174" y1="165" x2="272" y2="145" stroke="#999" stroke-width="0.6"/>
+      <circle cx="174" cy="165" r="1" fill="#999"/>
+      <text x="274" y="148" font-size="7" opacity="0.85">叶脉</text>
+
+      <!-- 导管 -->
+      <line x1="174" y1="152" x2="274" y2="130" stroke="#999" stroke-width="0.6"/>
+      <circle cx="174" cy="152" r="1" fill="#999"/>
+      <text x="276" y="128" font-size="6.5" fill="#E53935" opacity="0.85">导管</text>
+
+      <!-- 筛管 -->
+      <line x1="174" y1="180" x2="274" y2="165" stroke="#999" stroke-width="0.6"/>
+      <circle cx="174" cy="180" r="1" fill="#999"/>
+      <text x="276" y="168" font-size="6.5" fill="#1E88E5" opacity="0.85">筛管</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var root = document.currentScript && document.currentScript.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.life.leaf-structure.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'lf_' + Math.random().toString(36).slice(2, 8);
+
+  /* 为渐变分配唯一 id */
+  var grad = svg.querySelector('.lf__leaf-grad');
+  if (grad) grad.setAttribute('id', uid + '_lg');
+
+  /* 绑定 fill 引用 */
+  var blade = svg.querySelector('.lf__blade');
+  if (blade) blade.setAttribute('fill', 'url(#' + uid + '_lg)');
+
+  /* 标注显隐 */
+  var labels = root.querySelectorAll('.lf__labels');
+
+  function update() {
+    var props = {};
+    try { var r = root.getAttribute('data-props'); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    var show = !(props.showLabels === false || props.showLabels === 'false');
+    for (var i = 0; i < labels.length; i++) {
+      labels[i].style.display = show ? '' : 'none';
+    }
+  }
+  update();
+  var obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props'] });
+  window.addEventListener('beforeunload', function() { obs.disconnect(); }, { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="sci.life.leaf-structure.basic"] {
+  width: var(--cmp-size, 300px);
+  display: inline-block;
+}
+.cmp[data-cmp-id="sci.life.leaf-structure.basic"] .lf__svg {
+  width: 100%; height: auto; display: block; overflow: visible;
+}
+</style>

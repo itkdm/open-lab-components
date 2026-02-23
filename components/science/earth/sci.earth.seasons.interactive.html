@@ -1,0 +1,290 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.earth.seasons.interactive",
+  "name": "四季变化",
+  "nameEn": "Four Seasons",
+  "category": "science/earth",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 320 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
+    { "key": "season", "type": "number", "default": 1, "min": 1, "max": 4, "desc": "当前季节（1春2夏3秋4冬）" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["seasons", "spring", "summer", "autumn", "winter", "earth-science", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "season": "number(1-4)", "seasonName": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.earth.seasons.interactive" role="img" aria-label="四季变化">
+  <svg class="ss__svg" viewBox="0 0 320 320" aria-hidden="true">
+    <defs>
+      <radialGradient class="ss__sun-g" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#FFF9C4"/>
+        <stop offset="50%" stop-color="#FFD54F"/>
+        <stop offset="100%" stop-color="#FF8F00" stop-opacity="0"/>
+      </radialGradient>
+      <clipPath class="ss__clip-tr"><path d="M160,160 L160,0 L320,0 L320,160 Z"/></clipPath>
+      <clipPath class="ss__clip-br"><path d="M160,160 L320,160 L320,320 L160,320 Z"/></clipPath>
+      <clipPath class="ss__clip-bl"><path d="M160,160 L160,320 L0,320 L0,160 Z"/></clipPath>
+      <clipPath class="ss__clip-tl"><path d="M160,160 L0,160 L0,0 L160,0 Z"/></clipPath>
+    </defs>
+
+    <!-- Background circle -->
+    <circle cx="160" cy="160" r="140" fill="#f0f4f8" stroke="#ddd" stroke-width="1"/>
+
+    <!-- Spring (top-right quadrant) -->
+    <g class="ss__quad" data-season="1" clip-path="url(#ss__clip-tr)" style="cursor:pointer">
+      <rect x="160" y="0" width="160" height="160" fill="#E8F5E9"/>
+      <!-- Ground -->
+      <rect x="160" y="130" width="160" height="30" fill="#A5D6A7" rx="0"/>
+      <!-- Grass blades -->
+      <line x1="180" y1="130" x2="178" y2="118" stroke="#66BB6A" stroke-width="2" stroke-linecap="round"/>
+      <line x1="195" y1="130" x2="197" y2="116" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="210" y1="130" x2="208" y2="120" stroke="#66BB6A" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="270" y1="130" x2="272" y2="119" stroke="#66BB6A" stroke-width="2" stroke-linecap="round"/>
+      <line x1="285" y1="130" x2="283" y2="121" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- Tree trunk -->
+      <rect x="228" y="80" width="8" height="50" rx="2" fill="#795548"/>
+      <!-- Cherry blossom canopy -->
+      <circle cx="220" cy="70" r="16" fill="#F8BBD0" opacity="0.85"/>
+      <circle cx="240" cy="65" r="14" fill="#F48FB1" opacity="0.8"/>
+      <circle cx="230" cy="55" r="13" fill="#F8BBD0" opacity="0.9"/>
+      <circle cx="248" cy="75" r="11" fill="#F48FB1" opacity="0.75"/>
+      <!-- Blossoms -->
+      <circle cx="215" cy="60" r="2.5" fill="#E91E63" opacity="0.7"/>
+      <circle cx="242" cy="55" r="2" fill="#E91E63" opacity="0.6"/>
+      <circle cx="250" cy="68" r="2" fill="#E91E63" opacity="0.7"/>
+      <!-- Butterflies -->
+      <g transform="translate(195,45)">
+        <path d="M0,0 C-4,-5 -8,-3 -6,0 C-8,3 -4,5 0,0" fill="#FF9800" opacity="0.8"/>
+        <path d="M0,0 C4,-5 8,-3 6,0 C8,3 4,5 0,0" fill="#FFB74D" opacity="0.8"/>
+      </g>
+      <g transform="translate(260,40)">
+        <path d="M0,0 C-3,-4 -6,-2 -5,0 C-6,2 -3,4 0,0" fill="#AB47BC" opacity="0.7"/>
+        <path d="M0,0 C3,-4 6,-2 5,0 C6,2 3,4 0,0" fill="#CE93D8" opacity="0.7"/>
+      </g>
+      <!-- Label -->
+      <text x="240" y="148" text-anchor="middle" font-size="14" font-weight="700" fill="#2E7D32" font-family="'Microsoft YaHei',sans-serif">春</text>
+    </g>
+
+    <!-- Summer (bottom-right quadrant) -->
+    <g class="ss__quad" data-season="2" clip-path="url(#ss__clip-br)" style="cursor:pointer">
+      <rect x="160" y="160" width="160" height="160" fill="#C8E6C9"/>
+      <!-- Ground -->
+      <rect x="160" y="280" width="160" height="40" fill="#66BB6A" rx="0"/>
+      <!-- Tree trunk -->
+      <rect x="228" y="230" width="9" height="50" rx="2" fill="#6D4C41"/>
+      <!-- Full canopy -->
+      <circle cx="218" cy="218" r="18" fill="#388E3C" opacity="0.9"/>
+      <circle cx="242" cy="215" r="16" fill="#2E7D32" opacity="0.85"/>
+      <circle cx="230" cy="205" r="17" fill="#43A047" opacity="0.9"/>
+      <circle cx="250" cy="225" r="13" fill="#388E3C" opacity="0.8"/>
+      <circle cx="212" cy="228" r="12" fill="#43A047" opacity="0.85"/>
+      <!-- Flowers -->
+      <circle cx="190" cy="278" r="4" fill="#F44336" opacity="0.8"/>
+      <circle cx="190" cy="278" r="1.5" fill="#FFEB3B"/>
+      <circle cx="270" cy="276" r="3.5" fill="#FF9800" opacity="0.8"/>
+      <circle cx="270" cy="276" r="1.2" fill="#FFEB3B"/>
+      <circle cx="300" cy="280" r="3" fill="#E91E63" opacity="0.7"/>
+      <circle cx="300" cy="280" r="1" fill="#FFF"/>
+      <!-- Sun rays from center -->
+      <line x1="200" y1="180" x2="210" y2="175" stroke="#FFD54F" stroke-width="1.5" opacity="0.5" stroke-linecap="round"/>
+      <line x1="220" y1="175" x2="235" y2="172" stroke="#FFD54F" stroke-width="1.5" opacity="0.4" stroke-linecap="round"/>
+      <!-- Label -->
+      <text x="240" y="175" text-anchor="middle" font-size="14" font-weight="700" fill="#1B5E20" font-family="'Microsoft YaHei',sans-serif">夏</text>
+    </g>
+
+    <!-- Autumn (bottom-left quadrant) -->
+    <g class="ss__quad" data-season="3" clip-path="url(#ss__clip-bl)" style="cursor:pointer">
+      <rect x="0" y="160" width="160" height="160" fill="#FFF3E0"/>
+      <!-- Ground -->
+      <rect x="0" y="280" width="160" height="40" fill="#D7CCC8" rx="0"/>
+      <!-- Tree trunk -->
+      <rect x="78" y="230" width="8" height="50" rx="2" fill="#5D4037"/>
+      <!-- Branches -->
+      <line x1="82" y1="245" x2="60" y2="225" stroke="#5D4037" stroke-width="3" stroke-linecap="round"/>
+      <line x1="82" y1="240" x2="105" y2="218" stroke="#5D4037" stroke-width="3" stroke-linecap="round"/>
+      <!-- Autumn canopy (sparse) -->
+      <circle cx="68" cy="218" r="14" fill="#FF8F00" opacity="0.8"/>
+      <circle cx="92" cy="212" r="13" fill="#F4511E" opacity="0.75"/>
+      <circle cx="80" cy="205" r="12" fill="#FFB300" opacity="0.85"/>
+      <circle cx="102" cy="222" r="10" fill="#E65100" opacity="0.7"/>
+      <!-- Falling leaves -->
+      <ellipse cx="45" cy="250" rx="4" ry="2.5" fill="#FF6F00" opacity="0.7" transform="rotate(30 45 250)"/>
+      <ellipse cx="120" cy="260" rx="3.5" ry="2" fill="#D84315" opacity="0.65" transform="rotate(-20 120 260)"/>
+      <ellipse cx="70" cy="270" rx="3" ry="2" fill="#FFB300" opacity="0.6" transform="rotate(45 70 270)"/>
+      <ellipse cx="100" cy="275" rx="3.5" ry="2" fill="#FF8F00" opacity="0.55" transform="rotate(-35 100 275)"/>
+      <!-- Label -->
+      <text x="80" y="175" text-anchor="middle" font-size="14" font-weight="700" fill="#E65100" font-family="'Microsoft YaHei',sans-serif">秋</text>
+    </g>
+
+    <!-- Winter (top-left quadrant) -->
+    <g class="ss__quad" data-season="4" clip-path="url(#ss__clip-tl)" style="cursor:pointer">
+      <rect x="0" y="0" width="160" height="160" fill="#E3F2FD"/>
+      <!-- Snow ground -->
+      <rect x="0" y="130" width="160" height="30" fill="#fff" rx="0"/>
+      <ellipse cx="40" cy="130" rx="30" ry="5" fill="#E1F5FE"/>
+      <ellipse cx="120" cy="130" rx="25" ry="4" fill="#E1F5FE"/>
+      <!-- Bare tree trunk -->
+      <rect x="78" y="75" width="7" height="55" rx="2" fill="#5D4037"/>
+      <!-- Bare branches -->
+      <line x1="81" y1="90" x2="55" y2="60" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="81" y1="85" x2="108" y2="55" stroke="#5D4037" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="65" y1="70" x2="50" y2="50" stroke="#6D4C41" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="100" y1="65" x2="115" y2="45" stroke="#6D4C41" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="81" y1="80" x2="81" y2="58" stroke="#5D4037" stroke-width="2" stroke-linecap="round"/>
+      <!-- Snow on branches -->
+      <ellipse cx="55" cy="59" rx="8" ry="3" fill="#fff" opacity="0.9"/>
+      <ellipse cx="108" cy="54" rx="7" ry="2.5" fill="#fff" opacity="0.9"/>
+      <ellipse cx="81" cy="57" rx="6" ry="2.5" fill="#fff" opacity="0.85"/>
+      <!-- Snowflakes -->
+      <text x="30" y="40" font-size="10" fill="#90CAF9" opacity="0.7">&#10052;</text>
+      <text x="130" y="55" font-size="8" fill="#90CAF9" opacity="0.6">&#10052;</text>
+      <text x="70" y="30" font-size="7" fill="#BBDEFB" opacity="0.5">&#10052;</text>
+      <text x="110" y="25" font-size="9" fill="#90CAF9" opacity="0.65">&#10052;</text>
+      <text x="20" y="100" font-size="6" fill="#BBDEFB" opacity="0.5">&#10052;</text>
+      <!-- Label -->
+      <text x="80" y="148" text-anchor="middle" font-size="14" font-weight="700" fill="#1565C0" font-family="'Microsoft YaHei',sans-serif">冬</text>
+    </g>
+
+    <!-- Dividing lines -->
+    <line x1="160" y1="20" x2="160" y2="300" stroke="#bbb" stroke-width="0.8" stroke-dasharray="3,3"/>
+    <line x1="20" y1="160" x2="300" y2="160" stroke="#bbb" stroke-width="0.8" stroke-dasharray="3,3"/>
+
+    <!-- Orbit circle -->
+    <circle cx="160" cy="160" r="110" fill="none" stroke="#bbb" stroke-width="0.8" stroke-dasharray="4,4"/>
+
+    <!-- Sun at center -->
+    <circle cx="160" cy="160" r="30" fill="url(#ss__sun-g)" opacity="0.6"/>
+    <circle cx="160" cy="160" r="18" fill="#FFD54F"/>
+    <circle cx="160" cy="160" r="18" fill="none" stroke="#FFA000" stroke-width="1"/>
+    <!-- Sun rays -->
+    <g stroke="#FFD54F" stroke-width="2" stroke-linecap="round" opacity="0.6">
+      <line x1="160" y1="138" x2="160" y2="132"/>
+      <line x1="160" y1="182" x2="160" y2="188"/>
+      <line x1="138" y1="160" x2="132" y2="160"/>
+      <line x1="182" y1="160" x2="188" y2="160"/>
+      <line x1="144" y1="144" x2="140" y2="140"/>
+      <line x1="176" y1="144" x2="180" y2="140"/>
+      <line x1="144" y1="176" x2="140" y2="180"/>
+      <line x1="176" y1="176" x2="180" y2="180"/>
+    </g>
+
+    <!-- Earth (positioned by JS) -->
+    <g class="ss__earth">
+      <circle r="9" fill="#42A5F5" stroke="#1565C0" stroke-width="1"/>
+      <ellipse rx="9" ry="4" fill="none" stroke="#A5D6A7" stroke-width="1.2" opacity="0.6" transform="rotate(-20)"/>
+      <circle r="3" cx="-2" cy="-2" fill="#66BB6A" opacity="0.5"/>
+      <circle r="2" cx="3" cy="2" fill="#81C784" opacity="0.4"/>
+    </g>
+
+    <!-- Season info label -->
+    <g class="ss__info">
+      <rect class="ss__info-bg" x="100" y="295" width="120" height="22" rx="11" fill="#37474f" opacity="0.85"/>
+      <text class="ss__info-text" x="160" y="310" text-anchor="middle" font-size="12" font-weight="600" fill="#fff" font-family="'Microsoft YaHei',sans-serif"></text>
+    </g>
+  </svg>
+
+  <style>
+    .cmp[data-cmp-id="sci.earth.seasons.interactive"] {
+      width: var(--cmp-size, 320px); display: inline-block;
+    }
+    .cmp[data-cmp-id="sci.earth.seasons.interactive"] .ss__svg {
+      width: 100%; height: auto; display: block;
+    }
+    .cmp[data-cmp-id="sci.earth.seasons.interactive"] .ss__quad {
+      transition: opacity 0.2s;
+    }
+    .cmp[data-cmp-id="sci.earth.seasons.interactive"] .ss__quad:hover {
+      opacity: 0.88;
+    }
+    .cmp[data-cmp-id="sci.earth.seasons.interactive"] .ss__earth {
+      transition: transform 0.5s ease;
+    }
+  </style>
+
+  <script>
+  (function(){
+    var root = document.currentScript && document.currentScript.closest
+      ? document.currentScript.closest('[data-cmp-id="sci.earth.seasons.interactive"]')
+      : null;
+    if (!root) return;
+    var svg = root.querySelector('.ss__svg');
+    var earthG = root.querySelector('.ss__earth');
+    var infoText = root.querySelector('.ss__info-text');
+    if (!svg || !earthG || !infoText) return;
+
+    // Unique IDs
+    var uid = 'ss' + Math.random().toString(36).slice(2,8);
+    svg.querySelectorAll('defs [class^="ss__"]').forEach(function(el){
+      var cls = el.getAttribute('class');
+      var newId = uid + '_' + cls;
+      el.setAttribute('id', newId);
+    });
+    // Fix gradient/clip references
+    svg.querySelector('.ss__quad[data-season="1"]').setAttribute('clip-path','url(#'+uid+'_ss__clip-tr)');
+    svg.querySelector('.ss__quad[data-season="2"]').setAttribute('clip-path','url(#'+uid+'_ss__clip-br)');
+    svg.querySelector('.ss__quad[data-season="3"]').setAttribute('clip-path','url(#'+uid+'_ss__clip-bl)');
+    svg.querySelector('.ss__quad[data-season="4"]').setAttribute('clip-path','url(#'+uid+'_ss__clip-tl)');
+    var sunCircle = svg.querySelector('circle[fill="url(#ss__sun-g)"]');
+    if (sunCircle) sunCircle.setAttribute('fill','url(#'+uid+'_ss__sun-g)');
+
+    var NAMES = ['','春天','夏天','秋天','冬天'];
+    var DESCS = ['','万物复苏','烈日炎炎','硕果累累','银装素裹'];
+    var POSITIONS = [
+      null,
+      {x:160, y:50},   // Spring: top
+      {x:270, y:160},  // Summer: right
+      {x:160, y:270},  // Autumn: bottom
+      {x:50, y:160}    // Winter: left
+    ];
+
+    var props = {};
+    try { props = JSON.parse(root.getAttribute('data-props')||'{}'); } catch(e){}
+    var current = Math.max(1, Math.min(4, props.season || 1));
+
+    function update(s) {
+      current = s;
+      var pos = POSITIONS[s];
+      earthG.setAttribute('transform','translate('+pos.x+','+pos.y+')');
+      infoText.textContent = NAMES[s] + ' · ' + DESCS[s];
+      // Highlight active quadrant
+      svg.querySelectorAll('.ss__quad').forEach(function(q){
+        var qs = parseInt(q.getAttribute('data-season'));
+        q.style.opacity = (qs === s) ? '1' : '0.7';
+      });
+    }
+
+    update(current);
+
+    // Click handler
+    svg.addEventListener('click', function(e){
+      var quad = e.target.closest('.ss__quad');
+      if (!quad) return;
+      var s = parseInt(quad.getAttribute('data-season'));
+      if (isNaN(s) || s < 1 || s > 4) return;
+      update(s);
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles:true, composed:true,
+        detail:{ id:root.getAttribute('data-cmp-id'), type:'toggle',
+          values:{ season:s, seasonName:NAMES[s] }
+        }
+      }));
+    });
+
+    // MutationObserver
+    new MutationObserver(function(){
+      try {
+        var p = JSON.parse(root.getAttribute('data-props')||'{}');
+        if (p.season !== undefined) {
+          var s = Math.max(1, Math.min(4, p.season));
+          if (s !== current) update(s);
+        }
+      } catch(e){}
+    }).observe(root, {attributes:true, attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

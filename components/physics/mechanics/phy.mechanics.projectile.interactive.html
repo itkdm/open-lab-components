@@ -1,0 +1,426 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.mechanics.projectile.interactive",
+  "name": "抛体运动（交互式）",
+  "nameEn": "Projectile Motion (Interactive)",
+  "category": "physics/mechanics",
+  "version": "1.0.0",
+  "viewport": { "w": 520, "h": 380 },
+  "tags": ["mechanics", "projectile", "parabola", "gravity", "kinematics", "interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 380, "min": 240, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "ballColor",   "type": "color",  "default": "#e53935", "desc": "球体颜色" },
+    { "key": "trailColor",  "type": "color",  "default": "#ef9a9a", "desc": "轨迹颜色" },
+    { "key": "groundColor", "type": "color",  "default": "#8d6e63", "desc": "地面颜色" },
+    { "key": "launchAngle", "type": "number", "default": 45, "min": 5, "max": 85, "desc": "发射角度(°)" },
+    { "key": "launchSpeed", "type": "number", "default": 20, "min": 5, "max": 50, "desc": "发射速度(m/s)" },
+    { "key": "gravity",     "type": "number", "default": 9.8, "min": 1, "max": 30, "desc": "重力加速度(m/s²)" },
+    { "key": "showTrail",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示轨迹" },
+    { "key": "showVectors", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示速度矢量" },
+    { "key": "showData",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示数据面板" },
+    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "glow",        "type": "number", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "ballColor": "--cmp-ball", "trailColor": "--cmp-trail", "groundColor": "--cmp-ground"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "angle": "number", "speed": "number", "time": "number", "x": "number", "y": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.mechanics.projectile.interactive" role="img" aria-label="抛体运动（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.mechanics.projectile.interactive"]{
+      --h:var(--cmp-size,380px);display:inline-block;
+      width:calc(var(--h)*520/380);height:var(--h);user-select:none;
+    }
+    .cmp[data-cmp-id="phy.mechanics.projectile.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+  </style>
+
+  <svg viewBox="0 0 520 380" aria-hidden="true">
+    <defs>
+      <!-- arrow marker for velocity vectors -->
+      <marker id="proj__arrow-vx" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+        <path d="M0,0 L6,2 L0,4" fill="#1565c0"/>
+      </marker>
+      <marker id="proj__arrow-vy" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+        <path d="M0,0 L6,2 L0,4" fill="#2e7d32"/>
+      </marker>
+      <marker id="proj__arrow-v" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+        <path d="M0,0 L6,2 L0,4" fill="#e53935"/>
+      </marker>
+      <!-- ball glow filter -->
+      <filter id="proj__glow">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+
+    <!-- ground -->
+    <rect x="0" y="330" width="520" height="50" fill="var(--cmp-ground,#8d6e63)" opacity="0.18"/>
+    <line x1="0" y1="330" x2="520" y2="330" stroke="var(--cmp-ground,#8d6e63)" stroke-width="2"/>
+    <!-- grass tufts -->
+    <g class="proj__grass" stroke="#4caf50" stroke-width="1.2" stroke-linecap="round" fill="none" opacity="0.5">
+      <path d="M20,330 l-3,-8 M20,330 l0,-10 M20,330 l3,-7"/>
+      <path d="M60,330 l-2,-9 M60,330 l1,-11 M60,330 l4,-8"/>
+      <path d="M110,330 l-3,-7 M110,330 l0,-10 M110,330 l3,-8"/>
+      <path d="M170,330 l-2,-9 M170,330 l1,-11 M170,330 l3,-7"/>
+      <path d="M230,330 l-3,-8 M230,330 l0,-10 M230,330 l4,-7"/>
+      <path d="M290,330 l-2,-9 M290,330 l1,-10 M290,330 l3,-8"/>
+      <path d="M350,330 l-3,-7 M350,330 l0,-11 M350,330 l3,-8"/>
+      <path d="M410,330 l-2,-9 M410,330 l1,-10 M410,330 l4,-7"/>
+      <path d="M470,330 l-3,-8 M470,330 l0,-10 M470,330 l3,-7"/>
+      <path d="M505,330 l-2,-9 M505,330 l1,-10 M505,330 l3,-8"/>
+    </g>
+
+    <!-- launcher base -->
+    <rect x="30" y="318" width="30" height="12" rx="3" fill="var(--cmp-stroke,#37474f)" opacity="0.7"/>
+    <!-- launcher barrel (rotated by JS) -->
+    <g class="proj__launcher" transform-origin="45 318">
+      <rect class="proj__barrel" x="40" y="290" width="10" height="28" rx="3"
+            fill="var(--cmp-stroke,#37474f)" opacity="0.85"/>
+    </g>
+    <!-- launch angle arc -->
+    <path class="proj__angle-arc" d="" fill="none" stroke="var(--cmp-stroke,#37474f)"
+          stroke-width="0.8" opacity="0.5"/>
+    <text class="proj__angle-label" x="80" y="315" font-size="10"
+          font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)" opacity="0.6"></text>
+
+    <!-- trail path -->
+    <path class="proj__trail" d="" fill="none"
+          stroke="var(--cmp-trail,#ef9a9a)" stroke-width="1.5"
+          stroke-dasharray="4,3" stroke-linecap="round"/>
+
+    <!-- velocity vectors -->
+    <g class="proj__vectors">
+      <line class="proj__vx" x1="0" y1="0" x2="0" y2="0"
+            stroke="#1565c0" stroke-width="1.8" marker-end="url(#proj__arrow-vx)"/>
+      <line class="proj__vy" x1="0" y1="0" x2="0" y2="0"
+            stroke="#2e7d32" stroke-width="1.8" marker-end="url(#proj__arrow-vy)"/>
+      <line class="proj__v" x1="0" y1="0" x2="0" y2="0"
+            stroke="#e53935" stroke-width="1.8" marker-end="url(#proj__arrow-v)"/>
+      <!-- vector labels -->
+      <text class="proj__vx-label" font-size="9" font-family="'Courier New',monospace" fill="#1565c0">vx</text>
+      <text class="proj__vy-label" font-size="9" font-family="'Courier New',monospace" fill="#2e7d32">vy</text>
+      <text class="proj__v-label" font-size="9" font-family="'Courier New',monospace" fill="#e53935">v</text>
+    </g>
+
+    <!-- ball -->
+    <circle class="proj__ball" cx="45" cy="318" r="7"
+            fill="var(--cmp-ball,#e53935)"
+            stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- ball highlight -->
+    <circle class="proj__ball-hi" cx="43" cy="316" r="2.5"
+            fill="#ffffff" opacity="0.3"/>
+
+    <!-- data panel -->
+    <g class="proj__data">
+      <rect x="360" y="10" width="150" height="108" rx="6"
+            fill="#ffffff" fill-opacity="0.85" stroke="var(--cmp-stroke,#37474f)"
+            stroke-width="0.8"/>
+      <text x="370" y="28" font-size="10" font-weight="600"
+            font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)">DATA</text>
+      <text class="proj__d-angle" x="370" y="43" font-size="9.5"
+            font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="proj__d-speed" x="370" y="57" font-size="9.5"
+            font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="proj__d-height" x="370" y="71" font-size="9.5"
+            font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="proj__d-range" x="370" y="85" font-size="9.5"
+            font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="proj__d-time" x="370" y="99" font-size="9.5"
+            font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="proj__d-pos" x="370" y="113" font-size="9.5"
+            font-family="'Courier New',monospace" fill="var(--cmp-stroke,#37474f)"></text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.mechanics.projectile.interactive')return;
+
+    /* ---- constants ---- */
+    var LAUNCH_X=45, LAUNCH_Y=318;  /* launch point in SVG coords */
+    var GROUND_Y=330;               /* ground line y */
+    var SCALE=6;                    /* pixels per metre */
+
+    /* ---- parse props ---- */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var launchAngle=Math.max(5,Math.min(85,Number(P.launchAngle)||45));
+    var launchSpeed=Math.max(5,Math.min(50,Number(P.launchSpeed)||20));
+    var grav=Number(P.gravity)||9.8;
+    var showTrail=(P.showTrail!=='off');
+    var showVectors=(P.showVectors!=='off');
+    var showData=(P.showData!=='off');
+    var running=(P.running!=='off');
+    var glowVal=Math.max(0,Math.min(1,Number(P.glow)||0));
+
+    /* ---- query elements ---- */
+    var svg=root.querySelector('svg');
+    var ballEl=root.querySelector('.proj__ball');
+    var ballHi=root.querySelector('.proj__ball-hi');
+    var trailEl=root.querySelector('.proj__trail');
+    var launcherG=root.querySelector('.proj__launcher');
+    var angleArc=root.querySelector('.proj__angle-arc');
+    var angleLabel=root.querySelector('.proj__angle-label');
+    var vectorsG=root.querySelector('.proj__vectors');
+    var vxLine=root.querySelector('.proj__vx');
+    var vyLine=root.querySelector('.proj__vy');
+    var vLine=root.querySelector('.proj__v');
+    var vxLabel=root.querySelector('.proj__vx-label');
+    var vyLabel=root.querySelector('.proj__vy-label');
+    var vLabel=root.querySelector('.proj__v-label');
+    var dataG=root.querySelector('.proj__data');
+    var dAngle=root.querySelector('.proj__d-angle');
+    var dSpeed=root.querySelector('.proj__d-speed');
+    var dHeight=root.querySelector('.proj__d-height');
+    var dRange=root.querySelector('.proj__d-range');
+    var dTime=root.querySelector('.proj__d-time');
+    var dPos=root.querySelector('.proj__d-pos');
+
+    /* ---- derived physics ---- */
+    var thetaRad=launchAngle*Math.PI/180;
+    var v0x=launchSpeed*Math.cos(thetaRad);
+    var v0y=launchSpeed*Math.sin(thetaRad);
+    var totalTime=2*v0y/grav;           /* time of flight */
+    var maxH=v0y*v0y/(2*grav);          /* max height */
+    var rangeM=launchSpeed*launchSpeed*Math.sin(2*thetaRad)/grav; /* range */
+
+    /* ---- auto-scale to fit viewport ---- */
+    function calcScale(){
+      var availX=500-LAUNCH_X;  /* horizontal pixels available */
+      var availY=LAUNCH_Y-20;   /* vertical pixels available */
+      var sx=rangeM>0?availX/rangeM:SCALE;
+      var sy=maxH>0?availY/maxH:SCALE;
+      SCALE=Math.min(sx,sy,30);
+      if(SCALE<1)SCALE=1;
+    }
+    calcScale();
+
+    /* ---- simulation state ---- */
+    var simTime=0;
+    var animId=0;
+    var lastT=0;
+    var trailPoints=[];
+
+    /* ---- physics position at time t ---- */
+    function posAt(t){
+      var x=v0x*t;
+      var y=v0y*t-0.5*grav*t*t;
+      if(y<0)y=0;
+      return {x:x,y:y};
+    }
+    function velAt(t){
+      return {vx:v0x, vy:v0y-grav*t};
+    }
+
+    /* ---- SVG coords from physics ---- */
+    function toSVG(px,py){
+      return {sx:LAUNCH_X+px*SCALE, sy:LAUNCH_Y-py*SCALE};
+    }
+
+    /* ---- render launcher ---- */
+    function renderLauncher(){
+      var angle=-launchAngle; /* SVG rotation: negative because y-axis is flipped */
+      launcherG.setAttribute('transform','rotate('+angle+' 45 318)');
+
+      /* angle arc */
+      var arcR=30;
+      var startX=LAUNCH_X+arcR;
+      var startY=LAUNCH_Y;
+      var endX=LAUNCH_X+arcR*Math.cos(thetaRad);
+      var endY=LAUNCH_Y-arcR*Math.sin(thetaRad);
+      var largeArc=launchAngle>180?1:0;
+      angleArc.setAttribute('d','M'+startX+','+startY+' A'+arcR+','+arcR+' 0 '+largeArc+',0 '+endX+','+endY);
+
+      /* angle label */
+      var midA=thetaRad/2;
+      var lx=LAUNCH_X+(arcR+12)*Math.cos(midA);
+      var ly=LAUNCH_Y-(arcR+12)*Math.sin(midA);
+      angleLabel.setAttribute('x',lx);
+      angleLabel.setAttribute('y',ly);
+      angleLabel.textContent=launchAngle+'°';
+    }
+
+    /* ---- render frame ---- */
+    function render(){
+      var pos=posAt(simTime);
+      var vel=velAt(simTime);
+      var sv=toSVG(pos.x,pos.y);
+
+      /* ball */
+      ballEl.setAttribute('cx',sv.sx);
+      ballEl.setAttribute('cy',sv.sy);
+      ballHi.setAttribute('cx',sv.sx-2);
+      ballHi.setAttribute('cy',sv.sy-2);
+
+      /* glow */
+      if(glowVal>0){
+        ballEl.setAttribute('filter','url(#proj__glow)');
+        var glowFilter=root.querySelector('#proj__glow feGaussianBlur');
+        if(glowFilter)glowFilter.setAttribute('stdDeviation',3*glowVal);
+      }else{
+        ballEl.removeAttribute('filter');
+      }
+
+      /* trail */
+      if(showTrail){
+        trailEl.style.display='';
+        trailPoints.push(sv.sx+','+sv.sy);
+        if(trailPoints.length>1){
+          trailEl.setAttribute('d','M'+trailPoints.join(' L'));
+        }
+      }else{
+        trailEl.style.display='none';
+      }
+
+      /* vectors */
+      if(showVectors&&simTime>0&&pos.y>=0){
+        vectorsG.style.display='';
+        var vScale=1.5; /* pixels per m/s for vector display */
+        /* vx arrow */
+        var vxLen=vel.vx*vScale;
+        vxLine.setAttribute('x1',sv.sx);vxLine.setAttribute('y1',sv.sy);
+        vxLine.setAttribute('x2',sv.sx+vxLen);vxLine.setAttribute('y2',sv.sy);
+        vxLabel.setAttribute('x',sv.sx+vxLen/2);vxLabel.setAttribute('y',sv.sy+12);
+
+        /* vy arrow */
+        var vyLen=-vel.vy*vScale; /* negative because SVG y is down */
+        vyLine.setAttribute('x1',sv.sx);vyLine.setAttribute('y1',sv.sy);
+        vyLine.setAttribute('x2',sv.sx);vyLine.setAttribute('y2',sv.sy+vyLen);
+        vyLabel.setAttribute('x',sv.sx-14);vyLabel.setAttribute('y',sv.sy+vyLen/2);
+
+        /* total v arrow */
+        vLine.setAttribute('x1',sv.sx);vLine.setAttribute('y1',sv.sy);
+        vLine.setAttribute('x2',sv.sx+vxLen);vLine.setAttribute('y2',sv.sy+vyLen);
+        vLabel.setAttribute('x',sv.sx+vxLen/2+8);vLabel.setAttribute('y',sv.sy+vyLen/2-4);
+      }else{
+        vectorsG.style.display='none';
+      }
+
+      /* data panel */
+      if(showData){
+        dataG.style.display='';
+        dAngle.textContent='θ = '+launchAngle+'°';
+        dSpeed.textContent='v₀ = '+launchSpeed.toFixed(1)+' m/s';
+        dHeight.textContent='H = '+maxH.toFixed(2)+' m';
+        dRange.textContent='R = '+rangeM.toFixed(2)+' m';
+        dTime.textContent='t = '+simTime.toFixed(2)+' s';
+        dPos.textContent='('+pos.x.toFixed(1)+', '+pos.y.toFixed(1)+') m';
+      }else{
+        dataG.style.display='none';
+      }
+    }
+
+    /* ---- recalc physics constants ---- */
+    function recalcPhysics(){
+      thetaRad=launchAngle*Math.PI/180;
+      v0x=launchSpeed*Math.cos(thetaRad);
+      v0y=launchSpeed*Math.sin(thetaRad);
+      totalTime=2*v0y/grav;
+      maxH=v0y*v0y/(2*grav);
+      rangeM=launchSpeed*launchSpeed*Math.sin(2*thetaRad)/grav;
+      calcScale();
+    }
+
+    /* ---- reset simulation ---- */
+    function resetSim(){
+      simTime=0;
+      trailPoints=[];
+      trailEl.setAttribute('d','');
+      lastT=0;
+      render();
+    }
+
+    /* ---- animation loop ---- */
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.05);
+      lastT=t;
+
+      simTime+=dt;
+
+      /* check if ball hit ground */
+      var pos=posAt(simTime);
+      if(simTime>0.05&&pos.y<=0){
+        simTime=totalTime;
+        render();
+        emit();
+        /* pause briefly then reset */
+        setTimeout(function(){
+          if(running){
+            resetSim();
+            animId=requestAnimationFrame(tick);
+          }
+        },800);
+        return;
+      }
+
+      render();
+      emit();
+      if(running)animId=requestAnimationFrame(tick);
+    }
+
+    /* ---- init ---- */
+    renderLauncher();
+    resetSim();
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* ---- events ---- */
+    function emit(){
+      var pos=posAt(simTime);
+      var vel=velAt(simTime);
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{angle:launchAngle,speed:launchSpeed,time:Math.round(simTime*100)/100,
+            x:Math.round(pos.x*100)/100,y:Math.round(Math.max(0,pos.y)*100)/100}}}));
+    }
+
+    /* ---- MutationObserver for prop changes ---- */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+
+      var newAngle=Math.max(5,Math.min(85,Number(P2.launchAngle)||45));
+      var newSpeed=Math.max(5,Math.min(50,Number(P2.launchSpeed)||20));
+      var newGrav=Number(P2.gravity)||9.8;
+      var newRunning=(P2.running!=='off');
+      showTrail=(P2.showTrail!=='off');
+      showVectors=(P2.showVectors!=='off');
+      showData=(P2.showData!=='off');
+      glowVal=Math.max(0,Math.min(1,Number(P2.glow)||0));
+
+      var needReset=(newAngle!==launchAngle||newSpeed!==launchSpeed||newGrav!==grav);
+      launchAngle=newAngle;
+      launchSpeed=newSpeed;
+      grav=newGrav;
+
+      if(needReset){
+        recalcPhysics();
+        renderLauncher();
+        cancelAnimationFrame(animId);animId=0;
+        resetSim();
+        if(newRunning){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      }
+
+      if(newRunning&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRunning&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

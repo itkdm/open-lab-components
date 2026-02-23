@@ -1,0 +1,244 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.lung.basic",
+  "name": "肺部结构",
+  "nameEn": "Lung Structure",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 420, "h": 400 },
+  "tags": ["biology","organ","lung","respiratory","anatomy"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "lungColor",   "type": "color",  "default": "#ef9a9a", "desc": "肺叶颜色" },
+    { "key": "tracheaColor","type": "color",  "default": "#e0e0e0", "desc": "气管颜色" },
+    { "key": "bronchiColor","type": "color",  "default": "#bcaaa4", "desc": "支气管颜色" },
+    { "key": "diaphragmColor","type": "color","default": "#ce93d8", "desc": "膈肌颜色" },
+    { "key": "breathe",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "呼吸动画" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "lungColor": "--cmp-lung", "tracheaColor": "--cmp-trachea",
+    "bronchiColor": "--cmp-bronchi", "diaphragmColor": "--cmp-diaphragm",
+    "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "breathe", "values": { "phase": "string — inhale|exhale", "volume": "number(0-1)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.organ.lung.basic" role="img" aria-label="肺部结构">
+  <style>
+    .cmp[data-cmp-id="bio.organ.lung.basic"]{
+      --h:var(--cmp-size,400px);display:inline-block;
+      width:calc(var(--h)*420/400);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(239,154,154,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.organ.lung.basic"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="bio.organ.lung.basic"] .lung__label{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:11px;font-weight:600}
+    .cmp[data-cmp-id="bio.organ.lung.basic"] .lung__line{stroke:#546e7a;stroke-width:0.8;stroke-dasharray:2,2}
+  </style>
+
+  <svg viewBox="0 0 420 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="lung__gL" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.1"/>
+      </linearGradient>
+      <linearGradient id="lung__gR" x1="1" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.1"/>
+      </linearGradient>
+      <radialGradient id="lung__alv" cx="50%" cy="40%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.05"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 气管 trachea -->
+    <g class="lung__trachea">
+      <rect x="196" y="18" width="28" height="70" rx="14"
+            fill="var(--cmp-trachea,#e0e0e0)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <!-- 气管软骨环 -->
+      <line x1="198" y1="30" x2="222" y2="30" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6" opacity="0.4"/>
+      <line x1="198" y1="42" x2="222" y2="42" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6" opacity="0.4"/>
+      <line x1="198" y1="54" x2="222" y2="54" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6" opacity="0.4"/>
+      <line x1="198" y1="66" x2="222" y2="66" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6" opacity="0.4"/>
+    </g>
+
+    <!-- 主支气管 bronchi -->
+    <g class="lung__bronchi">
+      <!-- 左主支气管 -->
+      <path d="M204,85 Q180,110 155,140" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="8" stroke-linecap="round"/>
+      <!-- 右主支气管 -->
+      <path d="M216,85 Q240,110 265,140" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="8" stroke-linecap="round"/>
+      <!-- 左侧分支 -->
+      <path d="M155,140 Q130,170 115,200" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M155,140 Q145,175 150,210" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M115,200 Q105,230 110,260" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M150,210 Q140,240 135,270" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- 右侧分支 -->
+      <path d="M265,140 Q290,170 305,200" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M265,140 Q275,175 270,210" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="4" stroke-linecap="round"/>
+      <path d="M305,200 Q315,230 310,260" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M270,210 Q280,240 285,270" fill="none"
+            stroke="var(--cmp-bronchi,#bcaaa4)" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- 左肺 -->
+    <g class="lung__left">
+      <path class="lung__lpath" d="M195,90 Q170,85 130,110 Q75,155 65,220 Q55,290 90,330 Q120,360 170,355 Q195,350 200,320 L200,90 Z"
+            fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <path class="lung__lpath-hl" d="M195,90 Q170,85 130,110 Q75,155 65,220 Q55,290 90,330 Q120,360 170,355 Q195,350 200,320 L200,90 Z"
+            fill="url(#lung__gL)" opacity="0.6"/>
+      <!-- 肺叶分界线（左肺两叶） -->
+      <path d="M80,210 Q140,195 200,230" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+      <!-- 肺泡示意 -->
+      <circle cx="110" cy="170" r="6" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="125" cy="175" r="5" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="100" cy="260" r="6" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="115" cy="265" r="5" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+    </g>
+
+    <!-- 右肺 -->
+    <g class="lung__right">
+      <path class="lung__rpath" d="M225,90 Q250,85 290,110 Q345,155 355,220 Q365,290 330,330 Q300,360 250,355 Q225,350 220,320 L220,90 Z"
+            fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <path class="lung__rpath-hl" d="M225,90 Q250,85 290,110 Q345,155 355,220 Q365,290 330,330 Q300,360 250,355 Q225,350 220,320 L220,90 Z"
+            fill="url(#lung__gR)" opacity="0.6"/>
+      <!-- 肺叶分界线（右肺三叶） -->
+      <path d="M340,185 Q280,170 220,200" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+      <path d="M335,260 Q280,245 220,270" fill="none"
+            stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.5" stroke-dasharray="3,2"/>
+      <!-- 肺泡示意 -->
+      <circle cx="310" cy="170" r="6" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="295" cy="175" r="5" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="320" cy="230" r="6" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+      <circle cx="305" cy="300" r="5" fill="var(--cmp-lung,#ef9a9a)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.4"/>
+    </g>
+
+    <!-- 膈肌 diaphragm -->
+    <path class="lung__diaphragm" d="M40,355 Q130,330 210,340 Q290,330 380,355"
+          fill="none" stroke="var(--cmp-diaphragm,#ce93d8)" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- 标注 -->
+    <g class="lung__labels">
+      <!-- 气管 -->
+      <line class="lung__line" x1="224" y1="40" x2="280" y2="30"/>
+      <text class="lung__label" x="284" y="34" fill="var(--cmp-stroke,#37474f)">气管</text>
+      <!-- 左主支气管 -->
+      <line class="lung__line" x1="170" y1="120" x2="60" y2="105"/>
+      <text class="lung__label" x="10" y="109" fill="var(--cmp-stroke,#37474f)">支气管</text>
+      <!-- 左肺上叶 -->
+      <line class="lung__line" x1="100" y1="160" x2="30" y2="150"/>
+      <text class="lung__label" x="5" y="145" fill="var(--cmp-stroke,#37474f)">左肺上叶</text>
+      <!-- 左肺下叶 -->
+      <line class="lung__line" x1="110" y1="280" x2="30" y2="295"/>
+      <text class="lung__label" x="5" y="299" fill="var(--cmp-stroke,#37474f)">左肺下叶</text>
+      <!-- 右肺上叶 -->
+      <line class="lung__line" x1="320" y1="150" x2="385" y2="135"/>
+      <text class="lung__label" x="370" y="130" fill="var(--cmp-stroke,#37474f)">右肺上叶</text>
+      <!-- 右肺中叶 -->
+      <line class="lung__line" x1="330" y1="225" x2="390" y2="220"/>
+      <text class="lung__label" x="375" y="215" fill="var(--cmp-stroke,#37474f)">右肺中叶</text>
+      <!-- 右肺下叶 -->
+      <line class="lung__line" x1="315" y1="300" x2="385" y2="310"/>
+      <text class="lung__label" x="370" y="314" fill="var(--cmp-stroke,#37474f)">右肺下叶</text>
+      <!-- 膈肌 -->
+      <line class="lung__line" x1="300" y1="345" x2="370" y2="370"/>
+      <text class="lung__label" x="355" y="383" fill="var(--cmp-diaphragm,#ce93d8)">膈肌</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.organ.lung.basic')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var breathe=(P.breathe!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var labelsG=root.querySelector('.lung__labels');
+    if(labelsG&&!showLabels)labelsG.style.display='none';
+
+    if(!breathe)return;
+
+    var leftLung=root.querySelector('.lung__left');
+    var rightLung=root.querySelector('.lung__right');
+    var diaphragm=root.querySelector('.lung__diaphragm');
+    if(!leftLung||!rightLung)return;
+
+    var phase=0;
+    var animId=0;
+    var lastT=0;
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=(t-lastT)/1000;
+      lastT=t;
+      phase+=dt*0.8; /* ~0.8 Hz breathing rate */
+
+      var s=Math.sin(phase*Math.PI*2);
+      var vol=(s+1)/2; /* 0..1 */
+      var scale=1+s*0.035; /* subtle 3.5% expansion */
+      var ty=s*3; /* slight vertical shift */
+
+      /* Scale lungs from center */
+      leftLung.setAttribute('transform',
+        'translate('+(-132*(scale-1))+','+(-220*(scale-1)+ty)+') scale('+scale+')');
+      rightLung.setAttribute('transform',
+        'translate('+(-222*(scale-1))+','+(-220*(scale-1)+ty)+') scale('+scale+')');
+
+      /* Diaphragm moves down on inhale */
+      if(diaphragm){
+        var diaY=s*8;
+        diaphragm.setAttribute('transform','translate(0,'+diaY+')');
+      }
+
+      /* Emit event */
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'breathe',
+          values:{phase:s>0?'inhale':'exhale',volume:Math.round(vol*100)/100}}}));
+
+      animId=requestAnimationFrame(tick);
+    }
+
+    animId=requestAnimationFrame(tick);
+
+    /* Props observer */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      var newBreathe=(P2.breathe!=='off');
+      if(!newBreathe&&animId){cancelAnimationFrame(animId);animId=0;}
+      if(newBreathe&&!animId){lastT=0;animId=requestAnimationFrame(tick);}
+      var newLabels=(P2.showLabels!=='off');
+      if(labelsG)labelsG.style.display=newLabels?'':'none';
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

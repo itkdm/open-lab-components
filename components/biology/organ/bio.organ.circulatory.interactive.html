@@ -1,0 +1,295 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.circulatory.interactive",
+  "name": "血液循环系统（交互式）",
+  "nameEn": "Circulatory System (Interactive)",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 520 },
+  "tags": ["biology","organ","heart","blood","circulation","artery","vein","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 520, "min": 350, "max": 700, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "arteryColor",    "type": "color",  "default": "#e53935", "desc": "动脉颜色" },
+    { "key": "veinColor",      "type": "color",  "default": "#1e88e5", "desc": "静脉颜色" },
+    { "key": "heartColor",     "type": "color",  "default": "#c62828", "desc": "心脏颜色" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "highlight",      "type": "enum",   "default": "none", "enum": ["none","pulmonary","systemic"], "desc": "高亮循环" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "arteryColor": "--cmp-artery", "veinColor": "--cmp-vein", "heartColor": "--cmp-heart", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "highlight", "values": { "highlight": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.organ.circulatory.interactive" role="img" aria-label="血液循环系统（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.organ.circulatory.interactive"]{
+      --h:var(--cmp-size,520px);display:inline-block;
+      width:calc(var(--h)*480/520);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(198,40,40,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.organ.circulatory.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="bio.organ.circulatory.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 480 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="circ__artG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ef5350"/><stop offset="1" stop-color="#e53935"/></linearGradient>
+      <linearGradient id="circ__venG" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#42a5f5"/><stop offset="1" stop-color="#1e88e5"/></linearGradient>
+      <radialGradient id="circ__heartG" cx="45%" cy="40%"><stop offset="0" stop-color="#ef5350"/><stop offset="0.6" stop-color="#c62828"/><stop offset="1" stop-color="#b71c1c"/></radialGradient>
+      <marker id="circ__arrR" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto"><polygon points="0,0 6,2.5 0,5" fill="#e53935"/></marker>
+      <marker id="circ__arrB" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto"><polygon points="0,0 6,2.5 0,5" fill="#1e88e5"/></marker>
+    </defs>
+
+    <!-- 标题 -->
+    <text x="240" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">血液循环系统</text>
+
+    <!-- 肺（上方）— 解剖学视角：观察者面对人体，左肺在右侧，右肺在左侧 -->
+    <g class="circ__lungs">
+      <ellipse cx="150" cy="90" rx="70" ry="42" fill="#e8f5e9" stroke="#81c784" stroke-width="1.5" opacity="0.8"/>
+      <ellipse cx="330" cy="90" rx="70" ry="42" fill="#e8f5e9" stroke="#81c784" stroke-width="1.5" opacity="0.8"/>
+      <text x="150" y="82" text-anchor="middle" font-size="10" fill="#388e3c" font-weight="600">右肺</text>
+      <text x="330" y="82" text-anchor="middle" font-size="10" fill="#388e3c" font-weight="600">左肺</text>
+      <text x="150" y="96" text-anchor="middle" font-size="8" fill="#66bb6a">气体交换</text>
+      <text x="330" y="96" text-anchor="middle" font-size="8" fill="#66bb6a">气体交换</text>
+      <text x="240" y="52" text-anchor="middle" font-size="9" fill="#66bb6a">O₂ ↓  CO₂ ↑</text>
+      <!-- 肺泡 -->
+      <circle cx="120" cy="95" r="8" fill="#c8e6c9" opacity="0.5"/>
+      <circle cx="150" cy="102" r="6" fill="#c8e6c9" opacity="0.5"/>
+      <circle cx="180" cy="95" r="7" fill="#c8e6c9" opacity="0.5"/>
+      <circle cx="300" cy="95" r="8" fill="#c8e6c9" opacity="0.5"/>
+      <circle cx="330" cy="102" r="6" fill="#c8e6c9" opacity="0.5"/>
+      <circle cx="360" cy="95" r="7" fill="#c8e6c9" opacity="0.5"/>
+    </g>
+
+    <!-- 心脏 — 解剖学视角：左心在观察者右侧，右心在观察者左侧 -->
+    <g class="circ__heart" transform="translate(240,230)">
+      <!-- 心脏轮廓 -->
+      <path d="M0,-38 C-16,-54 -48,-48 -48,-27 C-48,-5 -27,17 0,44 C27,17 48,-5 48,-27 C48,-48 16,-54 0,-38 Z"
+        fill="url(#circ__heartG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <!-- 四腔分隔线 -->
+      <line x1="0" y1="-32" x2="0" y2="34" stroke="#fff" stroke-width="0.8" opacity="0.35"/>
+      <line x1="-38" y1="-2" x2="38" y2="-2" stroke="#fff" stroke-width="0.8" opacity="0.35"/>
+      <!-- 解剖学正确：左心在观察者右侧(+x)，右心在观察者左侧(-x) -->
+      <text x="-20" y="-14" text-anchor="middle" font-size="7" fill="#fff" opacity="0.9">右心房</text>
+      <text x="20" y="-14" text-anchor="middle" font-size="7" fill="#fff" opacity="0.9">左心房</text>
+      <text x="-20" y="18" text-anchor="middle" font-size="7" fill="#fff" opacity="0.9">右心室</text>
+      <text x="20" y="18" text-anchor="middle" font-size="7" fill="#fff" opacity="0.9">左心室</text>
+      <!-- 心跳脉冲 -->
+      <path class="circ__heartPulse" d="M0,-38 C-16,-54 -48,-48 -48,-27 C-48,-5 -27,17 0,44 C27,17 48,-5 48,-27 C48,-48 16,-54 0,-38 Z"
+        fill="none" stroke="#fff" stroke-width="2" opacity="0"/>
+    </g>
+
+    <!-- ═══════ 肺循环路径 ═══════ -->
+    <!-- 右心室→肺动脉→右肺（脱氧血，蓝色）：右心室在观察者左侧(-x) -->
+    <path class="circ__pulArt" d="M220,210 C210,180 180,150 150,132" fill="none" stroke="var(--cmp-vein,#1e88e5)" stroke-width="4" opacity="0.7"/>
+    <!-- 右心室→肺动脉→左肺 -->
+    <path class="circ__pulArt2" d="M220,210 C225,180 280,150 330,132" fill="none" stroke="var(--cmp-vein,#1e88e5)" stroke-width="4" opacity="0.7"/>
+    <!-- 右肺→肺静脉→左心房（含氧血，红色）：左心房在观察者右侧(+x) -->
+    <path class="circ__pulVen" d="M150,90 C175,130 210,170 260,210" fill="none" stroke="var(--cmp-artery,#e53935)" stroke-width="4" opacity="0.7"/>
+    <!-- 左肺→肺静脉→左心房 -->
+    <path class="circ__pulVen2" d="M330,90 C305,130 280,170 260,210" fill="none" stroke="var(--cmp-artery,#e53935)" stroke-width="4" opacity="0.7"/>
+
+    <!-- ═══════ 体循环路径 ═══════ -->
+    <!-- 左心室→主动脉→全身（含氧血，红色）：左心室在观察者右侧(+x) -->
+    <path class="circ__sysArt" d="M260,250 C270,290 290,340 310,370" fill="none" stroke="var(--cmp-artery,#e53935)" stroke-width="5" opacity="0.7"/>
+    <path class="circ__sysArt2" d="M260,250 C250,290 200,340 170,370" fill="none" stroke="var(--cmp-artery,#e53935)" stroke-width="3.5" opacity="0.6"/>
+
+    <!-- 毛细血管网（全身组织/器官） -->
+    <g class="circ__capillaries">
+      <rect x="100" y="370" width="280" height="52" rx="10" fill="#fff3e0" stroke="#ffcc80" stroke-width="1" opacity="0.7"/>
+      <text x="240" y="390" text-anchor="middle" font-size="10" fill="#e65100" font-weight="600">全身组织 / 器官（毛细血管网）</text>
+      <text x="240" y="406" text-anchor="middle" font-size="8" fill="#ff9800">O₂ → 组织细胞    CO₂ → 血液</text>
+    </g>
+
+    <!-- 静脉回流：全身→上/下腔静脉→右心房（脱氧血，蓝色）：右心房在观察者左侧(-x) -->
+    <path class="circ__sysVen" d="M170,422 C170,445 195,460 220,460 C220,450 220,430 220,250" fill="none" stroke="var(--cmp-vein,#1e88e5)" stroke-width="5" opacity="0.7"/>
+    <path class="circ__sysVen2" d="M310,422 C310,445 280,460 260,460 C250,460 240,455 220,460" fill="none" stroke="var(--cmp-vein,#1e88e5)" stroke-width="3.5" opacity="0.6"/>
+
+    <!-- 血液粒子 -->
+    <g class="circ__bloodParticles"></g>
+
+    <!-- 标注 -->
+    <g class="circ__labels-g">
+      <!-- 肺动脉标注（右心室上方偏左） -->
+      <text x="42" y="168" font-size="9" fill="var(--cmp-vein,#1e88e5)" font-weight="600">肺动脉</text>
+      <text x="42" y="180" font-size="7" fill="#999">(脱氧血)</text>
+      <!-- 肺静脉标注（左心房上方偏右） -->
+      <text x="390" y="168" font-size="9" fill="var(--cmp-artery,#e53935)" font-weight="600">肺静脉</text>
+      <text x="390" y="180" font-size="7" fill="#999">(含氧血)</text>
+      <!-- 主动脉标注 -->
+      <text x="370" y="300" font-size="9" fill="var(--cmp-artery,#e53935)" font-weight="600">主动脉</text>
+      <text x="370" y="312" font-size="7" fill="#999">(含氧血)</text>
+      <!-- 腔静脉标注 -->
+      <text x="42" y="445" font-size="9" fill="var(--cmp-vein,#1e88e5)" font-weight="600">上/下腔静脉</text>
+      <text x="42" y="457" font-size="7" fill="#999">(脱氧血)</text>
+    </g>
+
+    <!-- 循环方向提示箭头 -->
+    <g class="circ__dirHints" opacity="0.5">
+      <!-- 肺循环方向 -->
+      <text x="240" y="145" text-anchor="middle" font-size="8" fill="#7e57c2" font-weight="600">肺循环</text>
+      <!-- 体循环方向 -->
+      <text x="240" y="340" text-anchor="middle" font-size="8" fill="#e65100" font-weight="600">体循环</text>
+    </g>
+
+    <!-- 循环切换 -->
+    <g class="circ__toggles" transform="translate(240,495)">
+      <g class="circ__togBtn" data-h="none" style="cursor:pointer"><rect x="-120" y="-10" width="75" height="20" rx="4" fill="#5c6bc0" opacity="0.85"/><text x="-82" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">全部</text></g>
+      <g class="circ__togBtn" data-h="pulmonary" style="cursor:pointer"><rect x="-38" y="-10" width="75" height="20" rx="4" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">肺循环</text></g>
+      <g class="circ__togBtn" data-h="systemic" style="cursor:pointer"><rect x="45" y="-10" width="75" height="20" rx="4" fill="#78909c" opacity="0.6"/><text x="82" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">体循环</text></g>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.organ.circulatory.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var highlight=P.highlight||'none';
+
+    var bloodG=root.querySelector('.circ__bloodParticles');
+    var heartPulse=root.querySelector('.circ__heartPulse');
+    var labelsG=root.querySelector('.circ__labels-g');
+    var dirHints=root.querySelector('.circ__dirHints');
+    var togglesG=root.querySelector('.circ__toggles');
+
+    /* 血液粒子沿路径 */
+    var paths=[];
+    function addPath(selector,color,circuit){
+      var el=root.querySelector(selector);
+      if(!el)return;
+      paths.push({el:el,color:color,circuit:circuit,particles:[]});
+    }
+    addPath('.circ__pulArt','var(--cmp-vein,#1e88e5)','pulmonary');
+    addPath('.circ__pulArt2','var(--cmp-vein,#1e88e5)','pulmonary');
+    addPath('.circ__pulVen','var(--cmp-artery,#e53935)','pulmonary');
+    addPath('.circ__pulVen2','var(--cmp-artery,#e53935)','pulmonary');
+    addPath('.circ__sysArt','var(--cmp-artery,#e53935)','systemic');
+    addPath('.circ__sysArt2','var(--cmp-artery,#e53935)','systemic');
+    addPath('.circ__sysVen','var(--cmp-vein,#1e88e5)','systemic');
+    addPath('.circ__sysVen2','var(--cmp-vein,#1e88e5)','systemic');
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    /* 初始化粒子 */
+    var NUM_PER_PATH=5;
+    for(var i=0;i<paths.length;i++){
+      var p=paths[i];
+      var pathLen=p.el.getTotalLength();
+      for(var j=0;j<NUM_PER_PATH;j++){
+        var el=elSvg('circle',{r:'3.5',fill:p.color,opacity:'0.8'});
+        bloodG.appendChild(el);
+        p.particles.push({el:el,t:j/NUM_PER_PATH,pathLen:pathLen});
+      }
+    }
+
+    function updateHighlight(){
+      for(var i=0;i<paths.length;i++){
+        var p=paths[i];
+        var show=(highlight==='none'||p.circuit===highlight);
+        p.el.setAttribute('opacity',show?'0.7':'0.15');
+        for(var j=0;j<p.particles.length;j++){
+          p.particles[j].el.setAttribute('opacity',show?'0.8':'0.15');
+        }
+      }
+      labelsG.style.display=showLabels?'':'none';
+      if(dirHints)dirHints.style.display=showLabels?'':'none';
+    }
+
+    function updateTabs(){
+      var btns=togglesG.querySelectorAll('.circ__togBtn');
+      for(var i=0;i<btns.length;i++){
+        var h=btns[i].getAttribute('data-h');
+        btns[i].querySelector('rect').setAttribute('fill',h===highlight?'#5c6bc0':'#78909c');
+        btns[i].querySelector('rect').setAttribute('opacity',h===highlight?'0.85':'0.6');
+      }
+    }
+
+    updateHighlight();updateTabs();
+
+    var animId=0,lastT=0,time=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04);
+      lastT=t;
+      time+=dt*speed;
+
+      /* 心跳 */
+      var beat=Math.sin(time*4);
+      var pulseOp=beat>0.8?0.6*(beat-0.8)/0.2:0;
+      heartPulse.setAttribute('opacity',pulseOp);
+      /* 心脏缩放 — 心脏中心在 (240,230) */
+      var heartScale=1+0.03*Math.max(0,beat);
+      root.querySelector('.circ__heart').setAttribute('transform','translate(240,230) scale('+heartScale+')');
+
+      /* 血液粒子 */
+      for(var i=0;i<paths.length;i++){
+        var p=paths[i];
+        for(var j=0;j<p.particles.length;j++){
+          var bp=p.particles[j];
+          bp.t+=dt*speed*0.2;
+          if(bp.t>1)bp.t-=1;
+          var pt=p.el.getPointAtLength(bp.t*bp.pathLen);
+          bp.el.setAttribute('cx',pt.x);
+          bp.el.setAttribute('cy',pt.y);
+        }
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* Toggle buttons — click + touch */
+    function handleToggle(e){
+      var btn=e.target.closest('.circ__togBtn');
+      if(!btn)return;
+      highlight=btn.getAttribute('data-h');
+      updateHighlight();updateTabs();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'bio.organ.circulatory.interactive',type:'highlight',values:{highlight:highlight}}}));
+    }
+    togglesG.addEventListener('click',handleToggle);
+    togglesG.addEventListener('touchend',function(e){
+      e.preventDefault();
+      handleToggle(e);
+    },{passive:false});
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');
+      if(P2.highlight)highlight=P2.highlight;
+      updateHighlight();updateTabs();
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

@@ -1,0 +1,535 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.counting-sticks.interactive",
+  "name": "计数棒",
+  "nameEn": "Counting Sticks",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 200 },
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 300, "min": 160, "max": 600, "desc": "组件宽度" },
+    { "key": "count",       "type": "number",     "default": 0,   "min": 0,   "max": 20,  "desc": "初始计数棒数量" },
+    { "key": "stickColors", "type": "array",      "default": ["#e53935","#1e88e5","#43a047","#fb8c00"], "desc": "每组颜色" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "stickColors": "--cmp-stick-colors"
+  },
+  "tags": ["counting", "sticks", "number", "math", "primary", "interactive"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "count":   "number — 当前计数棒总数",
+        "bundles": "number — 完整捆数（每捆5根）",
+        "singles": "number — 散棒数量"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.counting-sticks.interactive" role="img" aria-label="计数棒: 0">
+  <style>
+    .cmp[data-cmp-id="math.number.counting-sticks.interactive"] {
+      --w: var(--cmp-size, 300px);
+      display: inline-block;
+      width: var(--w);
+      height: calc(var(--w) * 200 / 300);
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="math.number.counting-sticks.interactive"] svg {
+      display: block; width: 100%; height: 100%; overflow: visible;
+    }
+    .cmp[data-cmp-id="math.number.counting-sticks.interactive"] .cs__btn {
+      cursor: pointer;
+      transition: opacity 0.12s ease;
+    }
+    .cmp[data-cmp-id="math.number.counting-sticks.interactive"] .cs__btn:hover {
+      opacity: 0.82;
+    }
+    .cmp[data-cmp-id="math.number.counting-sticks.interactive"] .cs__btn:active {
+      opacity: 0.65;
+    }
+    .cmp[data-cmp-id="math.number.counting-sticks.interactive"] .cs__stick {
+      transition: opacity 0.18s ease;
+    }
+  </style>
+
+  <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- Wood grain pattern (will get unique ID via JS) -->
+      <pattern class="cs__grain-pat" width="4" height="60" patternUnits="userSpaceOnUse" patternTransform="rotate(0)">
+        <rect width="4" height="60" fill="currentColor" opacity="0"/>
+        <line x1="0" y1="0" x2="0" y2="60" stroke="rgba(255,255,255,0.13)" stroke-width="0.5"/>
+        <line x1="1.3" y1="0" x2="1.3" y2="60" stroke="rgba(0,0,0,0.06)" stroke-width="0.3"/>
+        <line x1="2.8" y1="0" x2="2.8" y2="60" stroke="rgba(255,255,255,0.08)" stroke-width="0.4"/>
+        <line x1="3.6" y1="0" x2="3.6" y2="60" stroke="rgba(0,0,0,0.04)" stroke-width="0.3"/>
+      </pattern>
+      <!-- Stick 3D highlight -->
+      <linearGradient class="cs__stick-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="rgba(0,0,0,0.18)"/>
+        <stop offset="0.25" stop-color="rgba(255,255,255,0.22)"/>
+        <stop offset="0.5" stop-color="rgba(255,255,255,0.05)"/>
+        <stop offset="0.85" stop-color="rgba(0,0,0,0.10)"/>
+        <stop offset="1"   stop-color="rgba(0,0,0,0.20)"/>
+      </linearGradient>
+      <!-- Rubber band gradient -->
+      <linearGradient class="cs__band-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="rgba(0,0,0,0.15)"/>
+        <stop offset="0.3" stop-color="rgba(255,255,255,0.18)"/>
+        <stop offset="0.7" stop-color="rgba(0,0,0,0.0)"/>
+        <stop offset="1"   stop-color="rgba(0,0,0,0.2)"/>
+      </linearGradient>
+      <!-- Drop shadow for sticks -->
+      <filter class="cs__shadow-filter" x="-20%" y="-10%" width="140%" height="130%">
+        <feDropShadow dx="0.5" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.15"/>
+      </filter>
+    </defs>
+
+    <!-- Workspace background -->
+    <rect class="cs__bg" x="8" y="8" width="284" height="148" rx="6" fill="#fafafa" stroke="#e0e0e0" stroke-width="1"/>
+
+    <!-- Sticks area -->
+    <g class="cs__sticks-area"></g>
+
+    <!-- Count display -->
+    <g class="cs__count-display">
+      <rect class="cs__count-bg" x="110" y="166" width="80" height="26" rx="13" fill="#37474f" opacity="0.9"/>
+      <text class="cs__count-text" x="150" y="184" text-anchor="middle" font-size="16" font-weight="700"
+            fill="#ffffff" font-family="'Nunito','Segoe UI',Arial,sans-serif">0</text>
+    </g>
+
+    <!-- Minus button -->
+    <g class="cs__btn cs__btn-minus" data-action="minus">
+      <circle cx="32" cy="179" r="14" fill="#ef5350" stroke="#c62828" stroke-width="1.2"/>
+      <circle cx="32" cy="179" r="14" fill="url(#__btn_hl__)" opacity="0.5"/>
+      <line x1="25" y1="179" x2="39" y2="179" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+
+    <!-- Plus button -->
+    <g class="cs__btn cs__btn-plus" data-action="plus">
+      <circle cx="268" cy="179" r="14" fill="#66bb6a" stroke="#2e7d32" stroke-width="1.2"/>
+      <circle cx="268" cy="179" r="14" fill="url(#__btn_hl__)" opacity="0.5"/>
+      <line x1="261" y1="179" x2="275" y2="179" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+      <line x1="268" y1="172" x2="268" y2="186" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+  </svg>
+
+  <script>
+  (function() {
+    var sc = document.currentScript;
+    if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.number.counting-sticks.interactive') return;
+
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = root.querySelector('svg');
+    var sticksArea = root.querySelector('.cs__sticks-area');
+    var countText = root.querySelector('.cs__count-text');
+    var btnPlus = root.querySelector('.cs__btn-plus');
+    var btnMinus = root.querySelector('.cs__btn-minus');
+
+    /* ── Unique IDs for multi-instance safety ── */
+    var uid = 'cs-' + Math.random().toString(36).slice(2, 8);
+
+    var grainPat = svg.querySelector('.cs__grain-pat');
+    var stickGrad = svg.querySelector('.cs__stick-grad');
+    var bandGrad = svg.querySelector('.cs__band-grad');
+    var shadowFilter = svg.querySelector('.cs__shadow-filter');
+
+    if (grainPat) grainPat.setAttribute('id', uid + '-grain');
+    if (stickGrad) stickGrad.setAttribute('id', uid + '-sgrad');
+    if (bandGrad) bandGrad.setAttribute('id', uid + '-bgrad');
+    if (shadowFilter) shadowFilter.setAttribute('id', uid + '-shadow');
+
+    /* Button highlight gradient (shared) */
+    var btnHlId = uid + '-btnhl';
+    var btnHlGrad = document.createElementNS(NS, 'radialGradient');
+    btnHlGrad.setAttribute('id', btnHlId);
+    btnHlGrad.setAttribute('cx', '0.35');
+    btnHlGrad.setAttribute('cy', '0.3');
+    btnHlGrad.setAttribute('r', '0.65');
+    var s1 = document.createElementNS(NS, 'stop');
+    s1.setAttribute('offset', '0'); s1.setAttribute('stop-color', 'rgba(255,255,255,0.5)');
+    var s2 = document.createElementNS(NS, 'stop');
+    s2.setAttribute('offset', '1'); s2.setAttribute('stop-color', 'rgba(0,0,0,0.15)');
+    btnHlGrad.appendChild(s1);
+    btnHlGrad.appendChild(s2);
+    svg.querySelector('defs').appendChild(btnHlGrad);
+
+    /* Fix button highlight references */
+    var btnHlRefs = svg.querySelectorAll('[fill="url(#__btn_hl__)"]');
+    for (var b = 0; b < btnHlRefs.length; b++) {
+      btnHlRefs[b].setAttribute('fill', 'url(#' + btnHlId + ')');
+    }
+
+    /* ── Props ── */
+    var DEFAULTS = { count: 0, stickColors: ['#e53935', '#1e88e5', '#43a047', '#fb8c00'] };
+    var props = {};
+    try {
+      var raw = root.getAttribute('data-props');
+      if (raw) { var o = JSON.parse(raw); if (o && typeof o === 'object') props = o; }
+    } catch(e) {}
+
+    var count = Math.max(0, Math.min(20, Math.round(Number(props.count) || DEFAULTS.count)));
+    var colors = Array.isArray(props.stickColors) && props.stickColors.length >= 1
+      ? props.stickColors : DEFAULTS.stickColors;
+
+    /* ── Seeded random tilts (stable per stick index) ── */
+    var tilts = [];
+    (function() {
+      /* Simple seeded PRNG for consistent tilts */
+      var seed = 42;
+      function nextRand() {
+        seed = (seed * 16807 + 0) % 2147483647;
+        return (seed - 1) / 2147483646;
+      }
+      for (var i = 0; i < 20; i++) {
+        tilts.push((nextRand() - 0.5) * 6); /* ±3 degrees */
+      }
+    })();
+
+    /* ── Layout constants ── */
+    var STICK_W = 7;
+    var STICK_H = 56;
+    var STICK_RX = 3.5;  /* rounded ends */
+    var GROUP_OF = 5;
+    var MAX_STICKS = 20;
+    var AREA_LEFT = 18;
+    var AREA_TOP = 18;
+    var AREA_BOTTOM = 146;
+    var GROUP_SPACING = 62;
+    var STICK_SPACING = 10;
+    var BAND_H = 6;
+
+    /* ── Draw all sticks ── */
+    function render() {
+      sticksArea.innerHTML = '';
+      if (count === 0) {
+        updateCountDisplay();
+        return;
+      }
+
+      var bundles = Math.floor(count / GROUP_OF);
+      var singles = count % GROUP_OF;
+      var groupIndex = 0;
+      var xCursor = AREA_LEFT + 10;
+
+      /* Center vertically in workspace */
+      var stickCenterY = (AREA_TOP + AREA_BOTTOM) / 2;
+      var stickTop = stickCenterY - STICK_H / 2;
+
+      /* Draw complete bundles */
+      for (var g = 0; g < bundles; g++) {
+        var color = colors[g % colors.length];
+        var groupG = document.createElementNS(NS, 'g');
+        groupG.setAttribute('class', 'cs__bundle');
+
+        var bundleXStart = xCursor;
+
+        for (var s = 0; s < GROUP_OF; s++) {
+          var stickIdx = g * GROUP_OF + s;
+          var sx = xCursor + s * STICK_SPACING;
+          var tilt = tilts[stickIdx];
+          drawStick(groupG, sx, stickTop, tilt, color, stickIdx);
+        }
+
+        var bundleXEnd = xCursor + (GROUP_OF - 1) * STICK_SPACING;
+        var bandCenterX = (bundleXStart + bundleXEnd) / 2 + STICK_W / 2;
+        var bandWidth = bundleXEnd - bundleXStart + STICK_W + 6;
+
+        /* Rubber band */
+        drawBand(groupG, bandCenterX, stickCenterY - 2, bandWidth);
+
+        sticksArea.appendChild(groupG);
+        xCursor += GROUP_OF * STICK_SPACING + GROUP_SPACING - GROUP_OF * STICK_SPACING + 18;
+        groupIndex++;
+      }
+
+      /* Draw singles */
+      if (singles > 0) {
+        var singleColor = colors[bundles % colors.length];
+        var singlesG = document.createElementNS(NS, 'g');
+        singlesG.setAttribute('class', 'cs__singles');
+
+        for (var s = 0; s < singles; s++) {
+          var stickIdx = bundles * GROUP_OF + s;
+          var sx = xCursor + s * STICK_SPACING;
+          var tilt = tilts[stickIdx];
+          drawStick(singlesG, sx, stickTop, tilt, singleColor, stickIdx);
+        }
+
+        sticksArea.appendChild(singlesG);
+      }
+
+      /* Auto-scale: fit all sticks within workspace */
+      fitSticksInArea();
+      updateCountDisplay();
+    }
+
+    /* ── Draw a single stick ── */
+    function drawStick(parent, x, y, tilt, color, idx) {
+      var g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'cs__stick');
+      var cx = x + STICK_W / 2;
+      var cy = y + STICK_H / 2;
+      g.setAttribute('transform', 'rotate(' + tilt.toFixed(2) + ',' + cx.toFixed(1) + ',' + cy.toFixed(1) + ')');
+
+      /* Shadow */
+      var shadow = document.createElementNS(NS, 'rect');
+      shadow.setAttribute('x', x + 1);
+      shadow.setAttribute('y', y + 1.5);
+      shadow.setAttribute('width', STICK_W);
+      shadow.setAttribute('height', STICK_H);
+      shadow.setAttribute('rx', STICK_RX);
+      shadow.setAttribute('ry', STICK_RX);
+      shadow.setAttribute('fill', 'rgba(0,0,0,0.12)');
+      g.appendChild(shadow);
+
+      /* Stick body */
+      var body = document.createElementNS(NS, 'rect');
+      body.setAttribute('x', x);
+      body.setAttribute('y', y);
+      body.setAttribute('width', STICK_W);
+      body.setAttribute('height', STICK_H);
+      body.setAttribute('rx', STICK_RX);
+      body.setAttribute('ry', STICK_RX);
+      body.setAttribute('fill', color);
+      body.setAttribute('stroke', 'rgba(0,0,0,0.15)');
+      body.setAttribute('stroke-width', '0.5');
+      g.appendChild(body);
+
+      /* Wood grain overlay */
+      var grain = document.createElementNS(NS, 'rect');
+      grain.setAttribute('x', x);
+      grain.setAttribute('y', y);
+      grain.setAttribute('width', STICK_W);
+      grain.setAttribute('height', STICK_H);
+      grain.setAttribute('rx', STICK_RX);
+      grain.setAttribute('ry', STICK_RX);
+      grain.setAttribute('fill', 'url(#' + uid + '-grain)');
+      g.appendChild(grain);
+
+      /* 3D highlight */
+      var hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', x);
+      hl.setAttribute('y', y);
+      hl.setAttribute('width', STICK_W);
+      hl.setAttribute('height', STICK_H);
+      hl.setAttribute('rx', STICK_RX);
+      hl.setAttribute('ry', STICK_RX);
+      hl.setAttribute('fill', 'url(#' + uid + '-sgrad)');
+      g.appendChild(hl);
+
+      /* Top specular highlight */
+      var spec = document.createElementNS(NS, 'rect');
+      spec.setAttribute('x', x + 1.2);
+      spec.setAttribute('y', y + 2);
+      spec.setAttribute('width', STICK_W * 0.35);
+      spec.setAttribute('height', STICK_H * 0.6);
+      spec.setAttribute('rx', 1.5);
+      spec.setAttribute('fill', 'rgba(255,255,255,0.18)');
+      g.appendChild(spec);
+
+      parent.appendChild(g);
+    }
+
+    /* ── Draw rubber band around a bundle ── */
+    function drawBand(parent, cx, cy, width) {
+      var bandG = document.createElementNS(NS, 'g');
+      bandG.setAttribute('class', 'cs__band');
+
+      var bx = cx - width / 2;
+
+      /* Band shadow */
+      var shadow = document.createElementNS(NS, 'rect');
+      shadow.setAttribute('x', bx + 0.5);
+      shadow.setAttribute('y', cy - BAND_H / 2 + 0.8);
+      shadow.setAttribute('width', width);
+      shadow.setAttribute('height', BAND_H);
+      shadow.setAttribute('rx', 2);
+      shadow.setAttribute('fill', 'rgba(0,0,0,0.1)');
+      bandG.appendChild(shadow);
+
+      /* Band body */
+      var band = document.createElementNS(NS, 'rect');
+      band.setAttribute('x', bx);
+      band.setAttribute('y', cy - BAND_H / 2);
+      band.setAttribute('width', width);
+      band.setAttribute('height', BAND_H);
+      band.setAttribute('rx', 2);
+      band.setAttribute('fill', '#8d6e63');
+      band.setAttribute('stroke', '#5d4037');
+      band.setAttribute('stroke-width', '0.6');
+      bandG.appendChild(band);
+
+      /* Band 3D overlay */
+      var hl = document.createElementNS(NS, 'rect');
+      hl.setAttribute('x', bx);
+      hl.setAttribute('y', cy - BAND_H / 2);
+      hl.setAttribute('width', width);
+      hl.setAttribute('height', BAND_H);
+      hl.setAttribute('rx', 2);
+      hl.setAttribute('fill', 'url(#' + uid + '-bgrad)');
+      bandG.appendChild(hl);
+
+      /* Band texture lines */
+      var line1 = document.createElementNS(NS, 'line');
+      line1.setAttribute('x1', bx + 2);
+      line1.setAttribute('y1', cy - 1);
+      line1.setAttribute('x2', bx + width - 2);
+      line1.setAttribute('y2', cy - 1);
+      line1.setAttribute('stroke', 'rgba(255,255,255,0.12)');
+      line1.setAttribute('stroke-width', '0.4');
+      bandG.appendChild(line1);
+
+      var line2 = document.createElementNS(NS, 'line');
+      line2.setAttribute('x1', bx + 2);
+      line2.setAttribute('y1', cy + 1.2);
+      line2.setAttribute('x2', bx + width - 2);
+      line2.setAttribute('y2', cy + 1.2);
+      line2.setAttribute('stroke', 'rgba(0,0,0,0.08)');
+      line2.setAttribute('stroke-width', '0.4');
+      bandG.appendChild(line2);
+
+      parent.appendChild(bandG);
+    }
+
+    /* ── Fit sticks into workspace via transform ── */
+    function fitSticksInArea() {
+      if (count === 0) {
+        sticksArea.removeAttribute('transform');
+        return;
+      }
+
+      /* Measure the natural bounding box */
+      var bbox;
+      try { bbox = sticksArea.getBBox(); } catch(e) { return; }
+      if (!bbox || bbox.width === 0) return;
+
+      var areaW = 274; /* 284 - 10 padding */
+      var areaH = 128; /* 148 - 20 padding */
+      var areaX = 13;
+      var areaY = 14;
+
+      var scaleX = areaW / bbox.width;
+      var scaleY = areaH / bbox.height;
+      var scale = Math.min(scaleX, scaleY, 1.0); /* don't scale up beyond 1 */
+
+      var scaledW = bbox.width * scale;
+      var scaledH = bbox.height * scale;
+      var tx = areaX + (areaW - scaledW) / 2 - bbox.x * scale;
+      var ty = areaY + (areaH - scaledH) / 2 - bbox.y * scale;
+
+      sticksArea.setAttribute('transform',
+        'translate(' + tx.toFixed(2) + ',' + ty.toFixed(2) + ') scale(' + scale.toFixed(4) + ')');
+    }
+
+    /* ── Update count display ── */
+    function updateCountDisplay() {
+      if (countText) countText.textContent = String(count);
+
+      /* Update aria-label */
+      var bundles = Math.floor(count / GROUP_OF);
+      var singles = count % GROUP_OF;
+      var label = '计数棒: ' + count;
+      if (bundles > 0) label += ' (' + bundles + '捆';
+      if (bundles > 0 && singles > 0) label += ' + ' + singles + '根';
+      else if (bundles > 0) label += ')';
+      if (bundles === 0 && singles > 0) label += ' (' + singles + '根)';
+      if (bundles > 0 && singles > 0) label += ')';
+      root.setAttribute('aria-label', label);
+    }
+
+    /* ── Emit event ── */
+    function emitChange() {
+      var bundles = Math.floor(count / GROUP_OF);
+      var singles = count % GROUP_OF;
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true,
+        composed: true,
+        detail: {
+          id: root.getAttribute('data-cmp-id'),
+          type: 'adjust',
+          values: {
+            count: count,
+            bundles: bundles,
+            singles: singles
+          }
+        }
+      }));
+    }
+
+    /* ── Button handlers ── */
+    function onAdd() {
+      if (count >= MAX_STICKS) return;
+      count++;
+      render();
+      emitChange();
+    }
+
+    function onRemove() {
+      if (count <= 0) return;
+      count--;
+      render();
+      emitChange();
+    }
+
+    if (btnPlus) {
+      btnPlus.addEventListener('click', function(e) { e.stopPropagation(); onAdd(); });
+      btnPlus.addEventListener('touchend', function(e) { e.preventDefault(); e.stopPropagation(); onAdd(); });
+    }
+    if (btnMinus) {
+      btnMinus.addEventListener('click', function(e) { e.stopPropagation(); onRemove(); });
+      btnMinus.addEventListener('touchend', function(e) { e.preventDefault(); e.stopPropagation(); onRemove(); });
+    }
+
+    /* ── Keyboard support ── */
+    root.setAttribute('tabindex', '0');
+    root.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowUp' || e.key === 'ArrowRight' || e.key === '+' || e.key === '=') {
+        e.preventDefault();
+        onAdd();
+      } else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === '-') {
+        e.preventDefault();
+        onRemove();
+      }
+    });
+
+    /* ── Initial render ── */
+    render();
+
+    /* ── Observe prop changes ── */
+    var obs = new MutationObserver(function(mutations) {
+      for (var i = 0; i < mutations.length; i++) {
+        if (mutations[i].attributeName === 'data-props') {
+          try {
+            var raw = root.getAttribute('data-props');
+            if (raw) {
+              var o = JSON.parse(raw);
+              if (o && typeof o === 'object') {
+                if (o.count !== undefined) {
+                  var newCount = Math.max(0, Math.min(MAX_STICKS, Math.round(Number(o.count))));
+                  if (newCount !== count) {
+                    count = newCount;
+                    render();
+                  }
+                }
+                if (Array.isArray(o.stickColors) && o.stickColors.length >= 1) {
+                  colors = o.stickColors;
+                  render();
+                }
+              }
+            }
+          } catch(e) {}
+        }
+      }
+    });
+    obs.observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+    window.addEventListener('beforeunload', function() { obs.disconnect(); });
+  })();
+  </script>
+</div>

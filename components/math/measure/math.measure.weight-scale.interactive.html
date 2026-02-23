@@ -1,0 +1,272 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.measure.weight-scale.interactive",
+  "name": "称重器",
+  "nameEn": "Weight Scale",
+  "category": "math/measure",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 200, "max": 500, "desc": "组件尺寸" },
+    { "key": "weight", "type": "number", "default": 0, "min": 0, "max": 5000, "desc": "当前重量(克)" },
+    { "key": "dialColor", "type": "color", "default": "#FAFAFA", "desc": "表盘颜色" },
+    { "key": "needleColor", "type": "color", "default": "#E53935", "desc": "指针颜色" }
+  ],
+  "cssVars": { "size": "--cmp-size", "dialColor": "--cmp-dial", "needleColor": "--cmp-needle" },
+  "tags": ["weight", "mass", "scale", "measurement", "gram", "kilogram", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "weight": "number", "unit": "string", "display": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.measure.weight-scale.interactive" role="img" aria-label="称重器">
+  <style>
+    .cmp[data-cmp-id="math.measure.weight-scale.interactive"] {
+      --s: var(--cmp-size, 300px);
+      --dial: var(--cmp-dial, #FAFAFA);
+      --needle: var(--cmp-needle, #E53935);
+      display: inline-block; width: var(--s); height: var(--s); user-select: none;
+    }
+    .cmp[data-cmp-id="math.measure.weight-scale.interactive"] svg { width: 100%; height: 100%; display: block }
+    .cmp[data-cmp-id="math.measure.weight-scale.interactive"] .ws__btn {
+      cursor: pointer; transition: opacity .15s;
+    }
+    .cmp[data-cmp-id="math.measure.weight-scale.interactive"] .ws__btn:hover { opacity: .78 }
+    .cmp[data-cmp-id="math.measure.weight-scale.interactive"] .ws__needle {
+      transition: transform .35s cubic-bezier(.4,.2,.2,1.12);
+      transform-origin: 150px 115px;
+    }
+  </style>
+
+  <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="ws__rim" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#d0d0d0"/><stop offset=".45" stop-color="#f0f0f0"/>
+        <stop offset=".55" stop-color="#a8a8a8"/><stop offset="1" stop-color="#c8c8c8"/>
+      </linearGradient>
+      <radialGradient id="ws__face" cx=".5" cy=".45" r=".55">
+        <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="var(--dial)"/>
+      </radialGradient>
+      <filter id="ws__sh" x="-10%" y="-10%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity=".18"/>
+      </filter>
+    </defs>
+
+    <!-- Outer rim -->
+    <circle cx="150" cy="115" r="95" fill="url(#ws__rim)" stroke="#999" stroke-width=".8"/>
+    <!-- Dial face -->
+    <circle cx="150" cy="115" r="85" fill="url(#ws__face)" filter="url(#ws__sh)"/>
+
+    <!-- Ticks & labels -->
+    <g class="ws__ticks"></g>
+
+    <!-- Unit label -->
+    <text x="150" y="152" text-anchor="middle" font-size="9" font-weight="600"
+          fill="#666" font-family="Arial,sans-serif">克 (g)</text>
+
+    <!-- Needle: points UP by default (toward -90° in SVG coords) -->
+    <g class="ws__needle">
+      <line x1="150" y1="115" x2="150" y2="40" stroke="var(--needle)" stroke-width="2.2"
+            stroke-linecap="round"/>
+      <circle cx="150" cy="115" r="5" fill="var(--needle)"/>
+      <circle cx="150" cy="115" r="2.5" fill="#fff" opacity=".5"/>
+    </g>
+
+    <!-- Support column connecting dial to platform -->
+    <rect x="143" y="208" width="14" height="16" rx="2" fill="#bbb" stroke="#999" stroke-width=".5"/>
+
+    <!-- Platform -->
+    <rect x="75" y="220" width="150" height="6" rx="2" fill="#ccc" stroke="#aaa" stroke-width=".5"/>
+    <rect x="60" y="224" width="180" height="14" rx="4" fill="url(#ws__rim)" stroke="#aaa" stroke-width=".6"/>
+
+    <!-- Support legs -->
+    <line x1="85" y1="238" x2="80" y2="250" stroke="#999" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="215" y1="238" x2="220" y2="250" stroke="#999" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Feet -->
+    <ellipse cx="80" cy="251" rx="6" ry="2" fill="#999"/>
+    <ellipse cx="220" cy="251" rx="6" ry="2" fill="#999"/>
+
+    <!-- Digital display -->
+    <rect x="100" y="256" width="100" height="22" rx="3" fill="#1a1a1a" stroke="#555" stroke-width=".6"/>
+    <text class="ws__lcd" x="150" y="272" text-anchor="middle" font-size="13" font-weight="700"
+          fill="#4fc3f7" font-family="'Courier New',Courier,monospace">0 g</text>
+
+    <!-- Buttons: + on top, - on bottom -->
+    <g class="ws__btn" data-delta="100">
+      <rect x="16" y="254" width="52" height="22" rx="4" fill="#43a047"/>
+      <text x="42" y="269" text-anchor="middle" font-size="10" font-weight="700" fill="#fff"
+            font-family="Arial,sans-serif" pointer-events="none">+100g</text>
+    </g>
+    <g class="ws__btn" data-delta="-100">
+      <rect x="16" y="280" width="52" height="22" rx="4" fill="#e53935"/>
+      <text x="42" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#fff"
+            font-family="Arial,sans-serif" pointer-events="none">−100g</text>
+    </g>
+    <g class="ws__btn" data-delta="10">
+      <rect x="232" y="254" width="52" height="22" rx="4" fill="#1e88e5"/>
+      <text x="258" y="269" text-anchor="middle" font-size="10" font-weight="700" fill="#fff"
+            font-family="Arial,sans-serif" pointer-events="none">+10g</text>
+    </g>
+    <g class="ws__btn" data-delta="-10">
+      <rect x="232" y="280" width="52" height="22" rx="4" fill="#fb8c00"/>
+      <text x="258" y="295" text-anchor="middle" font-size="10" font-weight="700" fill="#fff"
+            font-family="Arial,sans-serif" pointer-events="none">−10g</text>
+    </g>
+  </svg>
+
+  <script>
+  (function() {
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.measure.weight-scale.interactive') return;
+
+    /* ── id 唯一化 ── */
+    var uid = 'ws_' + Math.random().toString(36).slice(2, 8);
+    var idMap = {'ws__rim': uid+'_rim', 'ws__face': uid+'_face', 'ws__sh': uid+'_sh'};
+    var svgEl = root.querySelector('svg');
+    for (var oldId in idMap) {
+      var node = root.querySelector('#' + oldId);
+      if (node) node.id = idMap[oldId];
+    }
+    /* 更新所有 url(#...) 引用 */
+    svgEl.querySelectorAll('[fill],[filter],[stroke]').forEach(function(el) {
+      ['fill','filter','stroke'].forEach(function(attr) {
+        var v = el.getAttribute(attr);
+        if (v) for (var o in idMap) {
+          if (v.indexOf(o) >= 0) el.setAttribute(attr, v.replace(o, idMap[o]));
+        }
+      });
+    });
+
+    /*
+     * ── 表盘角度模型 ──
+     * 表盘圆心 (150, 115)
+     * 0 刻度在左下方（7点半方向），5000g 在右下方（4点半方向）
+     * SVG 坐标系中：右=0°, 下=90°, 左=180°/-180°, 上=-90°
+     * 0 刻度位置: 135° (左下)
+     * 5000g 位置: 45° (右下)  — 但要顺时针走，所以是 135° → 360°+45° = 405°
+     * 弧度范围: 270° (从 135° 顺时针到 405°)
+     *
+     * 指针默认朝上 = -90° 方向
+     * 要让指针指向某个刻度角度 θ，需要旋转 θ - (-90°) = θ + 90°
+     */
+    var CX = 150, CY = 115, R = 72, MAX = 5000;
+    var TICK_START_DEG = 135;  /* 0g 位置：SVG 坐标系 135°（左下） */
+    var ARC_RANGE = 270;       /* 顺时针扫过 270° */
+    var NEEDLE_BASE = -90;     /* 指针默认朝向（上） */
+
+    var ticksG = root.querySelector('.ws__ticks');
+    var needleG = root.querySelector('.ws__needle');
+    var lcd = root.querySelector('.ws__lcd');
+
+    /* ── 读取初始 weight ── */
+    var weight = 0;
+    try {
+      var p = root.getAttribute('data-props');
+      if (p) { var o = JSON.parse(p); weight = Math.max(0, Math.min(MAX, Number(o.weight) || 0)); }
+    } catch(e) {}
+
+    /* ── 刻度角度计算 ── */
+    function tickAngleDeg(frac) {
+      /* frac: 0~1, 返回 SVG 坐标系中的角度（度） */
+      return TICK_START_DEG + frac * ARC_RANGE;
+    }
+
+    /* ── 绘制刻度 ── */
+    var NS = 'http://www.w3.org/2000/svg';
+    for (var i = 0; i <= 50; i++) {
+      var frac = i / 50;
+      var deg = tickAngleDeg(frac);
+      var rad = deg * Math.PI / 180;
+      var major = (i % 5 === 0);
+      var inner = major ? R - 10 : R - 6;
+      var x1 = CX + inner * Math.cos(rad), y1 = CY + inner * Math.sin(rad);
+      var x2 = CX + R * Math.cos(rad),     y2 = CY + R * Math.sin(rad);
+
+      var line = document.createElementNS(NS, 'line');
+      line.setAttribute('x1', x1.toFixed(1)); line.setAttribute('y1', y1.toFixed(1));
+      line.setAttribute('x2', x2.toFixed(1)); line.setAttribute('y2', y2.toFixed(1));
+      line.setAttribute('stroke', '#444');
+      line.setAttribute('stroke-width', major ? '1.4' : '.7');
+      ticksG.appendChild(line);
+
+      if (major) {
+        var grams = frac * MAX;
+        var label;
+        if (grams === 0) label = '0';
+        else if (grams % 1000 === 0) label = (grams / 1000) + 'kg';
+        else label = String(grams);
+
+        var lr = R - 18;
+        var tx = CX + lr * Math.cos(rad), ty = CY + lr * Math.sin(rad);
+        var txt = document.createElementNS(NS, 'text');
+        txt.setAttribute('x', tx.toFixed(1)); txt.setAttribute('y', (ty + 3).toFixed(1));
+        txt.setAttribute('text-anchor', 'middle');
+        txt.setAttribute('font-size', '7'); txt.setAttribute('font-weight', '600');
+        txt.setAttribute('fill', '#333'); txt.setAttribute('font-family', 'Arial,sans-serif');
+        txt.textContent = label;
+        ticksG.appendChild(txt);
+      }
+    }
+
+    /* ── 格式化显示 ── */
+    function formatWeight(g) {
+      if (g < 1000) return g + ' g';
+      var kg = Math.floor(g / 1000);
+      var rem = g % 1000;
+      if (rem === 0) return kg + ' kg';
+      if (rem % 100 === 0) return kg + '.' + (rem / 100) + ' kg';
+      return kg + ' kg ' + rem + ' g';
+    }
+
+    /* ── 渲染 ── */
+    function render() {
+      var frac = weight / MAX;
+      var targetDeg = tickAngleDeg(frac);
+      /* 指针旋转角 = 目标角度 - 指针默认朝向 */
+      var rotateDeg = targetDeg - NEEDLE_BASE;
+      needleG.style.transform = 'rotate(' + rotateDeg + 'deg)';
+      lcd.textContent = formatWeight(weight);
+      root.setAttribute('aria-label', '称重器 ' + formatWeight(weight));
+    }
+
+    /* ── 事件 ── */
+    function emit() {
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust',
+                  values: { weight: weight, unit: 'g', display: formatWeight(weight) } }
+      }));
+    }
+
+    /* ── 按钮 ── */
+    root.querySelectorAll('.ws__btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var d = Number(btn.getAttribute('data-delta')) || 0;
+        weight = Math.max(0, Math.min(MAX, weight + d));
+        render(); emit();
+      });
+    });
+
+    render();
+
+    /* ── MutationObserver ── */
+    var obs = new MutationObserver(function() {
+      try {
+        var p2 = root.getAttribute('data-props');
+        if (p2) {
+          var o2 = JSON.parse(p2);
+          if (o2 && typeof o2 === 'object' && o2.weight != null) {
+            var nw = Math.max(0, Math.min(MAX, Number(o2.weight) || 0));
+            if (nw !== weight) { weight = nw; render(); emit(); }
+          }
+        }
+      } catch(e) {}
+    });
+    obs.observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+    window.addEventListener('beforeunload', function() { obs.disconnect(); }, { once: true });
+  })();
+  </script>
+</div>

@@ -1,0 +1,348 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.calculus.derivative.interactive",
+  "name": "导数与切线（交互式）",
+  "nameEn": "Derivative & Tangent Line (Interactive)",
+  "category": "math/calculus",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 420 },
+  "tags": ["math","calculus","derivative","tangent","slope","function","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "funcColor",      "type": "color",  "default": "#5c6bc0", "desc": "函数曲线颜色" },
+    { "key": "tangentColor",   "type": "color",  "default": "#ef5350", "desc": "切线颜色" },
+    { "key": "derivColor",     "type": "color",  "default": "#66bb6a", "desc": "导函数颜色" },
+    { "key": "func",           "type": "enum",   "default": "x2", "enum": ["x2","x3","sinx","cosx"], "desc": "函数类型" },
+    { "key": "xPos",           "type": "number", "default": 1, "min": -3, "max": 3, "desc": "切点x坐标" },
+    { "key": "showDerivative", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示导函数" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "funcColor": "--cmp-func", "tangentColor": "--cmp-tangent", "derivColor": "--cmp-deriv", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "position", "values": { "x": "number", "y": "number", "slope": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.calculus.derivative.interactive" role="img" aria-label="导数与切线（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.calculus.derivative.interactive"]{
+      --h:var(--cmp-size,420px);display:inline-block;
+      width:calc(var(--h)*500/420);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(92,107,192,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="math.calculus.derivative.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.calculus.derivative.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="math.calculus.derivative.interactive"] .calc__funcBtn{cursor:pointer}
+    .cmp[data-cmp-id="math.calculus.derivative.interactive"] .calc__funcBtn:hover rect{opacity:0.9}
+  </style>
+
+  <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="calc__arrowX" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-stroke,#37474f)"/></marker>
+      <marker id="calc__arrowY" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-stroke,#37474f)"/></marker>
+      <clipPath id="calc__plotClip"><rect x="30" y="20" width="440" height="330"/></clipPath>
+    </defs>
+
+    <!-- 网格 -->
+    <g opacity="0.1">
+      <line x1="30" y1="190" x2="470" y2="190" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+      <line x1="250" y1="20" x2="250" y2="350" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5"/>
+    </g>
+    <!-- 细网格 -->
+    <g opacity="0.06">
+      <line x1="30" y1="120" x2="470" y2="120" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <line x1="30" y1="260" x2="470" y2="260" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <line x1="180" y1="20" x2="180" y2="350" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+      <line x1="320" y1="20" x2="320" y2="350" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.3"/>
+    </g>
+
+    <!-- 坐标轴 -->
+    <line x1="30" y1="190" x2="475" y2="190" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2" marker-end="url(#calc__arrowX)"/>
+    <line x1="250" y1="355" x2="250" y2="18" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2" marker-end="url(#calc__arrowY)"/>
+    <text x="478" y="195" font-size="11" fill="var(--cmp-stroke,#37474f)">x</text>
+    <text x="254" y="16" font-size="11" fill="var(--cmp-stroke,#37474f)">y</text>
+
+    <!-- 刻度 -->
+    <g font-size="8" fill="#999">
+      <text x="318" y="203" text-anchor="middle">1</text>
+      <text x="388" y="203" text-anchor="middle">2</text>
+      <text x="178" y="203" text-anchor="middle">-1</text>
+      <text x="108" y="203" text-anchor="middle">-2</text>
+      <text x="243" y="123" text-anchor="end">1</text>
+      <text x="243" y="53" text-anchor="end">2</text>
+      <text x="243" y="263" text-anchor="end">-1</text>
+    </g>
+
+    <!-- 绘图区 -->
+    <g clip-path="url(#calc__plotClip)">
+      <!-- 导函数 -->
+      <path class="calc__derivPath" d="" fill="none" stroke="var(--cmp-deriv,#66bb6a)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <!-- 函数曲线 -->
+      <path class="calc__funcPath" d="" fill="none" stroke="var(--cmp-func,#5c6bc0)" stroke-width="2.5"/>
+      <!-- 切线 -->
+      <line class="calc__tangent" x1="0" y1="0" x2="0" y2="0" stroke="var(--cmp-tangent,#ef5350)" stroke-width="2"/>
+    </g>
+
+    <!-- 切点 -->
+    <circle class="calc__point" cx="250" cy="190" r="6" fill="var(--cmp-tangent,#ef5350)" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+
+    <!-- 动态标注 -->
+    <g class="calc__dynLabels"></g>
+
+    <!-- 信息面板 -->
+    <g class="calc__info" transform="translate(350,30)">
+      <rect x="0" y="0" width="130" height="85" rx="6" fill="rgba(255,255,255,0.92)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="calc__funcName" x="10" y="18" font-size="11" font-weight="700" fill="var(--cmp-func,#5c6bc0)">f(x) = x²</text>
+      <text class="calc__derivName" x="10" y="35" font-size="10" fill="var(--cmp-deriv,#66bb6a)">f'(x) = 2x</text>
+      <line x1="10" y1="42" x2="120" y2="42" stroke="#eee" stroke-width="0.5"/>
+      <text class="calc__xVal" x="10" y="56" font-size="10" fill="var(--cmp-stroke,#37474f)">x = 1.00</text>
+      <text class="calc__yVal" x="10" y="70" font-size="10" fill="var(--cmp-stroke,#37474f)">y = 1.00</text>
+      <text class="calc__slopeVal" x="10" y="82" font-size="10" font-weight="600" fill="var(--cmp-tangent,#ef5350)">斜率 = 2.00</text>
+    </g>
+
+    <!-- 函数选择 -->
+    <g class="calc__funcBtns" transform="translate(250,395)">
+      <g class="calc__funcBtn" data-fn="x2" transform="translate(-120,0)"><rect x="-35" y="-12" width="70" height="24" rx="5" fill="#5c6bc0" opacity="0.85"/><text x="0" y="5" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">x²</text></g>
+      <g class="calc__funcBtn" data-fn="x3" transform="translate(-40,0)"><rect x="-35" y="-12" width="70" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">x³</text></g>
+      <g class="calc__funcBtn" data-fn="sinx" transform="translate(40,0)"><rect x="-35" y="-12" width="70" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">sin x</text></g>
+      <g class="calc__funcBtn" data-fn="cosx" transform="translate(120,0)"><rect x="-35" y="-12" width="70" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="11" fill="#fff" font-weight="600">cos x</text></g>
+    </g>
+
+    <!-- 图例 -->
+    <g transform="translate(35,370)" font-size="9">
+      <line x1="0" y1="0" x2="20" y2="0" stroke="var(--cmp-func,#5c6bc0)" stroke-width="2.5"/>
+      <text x="24" y="3" fill="var(--cmp-func,#5c6bc0)">f(x)</text>
+      <line x1="65" y1="0" x2="85" y2="0" stroke="var(--cmp-tangent,#ef5350)" stroke-width="2"/>
+      <text x="89" y="3" fill="var(--cmp-tangent,#ef5350)">切线</text>
+      <line x1="125" y1="0" x2="145" y2="0" stroke="var(--cmp-deriv,#66bb6a)" stroke-width="1.5" stroke-dasharray="5,3"/>
+      <text x="149" y="3" fill="var(--cmp-deriv,#66bb6a)">f'(x)</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.calculus.derivative.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var funcType=P.func||'x2';
+    var xPos=Math.max(-3,Math.min(3,Number(P.xPos)||1));
+    var showDeriv=(P.showDerivative!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    var funcPath=root.querySelector('.calc__funcPath');
+    var derivPath=root.querySelector('.calc__derivPath');
+    var tangentLine=root.querySelector('.calc__tangent');
+    var pointEl=root.querySelector('.calc__point');
+    var dynLabels=root.querySelector('.calc__dynLabels');
+    var funcName=root.querySelector('.calc__funcName');
+    var derivName=root.querySelector('.calc__derivName');
+    var xVal=root.querySelector('.calc__xVal');
+    var yVal=root.querySelector('.calc__yVal');
+    var slopeVal=root.querySelector('.calc__slopeVal');
+    var funcBtns=root.querySelector('.calc__funcBtns');
+
+    /* 坐标变换: 数学坐标 → SVG坐标 */
+    var OX=250,OY=190,SCALE=70; /* 1单位=70px */
+    function toSvgX(x){return OX+x*SCALE;}
+    function toSvgY(y){return OY-y*SCALE;}
+    function toMathX(sx){return(sx-OX)/SCALE;}
+
+    /* 函数定义 */
+    var FUNCS={
+      x2:{
+        f:function(x){return x*x;},
+        df:function(x){return 2*x;},
+        name:'f(x) = x²',dname:"f'(x) = 2x"
+      },
+      x3:{
+        f:function(x){return x*x*x;},
+        df:function(x){return 3*x*x;},
+        name:'f(x) = x³',dname:"f'(x) = 3x²"
+      },
+      sinx:{
+        f:function(x){return Math.sin(x);},
+        df:function(x){return Math.cos(x);},
+        name:'f(x) = sin x',dname:"f'(x) = cos x"
+      },
+      cosx:{
+        f:function(x){return Math.cos(x);},
+        df:function(x){return -Math.sin(x);},
+        name:'f(x) = cos x',dname:"f'(x) = -sin x"
+      }
+    };
+
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function drawCurve(pathEl,fn,color){
+      var d='';
+      for(var sx=30;sx<=470;sx+=2){
+        var x=toMathX(sx);
+        var y=fn(x);
+        var sy=toSvgY(y);
+        if(sy<-100||sy>500){
+          if(d)d+=' ';
+          continue;
+        }
+        d+=(d===''||d.endsWith(' ')?'M':'L')+sx.toFixed(1)+','+sy.toFixed(1);
+      }
+      pathEl.setAttribute('d',d);
+    }
+
+    function updateTabs(){
+      var btns=funcBtns.querySelectorAll('.calc__funcBtn');
+      for(var i=0;i<btns.length;i++){
+        var fn=btns[i].getAttribute('data-fn');
+        var rect=btns[i].querySelector('rect');
+        rect.setAttribute('fill',fn===funcType?'#5c6bc0':'#78909c');
+        rect.setAttribute('opacity',fn===funcType?'0.85':'0.6');
+      }
+    }
+
+    function render(){
+      var fn=FUNCS[funcType]||FUNCS.x2;
+
+      /* 绘制函数曲线 */
+      drawCurve(funcPath,fn.f);
+
+      /* 绘制导函数 */
+      derivPath.style.display=showDeriv?'':'none';
+      if(showDeriv)drawCurve(derivPath,fn.df);
+
+      /* 切点 */
+      var y=fn.f(xPos);
+      var slope=fn.df(xPos);
+      var px=toSvgX(xPos),py=toSvgY(y);
+      pointEl.setAttribute('cx',px);
+      pointEl.setAttribute('cy',py);
+
+      /* 切线 */
+      var tLen=3; /* 切线延伸长度(数学单位) */
+      var tx1=xPos-tLen,ty1=y-slope*tLen;
+      var tx2=xPos+tLen,ty2=y+slope*tLen;
+      tangentLine.setAttribute('x1',toSvgX(tx1));
+      tangentLine.setAttribute('y1',toSvgY(ty1));
+      tangentLine.setAttribute('x2',toSvgX(tx2));
+      tangentLine.setAttribute('y2',toSvgY(ty2));
+
+      /* 信息面板 */
+      funcName.textContent=fn.name;
+      derivName.textContent=fn.dname;
+      xVal.textContent='x = '+xPos.toFixed(2);
+      yVal.textContent='y = '+y.toFixed(2);
+      slopeVal.textContent='斜率 = '+slope.toFixed(2);
+
+      /* 动态标注 */
+      clear(dynLabels);
+      if(showLabels){
+        /* 切点坐标 */
+        var t=document.createElementNS(NS,'text');
+        t.setAttribute('x',px+10);t.setAttribute('y',py-10);
+        t.setAttribute('font-size','9');t.setAttribute('fill','var(--cmp-tangent,#ef5350)');
+        t.textContent='('+xPos.toFixed(1)+', '+y.toFixed(1)+')';
+        dynLabels.appendChild(t);
+
+        /* 斜率角度可视化 */
+        var angleRad=Math.atan(slope);
+        var arcR=20;
+        var arcEndX=px+arcR*Math.cos(-angleRad);
+        var arcEndY=py+arcR*Math.sin(-angleRad);
+        var sweepFlag=slope>=0?0:1;
+        dynLabels.appendChild(document.createElementNS(NS,'path'));
+        var arc=dynLabels.lastChild;
+        arc.setAttribute('d','M'+(px+arcR)+','+py+' A'+arcR+','+arcR+' 0 0,'+sweepFlag+' '+arcEndX+','+arcEndY);
+        arc.setAttribute('fill','none');
+        arc.setAttribute('stroke','#ff9800');
+        arc.setAttribute('stroke-width','1.2');
+
+        /* 导函数上的对应点 */
+        if(showDeriv){
+          var dpx=toSvgX(xPos),dpy=toSvgY(slope);
+          dynLabels.appendChild(document.createElementNS(NS,'circle'));
+          var dc=dynLabels.lastChild;
+          dc.setAttribute('cx',dpx);dc.setAttribute('cy',dpy);dc.setAttribute('r','4');
+          dc.setAttribute('fill','var(--cmp-deriv,#66bb6a)');dc.setAttribute('stroke','#fff');dc.setAttribute('stroke-width','1.5');
+
+          /* 连接虚线 */
+          dynLabels.appendChild(document.createElementNS(NS,'line'));
+          var dl=dynLabels.lastChild;
+          dl.setAttribute('x1',px);dl.setAttribute('y1',py);
+          dl.setAttribute('x2',dpx);dl.setAttribute('y2',dpy);
+          dl.setAttribute('stroke','#ccc');dl.setAttribute('stroke-width','0.8');
+          dl.setAttribute('stroke-dasharray','3,3');
+        }
+      }
+    }
+    render();updateTabs();
+
+    /* 拖拽切点 */
+    var dragging=false;
+    function onDown(e){
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var sy=(pt.clientY-rect.top)/rect.height*420;
+      var dx=sx-parseFloat(pointEl.getAttribute('cx'));
+      var dy=sy-parseFloat(pointEl.getAttribute('cy'));
+      if(dx*dx+dy*dy<400){
+        e.preventDefault();dragging=true;
+        document.addEventListener('mousemove',onMove,{passive:false});
+        document.addEventListener('mouseup',onUp);
+        document.addEventListener('touchmove',onMove,{passive:false});
+        document.addEventListener('touchend',onUp);
+      }
+    }
+    function onMove(e){
+      if(!dragging)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      xPos=Math.max(-3,Math.min(3,toMathX(sx)));
+      render();
+      var fn=FUNCS[funcType]||FUNCS.x2;
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'math.calculus.derivative.interactive',type:'position',
+          values:{x:+xPos.toFixed(2),y:+fn.f(xPos).toFixed(2),slope:+fn.df(xPos).toFixed(2)}}}));
+    }
+    function onUp(){dragging=false;
+      document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
+    }
+    svg.addEventListener('mousedown',onDown,{passive:false});
+    svg.addEventListener('touchstart',onDown,{passive:false});
+
+    /* 函数切换 */
+    funcBtns.addEventListener('click',function(e){
+      var btn=e.target.closest('.calc__funcBtn');
+      if(!btn)return;
+      funcType=btn.getAttribute('data-fn');
+      updateTabs();render();
+    });
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.func&&FUNCS[P2.func]){funcType=P2.func;updateTabs();}
+      if(P2.xPos!=null)xPos=Math.max(-3,Math.min(3,Number(P2.xPos)||1));
+      showDeriv=(P2.showDerivative!=='off');
+      showLabels=(P2.showLabels!=='off');
+      render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

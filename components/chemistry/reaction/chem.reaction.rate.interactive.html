@@ -1,0 +1,388 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.reaction.rate.interactive",
+  "name": "化学反应速率（交互式）",
+  "nameEn": "Reaction Rate (Interactive)",
+  "category": "chemistry/reaction",
+  "version": "1.0.1",
+  "viewport": { "w": 520, "h": 440 },
+  "tags": ["chemistry","reaction-rate","concentration","temperature","catalyst","interactive"],
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",       "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "reactantColor","type": "color",  "default": "#e53935", "desc": "反应物颜色" },
+    { "key": "productColor", "type": "color",  "default": "#1e88e5", "desc": "生成物颜色" },
+    { "key": "flaskColor",   "type": "color",  "default": "#e3f2fd", "desc": "烧瓶颜色" },
+    { "key": "temperature",  "type": "number", "default": 25, "min": 0, "max": 100, "desc": "温度(°C)" },
+    { "key": "concentration","type": "number", "default": 1.0, "min": 0.1, "max": 3.0, "desc": "初始浓度(mol/L)" },
+    { "key": "catalyst",     "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "催化剂" },
+    { "key": "running",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",        "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "showGraph",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示浓度-时间图" },
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "reactantColor": "--cmp-reactant", "productColor": "--cmp-product", "flaskColor": "--cmp-flask", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "tick", "values": { "cReactant": "number", "cProduct": "number", "rate": "number", "t": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.reaction.rate.interactive" role="img" aria-label="化学反应速率（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.reaction.rate.interactive"]{
+      --h:var(--cmp-size,440px);display:inline-block;
+      width:calc(var(--h)*520/440);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(30,136,229,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="chem.reaction.rate.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.reaction.rate.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="chem.reaction.rate.interactive"] .rr__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- clipPath 使用绝对坐标（含 translate(0,20) 偏移） -->
+      <clipPath id="rr__flaskClip">
+        <path d="M145,160 L145,190 L80,320 Q80,350 110,350 L210,350 Q240,350 240,320 L175,190 L175,160 Z"/>
+      </clipPath>
+    </defs>
+
+    <text x="160" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">化学反应速率</text>
+
+    <!-- 锥形瓶 -->
+    <g>
+      <!-- 瓶身 -->
+      <path class="rr__flaskBody" d="M145,160 L145,190 L80,320 Q80,350 110,350 L210,350 Q240,350 240,320 L175,190 L175,160"
+            fill="var(--cmp-flask,#e3f2fd)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5" fill-opacity="0.5"/>
+      <!-- 瓶口 -->
+      <rect x="140" y="150" width="40" height="14" rx="2" fill="var(--cmp-flask,#e3f2fd)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2"/>
+
+      <!-- 液体：用大矩形 + clipPath 精确裁剪为瓶身形状 -->
+      <rect class="rr__liquid" x="70" y="200" width="180" height="160" fill="var(--cmp-reactant,#e53935)" fill-opacity="0.5" clip-path="url(#rr__flaskClip)"/>
+
+      <!-- 粒子容器 -->
+      <g class="rr__particles" clip-path="url(#rr__flaskClip)"></g>
+
+      <!-- 气泡 -->
+      <g class="rr__bubbles" clip-path="url(#rr__flaskClip)"></g>
+
+      <!-- 瓶身高光 -->
+      <path d="M145,160 L145,190 L80,320 Q80,350 110,350 L210,350 Q240,350 240,320 L175,190 L175,160"
+            fill="none" stroke="#fff" stroke-width="1" stroke-opacity="0.3"/>
+    </g>
+
+    <!-- 温度计（放在瓶子左侧） -->
+    <g transform="translate(50,200)">
+      <rect x="-4" y="0" width="8" height="80" rx="4" fill="#fff" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <circle cx="0" cy="85" r="10" fill="#e53935" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <rect class="rr__tempBar" x="-2" y="20" width="4" height="65" rx="2" fill="#e53935"/>
+      <text x="0" y="110" text-anchor="middle" font-size="9" fill="var(--cmp-stroke,#37474f)">温度</text>
+      <text class="rr__tempVal rr__data" x="0" y="122" text-anchor="middle" font-size="11" fill="#e53935">25°C</text>
+    </g>
+
+    <!-- 催化剂标识 -->
+    <g class="rr__catalystBadge" transform="translate(160,370)" style="display:none">
+      <rect x="-30" y="0" width="60" height="20" rx="10" fill="#ff9800" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+      <text x="0" y="14" text-anchor="middle" font-size="9" fill="#fff" font-weight="700">催化剂</text>
+    </g>
+
+    <!-- 浓度-时间图 -->
+    <g class="rr__graph" transform="translate(310,60)">
+      <rect x="-5" y="-15" width="200" height="185" rx="4" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="95" y="-2" text-anchor="middle" font-size="11" font-weight="600" fill="var(--cmp-stroke,#37474f)">浓度-时间图</text>
+      <!-- 坐标轴 -->
+      <line x1="0" y1="10" x2="0" y2="160" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <line x1="0" y1="160" x2="190" y2="160" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text x="95" y="178" text-anchor="middle" font-size="9" fill="#999">t (s)</text>
+      <text x="-8" y="85" text-anchor="middle" font-size="9" fill="#999" transform="rotate(-90,-8,85)">c (mol/L)</text>
+
+      <!-- 反应物曲线 (用 path 而非 polyline) -->
+      <path class="rr__curveR" d="" fill="none" stroke="var(--cmp-reactant,#e53935)" stroke-width="2"/>
+      <!-- 生成物曲线 -->
+      <path class="rr__curveP" d="" fill="none" stroke="var(--cmp-product,#1e88e5)" stroke-width="2"/>
+
+      <!-- 图例 -->
+      <line x1="130" y1="15" x2="145" y2="15" stroke="var(--cmp-reactant,#e53935)" stroke-width="2"/>
+      <text x="148" y="19" font-size="8" fill="var(--cmp-reactant,#e53935)">反应物</text>
+      <line x1="130" y1="28" x2="145" y2="28" stroke="var(--cmp-product,#1e88e5)" stroke-width="2"/>
+      <text x="148" y="32" font-size="8" fill="var(--cmp-product,#1e88e5)">生成物</text>
+    </g>
+
+    <!-- 数据面板 -->
+    <g transform="translate(310,260)">
+      <rect x="0" y="0" width="195" height="105" rx="6" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="97" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="var(--cmp-stroke,#37474f)">实时数据</text>
+      <text x="10" y="38" font-size="9" fill="#666">[反应物]:</text>
+      <text class="rr__cRVal rr__data" x="185" y="38" text-anchor="end" font-size="10" fill="var(--cmp-reactant,#e53935)">1.00 mol/L</text>
+      <text x="10" y="56" font-size="9" fill="#666">[生成物]:</text>
+      <text class="rr__cPVal rr__data" x="185" y="56" text-anchor="end" font-size="10" fill="var(--cmp-product,#1e88e5)">0.00 mol/L</text>
+      <text x="10" y="74" font-size="9" fill="#666">反应速率:</text>
+      <text class="rr__rateVal rr__data" x="185" y="74" text-anchor="end" font-size="10" fill="#ff9800">0.00 mol/(L·s)</text>
+      <text x="10" y="92" font-size="9" fill="#666">时间:</text>
+      <text class="rr__tVal rr__data" x="185" y="92" text-anchor="end" font-size="10" fill="#78909c">0.0 s</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.reaction.rate.interactive')return;
+
+    /* ── clipPath id 唯一化 ── */
+    var uid='rr_'+Math.random().toString(36).slice(2,8);
+    var clip=root.querySelector('#rr__flaskClip');
+    if(clip)clip.id=uid+'_clip';
+    root.querySelectorAll('[clip-path]').forEach(function(el){
+      el.setAttribute('clip-path','url(#'+uid+'_clip)');
+    });
+
+    /* ── Props ── */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var temp=Math.max(0,Math.min(100,Number(P.temperature)||25));
+    var c0=Math.max(0.1,Math.min(3,Number(P.concentration)||1.0));
+    var hasCatalyst=(P.catalyst==='on');
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showGraph=(P.showGraph!=='off');
+
+    /*
+     * 速率常数 k（简化 Arrhenius 模型，为演示效果调参）
+     * 基准: 25°C 时 k ≈ 0.03，反应在 ~60s 内可观察到明显变化
+     * 温度每升高 10°C，速率约翻倍（符合经验规律）
+     * 催化剂使速率提高 5 倍
+     */
+    var catFactor=hasCatalyst?5:1;
+    var k=0.03*Math.pow(2,(temp-25)/10)*catFactor;
+
+    var NS='http://www.w3.org/2000/svg';
+    var particlesG=root.querySelector('.rr__particles');
+    var bubblesG=root.querySelector('.rr__bubbles');
+    var liquid=root.querySelector('.rr__liquid');
+    var tempBar=root.querySelector('.rr__tempBar');
+    var tempVal=root.querySelector('.rr__tempVal');
+    var cRVal=root.querySelector('.rr__cRVal');
+    var cPVal=root.querySelector('.rr__cPVal');
+    var rateVal=root.querySelector('.rr__rateVal');
+    var tVal=root.querySelector('.rr__tVal');
+    var curveR=root.querySelector('.rr__curveR');
+    var curveP=root.querySelector('.rr__curveP');
+    var graphG=root.querySelector('.rr__graph');
+    var catBadge=root.querySelector('.rr__catalystBadge');
+
+    /*
+     * ── 锥形瓶几何 ──
+     * 瓶身路径（绝对坐标）:
+     *   瓶口: x=145..175, y=160..190 (直筒)
+     *   瓶身: 从 y=190 向下展开到 y=320, x 从 145/175 展开到 80/240
+     *   瓶底: y=320..350 (圆角), x=80..240 → 110..210
+     *
+     * 给定 y 值，计算瓶身左右 x 边界（用于粒子反弹）
+     */
+    var FLASK_NECK_BOT=190;
+    var FLASK_BODY_BOT=320, FLASK_BOT=350;
+    var NECK_LEFT=145, NECK_RIGHT=175;
+    var BODY_LEFT=80, BODY_RIGHT=240;
+
+    function flaskXAtY(y){
+      if(y<=FLASK_NECK_BOT) return{left:NECK_LEFT,right:NECK_RIGHT};
+      if(y>=FLASK_BODY_BOT) return{left:BODY_LEFT+5,right:BODY_RIGHT-5};
+      var t=(y-FLASK_NECK_BOT)/(FLASK_BODY_BOT-FLASK_NECK_BOT);
+      return{left:NECK_LEFT+(BODY_LEFT-NECK_LEFT)*t, right:NECK_RIGHT+(BODY_RIGHT-NECK_RIGHT)*t};
+    }
+
+    /* 液面 y 范围 */
+    var LIQUID_TOP=200, LIQUID_BOT=350;
+
+    function updateLiquid(rFrac){
+      /* 液体是一个大矩形，由 clipPath 裁剪为瓶身形状，完全贴合无缝隙 */
+      liquid.setAttribute('fill-opacity',(0.3+rFrac*0.3).toFixed(2));
+    }
+
+    /* 温度计 */
+    var tempH=Math.max(5,temp/100*65);
+    tempBar.setAttribute('y',80-tempH);tempBar.setAttribute('height',tempH);
+    tempVal.textContent=temp+'°C';
+    catBadge.style.display=hasCatalyst?'':'none';
+
+    /* ── 粒子 ── */
+    var particles=[];
+    var numParticles=40;
+
+    function randomInFlask(){
+      /* 在液体区域内随机生成点 */
+      for(var attempt=0;attempt<20;attempt++){
+        var py=LIQUID_TOP+10+Math.random()*(LIQUID_BOT-LIQUID_TOP-20);
+        var bounds=flaskXAtY(py);
+        var px=bounds.left+5+Math.random()*(bounds.right-bounds.left-10);
+        return{x:px,y:py};
+      }
+      return{x:160,y:280};
+    }
+
+    for(var i=0;i<numParticles;i++){
+      var pos=randomInFlask();
+      var spd0=1+temp/50;
+      particles.push({
+        x:pos.x,y:pos.y,
+        vx:(Math.random()-0.5)*2*spd0,
+        vy:(Math.random()-0.5)*2*spd0,
+        type:'r',el:null
+      });
+    }
+
+    function createParticleEl(p){
+      var c=document.createElementNS(NS,'circle');
+      c.setAttribute('r',p.type==='r'?3.5:3);
+      c.setAttribute('fill',p.type==='r'?'var(--cmp-reactant,#e53935)':'var(--cmp-product,#1e88e5)');
+      c.setAttribute('opacity','0.8');
+      particlesG.appendChild(c);
+      p.el=c;
+    }
+    particles.forEach(createParticleEl);
+
+    /* 气泡 */
+    var bubbles=[];
+
+    /* 初始液体 */
+    updateLiquid(1);
+
+    var time=0;
+    var histR=[],histP=[];
+    var graphW=190,graphH=150;
+    var tWindow=20;
+    var emitTimer=0;
+
+    /* ── 事件派发 ── */
+    function emitChange(cR,cP,rate){
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'tick',
+          values:{cReactant:Math.round(cR*1000)/1000,cProduct:Math.round(cP*1000)/1000,rate:Math.round(rate*10000)/10000,t:Math.round(time*10)/10}
+        }
+      }));
+    }
+
+    var animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04)*speed;
+      lastT=t;
+      time+=dt;
+      emitTimer+=dt;
+
+      /* 一级反应: c(t) = c0 * exp(-k*t) */
+      var cR=c0*Math.exp(-k*time);
+      var cP=c0-cR;
+      var rate=k*cR;
+
+      /* 更新粒子类型 */
+      var rFrac=cR/c0;
+      var nR=Math.round(rFrac*numParticles);
+      for(var i=0;i<particles.length;i++){
+        var newType=i<nR?'r':'p';
+        if(particles[i].type!==newType){
+          particles[i].type=newType;
+          particles[i].el.setAttribute('fill',newType==='r'?'var(--cmp-reactant,#e53935)':'var(--cmp-product,#1e88e5)');
+          particles[i].el.setAttribute('r',newType==='r'?3.5:3);
+          /* 产生气泡 */
+          if(newType==='p'&&bubbles.length<10){
+            bubbles.push({x:particles[i].x,y:particles[i].y,vy:-1-Math.random(),life:1});
+          }
+        }
+      }
+
+      /* 移动粒子（在瓶身范围内反弹） */
+      var spd=1+temp/30;
+      for(var i=0;i<particles.length;i++){
+        var p=particles[i];
+        p.x+=p.vx*spd;p.y+=p.vy*spd;
+        /* 边界检测：使用瓶身形状 */
+        var bounds=flaskXAtY(p.y);
+        var bLeft=bounds.left+4;
+        var bRight=bounds.right-4;
+        if(p.x<bLeft){p.vx=Math.abs(p.vx);p.x=bLeft;}
+        if(p.x>bRight){p.vx=-Math.abs(p.vx);p.x=bRight;}
+        if(p.y<LIQUID_TOP+5){p.vy=Math.abs(p.vy);p.y=LIQUID_TOP+5;}
+        if(p.y>LIQUID_BOT-5){p.vy=-Math.abs(p.vy);p.y=LIQUID_BOT-5;}
+        p.el.setAttribute('cx',p.x.toFixed(1));p.el.setAttribute('cy',p.y.toFixed(1));
+      }
+
+      /* 气泡 */
+      while(bubblesG.firstChild)bubblesG.removeChild(bubblesG.firstChild);
+      for(var i=bubbles.length-1;i>=0;i--){
+        var b=bubbles[i];
+        b.y+=b.vy;b.life-=dt*0.5;
+        if(b.life<=0||b.y<LIQUID_TOP-10){bubbles.splice(i,1);continue;}
+        var bc=document.createElementNS(NS,'circle');
+        bc.setAttribute('cx',b.x);bc.setAttribute('cy',b.y);
+        bc.setAttribute('r',2+Math.random());
+        bc.setAttribute('fill','none');bc.setAttribute('stroke','#90caf9');
+        bc.setAttribute('stroke-width','0.8');bc.setAttribute('opacity',b.life.toFixed(2));
+        bubblesG.appendChild(bc);
+      }
+
+      /* 液体颜色变化 */
+      updateLiquid(rFrac);
+
+      /* 数据 */
+      cRVal.textContent=cR.toFixed(2)+' mol/L';
+      cPVal.textContent=cP.toFixed(2)+' mol/L';
+      rateVal.textContent=rate.toFixed(3)+' mol/(L·s)';
+      tVal.textContent=time.toFixed(1)+' s';
+
+      /* 图表 */
+      if(showGraph){
+        graphG.style.display='';
+        histR.push({t:time,c:cR});histP.push({t:time,c:cP});
+        while(histR.length>0&&histR[0].t<time-tWindow){histR.shift();histP.shift();}
+
+        var dR='',dP='';
+        for(var i=0;i<histR.length;i++){
+          var gx=(histR[i].t-histR[0].t)/tWindow*graphW;
+          var gyR=10+graphH-histR[i].c/c0*graphH*0.9;
+          var gyP=10+graphH-histP[i].c/c0*graphH*0.9;
+          dR+=(i?'L':'M')+gx.toFixed(1)+','+gyR.toFixed(1);
+          dP+=(i?'L':'M')+gx.toFixed(1)+','+gyP.toFixed(1);
+        }
+        curveR.setAttribute('d',dR);
+        curveP.setAttribute('d',dP);
+      }else{
+        graphG.style.display='none';
+      }
+
+      /* 定期派发事件 */
+      if(emitTimer>0.5){
+        emitTimer=0;
+        emitChange(cR,cP,rate);
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showGraph=(P2.showGraph!=='off');
+      var newCat=(P2.catalyst==='on');
+      if(newCat!==hasCatalyst){hasCatalyst=newCat;catFactor=hasCatalyst?5:1;k=0.03*Math.pow(2,(temp-25)/10)*catFactor;catBadge.style.display=hasCatalyst?'':'none';}
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

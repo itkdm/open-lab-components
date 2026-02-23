@@ -1,0 +1,259 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.column-addition.interactive",
+  "name": "竖式计算",
+  "nameEn": "Column Addition",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 260, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 260, "min": 180, "max": 500, "desc": "组件宽度" },
+    { "key": "num1", "type": "number", "default": 356, "min": 0, "max": 9999, "desc": "第一个数" },
+    { "key": "num2", "type": "number", "default": 278, "min": 0, "max": 9999, "desc": "第二个数" },
+    { "key": "operation", "type": "enum(+,-)", "default": "+", "desc": "运算符" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["addition", "subtraction", "column", "arithmetic", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "answer": "array", "carries": "array", "correct": "boolean" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.column-addition.interactive" role="img" aria-label="竖式计算">
+  <style>
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] {
+      --w: var(--cmp-size, 260px);
+      display: inline-block; width: var(--w); height: calc(var(--w) * 280 / 260);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] svg { display: block; width: 100%; height: 100%; }
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] .ca__btn,
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] .ca__digit-box,
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] .ca__carry-box {
+      cursor: pointer; transition: opacity 0.12s ease;
+    }
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] .ca__btn:hover,
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] .ca__digit-box:hover,
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] .ca__carry-box:hover { opacity: 0.82; }
+    .cmp[data-cmp-id="math.number.column-addition.interactive"] .ca__btn:active { opacity: 0.6; }
+  </style>
+  <svg viewBox="0 0 260 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs></defs><g class="ca__root"></g>
+  </svg>
+  <script>
+  (function() {
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.number.column-addition.interactive') return;
+    var NS = 'http://www.w3.org/2000/svg', svg = root.querySelector('svg');
+    var mainG = root.querySelector('.ca__root');
+    var uid = 'ca-' + Math.random().toString(36).slice(2, 8);
+    var FONT = "'Courier New','Noto Sans Mono',monospace";
+    var HFONT = "'Microsoft YaHei','PingFang SC',sans-serif";
+    var CW = 36, RX = 210; /* column width; rightmost column right-edge x */
+
+    function parseProps() {
+      try { var r = root.getAttribute('data-props'); return r ? JSON.parse(r) || {} : {}; } catch(e) { return {}; }
+    }
+    var props = parseProps();
+    var num1 = Math.max(0, Math.min(9999, Math.round(Number(props.num1) || 356)));
+    var num2 = Math.max(0, Math.min(9999, Math.round(Number(props.num2) || 278)));
+    var op = props.operation === '-' ? '-' : '+';
+
+    function toDigits(n, len) {
+      var d = []; for (var i = 0; i < len; i++) { d.unshift(n % 10); n = Math.floor(n / 10); } return d;
+    }
+    function numLen(n) { return n === 0 ? 1 : String(n).length; }
+    function maxCols() { return Math.max(numLen(num1), numLen(num2)); }
+    function colCX(ci) { return RX - ci * CW - CW / 2; } /* center-x of column ci (0=ones) */
+
+    function correctAnswer() { return Math.max(0, op === '+' ? num1 + num2 : num1 - num2); }
+    function correctDigits() {
+      var ans = correctAnswer(), cols = maxCols();
+      var d = toDigits(ans, ans === 0 ? 1 : String(ans).length);
+      while (d.length < cols) d.unshift(-1);
+      return d;
+    }
+
+    /* State */
+    var cols, ansCols, answer, carries, checked, allCorrect;
+    function resetState() {
+      cols = maxCols(); ansCols = op === '+' ? cols + 1 : cols;
+      answer = []; carries = [];
+      for (var i = 0; i < ansCols; i++) answer.push(-1);
+      for (var i = 0; i < cols; i++) carries.push(0);
+      checked = false; allCorrect = false;
+    }
+    resetState();
+
+    /* SVG helpers */
+    function el(tag, attrs) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) if (attrs.hasOwnProperty(k)) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+    function txt(x, y, text, size, color, weight, family) {
+      var t = el('text', { x: x, y: y, 'text-anchor': 'middle', 'font-size': size,
+        fill: color, 'font-weight': weight || '700', 'font-family': family || FONT,
+        'pointer-events': 'none' });
+      t.textContent = text; return t;
+    }
+
+    /* Grid background */
+    function drawGrid(g) {
+      var gid = uid + '-grid', defs = svg.querySelector('defs');
+      var pat = el('pattern', { id: gid, width: '18', height: '18', patternUnits: 'userSpaceOnUse' });
+      pat.appendChild(el('rect', { width: '18', height: '18', fill: '#f8fbff' }));
+      pat.appendChild(el('line', { x1: '18', y1: '0', x2: '18', y2: '18', stroke: '#d0e4f7', 'stroke-width': '0.5' }));
+      pat.appendChild(el('line', { x1: '0', y1: '18', x2: '18', y2: '18', stroke: '#d0e4f7', 'stroke-width': '0.5' }));
+      defs.appendChild(pat);
+      g.appendChild(el('rect', { x: '4', y: '4', width: '252', height: '272', rx: '6',
+        fill: 'url(#' + gid + ')', stroke: '#c8ddf0', 'stroke-width': '1' }));
+    }
+
+    /* Main render */
+    function render() {
+      mainG.innerHTML = ''; svg.querySelector('defs').innerHTML = '';
+      var g = mainG; drawGrid(g);
+      var d1 = toDigits(num1, cols), d2 = toDigits(num2, cols);
+
+      /* Carry row y=25 */
+      for (var i = 0; i < cols; i++) {
+        var ci = cols - 1 - i, cx = colCX(ci);
+        var cg = el('g', { 'class': 'ca__carry-box', 'data-ci': String(ci) });
+        var active = carries[ci];
+        cg.appendChild(el('circle', { cx: cx, cy: '25', r: '10', fill: active ? '#fff3e0' : '#f0f4f8',
+          stroke: active ? '#e65100' : '#b0bec5', 'stroke-width': '1',
+          'stroke-dasharray': active ? 'none' : '2,2' }));
+        if (active) cg.appendChild(txt(cx, 30, '1', '12', '#d84315', '700'));
+        g.appendChild(cg);
+      }
+
+      /* First number row y=62 */
+      for (var i = 0; i < cols; i++) {
+        var ci = cols - 1 - i;
+        g.appendChild(txt(colCX(ci), 62, String(d1[ci]), '22', '#1a237e', '700'));
+      }
+
+      /* Operator + second number row y=100 */
+      var opX = colCX(cols - 1) - CW / 2 - 4;
+      g.appendChild(txt(opX, 100, op, '22', '#c62828', '800'));
+      for (var i = 0; i < cols; i++) {
+        var ci = cols - 1 - i;
+        g.appendChild(txt(colCX(ci), 100, String(d2[ci]), '22', '#1a237e', '700'));
+      }
+
+      /* Horizontal line y=115 */
+      g.appendChild(el('line', { x1: opX - 14, y1: '115', x2: RX + 6, y2: '115',
+        stroke: '#263238', 'stroke-width': '2', 'stroke-linecap': 'round' }));
+
+      /* Answer row y=148 */
+      var cAns = correctDigits();
+      for (var i = 0; i < ansCols; i++) {
+        var idx = ansCols - 1 - i, cx = colCX(i);
+        var ag = el('g', { 'class': 'ca__digit-box', 'data-ai': String(i) });
+        var bFill = '#fff', bStroke = '#5c6bc0', tColor = '#1a237e', dash = '3,2';
+        if (checked && answer[idx] !== -1) {
+          var cIdx = cAns.length - 1 - i;
+          var ok = cIdx >= 0 && answer[idx] === cAns[cIdx];
+          bFill = ok ? '#e8f5e9' : '#ffebee'; bStroke = ok ? '#2e7d32' : '#c62828';
+          tColor = ok ? '#2e7d32' : '#c62828'; dash = 'none';
+        } else if (answer[idx] !== -1) { dash = 'none'; bStroke = '#3949ab'; }
+        ag.appendChild(el('rect', { x: cx - CW / 2 + 3, y: '130', width: '30', height: '36', rx: '4',
+          fill: bFill, stroke: bStroke, 'stroke-width': '1.5', 'stroke-dasharray': dash }));
+        if (answer[idx] !== -1) ag.appendChild(txt(cx, 154, String(answer[idx]), '20', tColor, '700'));
+        g.appendChild(ag);
+      }
+
+      /* Check button y=190 */
+      var btnG = el('g', { 'class': 'ca__btn', 'data-action': 'check' });
+      btnG.appendChild(el('rect', { x: '85', y: '178', width: '90', height: '30', rx: '15',
+        fill: '#1565C0', stroke: '#0d47a1', 'stroke-width': '1' }));
+      btnG.appendChild(txt(130, 198, '验算', '14', '#fff', '700', HFONT));
+      g.appendChild(btnG);
+
+      /* Result message */
+      if (checked) {
+        var msg = allCorrect ? '正确!' : '再想想~';
+        g.appendChild(txt(130, 230, msg, '18', allCorrect ? '#2e7d32' : '#c62828', '800', HFONT));
+        if (allCorrect) {
+          g.appendChild(txt(80, 232, '\u2605', '14', '#FFB300', '400'));
+          g.appendChild(txt(180, 232, '\u2605', '14', '#FFB300', '400'));
+        }
+      }
+
+      /* Reset button y=255 */
+      var rstG = el('g', { 'class': 'ca__btn', 'data-action': 'reset' });
+      rstG.appendChild(el('rect', { x: '95', y: '248', width: '70', height: '24', rx: '12',
+        fill: '#78909c', stroke: '#546e7a', 'stroke-width': '1' }));
+      rstG.appendChild(txt(130, 265, '重置', '12', '#fff', '600', HFONT));
+      g.appendChild(rstG);
+    }
+
+    /* Check answer */
+    function checkAnswer() {
+      checked = true; allCorrect = true;
+      var cAns = correctDigits();
+      for (var i = 0; i < ansCols; i++) {
+        var userD = answer[ansCols - 1 - i];
+        var cIdx = cAns.length - 1 - i;
+        var correctD = cIdx >= 0 ? cAns[cIdx] : -1;
+        if (correctD === -1 && (userD === -1 || userD === 0)) continue;
+        if (userD !== correctD) { allCorrect = false; break; }
+      }
+      render(); emitChange();
+    }
+
+    function emitChange() {
+      root.dispatchEvent(new CustomEvent('cmp:change', { bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust',
+          values: { answer: answer.slice(), carries: carries.slice(), correct: allCorrect } }
+      }));
+    }
+
+    /* Click handling */
+    svg.addEventListener('click', function(e) {
+      var tgt = e.target;
+      var dbox = tgt.closest('.ca__digit-box');
+      if (dbox) {
+        if (checked) return;
+        var ai = parseInt(dbox.getAttribute('data-ai'), 10), idx = ansCols - 1 - ai;
+        answer[idx] = answer[idx] === -1 ? 0 : (answer[idx] + 1) % 10;
+        render(); emitChange(); return;
+      }
+      var cbox = tgt.closest('.ca__carry-box');
+      if (cbox) {
+        if (checked) return;
+        var ci = parseInt(cbox.getAttribute('data-ci'), 10);
+        carries[ci] = carries[ci] ? 0 : 1;
+        render(); emitChange(); return;
+      }
+      var btn = tgt.closest('.ca__btn');
+      if (btn) {
+        var action = btn.getAttribute('data-action');
+        if (action === 'check') checkAnswer();
+        else if (action === 'reset') { resetState(); render(); }
+      }
+    });
+
+    root.setAttribute('tabindex', '0');
+    render();
+
+    /* Observe prop changes */
+    new MutationObserver(function(muts) {
+      for (var i = 0; i < muts.length; i++) {
+        if (muts[i].attributeName === 'data-props' || muts[i].attributeName === 'style') {
+          var p = parseProps();
+          var n1 = Math.max(0, Math.min(9999, Math.round(Number(p.num1) || 356)));
+          var n2 = Math.max(0, Math.min(9999, Math.round(Number(p.num2) || 278)));
+          var o = p.operation === '-' ? '-' : '+';
+          if (n1 !== num1 || n2 !== num2 || o !== op) {
+            num1 = n1; num2 = n2; op = o; resetState(); render();
+          }
+        }
+      }
+    }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+  })();
+  </script>
+</div>

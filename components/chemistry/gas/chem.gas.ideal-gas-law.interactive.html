@@ -1,0 +1,410 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.gas.ideal-gas-law.interactive",
+  "name": "理想气体定律（交互式）",
+  "nameEn": "Ideal Gas Law (Interactive)",
+  "category": "chemistry/gas",
+  "version": "1.0.0",
+  "viewport": { "w": 520, "h": 450 },
+  "tags": ["chemistry","gas","ideal-gas","PV=nRT","pressure","volume","temperature","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "gasColor",       "type": "color",  "default": "#42a5f5", "desc": "气体粒子颜色" },
+    { "key": "pistonColor",    "type": "color",  "default": "#78909c", "desc": "活塞颜色" },
+    { "key": "temperature",    "type": "number", "default": 300, "min": 100, "max": 600, "desc": "温度(K)" },
+    { "key": "volume",         "type": "number", "default": 50, "min": 20, "max": 100, "desc": "体积(%)" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showGraph",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示PV图" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "gasColor": "--cmp-gas", "pistonColor": "--cmp-piston", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "state", "values": { "temperature": "number(K)", "volume": "number(%)", "pressure": "number(kPa)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.gas.ideal-gas-law.interactive" role="img" aria-label="理想气体定律（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.gas.ideal-gas-law.interactive"]{
+      --h:var(--cmp-size,450px);display:inline-block;
+      width:calc(var(--h)*520/450);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="chem.gas.ideal-gas-law.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.gas.ideal-gas-law.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 520 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <clipPath id="igl__chamberClip"><rect x="60" y="60" width="180" height="300"/></clipPath>
+      <linearGradient id="igl__pistonG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#b0bec5"/><stop offset="0.5" stop-color="#78909c"/><stop offset="1" stop-color="#546e7a"/>
+      </linearGradient>
+      <linearGradient id="igl__wallG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#90a4ae"/><stop offset="1" stop-color="#b0bec5"/>
+      </linearGradient>
+      <radialGradient id="igl__flame" cx="50%" cy="80%">
+        <stop offset="0" stop-color="#ff9800"/><stop offset="0.5" stop-color="#f44336"/><stop offset="1" stop-color="#f44336" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 容器壁 -->
+    <rect x="58" y="58" width="184" height="304" rx="3" fill="url(#igl__wallG)" opacity="0.3"/>
+    <rect x="60" y="60" width="180" height="300" rx="2" fill="#eceff1" stroke="var(--cmp-stroke,#37474f)" stroke-width="2"/>
+
+    <!-- 气体背景色（温度映射） -->
+    <rect class="igl__gasBg" x="61" y="160" width="178" height="199" fill="#42a5f5" opacity="0.08" clip-path="url(#igl__chamberClip)"/>
+
+    <!-- 气体粒子 -->
+    <g class="igl__particles" clip-path="url(#igl__chamberClip)"></g>
+
+    <!-- 活塞 -->
+    <g class="igl__piston">
+      <rect class="igl__pistonBody" x="62" y="150" width="176" height="18" rx="2" fill="url(#igl__pistonG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <!-- 活塞手柄 -->
+      <rect x="142" y="130" width="16" height="25" rx="3" fill="#546e7a" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <rect x="138" y="125" width="24" height="8" rx="3" fill="#455a64"/>
+      <!-- 活塞高光 -->
+      <rect x="65" y="152" width="80" height="4" rx="2" fill="#fff" opacity="0.2"/>
+    </g>
+
+    <!-- 火焰（加热指示） -->
+    <g class="igl__flame" transform="translate(150,380)">
+      <ellipse cx="0" cy="0" rx="25" ry="12" fill="url(#igl__flame)" opacity="0.6"/>
+      <path class="igl__flameShape" d="M-8,0 Q-5,-20 0,-30 Q5,-20 8,0 Z" fill="#ff9800" opacity="0.8"/>
+    </g>
+
+    <!-- 压力表 -->
+    <g transform="translate(30,30)">
+      <circle cx="0" cy="0" r="22" fill="#fff" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <text x="0" y="-8" text-anchor="middle" font-size="6" fill="#999">kPa</text>
+      <text class="igl__pressureText" x="0" y="6" text-anchor="middle" font-size="10" font-weight="700" fill="#e53935">101</text>
+      <!-- 表针 -->
+      <line class="igl__pressureNeedle" x1="0" y1="0" x2="0" y2="-16" stroke="#e53935" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="2.5" fill="#e53935"/>
+      <!-- 刻度 -->
+      <g opacity="0.4" stroke="#666" stroke-width="0.5">
+        <line x1="-15" y1="-12" x2="-18" y2="-14"/>
+        <line x1="0" y1="-18" x2="0" y2="-20"/>
+        <line x1="15" y1="-12" x2="18" y2="-14"/>
+      </g>
+    </g>
+
+    <!-- PV图 -->
+    <g class="igl__pvGraph" transform="translate(290,50)">
+      <rect x="0" y="0" width="200" height="160" rx="4" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="100" y="-5" text-anchor="middle" font-size="10" font-weight="600" fill="var(--cmp-stroke,#37474f)">P-V 图</text>
+      <!-- 坐标轴 -->
+      <line x1="30" y1="140" x2="190" y2="140" stroke="#999" stroke-width="0.8"/>
+      <line x1="30" y1="140" x2="30" y2="15" stroke="#999" stroke-width="0.8"/>
+      <text x="110" y="155" text-anchor="middle" font-size="8" fill="#999">V (体积)</text>
+      <text x="12" y="80" text-anchor="middle" font-size="8" fill="#999" transform="rotate(-90,12,80)">P (压强)</text>
+      <!-- 等温线 -->
+      <path class="igl__isotherm" d="" fill="none" stroke="#5c6bc0" stroke-width="1.5"/>
+      <!-- 当前状态点 -->
+      <circle class="igl__statePoint" cx="100" cy="80" r="5" fill="#e53935" stroke="#fff" stroke-width="1.5"/>
+      <!-- 状态标注 -->
+      <text class="igl__stateText" x="100" y="75" text-anchor="middle" font-size="8" fill="#e53935"></text>
+    </g>
+
+    <!-- 数值面板 -->
+    <g class="igl__info" transform="translate(290,230)">
+      <rect x="0" y="0" width="200" height="90" rx="6" fill="rgba(255,255,255,0.92)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="100" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="var(--cmp-stroke,#37474f)">PV = nRT</text>
+      <text class="igl__tempVal" x="15" y="38" font-size="10" fill="#e65100">T = 300 K</text>
+      <text class="igl__volVal" x="15" y="55" font-size="10" fill="#1565c0">V = 50%</text>
+      <text class="igl__presVal" x="15" y="72" font-size="10" font-weight="600" fill="#e53935">P = 101.3 kPa</text>
+      <text class="igl__densityHint" x="15" y="86" font-size="8" fill="#999">n=1mol, R=8.314</text>
+    </g>
+
+    <!-- 温度滑块 -->
+    <g transform="translate(290,340)">
+      <text x="0" y="-5" font-size="9" fill="#e65100" font-weight="600">温度 T</text>
+      <rect x="0" y="0" width="200" height="5" rx="2.5" fill="#e0e0e0"/>
+      <rect class="igl__tempFill" x="0" y="0" width="80" height="5" rx="2.5" fill="#ff9800"/>
+      <circle class="igl__tempThumb" cx="80" cy="2.5" r="9" fill="#ff9800" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="igl__tempSliderText" x="210" y="8" font-size="9" fill="#e65100">300K</text>
+    </g>
+
+    <!-- 体积滑块 -->
+    <g transform="translate(290,380)">
+      <text x="0" y="-5" font-size="9" fill="#1565c0" font-weight="600">体积 V</text>
+      <rect x="0" y="0" width="200" height="5" rx="2.5" fill="#e0e0e0"/>
+      <rect class="igl__volFill" x="0" y="0" width="60" height="5" rx="2.5" fill="#42a5f5"/>
+      <circle class="igl__volThumb" cx="60" cy="2.5" r="9" fill="#42a5f5" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="igl__volSliderText" x="210" y="8" font-size="9" fill="#1565c0">50%</text>
+    </g>
+
+    <!-- 标注 -->
+    <g class="igl__labels-g">
+      <text x="150" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="var(--cmp-stroke,#37474f)">理想气体定律</text>
+      <text x="150" y="42" text-anchor="middle" font-size="9" fill="#78909c">PV = nRT</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.gas.ideal-gas-law.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var temperature=Math.max(100,Math.min(600,Number(P.temperature)||300));
+    var volume=Math.max(20,Math.min(100,Number(P.volume)||50));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var showGraph=(P.showGraph!=='off');
+
+    var particlesG=root.querySelector('.igl__particles');
+    var pistonBody=root.querySelector('.igl__pistonBody');
+    var pistonGroup=root.querySelector('.igl__piston');
+    var gasBg=root.querySelector('.igl__gasBg');
+    var flameShape=root.querySelector('.igl__flameShape');
+    var flameG=root.querySelector('.igl__flame');
+    var pressureText=root.querySelector('.igl__pressureText');
+    var pressureNeedle=root.querySelector('.igl__pressureNeedle');
+    var isotherm=root.querySelector('.igl__isotherm');
+    var statePoint=root.querySelector('.igl__statePoint');
+    var stateText=root.querySelector('.igl__stateText');
+    var pvGraph=root.querySelector('.igl__pvGraph');
+    var tempVal=root.querySelector('.igl__tempVal');
+    var volVal=root.querySelector('.igl__volVal');
+    var presVal=root.querySelector('.igl__presVal');
+    var tempFill=root.querySelector('.igl__tempFill');
+    var tempThumb=root.querySelector('.igl__tempThumb');
+    var tempSliderText=root.querySelector('.igl__tempSliderText');
+    var volFill=root.querySelector('.igl__volFill');
+    var volThumb=root.querySelector('.igl__volThumb');
+    var volSliderText=root.querySelector('.igl__volSliderText');
+    var labelsG=root.querySelector('.igl__labels-g');
+
+    var CHAMBER_TOP=60,CHAMBER_BOT=360,CHAMBER_LEFT=61,CHAMBER_RIGHT=239;
+    var PISTON_H=18;
+    var NUM_PARTICLES=25;
+
+    /* 粒子数据 */
+    var particles=[];
+    for(var i=0;i<NUM_PARTICLES;i++){
+      particles.push({
+        x:CHAMBER_LEFT+20+Math.random()*130,
+        y:200+Math.random()*140,
+        vx:(Math.random()-0.5)*120,
+        vy:(Math.random()-0.5)*120,
+        r:3+Math.random()*2,
+        el:null
+      });
+    }
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function calcPressure(){
+      /* P = nRT/V, 归一化: 基准 T=300K, V=50% → P=101.3kPa */
+      return 101.3*(temperature/300)*(50/volume);
+    }
+
+    function pistonY(){
+      /* volume 20%→100% 映射到 pistonY 280→100 */
+      return 280-(volume-20)/80*180;
+    }
+
+    function tempColor(){
+      /* 100K→蓝, 300K→白, 600K→红 */
+      if(temperature<=300){
+        var t=(temperature-100)/200;
+        var r2=Math.round(66+t*189),g=Math.round(165-t*50),b=Math.round(245-t*100);
+        return 'rgb('+r2+','+g+','+b+')';
+      }else{
+        var t2=(temperature-300)/300;
+        return 'rgb('+Math.round(255)+','+Math.round(145-t2*100)+','+Math.round(145-t2*120)+')';
+      }
+    }
+
+    function updateSliders(){
+      var tp=(temperature-100)/500*200;
+      tempFill.setAttribute('width',tp);
+      tempThumb.setAttribute('cx',tp);
+      tempSliderText.textContent=Math.round(temperature)+'K';
+
+      var vp=(volume-20)/80*200;
+      volFill.setAttribute('width',vp);
+      volThumb.setAttribute('cx',vp);
+      volSliderText.textContent=Math.round(volume)+'%';
+    }
+
+    function updateStatic(){
+      var py=pistonY();
+      pistonBody.setAttribute('y',py);
+      pistonGroup.querySelector('rect:nth-child(2)').setAttribute('y',py-20);
+      pistonGroup.querySelector('rect:nth-child(3)').setAttribute('y',py-25);
+      pistonGroup.querySelector('rect:nth-child(4)').setAttribute('y',py+2);
+
+      gasBg.setAttribute('y',py+PISTON_H);
+      gasBg.setAttribute('height',CHAMBER_BOT-py-PISTON_H);
+      gasBg.setAttribute('fill',tempColor());
+      gasBg.setAttribute('opacity',0.06+temperature/600*0.12);
+
+      /* 火焰大小 */
+      var flameScale=Math.max(0,(temperature-200)/400);
+      flameShape.setAttribute('transform','scale('+flameScale+')');
+      flameG.setAttribute('opacity',flameScale>0.1?0.8:0);
+
+      /* 压力 */
+      var pressure=calcPressure();
+      pressureText.textContent=Math.round(pressure);
+      var needleAngle=-90+Math.min(180,pressure/300*180);
+      pressureNeedle.setAttribute('transform','rotate('+needleAngle+')');
+
+      /* PV图 */
+      pvGraph.style.display=showGraph?'':'none';
+      if(showGraph){
+        /* 等温线: P = nRT/V, 归一化 */
+        var d='';
+        for(var v=20;v<=100;v+=1){
+          var p=101.3*(temperature/300)*(50/v);
+          var gx=30+(v-20)/80*155;
+          var gy=140-Math.min(125,p/300*125);
+          d+=(v===20?'M':'L')+gx.toFixed(1)+','+gy.toFixed(1);
+        }
+        isotherm.setAttribute('d',d);
+
+        var spx=30+(volume-20)/80*155;
+        var spy=140-Math.min(125,pressure/300*125);
+        statePoint.setAttribute('cx',spx);
+        statePoint.setAttribute('cy',spy);
+        stateText.setAttribute('x',spx);
+        stateText.setAttribute('y',spy-8);
+        stateText.textContent='('+Math.round(volume)+'%, '+Math.round(pressure)+'kPa)';
+      }
+
+      /* 数值 */
+      tempVal.textContent='T = '+Math.round(temperature)+' K';
+      volVal.textContent='V = '+Math.round(volume)+'%';
+      presVal.textContent='P = '+pressure.toFixed(1)+' kPa';
+
+      labelsG.style.display=showLabels?'':'none';
+      updateSliders();
+    }
+
+    /* 初始化粒子元素 */
+    function initParticleEls(){
+      clear(particlesG);
+      for(var i=0;i<particles.length;i++){
+        var c=elSvg('circle',{r:particles[i].r,fill:'var(--cmp-gas,#42a5f5)',opacity:'0.7'});
+        particlesG.appendChild(c);
+        particles[i].el=c;
+      }
+    }
+    initParticleEls();
+
+    var animId=0,lastT=0,time=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04);
+      lastT=t;
+      time+=dt;
+
+      var py=pistonY();
+      var chamberTop=py+PISTON_H;
+      var chamberBot=CHAMBER_BOT;
+      var speedMul=Math.sqrt(temperature/300)*speed;
+
+      for(var i=0;i<particles.length;i++){
+        var p=particles[i];
+        p.x+=p.vx*dt*speedMul;
+        p.y+=p.vy*dt*speedMul;
+
+        /* 碰壁反弹 */
+        if(p.x-p.r<CHAMBER_LEFT){p.x=CHAMBER_LEFT+p.r;p.vx=Math.abs(p.vx);}
+        if(p.x+p.r>CHAMBER_RIGHT){p.x=CHAMBER_RIGHT-p.r;p.vx=-Math.abs(p.vx);}
+        if(p.y-p.r<chamberTop){p.y=chamberTop+p.r;p.vy=Math.abs(p.vy);}
+        if(p.y+p.r>chamberBot){p.y=chamberBot-p.r;p.vy=-Math.abs(p.vy);}
+
+        p.el.setAttribute('cx',p.x);
+        p.el.setAttribute('cy',p.y);
+
+        /* 温度影响颜色 */
+        var op=0.5+temperature/600*0.4;
+        p.el.setAttribute('opacity',op);
+      }
+
+      /* 火焰动画 */
+      var fs=Math.max(0,(temperature-200)/400);
+      var flicker=1+0.15*Math.sin(time*12);
+      flameShape.setAttribute('transform','scale('+fs*flicker+')');
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+
+    updateStatic();
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* 滑块拖拽 */
+    var dragType=null;
+    function startDrag(type){return function(e){e.preventDefault();dragType=type;
+      document.addEventListener('mousemove',onDrag,{passive:false});
+      document.addEventListener('mouseup',endDrag);
+      document.addEventListener('touchmove',onDrag,{passive:false});
+      document.addEventListener('touchend',endDrag);
+    };}
+    function onDrag(e){
+      if(!dragType)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*520;
+      var pos=Math.max(0,Math.min(200,sx-290));
+      if(dragType==='temp'){
+        temperature=Math.round(100+pos/200*500);
+      }else{
+        volume=Math.round(20+pos/200*80);
+      }
+      updateStatic();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'chem.gas.ideal-gas-law.interactive',type:'state',
+          values:{temperature:temperature,volume:volume,pressure:+calcPressure().toFixed(1)}}}));
+    }
+    function endDrag(){dragType=null;
+      document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);
+      document.removeEventListener('touchmove',onDrag);document.removeEventListener('touchend',endDrag);
+    }
+    tempThumb.addEventListener('mousedown',startDrag('temp'),{passive:false});
+    tempThumb.addEventListener('touchstart',startDrag('temp'),{passive:false});
+    volThumb.addEventListener('mousedown',startDrag('vol'),{passive:false});
+    volThumb.addEventListener('touchstart',startDrag('vol'),{passive:false});
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.temperature!=null)temperature=Math.max(100,Math.min(600,Number(P2.temperature)||300));
+      if(P2.volume!=null)volume=Math.max(20,Math.min(100,Number(P2.volume)||50));
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');showGraph=(P2.showGraph!=='off');
+      updateStatic();
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

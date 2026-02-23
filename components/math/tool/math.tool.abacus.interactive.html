@@ -1,0 +1,507 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.tool.abacus.interactive",
+  "name": "算盘",
+  "nameEn": "Abacus",
+  "category": "math/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 240 },
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 300, "min": 160, "max": 600, "desc": "组件宽度" },
+    { "key": "rods",       "type": "number",     "default": 5,   "min": 3,   "max": 13,  "desc": "档位数量" },
+    { "key": "frameColor", "type": "color",      "default": "#6d4c2a", "desc": "框架颜色" },
+    { "key": "beadColor",  "type": "color",      "default": "#c0392b", "desc": "算珠颜色" },
+    { "key": "rodColor",   "type": "color",      "default": "#bfa76a", "desc": "档杆颜色" },
+    { "key": "beamColor",  "type": "color",      "default": "#5a3a1a", "desc": "横梁颜色" }
+  ],
+  "cssVars": {
+    "size":       "--cmp-size",
+    "frameColor": "--cmp-frame-color",
+    "beadColor":  "--cmp-bead-color",
+    "rodColor":   "--cmp-rod-color",
+    "beamColor":  "--cmp-beam-color"
+  },
+  "tags": ["abacus", "counting", "calculation", "math", "primary", "interactive"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "value": "number — 当前算盘表示的数值",
+        "rods": "number[] — 每档的值（从高位到低位）"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "toggle",
+      "values": {
+        "value": "number — 最终数值",
+        "rods": "number[] — 每档的值"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.tool.abacus.interactive" role="img" aria-label="算盘">
+  <style>
+    .cmp[data-cmp-id="math.tool.abacus.interactive"] {
+      --w: var(--cmp-size, 300px);
+      --frame: var(--cmp-frame-color, #6d4c2a);
+      --bead: var(--cmp-bead-color, #c0392b);
+      --rod: var(--cmp-rod-color, #bfa76a);
+      --beam: var(--cmp-beam-color, #5a3a1a);
+      display: inline-block;
+      width: var(--w);
+      /* height driven by viewBox aspect ratio */
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="math.tool.abacus.interactive"] svg {
+      display: block; width: 100%; height: 100%; overflow: visible;
+    }
+    .cmp[data-cmp-id="math.tool.abacus.interactive"] .ab__bead {
+      cursor: pointer;
+      transition: transform 0.12s cubic-bezier(.4,0,.2,1);
+    }
+    .cmp[data-cmp-id="math.tool.abacus.interactive"] .ab__bead:hover {
+      filter: brightness(1.15);
+    }
+    .cmp[data-cmp-id="math.tool.abacus.interactive"] .ab__value {
+      font-family: 'Courier New', Courier, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+  </style>
+
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- Wood grain pattern for frame -->
+      <pattern id="ab__woodGrain" x="0" y="0" width="200" height="8" patternUnits="userSpaceOnUse">
+        <rect width="200" height="8" fill="var(--frame)"/>
+        <line x1="0" y1="1" x2="200" y2="1.5" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
+        <line x1="0" y1="3" x2="200" y2="2.8" stroke="rgba(255,255,255,0.06)" stroke-width="0.4"/>
+        <line x1="0" y1="5.5" x2="200" y2="5.8" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+        <line x1="0" y1="7" x2="200" y2="6.8" stroke="rgba(255,255,255,0.04)" stroke-width="0.3"/>
+      </pattern>
+      <!-- Frame gradient (polished wood) -->
+      <linearGradient id="ab__frameGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="rgba(255,255,255,0.18)"/>
+        <stop offset="0.3" stop-color="rgba(255,255,255,0.0)"/>
+        <stop offset="0.7" stop-color="rgba(0,0,0,0.05)"/>
+        <stop offset="1"   stop-color="rgba(0,0,0,0.15)"/>
+      </linearGradient>
+      <!-- Beam gradient -->
+      <linearGradient id="ab__beamGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0"   stop-color="rgba(255,255,255,0.15)"/>
+        <stop offset="0.5" stop-color="rgba(0,0,0,0.0)"/>
+        <stop offset="1"   stop-color="rgba(0,0,0,0.2)"/>
+      </linearGradient>
+      <!-- Bead radial gradient for 3D look -->
+      <radialGradient id="ab__beadGrad" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0"   stop-color="rgba(255,255,255,0.45)"/>
+        <stop offset="0.4" stop-color="rgba(255,255,255,0.0)"/>
+        <stop offset="1"   stop-color="rgba(0,0,0,0.35)"/>
+      </radialGradient>
+      <!-- Rod metallic gradient -->
+      <linearGradient id="ab__rodGrad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0"   stop-color="rgba(0,0,0,0.15)"/>
+        <stop offset="0.3" stop-color="rgba(255,255,255,0.2)"/>
+        <stop offset="0.5" stop-color="rgba(255,255,255,0.05)"/>
+        <stop offset="1"   stop-color="rgba(0,0,0,0.15)"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Frame, beam, rods, beads, value display will be built by JS -->
+    <g class="ab__frame"></g>
+    <g class="ab__rods"></g>
+    <g class="ab__beads"></g>
+    <g class="ab__beam-group"></g>
+    <g class="ab__value-group"></g>
+  </svg>
+
+  <script>
+  (() => {
+    const script = document.currentScript;
+    if (!script) return;
+    const root = script.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.tool.abacus.interactive') return;
+
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = root.querySelector('svg');
+    const frameG = root.querySelector('.ab__frame');
+    const rodsG = root.querySelector('.ab__rods');
+    const beadsG = root.querySelector('.ab__beads');
+    const beamGroupG = root.querySelector('.ab__beam-group');
+    const valueGroupG = root.querySelector('.ab__value-group');
+
+    /* ---- Props ---- */
+    let props = {};
+    try {
+      const raw = root.getAttribute('data-props');
+      if (raw) { const o = JSON.parse(raw); if (o && typeof o === 'object') props = o; }
+    } catch(e) {}
+
+    const rodCount = Math.max(3, Math.min(13, Math.round(Number(props.rods) || 5)));
+
+    /* ---- Layout constants (in SVG user units) ---- */
+    const PAD = 10;                    // padding around frame
+    const FRAME_W = 8;                 // frame border thickness
+    const ROD_SPACING = 28;            // horizontal spacing between rods
+    const BEAD_RX = 10;               // bead horizontal radius
+    const BEAD_RY = 7;                // bead vertical radius
+    const BEAD_GAP = 1;               // gap between beads
+    const UPPER_BEADS = 2;
+    const LOWER_BEADS = 5;
+
+    const innerW = rodCount * ROD_SPACING;
+    const totalW = innerW + FRAME_W * 2 + PAD * 2;
+
+    // Vertical layout
+    const FRAME_TOP = PAD;
+    const FRAME_INNER_TOP = FRAME_TOP + FRAME_W;
+    const UPPER_H = (UPPER_BEADS + 1) * (BEAD_RY * 2 + BEAD_GAP);  // space for upper beads
+    const BEAM_Y = FRAME_INNER_TOP + UPPER_H;
+    const BEAM_H = 6;
+    const LOWER_H = (LOWER_BEADS + 1) * (BEAD_RY * 2 + BEAD_GAP);  // space for lower beads
+    const FRAME_INNER_BOT = BEAM_Y + BEAM_H + LOWER_H;
+    const FRAME_BOT = FRAME_INNER_BOT + FRAME_W;
+    const VALUE_Y = FRAME_BOT + 18;
+    const totalH = VALUE_Y + 8;
+
+    svg.setAttribute('viewBox', `0 0 ${totalW} ${totalH}`);
+
+    /* ---- State: each rod tracks which upper/lower beads are active ---- */
+    // upperActive[i] = number of upper beads pushed toward beam (0-2)
+    // lowerActive[i] = number of lower beads pushed toward beam (0-5)
+    const upperActive = new Array(rodCount).fill(0);
+    const lowerActive = new Array(rodCount).fill(0);
+
+    /* ---- Helper: rod X position ---- */
+    function rodX(i) {
+      return PAD + FRAME_W + ROD_SPACING * 0.5 + i * ROD_SPACING;
+    }
+
+    /* ---- Draw frame (polished wood) ---- */
+    function drawFrame() {
+      frameG.innerHTML = '';
+      const x = PAD;
+      const y = FRAME_TOP;
+      const w = FRAME_W * 2 + innerW;
+      const h = FRAME_BOT - FRAME_TOP;
+      const r = 4;
+
+      // Outer frame with wood pattern
+      const outer = document.createElementNS(NS, 'rect');
+      outer.setAttribute('x', x); outer.setAttribute('y', y);
+      outer.setAttribute('width', w); outer.setAttribute('height', h);
+      outer.setAttribute('rx', r); outer.setAttribute('ry', r);
+      outer.setAttribute('fill', 'url(#ab__woodGrain)');
+      outer.setAttribute('stroke', 'rgba(0,0,0,0.3)');
+      outer.setAttribute('stroke-width', '1');
+      frameG.appendChild(outer);
+
+      // Polished overlay
+      const overlay = document.createElementNS(NS, 'rect');
+      overlay.setAttribute('x', x); overlay.setAttribute('y', y);
+      overlay.setAttribute('width', w); overlay.setAttribute('height', h);
+      overlay.setAttribute('rx', r); overlay.setAttribute('ry', r);
+      overlay.setAttribute('fill', 'url(#ab__frameGrad)');
+      frameG.appendChild(overlay);
+
+      // Inner cutout (background)
+      const inner = document.createElementNS(NS, 'rect');
+      inner.setAttribute('x', x + FRAME_W); inner.setAttribute('y', FRAME_INNER_TOP);
+      inner.setAttribute('width', innerW); inner.setAttribute('height', FRAME_INNER_BOT - FRAME_INNER_TOP);
+      inner.setAttribute('fill', '#f5efe6');
+      inner.setAttribute('stroke', 'rgba(0,0,0,0.1)');
+      inner.setAttribute('stroke-width', '0.5');
+      frameG.appendChild(inner);
+
+      // Shadow inside frame
+      const shadow = document.createElementNS(NS, 'rect');
+      shadow.setAttribute('x', x + FRAME_W); shadow.setAttribute('y', FRAME_INNER_TOP);
+      shadow.setAttribute('width', innerW); shadow.setAttribute('height', 3);
+      shadow.setAttribute('fill', 'rgba(0,0,0,0.08)');
+      frameG.appendChild(shadow);
+    }
+
+    /* ---- Draw beam ---- */
+    function drawBeam() {
+      beamGroupG.innerHTML = '';
+      const x = PAD;
+      const w = FRAME_W * 2 + innerW;
+
+      const beam = document.createElementNS(NS, 'rect');
+      beam.setAttribute('x', x); beam.setAttribute('y', BEAM_Y);
+      beam.setAttribute('width', w); beam.setAttribute('height', BEAM_H);
+      beam.setAttribute('fill', 'var(--beam)');
+      beam.setAttribute('stroke', 'rgba(0,0,0,0.25)');
+      beam.setAttribute('stroke-width', '0.5');
+      beamGroupG.appendChild(beam);
+
+      // Beam shine
+      const shine = document.createElementNS(NS, 'rect');
+      shine.setAttribute('x', x); shine.setAttribute('y', BEAM_Y);
+      shine.setAttribute('width', w); shine.setAttribute('height', BEAM_H);
+      shine.setAttribute('fill', 'url(#ab__beamGrad)');
+      beamGroupG.appendChild(shine);
+    }
+
+    /* ---- Draw rods ---- */
+    function drawRods() {
+      rodsG.innerHTML = '';
+      for (let i = 0; i < rodCount; i++) {
+        const x = rodX(i);
+        const rodW = 2.5;
+
+        // Rod base color
+        const rod = document.createElementNS(NS, 'rect');
+        rod.setAttribute('x', x - rodW / 2);
+        rod.setAttribute('y', FRAME_INNER_TOP + 1);
+        rod.setAttribute('width', rodW);
+        rod.setAttribute('height', FRAME_INNER_BOT - FRAME_INNER_TOP - 2);
+        rod.setAttribute('fill', 'var(--rod)');
+        rod.setAttribute('rx', '1');
+        rodsG.appendChild(rod);
+
+        // Rod metallic overlay
+        const rodOverlay = document.createElementNS(NS, 'rect');
+        rodOverlay.setAttribute('x', x - rodW / 2);
+        rodOverlay.setAttribute('y', FRAME_INNER_TOP + 1);
+        rodOverlay.setAttribute('width', rodW);
+        rodOverlay.setAttribute('height', FRAME_INNER_BOT - FRAME_INNER_TOP - 2);
+        rodOverlay.setAttribute('fill', 'url(#ab__rodGrad)');
+        rodOverlay.setAttribute('rx', '1');
+        rodsG.appendChild(rodOverlay);
+      }
+    }
+
+    /* ---- Bead Y positions ---- */
+    function getUpperBeadY(rodIdx, beadIdx) {
+      // beadIdx 0 = topmost upper bead, 1 = second
+      // When inactive: beads sit at top. When active: pushed down toward beam.
+      const active = upperActive[rodIdx];
+      const beadH = BEAD_RY * 2 + BEAD_GAP;
+      const restY = FRAME_INNER_TOP + 4 + beadIdx * beadH + BEAD_RY;
+      const activeY = BEAM_Y - (UPPER_BEADS - beadIdx) * beadH + BEAD_RY - 2;
+
+      // A bead is active if its index >= (UPPER_BEADS - active)
+      // i.e., bead 1 activates first (closer to beam), then bead 0
+      if (beadIdx >= UPPER_BEADS - active) {
+        return activeY;
+      }
+      return restY;
+    }
+
+    function getLowerBeadY(rodIdx, beadIdx) {
+      // beadIdx 0 = topmost lower bead (closest to beam), 4 = bottommost
+      const active = lowerActive[rodIdx];
+      const beadH = BEAD_RY * 2 + BEAD_GAP;
+      const restY = BEAM_Y + BEAM_H + LOWER_H - (LOWER_BEADS - beadIdx) * beadH + BEAD_RY - 4;
+      const activeY = BEAM_Y + BEAM_H + 4 + beadIdx * beadH + BEAD_RY;
+
+      // A bead is active if its index < active
+      if (beadIdx < active) {
+        return activeY;
+      }
+      return restY;
+    }
+
+    /* ---- Draw beads ---- */
+    function drawBeads() {
+      beadsG.innerHTML = '';
+
+      for (let i = 0; i < rodCount; i++) {
+        const cx = rodX(i);
+
+        // Upper beads (2 per rod)
+        for (let j = 0; j < UPPER_BEADS; j++) {
+          const cy = getUpperBeadY(i, j);
+          const isActive = j >= UPPER_BEADS - upperActive[i];
+          createBead(cx, cy, i, j, 'upper', isActive);
+        }
+
+        // Lower beads (5 per rod)
+        for (let j = 0; j < LOWER_BEADS; j++) {
+          const cy = getLowerBeadY(i, j);
+          const isActive = j < lowerActive[i];
+          createBead(cx, cy, i, j, 'lower', isActive);
+        }
+      }
+    }
+
+    function createBead(cx, cy, rodIdx, beadIdx, section, isActive) {
+      const g = document.createElementNS(NS, 'g');
+      g.classList.add('ab__bead');
+      g.setAttribute('data-rod', rodIdx);
+      g.setAttribute('data-bead', beadIdx);
+      g.setAttribute('data-section', section);
+
+      // Bead shadow
+      const shadow = document.createElementNS(NS, 'ellipse');
+      shadow.setAttribute('cx', cx + 1);
+      shadow.setAttribute('cy', cy + 1.5);
+      shadow.setAttribute('rx', BEAD_RX);
+      shadow.setAttribute('ry', BEAD_RY);
+      shadow.setAttribute('fill', 'rgba(0,0,0,0.15)');
+      g.appendChild(shadow);
+
+      // Bead body
+      const body = document.createElementNS(NS, 'ellipse');
+      body.setAttribute('cx', cx);
+      body.setAttribute('cy', cy);
+      body.setAttribute('rx', BEAD_RX);
+      body.setAttribute('ry', BEAD_RY);
+      body.setAttribute('fill', 'var(--bead)');
+      body.setAttribute('stroke', 'rgba(0,0,0,0.2)');
+      body.setAttribute('stroke-width', '0.5');
+      g.appendChild(body);
+
+      // 3D highlight overlay
+      const highlight = document.createElementNS(NS, 'ellipse');
+      highlight.setAttribute('cx', cx);
+      highlight.setAttribute('cy', cy);
+      highlight.setAttribute('rx', BEAD_RX);
+      highlight.setAttribute('ry', BEAD_RY);
+      highlight.setAttribute('fill', 'url(#ab__beadGrad)');
+      g.appendChild(highlight);
+
+      // Specular highlight (small bright spot)
+      const spec = document.createElementNS(NS, 'ellipse');
+      spec.setAttribute('cx', cx - 3);
+      spec.setAttribute('cy', cy - 2.5);
+      spec.setAttribute('rx', 3.5);
+      spec.setAttribute('ry', 2);
+      spec.setAttribute('fill', 'rgba(255,255,255,0.35)');
+      g.appendChild(spec);
+
+      // Rod hole illusion (thin dark line through center)
+      const hole = document.createElementNS(NS, 'ellipse');
+      hole.setAttribute('cx', cx);
+      hole.setAttribute('cy', cy);
+      hole.setAttribute('rx', 1.2);
+      hole.setAttribute('ry', BEAD_RY + 0.5);
+      hole.setAttribute('fill', 'rgba(0,0,0,0.08)');
+      g.appendChild(hole);
+
+      // Click handler
+      g.addEventListener('click', () => onBeadClick(rodIdx, beadIdx, section));
+      g.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        onBeadClick(rodIdx, beadIdx, section);
+      });
+
+      beadsG.appendChild(g);
+    }
+
+    /* ---- Bead click logic ---- */
+    function onBeadClick(rodIdx, beadIdx, section) {
+      if (section === 'upper') {
+        const isActive = beadIdx >= UPPER_BEADS - upperActive[rodIdx];
+        if (isActive) {
+          // Deactivate: move this bead and all above it away from beam
+          upperActive[rodIdx] = UPPER_BEADS - beadIdx - 1;
+        } else {
+          // Activate: move this bead and all below it toward beam
+          upperActive[rodIdx] = UPPER_BEADS - beadIdx;
+        }
+      } else {
+        const isActive = beadIdx < lowerActive[rodIdx];
+        if (isActive) {
+          // Deactivate: move this bead and all below it away from beam
+          lowerActive[rodIdx] = beadIdx;
+        } else {
+          // Activate: move this bead and all above it toward beam
+          lowerActive[rodIdx] = beadIdx + 1;
+        }
+      }
+
+      drawBeads();
+      updateValue();
+      emitEvent('cmp:change');
+      emitEvent('cmp:changeend');
+    }
+
+    /* ---- Calculate value ---- */
+    function calcRodValue(rodIdx) {
+      return upperActive[rodIdx] * 5 + lowerActive[rodIdx];
+    }
+
+    function calcTotal() {
+      let total = 0;
+      for (let i = 0; i < rodCount; i++) {
+        total += calcRodValue(i) * Math.pow(10, rodCount - 1 - i);
+      }
+      return total;
+    }
+
+    /* ---- Value display ---- */
+    function updateValue() {
+      valueGroupG.innerHTML = '';
+      const total = calcTotal();
+
+      // Background pill
+      const textW = rodCount * 12 + 40;
+      const pillX = totalW / 2 - textW / 2;
+      const pill = document.createElementNS(NS, 'rect');
+      pill.setAttribute('x', pillX);
+      pill.setAttribute('y', VALUE_Y - 12);
+      pill.setAttribute('width', textW);
+      pill.setAttribute('height', 18);
+      pill.setAttribute('rx', 4);
+      pill.setAttribute('fill', 'var(--beam)');
+      pill.setAttribute('opacity', '0.9');
+      valueGroupG.appendChild(pill);
+
+      const text = document.createElementNS(NS, 'text');
+      text.classList.add('ab__value');
+      text.setAttribute('x', totalW / 2);
+      text.setAttribute('y', VALUE_Y + 1);
+      text.setAttribute('text-anchor', 'middle');
+      text.setAttribute('font-size', '12');
+      text.setAttribute('font-weight', '700');
+      text.setAttribute('fill', '#f5efe6');
+      text.setAttribute('font-family', "'Courier New', Courier, monospace");
+      text.textContent = total.toLocaleString();
+      valueGroupG.appendChild(text);
+
+      // Update aria
+      root.setAttribute('aria-label', `算盘 当前值: ${total}`);
+    }
+
+    /* ---- Emit events ---- */
+    function emitEvent(name) {
+      const rodValues = [];
+      for (let i = 0; i < rodCount; i++) {
+        rodValues.push(calcRodValue(i));
+      }
+      root.dispatchEvent(new CustomEvent(name, {
+        bubbles: true,
+        composed: true,
+        detail: {
+          id: root.getAttribute('data-cmp-id'),
+          type: 'toggle',
+          values: {
+            value: calcTotal(),
+            rods: rodValues
+          }
+        }
+      }));
+    }
+
+    /* ---- Initial render ---- */
+    drawFrame();
+    drawRods();
+    drawBeam();
+    drawBeads();
+    updateValue();
+
+    /* ---- Observe prop changes ---- */
+    const obs = new MutationObserver(() => {
+      // Re-read props would require full rebuild; for color changes CSS vars handle it
+    });
+    obs.observe(root, { attributes: true, attributeFilter: ['style'] });
+    window.addEventListener('beforeunload', () => obs.disconnect());
+  })();
+  </script>
+</div>

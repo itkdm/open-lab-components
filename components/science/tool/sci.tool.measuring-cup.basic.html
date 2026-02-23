@@ -1,0 +1,366 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.tool.measuring-cup.basic",
+  "name": "量杯",
+  "nameEn": "Measuring Cup",
+  "category": "science/tool",
+  "version": "1.1.0",
+  "viewport": { "w": 160, "h": 180 },
+  "tags": ["measuring-cup", "volume", "liquid", "science", "primary"],
+  "props": [
+    { "key": "size",        "type": "number(px)",  "default": 180, "min": 100, "max": 320, "desc": "组件高度" },
+    { "key": "liquidLevel", "type": "number(0-1)",  "default": 0.55, "min": 0, "max": 1, "desc": "液面高度占比" },
+    { "key": "liquidColor", "type": "color",        "default": "#42a5f5", "desc": "液体颜色" },
+    { "key": "bodyColor",   "type": "color",        "default": "rgba(220,237,250,0.45)", "desc": "杯身底色" },
+    { "key": "markColor",   "type": "color",        "default": "rgba(47,79,95,0.55)", "desc": "刻度线颜色" },
+    { "key": "strokeWidth", "type": "number(px)",   "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "liquidLevel": "--cmp-liquid-level",
+    "liquidColor": "--cmp-liquid-color",
+    "bodyColor":   "--cmp-body-color",
+    "markColor":   "--cmp-mark-color",
+    "strokeWidth": "--cmp-stroke-width"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="sci.tool.measuring-cup.basic" role="img" aria-label="量杯">
+  <svg class="mc__svg" viewBox="0 0 160 180" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <defs>
+      <clipPath id="mc__clip__body">
+        <path d="M34,30 L26,148 Q26,156 34,156 L96,156 Q104,156 104,148 L96,30 Z"/>
+      </clipPath>
+
+      <linearGradient id="mc__grad__glass" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.55"/>
+        <stop offset="15%"  stop-color="#e8f4fd" stop-opacity="0.2"/>
+        <stop offset="50%"  stop-color="#dceefb" stop-opacity="0.1"/>
+        <stop offset="85%"  stop-color="#e8f4fd" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.1"/>
+      </linearGradient>
+
+      <linearGradient id="mc__grad__liquid" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="12%"  stop-color="var(--cmp-liquid-color,#42a5f5)" stop-opacity="0.55"/>
+        <stop offset="88%"  stop-color="var(--cmp-liquid-color,#42a5f5)" stop-opacity="0.72"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.1"/>
+      </linearGradient>
+
+      <radialGradient id="mc__grad__meniscus" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%"   stop-color="var(--cmp-liquid-color,#42a5f5)" stop-opacity="0.12"/>
+        <stop offset="60%"  stop-color="var(--cmp-liquid-color,#42a5f5)" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="var(--cmp-liquid-color,#42a5f5)" stop-opacity="0.5"/>
+      </radialGradient>
+
+      <linearGradient id="mc__grad__shine" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+
+      <linearGradient id="mc__grad__handle" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#d0e8f5" stop-opacity="0.5"/>
+        <stop offset="50%"  stop-color="#e8f4fd" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.15"/>
+      </linearGradient>
+    </defs>
+
+    <!--
+      杯体几何:
+        杯口上沿 y=30, 宽度 x: 34~96 (中心 x=65)
+        杯底下沿 y=156, 宽度 x: 26~104 (中心 x=65)
+        梯形: 上窄下宽, 左壁 34→26, 右壁 96→104
+        杯底圆角 r=8
+    -->
+
+    <!-- ===== 杯身填充 ===== -->
+    <path class="mc__body-fill"
+          d="M34,30 L26,148 Q26,156 34,156 L96,156 Q104,156 104,148 L96,30 Z"
+          fill="var(--cmp-body-color,rgba(220,237,250,0.45))"
+          stroke="none"/>
+
+    <!-- 玻璃质感叠加 -->
+    <path d="M34,30 L26,148 Q26,156 34,156 L96,156 Q104,156 104,148 L96,30 Z"
+          fill="url(#mc__grad__glass)" stroke="none"/>
+
+    <!-- ===== 液体 ===== -->
+    <rect class="mc__liquid" x="24" y="90" width="84" height="68"
+          fill="url(#mc__grad__liquid)"
+          clip-path="url(#mc__clip__body)"/>
+
+    <!-- 弯月面 -->
+    <ellipse class="mc__meniscus" cx="65" cy="90" rx="38" ry="4"
+             fill="url(#mc__grad__meniscus)"
+             clip-path="url(#mc__clip__body)"/>
+
+    <!-- 液面高光弧 -->
+    <ellipse class="mc__surface-shine" cx="65" cy="90" rx="30" ry="2"
+             fill="none" stroke="#ffffff" stroke-width="0.8" opacity="0.55"
+             clip-path="url(#mc__clip__body)"/>
+
+    <!-- ===== 刻度线 ===== -->
+    <g class="mc__scale-layer"></g>
+
+    <!-- ===== 杯身描边（左壁 + 底 + 右壁，一笔连续） ===== -->
+    <path class="mc__body-stroke"
+          d="M34,30 L26,148 Q26,156 34,156 L96,156 Q104,156 104,148 L96,30"
+          fill="none"
+          stroke="var(--cmp-mark-color,rgba(47,79,95,0.55))"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round"
+          stroke-linecap="round"/>
+
+    <!-- ===== 左侧高光 ===== -->
+    <path d="M37,36 L30,144"
+          fill="none" stroke="url(#mc__grad__shine)"
+          stroke-width="4" stroke-linecap="round" opacity="0.55"/>
+    <!-- 右侧微弱反光 -->
+    <path d="M93,36 L100,144"
+          fill="none" stroke="#ffffff"
+          stroke-width="1.2" stroke-linecap="round" opacity="0.07"/>
+
+    <!-- ===== 杯口椭圆（3D 口沿） ===== -->
+    <!-- 口沿与杯壁精确对齐: 椭圆 cx=65, rx=31 → 左端 x=34, 右端 x=96, 恰好等于杯壁顶部 -->
+    <ellipse cx="65" cy="30" rx="31" ry="5.5"
+             fill="var(--cmp-body-color,rgba(220,237,250,0.45))"
+             stroke="var(--cmp-mark-color,rgba(47,79,95,0.55))"
+             stroke-width="var(--cmp-stroke-width,1.8)"/>
+    <!-- 口沿高光 -->
+    <ellipse cx="65" cy="29" rx="24" ry="2.8"
+             fill="#ffffff" opacity="0.35" stroke="none"/>
+
+    <!-- ===== 倒液嘴（从杯口左端自然延伸） ===== -->
+    <!-- 杯口左端 = (34, 30), 嘴部向左上弯出 -->
+    <path d="M34,30 Q28,26 24,18 Q22,13 25,11"
+          fill="none"
+          stroke="var(--cmp-mark-color,rgba(47,79,95,0.55))"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+    <!-- 嘴部内侧弧线 -->
+    <path d="M37,28 Q32,24 29,18"
+          fill="none"
+          stroke="var(--cmp-mark-color,rgba(47,79,95,0.55))"
+          stroke-width="0.9"
+          stroke-linecap="round" opacity="0.35"/>
+
+    <!-- ===== 手柄（从杯壁右侧自然延伸的 D 形把手） ===== -->
+    <!-- 上连接点: 杯壁右侧 y=48 处, x ≈ 94.5 (梯形插值) -->
+    <!-- 下连接点: 杯壁右侧 y=112 处, x ≈ 100.5 -->
+    <path class="mc__handle"
+          d="M94.5,48 C98,46 106,44 114,52
+             Q124,64 124,80
+             Q124,96 114,108
+             C106,116 98,114 100.5,112"
+          fill="url(#mc__grad__handle)"
+          stroke="var(--cmp-mark-color,rgba(47,79,95,0.55))"
+          stroke-width="calc(var(--cmp-stroke-width,1.8) * 1.5)"
+          stroke-linecap="round"
+          stroke-linejoin="round"/>
+    <!-- 手柄高光 -->
+    <path d="M100,52 Q112,50 118,62 Q124,78 118,98 Q112,110 102,108"
+          fill="none" stroke="#ffffff"
+          stroke-width="1.5" stroke-linecap="round" opacity="0.18"/>
+
+    <!-- ===== 杯底厚度 ===== -->
+    <path d="M26,152 Q26,162 34,162 L96,162 Q104,162 104,152"
+          fill="var(--cmp-body-color,rgba(220,237,250,0.45))"
+          stroke="var(--cmp-mark-color,rgba(47,79,95,0.55))"
+          stroke-width="var(--cmp-stroke-width,1.8)"
+          stroke-linejoin="round" opacity="0.6"/>
+    <!-- 杯底高光 -->
+    <rect x="36" y="156" width="58" height="2" rx="1"
+          fill="#ffffff" opacity="0.12"/>
+
+    <!-- ===== 读数标签 ===== -->
+    <text class="mc__readout" x="65" y="20" font-size="8.5" font-weight="600"
+          font-family="'DIN Alternate','Arial Narrow','Segoe UI',sans-serif"
+          fill="var(--cmp-mark-color,rgba(47,79,95,0.55))" text-anchor="middle"
+          opacity="0.85">0 mL</text>
+  </svg>
+</div>
+
+<script>
+(() => {
+  const root = document.currentScript?.previousElementSibling;
+  if (!root || root.getAttribute("data-cmp-id") !== "sci.tool.measuring-cup.basic") return;
+
+  const NS = "http://www.w3.org/2000/svg";
+
+  /* ── 唯一化 defs id ── */
+  const uid = "mc_" + Math.random().toString(36).slice(2, 8);
+  const idMap = {};
+  root.querySelectorAll("defs [id]").forEach(el => {
+    const oldId = el.id;
+    const newId = uid + "_" + oldId.replace(/^mc__/, "");
+    idMap[oldId] = newId;
+    el.id = newId;
+  });
+  function fixRefs(attr) {
+    root.querySelectorAll(`[${attr}^='url(']`).forEach(el => {
+      let val = el.getAttribute(attr);
+      for (const [o, n] of Object.entries(idMap)) {
+        if (val.includes(o)) { val = val.replace(o, n); el.setAttribute(attr, val); }
+      }
+    });
+  }
+  fixRefs("clip-path");
+  fixRefs("fill");
+  fixRefs("stroke");
+
+  const scaleLayer = root.querySelector(".mc__scale-layer");
+  const liquidEl   = root.querySelector(".mc__liquid");
+  const meniscusEl = root.querySelector(".mc__meniscus");
+  const shineEl    = root.querySelector(".mc__surface-shine");
+  const readoutEl  = root.querySelector(".mc__readout");
+
+  /*
+   * 杯体内部坐标:
+   *   口沿下方 y=32, 杯底上方 y=154
+   *   可用高度 = 122
+   *   梯形: 顶部 x 34~96, 底部 x 26~104, 中心 x=65
+   */
+  const Y_TOP = 32;
+  const Y_BOT = 154;
+  const USABLE_H = Y_BOT - Y_TOP;
+
+  function cupXAt(y) {
+    const t = (y - Y_TOP) / USABLE_H;
+    return {
+      left:  34 + (26 - 34) * t,   /* 34 → 26 */
+      right: 96 + (104 - 96) * t   /* 96 → 104 */
+    };
+  }
+
+  function parseDataProps() {
+    const raw = root.getAttribute("data-props");
+    if (!raw) return {};
+    try { const p = JSON.parse(raw); return p && typeof p === "object" ? p : {}; } catch (e) { return {}; }
+  }
+
+  function readNumber(props, key, cssVar, fallback) {
+    if (Number.isFinite(Number(props[key]))) return Number(props[key]);
+    const v = getComputedStyle(root).getPropertyValue(cssVar).trim();
+    const n = Number.parseFloat(v);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  const SCALE_MAX = 250;
+  const MAJOR_MARKS = [50, 100, 150, 200, 250];
+  const MINOR_STEP = 10;
+
+  function render() {
+    const props = parseDataProps();
+
+    let liquidLevel = readNumber(props, "liquidLevel", "--cmp-liquid-level", 0.55);
+    liquidLevel = Math.max(0, Math.min(1, liquidLevel));
+
+    /* ── 刻度 ── */
+    scaleLayer.innerHTML = "";
+
+    for (let v = MINOR_STEP; v <= SCALE_MAX; v += MINOR_STEP) {
+      const ratio = v / SCALE_MAX;
+      const y = Y_BOT - ratio * USABLE_H;
+      const { right: xR } = cupXAt(y);
+      const isMajor = MAJOR_MARKS.includes(v);
+
+      const tickLen = isMajor ? 20 : 11;
+      const x1 = xR - tickLen - 2;
+      const x2 = xR - 2;
+
+      const line = document.createElementNS(NS, "line");
+      line.setAttribute("x1", String(x1));
+      line.setAttribute("x2", String(x2));
+      line.setAttribute("y1", String(y));
+      line.setAttribute("y2", String(y));
+      line.setAttribute("stroke", "var(--cmp-mark-color,rgba(47,79,95,0.55))");
+      line.setAttribute("stroke-width", isMajor ? "1.2" : "0.7");
+      line.setAttribute("stroke-linecap", "round");
+      scaleLayer.appendChild(line);
+
+      if (isMajor) {
+        const text = document.createElementNS(NS, "text");
+        text.setAttribute("x", String(x1 - 3));
+        text.setAttribute("y", String(y));
+        text.setAttribute("font-size", "7.5");
+        text.setAttribute("font-family", "'DIN Alternate','Arial Narrow','Segoe UI',sans-serif");
+        text.setAttribute("font-weight", "600");
+        text.setAttribute("fill", "var(--cmp-mark-color,rgba(47,79,95,0.55))");
+        text.setAttribute("text-anchor", "end");
+        text.setAttribute("dominant-baseline", "middle");
+        text.textContent = String(v);
+        scaleLayer.appendChild(text);
+      }
+    }
+
+    /* mL 单位 */
+    const unitY = Y_BOT - USABLE_H - 10;
+    const { right: unitXR } = cupXAt(Y_TOP);
+    const unitText = document.createElementNS(NS, "text");
+    unitText.setAttribute("x", String(unitXR - 24));
+    unitText.setAttribute("y", String(unitY));
+    unitText.setAttribute("font-size", "7");
+    unitText.setAttribute("font-family", "'DIN Alternate','Arial Narrow','Segoe UI',sans-serif");
+    unitText.setAttribute("font-weight", "600");
+    unitText.setAttribute("fill", "var(--cmp-mark-color,rgba(47,79,95,0.55))");
+    unitText.setAttribute("text-anchor", "end");
+    unitText.textContent = "mL";
+    scaleLayer.appendChild(unitText);
+
+    /* ── 液面 ── */
+    const liquidH = liquidLevel * USABLE_H;
+    const liquidY = Y_BOT - liquidH;
+
+    if (liquidEl) {
+      const { left: lx } = cupXAt(liquidY);
+      const { right: rx } = cupXAt(Y_BOT);
+      liquidEl.setAttribute("x", String(lx - 2));
+      liquidEl.setAttribute("y", String(liquidY));
+      liquidEl.setAttribute("width", String(rx - lx + 4));
+      liquidEl.setAttribute("height", String(Math.max(0, liquidH + 2)));
+    }
+    if (meniscusEl) {
+      const { left: lx, right: rx } = cupXAt(liquidY);
+      const halfW = (rx - lx) / 2;
+      meniscusEl.setAttribute("cx", String((lx + rx) / 2));
+      meniscusEl.setAttribute("cy", String(liquidY));
+      meniscusEl.setAttribute("rx", String(halfW + 2));
+      meniscusEl.style.display = liquidLevel > 0.01 ? "" : "none";
+    }
+    if (shineEl) {
+      const { left: lx, right: rx } = cupXAt(liquidY);
+      shineEl.setAttribute("cx", String((lx + rx) / 2));
+      shineEl.setAttribute("cy", String(liquidY));
+      shineEl.setAttribute("rx", String((rx - lx) / 2 - 4));
+      shineEl.style.display = liquidLevel > 0.01 ? "" : "none";
+    }
+
+    /* ── 读数 ── */
+    const currentValue = Math.round(liquidLevel * SCALE_MAX);
+    if (readoutEl) readoutEl.textContent = currentValue + " mL";
+    root.setAttribute("aria-label", "量杯，当前 " + currentValue + " mL");
+  }
+
+  render();
+
+  const observer = new MutationObserver(() => render());
+  observer.observe(root, { attributes: true, attributeFilter: ["style", "data-props"] });
+  window.addEventListener("beforeunload", () => observer.disconnect(), { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="sci.tool.measuring-cup.basic"] {
+  height: var(--cmp-size, 180px);
+  width: calc(var(--cmp-size, 180px) * 0.889);
+  display: inline-block;
+}
+
+.cmp[data-cmp-id="sci.tool.measuring-cup.basic"] .mc__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+</style>

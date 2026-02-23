@@ -1,0 +1,287 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.tool.magnifier.basic",
+  "name": "放大镜",
+  "nameEn": "Magnifying Glass",
+  "category": "science/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 120, "h": 200 },
+  "tags": ["magnifier", "lens", "observation", "science", "primary"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "lensColor",   "type": "color",  "default": "#e3f2fd", "desc": "镜片颜色" },
+    { "key": "handleColor", "type": "color",  "default": "#5d4037", "desc": "手柄颜色" },
+    { "key": "rimColor",    "type": "color",  "default": "#78909c", "desc": "镜框颜色" }
+  ],
+  "cssVars": {
+    "size":        "--cmp-size",
+    "stroke":      "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "lensColor":   "--cmp-lens",
+    "handleColor": "--cmp-handle",
+    "rimColor":    "--cmp-rim"
+  }
+}
+-->
+<!--
+  放大镜 — 小学科学教学用高质量示意图
+  viewBox: 0 0 120 200
+
+  结构布局：
+  - 镜片:   圆形，中心(60,58)，半径约40
+  - 镜框:   金属/塑料环，包裹镜片外圈
+  - 连接处: 镜框底部到手柄的过渡段
+  - 手柄:   从 y≈100 延伸到 y≈192，带握纹
+-->
+<div class="cmp" data-cmp-id="sci.tool.magnifier.basic" role="img" aria-label="放大镜">
+  <style>
+    .cmp[data-cmp-id="sci.tool.magnifier.basic"] {
+      --h: var(--cmp-size, 200px);
+      display: inline-block;
+      width: calc(var(--h) * 120 / 200);
+      height: var(--h);
+      user-select: none;
+    }
+    .cmp[data-cmp-id="sci.tool.magnifier.basic"] svg {
+      width: 100%; height: 100%; display: block; overflow: visible;
+    }
+  </style>
+
+  <svg viewBox="0 0 120 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 镜片径向渐变：模拟玻璃透明折射 -->
+      <radialGradient class="mg__lens-grad" cx="0.38" cy="0.35" r="0.62" fx="0.32" fy="0.30">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.85"/>
+        <stop offset="25%"  stop-color="var(--cmp-lens, #e3f2fd)" stop-opacity="0.5"/>
+        <stop offset="55%"  stop-color="var(--cmp-lens, #e3f2fd)" stop-opacity="0.3"/>
+        <stop offset="80%"  stop-color="var(--cmp-lens, #e3f2fd)" stop-opacity="0.45"/>
+        <stop offset="100%" stop-color="#bbdefb" stop-opacity="0.6"/>
+      </radialGradient>
+
+      <!-- 镜片高光渐变 -->
+      <radialGradient class="mg__highlight-grad" cx="0.3" cy="0.25" r="0.5">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.7"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+
+      <!-- 镜框金属渐变 -->
+      <linearGradient class="mg__rim-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#b0bec5"/>
+        <stop offset="20%"  stop-color="var(--cmp-rim, #78909c)"/>
+        <stop offset="50%"  stop-color="#cfd8dc"/>
+        <stop offset="80%"  stop-color="var(--cmp-rim, #78909c)"/>
+        <stop offset="100%" stop-color="#90a4ae"/>
+      </linearGradient>
+
+      <!-- 手柄木纹渐变 -->
+      <linearGradient class="mg__handle-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#4e342e"/>
+        <stop offset="15%"  stop-color="var(--cmp-handle, #5d4037)"/>
+        <stop offset="40%"  stop-color="#6d4c41"/>
+        <stop offset="60%"  stop-color="var(--cmp-handle, #5d4037)"/>
+        <stop offset="85%"  stop-color="#4e342e"/>
+        <stop offset="100%" stop-color="#3e2723"/>
+      </linearGradient>
+
+      <!-- 手柄高光渐变 -->
+      <linearGradient class="mg__handle-hl" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%"   stop-color="#ffffff" stop-opacity="0"/>
+        <stop offset="25%"  stop-color="#ffffff" stop-opacity="0.15"/>
+        <stop offset="50%"  stop-color="#ffffff" stop-opacity="0.05"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </linearGradient>
+
+      <!-- 投影滤镜 -->
+      <filter class="mg__shadow-filter" x="-10%" y="-5%" width="120%" height="115%">
+        <feDropShadow dx="1.5" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.18"/>
+      </filter>
+    </defs>
+
+    <!-- ==================== 整体投影 ==================== -->
+    <g class="mg__shadow-group">
+
+      <!-- ==================== 手柄 ==================== -->
+      <!--
+        手柄从镜框底部(60,96)延伸到底端(60,192)
+        略微倾斜，宽度约14px，带圆角
+      -->
+      <g class="mg__handle">
+        <!-- 手柄主体 -->
+        <path class="mg__handle-body"
+              d="M53,98 L53,184 Q53,192 60,192 Q67,192 67,184 L67,98 Z"
+              stroke="var(--cmp-stroke, #333)" stroke-width="var(--cmp-stroke-width, 1.2)"
+              stroke-linejoin="round"/>
+
+        <!-- 手柄高光条 -->
+        <path class="mg__handle-highlight"
+              d="M55,100 L55,183 Q55,190 60,190 Q65,190 65,183 L65,100 Z"
+              opacity="0.5"/>
+
+        <!-- 握纹（横向凹槽，增加摩擦感） -->
+        <g stroke="var(--cmp-handle, #5d4037)" stroke-width="0.6" opacity="0.35">
+          <line x1="54.5" y1="120" x2="65.5" y2="120"/>
+          <line x1="54.5" y1="125" x2="65.5" y2="125"/>
+          <line x1="54.5" y1="130" x2="65.5" y2="130"/>
+          <line x1="54.5" y1="135" x2="65.5" y2="135"/>
+          <line x1="54.5" y1="140" x2="65.5" y2="140"/>
+          <line x1="54.5" y1="145" x2="65.5" y2="145"/>
+          <line x1="54.5" y1="150" x2="65.5" y2="150"/>
+          <line x1="54.5" y1="155" x2="65.5" y2="155"/>
+          <line x1="54.5" y1="160" x2="65.5" y2="160"/>
+          <line x1="54.5" y1="165" x2="65.5" y2="165"/>
+          <line x1="54.5" y1="170" x2="65.5" y2="170"/>
+          <line x1="54.5" y1="175" x2="65.5" y2="175"/>
+        </g>
+
+        <!-- 握纹之间的浅色高光线 -->
+        <g stroke="#ffffff" stroke-width="0.3" opacity="0.12">
+          <line x1="55" y1="121" x2="65" y2="121"/>
+          <line x1="55" y1="126" x2="65" y2="126"/>
+          <line x1="55" y1="131" x2="65" y2="131"/>
+          <line x1="55" y1="136" x2="65" y2="136"/>
+          <line x1="55" y1="141" x2="65" y2="141"/>
+          <line x1="55" y1="146" x2="65" y2="146"/>
+          <line x1="55" y1="151" x2="65" y2="151"/>
+          <line x1="55" y1="156" x2="65" y2="156"/>
+          <line x1="55" y1="161" x2="65" y2="161"/>
+          <line x1="55" y1="166" x2="65" y2="166"/>
+          <line x1="55" y1="171" x2="65" y2="171"/>
+          <line x1="55" y1="176" x2="65" y2="176"/>
+        </g>
+
+        <!-- 手柄底端金属箍 -->
+        <rect x="52" y="182" width="16" height="5" rx="2"
+              fill="var(--cmp-rim, #78909c)" stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+        <rect x="53" y="183" width="14" height="1.5" rx="0.5" fill="#ffffff" opacity="0.1"/>
+
+        <!-- 手柄顶端金属箍（连接镜框） -->
+        <rect x="51" y="95" width="18" height="6" rx="2"
+              fill="var(--cmp-rim, #78909c)" stroke="var(--cmp-stroke, #333)" stroke-width="0.8"/>
+        <rect x="52" y="96" width="16" height="2" rx="0.5" fill="#ffffff" opacity="0.12"/>
+      </g>
+
+      <!-- ==================== 镜框（金属环） ==================== -->
+      <!--
+        镜框：圆环，中心(60,55)，外径42，内径38
+        用两个圆的差集表示环宽
+      -->
+      <g class="mg__rim">
+        <!-- 镜框外环阴影 -->
+        <circle cx="60" cy="55" r="43" fill="none"
+                stroke="#000" stroke-width="1" opacity="0.06"/>
+
+        <!-- 镜框主体（粗圆环） -->
+        <circle class="mg__rim-ring" cx="60" cy="55" r="40"
+                fill="none"
+                stroke-width="7"
+                stroke-linecap="round"/>
+
+        <!-- 镜框内侧高光 -->
+        <circle cx="60" cy="55" r="37.5" fill="none"
+                stroke="#ffffff" stroke-width="0.8" opacity="0.15"/>
+
+        <!-- 镜框外侧高光弧 -->
+        <path d="M28,35 A40,40 0 0,1 80,20"
+              fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.2"
+              stroke-linecap="round"/>
+
+        <!-- 镜框底部阴影弧 -->
+        <path d="M28,75 A40,40 0 0,0 92,75"
+              fill="none" stroke="#000" stroke-width="0.8" opacity="0.08"
+              stroke-linecap="round"/>
+
+        <!-- 镜框上的小螺丝装饰（左右各一） -->
+        <circle cx="24" cy="55" r="1.8" fill="#90a4ae" stroke="#607d8b" stroke-width="0.5"/>
+        <line x1="23.2" y1="55" x2="24.8" y2="55" stroke="#546e7a" stroke-width="0.5"/>
+        <circle cx="96" cy="55" r="1.8" fill="#90a4ae" stroke="#607d8b" stroke-width="0.5"/>
+        <line x1="95.2" y1="55" x2="96.8" y2="55" stroke="#546e7a" stroke-width="0.5"/>
+      </g>
+
+      <!-- ==================== 镜片（玻璃） ==================== -->
+      <g class="mg__lens">
+        <!-- 镜片主体 -->
+        <circle class="mg__lens-body" cx="60" cy="55" r="36.5"
+                stroke="var(--cmp-stroke, #333)" stroke-width="0.5" stroke-opacity="0.3"/>
+
+        <!-- 镜片内部微妙的折射环 -->
+        <circle cx="60" cy="55" r="28" fill="none"
+                stroke="var(--cmp-lens, #e3f2fd)" stroke-width="0.5" opacity="0.3"/>
+        <circle cx="60" cy="55" r="18" fill="none"
+                stroke="var(--cmp-lens, #e3f2fd)" stroke-width="0.3" opacity="0.2"/>
+
+        <!-- 主高光（左上方弧形光斑，模拟窗户反射） -->
+        <ellipse class="mg__lens-highlight" cx="48" cy="42" rx="14" ry="10"
+                 transform="rotate(-25,48,42)" opacity="0.6"/>
+
+        <!-- 次高光（右下小光斑） -->
+        <ellipse cx="72" cy="66" rx="5" ry="3.5"
+                 fill="#ffffff" opacity="0.25"
+                 transform="rotate(-25,72,66)"/>
+
+        <!-- 边缘折射色散效果（彩虹微光） -->
+        <path d="M30,32 A36,36 0 0,1 75,22"
+              fill="none" stroke="#e1bee7" stroke-width="0.6" opacity="0.2"
+              stroke-linecap="round"/>
+        <path d="M27,38 A36,36 0 0,1 70,24"
+              fill="none" stroke="#bbdefb" stroke-width="0.5" opacity="0.15"
+              stroke-linecap="round"/>
+
+        <!-- 镜片边缘内侧深色线（玻璃厚度感） -->
+        <circle cx="60" cy="55" r="35.5" fill="none"
+                stroke="#90a4ae" stroke-width="0.4" opacity="0.2"/>
+      </g>
+
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.tool.magnifier.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'mg_' + Math.random().toString(36).slice(2, 8);
+
+  /* 为渐变和滤镜分配唯一 ID */
+  var lensGrad = svg.querySelector('.mg__lens-grad');
+  var hlGrad   = svg.querySelector('.mg__highlight-grad');
+  var rimGrad  = svg.querySelector('.mg__rim-grad');
+  var hdlGrad  = svg.querySelector('.mg__handle-grad');
+  var hdlHl    = svg.querySelector('.mg__handle-hl');
+  var shadowF  = svg.querySelector('.mg__shadow-filter');
+
+  if (lensGrad) lensGrad.setAttribute('id', uid + '_lg');
+  if (hlGrad)   hlGrad.setAttribute('id', uid + '_hg');
+  if (rimGrad)  rimGrad.setAttribute('id', uid + '_rg');
+  if (hdlGrad)  hdlGrad.setAttribute('id', uid + '_hdg');
+  if (hdlHl)    hdlHl.setAttribute('id', uid + '_hhl');
+  if (shadowF)  shadowF.setAttribute('id', uid + '_sf');
+
+  /* 绑定渐变引用 */
+  var lensBody = root.querySelector('.mg__lens-body');
+  if (lensBody) lensBody.setAttribute('fill', 'url(#' + uid + '_lg)');
+
+  var lensHighlight = root.querySelector('.mg__lens-highlight');
+  if (lensHighlight) lensHighlight.setAttribute('fill', 'url(#' + uid + '_hg)');
+
+  var rimRing = root.querySelector('.mg__rim-ring');
+  if (rimRing) rimRing.setAttribute('stroke', 'url(#' + uid + '_rg)');
+
+  var handleBody = root.querySelector('.mg__handle-body');
+  if (handleBody) handleBody.setAttribute('fill', 'url(#' + uid + '_hdg)');
+
+  var handleHighlight = root.querySelector('.mg__handle-highlight');
+  if (handleHighlight) handleHighlight.setAttribute('fill', 'url(#' + uid + '_hhl)');
+
+  var shadowGroup = root.querySelector('.mg__shadow-group');
+  if (shadowGroup) shadowGroup.setAttribute('filter', 'url(#' + uid + '_sf)');
+})();
+</script>

@@ -1,0 +1,235 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.negative-number-line.interactive",
+  "name": "正负数轴",
+  "nameEn": "Negative Number Line",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 220 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "value", "type": "number", "default": 0, "min": -10, "max": 10, "desc": "当前值" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["negative", "number-line", "integer", "positive", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "slide", "values": { "value": "number", "type": "string" } },
+    { "name": "cmp:changeend", "type": "slide", "values": { "value": "number", "type": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.negative-number-line.interactive" role="img" aria-label="正负数轴">
+  <svg class="cmp__svg" viewBox="0 0 360 220" aria-hidden="true">
+    <defs>
+      <filter class="nnl__shadow" x="-50%" y="-50%" width="200%" height="200%">
+        <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-color="#000" flood-opacity=".15"/>
+      </filter>
+    </defs>
+    <!-- Title -->
+    <text x="180" y="15" text-anchor="middle" font-size="13" font-weight="700" fill="#37474f" font-family="'PingFang SC','Microsoft YaHei',sans-serif">正负数轴</text>
+    <!-- Color regions -->
+    <rect x="20" y="38" width="160" height="30" rx="4" fill="#E3F2FD" opacity=".5"/>
+    <rect x="180" y="38" width="160" height="30" rx="4" fill="#FFF3E0" opacity=".5"/>
+    <text x="60" y="48" text-anchor="middle" font-size="9" fill="#1565C0" opacity=".7" font-family="'PingFang SC','Microsoft YaHei',sans-serif">负数</text>
+    <text x="300" y="48" text-anchor="middle" font-size="9" fill="#E65100" opacity=".7" font-family="'PingFang SC','Microsoft YaHei',sans-serif">正数</text>
+    <!-- Axis -->
+    <line x1="20" y1="56" x2="340" y2="56" stroke="#37474f" stroke-width="1.8" stroke-linecap="round"/>
+    <polygon points="20,56 27,52 27,60" fill="#37474f"/>
+    <polygon points="340,56 333,52 333,60" fill="#37474f"/>
+    <g class="nnl__ticks"></g>
+    <!-- Guide line -->
+    <line class="nnl__guide" x1="180" y1="66" x2="180" y2="98" stroke="#999" stroke-width="1" stroke-dasharray="3,2" opacity=".6"/>
+    <!-- Marker -->
+    <g class="nnl__marker" data-role="marker">
+      <circle class="nnl__dot" r="10" fill="#9E9E9E" stroke="#fff" stroke-width="2"/>
+      <text class="nnl__dot-label" y="-14" text-anchor="middle" font-size="10" font-weight="700" fill="#37474f" font-family="'Nunito','Segoe UI',sans-serif">0</text>
+    </g>
+    <!-- Thermometer -->
+    <g class="nnl__thermo">
+      <rect x="36" y="108" width="14" height="72" rx="7" fill="#ECEFF1" stroke="#90A4AE" stroke-width="1.2"/>
+      <clipPath class="nnl__thermo-clip"><rect x="38" y="110" width="10" height="68" rx="5"/></clipPath>
+      <rect class="nnl__mercury" x="38" y="144" width="10" height="34" rx="5" fill="#9E9E9E"/>
+      <circle cx="43" cy="186" r="9" fill="#9E9E9E" stroke="#90A4AE" stroke-width="1.2"/>
+      <g class="nnl__thermo-ticks"></g>
+      <text class="nnl__temp-label" x="43" y="204" text-anchor="middle" font-size="9" font-weight="600" fill="#37474f" font-family="'Nunito','Segoe UI',sans-serif">0°C</text>
+    </g>
+    <!-- Info panel -->
+    <g class="nnl__info" font-family="'PingFang SC','Microsoft YaHei','Nunito',sans-serif">
+      <text class="nnl__info-value" x="150" y="125" text-anchor="middle" font-size="28" font-weight="800" fill="#37474f">0</text>
+      <text class="nnl__info-type" x="150" y="142" text-anchor="middle" font-size="12" font-weight="600" fill="#9E9E9E">零</text>
+      <text class="nnl__info-abs" x="260" y="118" font-size="10" fill="#546E7A">|0| = 0</text>
+      <text class="nnl__info-opp" x="260" y="134" font-size="10" fill="#546E7A">0 的相反数是 0</text>
+      <text class="nnl__info-dist" x="260" y="150" font-size="10" fill="#546E7A">距离原点 0 个单位</text>
+    </g>
+    <!-- Controls -->
+    <g class="nnl__controls" font-family="'Nunito','Segoe UI',sans-serif">
+      <g data-role="btn-minus" cursor="pointer">
+        <rect x="100" y="180" width="36" height="24" rx="6" fill="#E3F2FD" stroke="#90CAF9" stroke-width="1"/>
+        <text x="118" y="196" text-anchor="middle" font-size="16" font-weight="700" fill="#1565C0">−</text>
+      </g>
+      <rect x="142" y="180" width="40" height="24" rx="6" fill="#F5F5F5" stroke="#BDBDBD" stroke-width="1"/>
+      <text class="nnl__ctrl-val" x="162" y="196" text-anchor="middle" font-size="12" font-weight="700" fill="#37474f">0</text>
+      <g data-role="btn-plus" cursor="pointer">
+        <rect x="188" y="180" width="36" height="24" rx="6" fill="#FFF3E0" stroke="#FFCC80" stroke-width="1"/>
+        <text x="206" y="196" text-anchor="middle" font-size="16" font-weight="700" fill="#E65100">+</text>
+      </g>
+      <g data-role="btn-reset" cursor="pointer">
+        <rect x="232" y="180" width="42" height="24" rx="6" fill="#ECEFF1" stroke="#B0BEC5" stroke-width="1"/>
+        <text x="253" y="196" text-anchor="middle" font-size="10" font-weight="600" fill="#546E7A" font-family="'PingFang SC','Microsoft YaHei',sans-serif">归零</text>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<style>
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"]{width:var(--cmp-size,360px);height:calc(var(--cmp-size,360px)*220/360);display:inline-block;user-select:none;-webkit-user-select:none}
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"] .cmp__svg{width:100%;height:100%;display:block;overflow:visible;touch-action:none}
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"] .nnl__marker{cursor:grab;transition:filter .15s ease}
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"] .nnl__marker:active{cursor:grabbing}
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"] .nnl__marker:hover .nnl__dot{filter:brightness(1.12)}
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"] [data-role="btn-minus"]:hover rect,
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"] [data-role="btn-plus"]:hover rect,
+.cmp[data-cmp-id="math.number.negative-number-line.interactive"] [data-role="btn-reset"]:hover rect{filter:brightness(.93)}
+</style>
+
+<script>
+(() => {
+  const script = document.currentScript; if (!script) return;
+  let root = script.previousElementSibling;
+  while (root && root.tagName === 'STYLE') root = root.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.number.negative-number-line.interactive') return;
+  const svg = root.querySelector('.cmp__svg'); if (!svg) return;
+  const NS = 'http://www.w3.org/2000/svg';
+  const uid = 'nnl-' + Math.random().toString(36).slice(2, 8);
+  const filterEl = svg.querySelector('.nnl__shadow');
+  if (filterEl) filterEl.setAttribute('id', uid + '-sh');
+  const clipEl = svg.querySelector('.nnl__thermo-clip');
+  if (clipEl) clipEl.setAttribute('id', uid + '-cl');
+
+  const AXIS_Y = 56, X_LEFT = 28, X_RIGHT = 332, X_CENTER = 180;
+  const UNIT_PX = (X_RIGHT - X_LEFT) / 20;
+  const TH_TOP = 110, TH_BOT = 178;
+  let val = 0;
+  try { const raw = root.getAttribute('data-props');
+    if (raw) { const o = JSON.parse(raw); if (o && o.value != null) val = Math.round(Math.max(-10, Math.min(10, +o.value || 0))); }
+  } catch (_) {}
+
+  const $ = s => svg.querySelector(s);
+  const markerG = $('.nnl__marker'), dotEl = $('.nnl__dot'), dotLabel = $('.nnl__dot-label');
+  const guideEl = $('.nnl__guide'), mercuryEl = $('.nnl__mercury');
+  const bulbEl = $('g.nnl__thermo > circle'), tempLabel = $('.nnl__temp-label');
+  const infoVal = $('.nnl__info-value'), infoType = $('.nnl__info-type');
+  const infoAbs = $('.nnl__info-abs'), infoOpp = $('.nnl__info-opp'), infoDist = $('.nnl__info-dist');
+  const ctrlVal = $('.nnl__ctrl-val'), ticksG = $('.nnl__ticks'), thTicksG = $('.nnl__thermo-ticks');
+  if (markerG) markerG.setAttribute('filter', 'url(#' + uid + '-sh)');
+  if (mercuryEl) mercuryEl.setAttribute('clip-path', 'url(#' + uid + '-cl)');
+
+  const valToX = v => X_CENTER + v * UNIT_PX;
+  const xToVal = x => Math.max(-10, Math.min(10, Math.round((x - X_CENTER) / UNIT_PX)));
+  const typeStr = v => v < 0 ? '负数' : v > 0 ? '正数' : '零';
+  const dotColor = v => v < 0 ? '#42A5F5' : v > 0 ? '#EF5350' : '#9E9E9E';
+  const fmtVal = v => v > 0 ? '+' + v : String(v);
+
+  function buildTicks() {
+    ticksG.innerHTML = '';
+    for (let i = -10; i <= 10; i++) {
+      const x = valToX(i), even = i % 2 === 0, zero = i === 0;
+      const t = document.createElementNS(NS, 'line');
+      t.setAttribute('x1', x); t.setAttribute('x2', x);
+      t.setAttribute('y1', AXIS_Y - (zero ? 8 : even ? 6 : 4));
+      t.setAttribute('y2', AXIS_Y + (zero ? 8 : even ? 6 : 4));
+      t.setAttribute('stroke', zero ? '#37474f' : '#546E7A');
+      t.setAttribute('stroke-width', zero ? '2.2' : even ? '1.4' : '1');
+      ticksG.appendChild(t);
+      if (even) {
+        const l = document.createElementNS(NS, 'text');
+        l.setAttribute('x', x); l.setAttribute('y', AXIS_Y + 20);
+        l.setAttribute('text-anchor', 'middle'); l.setAttribute('font-size', zero ? '11' : '9');
+        l.setAttribute('font-weight', zero ? '800' : '600');
+        l.setAttribute('fill', zero ? '#37474f' : '#546E7A');
+        l.setAttribute('font-family', "'Nunito','Segoe UI',sans-serif");
+        l.textContent = i > 0 ? '+' + i : String(i);
+        ticksG.appendChild(l);
+      }
+    }
+  }
+  function buildThTicks() {
+    thTicksG.innerHTML = '';
+    for (let i = -10; i <= 10; i += 5) {
+      const y = TH_BOT - ((i + 10) / 20) * (TH_BOT - TH_TOP);
+      const t = document.createElementNS(NS, 'line');
+      t.setAttribute('x1', 52); t.setAttribute('x2', 58); t.setAttribute('y1', y); t.setAttribute('y2', y);
+      t.setAttribute('stroke', '#90A4AE'); t.setAttribute('stroke-width', '1'); thTicksG.appendChild(t);
+      const l = document.createElementNS(NS, 'text');
+      l.setAttribute('x', 62); l.setAttribute('y', y + 3); l.setAttribute('font-size', '7');
+      l.setAttribute('fill', '#78909C'); l.setAttribute('font-family', "'Nunito','Segoe UI',sans-serif");
+      l.textContent = String(i); thTicksG.appendChild(l);
+    }
+  }
+
+  function update(anim) {
+    const x = valToX(val), col = dotColor(val), t = typeStr(val), abs = Math.abs(val);
+    markerG.style.transition = anim ? 'transform .15s ease' : 'none';
+    markerG.setAttribute('transform', 'translate(' + x + ',' + AXIS_Y + ')');
+    dotEl.setAttribute('fill', col); dotLabel.textContent = fmtVal(val);
+    guideEl.setAttribute('x1', x); guideEl.setAttribute('x2', x);
+    const ratio = (val + 10) / 20, mH = Math.max(2, ratio * (TH_BOT - TH_TOP));
+    mercuryEl.setAttribute('y', TH_BOT - mH); mercuryEl.setAttribute('height', mH);
+    mercuryEl.setAttribute('fill', col); bulbEl.setAttribute('fill', col);
+    tempLabel.textContent = val + '°C';
+    infoVal.textContent = fmtVal(val); infoVal.setAttribute('fill', col);
+    infoType.textContent = t; infoType.setAttribute('fill', col);
+    infoAbs.textContent = '|' + (val < 0 ? '−' + abs : val) + '| = ' + abs;
+    infoOpp.textContent = val === 0 ? '0 的相反数是 0' : val < 0 ? '−' + abs + ' 的相反数是 +' + abs : '+' + val + ' 的相反数是 −' + val;
+    infoDist.textContent = '距离原点 ' + abs + ' 个单位';
+    ctrlVal.textContent = fmtVal(val);
+    root.setAttribute('aria-label', '正负数轴，当前值 ' + val + '，' + t);
+  }
+  function emit(name) {
+    root.dispatchEvent(new CustomEvent(name, { bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'slide', values: { value: val, type: typeStr(val) } } }));
+  }
+
+  buildTicks(); buildThTicks(); update(false);
+
+  let dragging = false;
+  function svgX(cx) {
+    const pt = svg.createSVGPoint(); pt.x = cx; pt.y = 0;
+    const ctm = svg.getScreenCTM(); return ctm ? pt.matrixTransform(ctm.inverse()).x : null;
+  }
+  function dragMove(cx) { const sx = svgX(cx); if (sx == null) return; const nv = xToVal(sx); if (nv !== val) { val = nv; update(true); emit('cmp:change'); } }
+  function onDown(e) { e.preventDefault(); dragging = true; if (e.pointerId !== undefined) svg.setPointerCapture(e.pointerId); if (e.clientX !== undefined) dragMove(e.clientX); }
+  function onMove(e) { if (dragging) { e.preventDefault(); dragMove(e.clientX); } }
+  function onUp(e) { if (!dragging) return; dragging = false; if (e.pointerId !== undefined) try { svg.releasePointerCapture(e.pointerId); } catch (_) {} update(true); emit('cmp:changeend'); }
+
+  markerG.addEventListener('pointerdown', onDown);
+  svg.addEventListener('pointerdown', function (e) {
+    if (markerG.contains(e.target)) return;
+    const sx = svgX(e.clientX); if (sx == null) return;
+    const pt2 = svg.createSVGPoint(); pt2.x = e.clientX; pt2.y = e.clientY;
+    const ctm = svg.getScreenCTM(); if (!ctm) return;
+    const sp = pt2.matrixTransform(ctm.inverse());
+    if (Math.abs(sp.y - AXIS_Y) > 22 || sx < X_LEFT - 5 || sx > X_RIGHT + 5) return;
+    e.preventDefault(); dragging = true;
+    if (e.pointerId !== undefined) svg.setPointerCapture(e.pointerId);
+    const nv = xToVal(sx); if (nv !== val) { val = nv; update(true); emit('cmp:change'); }
+  });
+  svg.addEventListener('pointermove', onMove);
+  svg.addEventListener('pointerup', onUp);
+  svg.addEventListener('pointercancel', onUp);
+
+  function btnClick(d) { const nv = Math.max(-10, Math.min(10, val + d)); if (nv !== val) { val = nv; update(true); emit('cmp:change'); emit('cmp:changeend'); } }
+  ['btn-minus', 'btn-plus', 'btn-reset'].forEach(r => {
+    const el = svg.querySelector('[data-role="' + r + '"]');
+    el.addEventListener('pointerdown', e => e.stopPropagation());
+    el.addEventListener('click', () => { if (r === 'btn-minus') btnClick(-1); else if (r === 'btn-plus') btnClick(1); else if (val !== 0) { val = 0; update(true); emit('cmp:change'); emit('cmp:changeend'); } });
+  });
+
+  new MutationObserver(() => {
+    try { const raw = root.getAttribute('data-props');
+      if (raw) { const o = JSON.parse(raw); if (o && o.value != null) { const nv = Math.max(-10, Math.min(10, Math.round(+o.value || 0))); if (nv !== val) { val = nv; update(true); } } }
+    } catch (_) {}
+  }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+})();
+</script>

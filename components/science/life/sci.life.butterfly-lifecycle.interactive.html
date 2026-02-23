@@ -1,0 +1,274 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.life.butterfly-lifecycle.interactive",
+  "name": "蝴蝶生命周期",
+  "nameEn": "Butterfly Lifecycle",
+  "category": "science/life",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 600, "desc": "组件尺寸" },
+    { "key": "stage", "type": "number", "default": 1, "min": 1, "max": 4, "desc": "当前阶段（1-4）" },
+    { "key": "eggColor", "type": "color", "default": "#FFFDE7", "desc": "卵颜色" },
+    { "key": "larvaColor", "type": "color", "default": "#8BC34A", "desc": "幼虫颜色" },
+    { "key": "pupaColor", "type": "color", "default": "#795548", "desc": "蛹颜色" },
+    { "key": "wingColor", "type": "color", "default": "#FF9800", "desc": "蝴蝶翅膀颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "eggColor": "--cmp-egg",
+    "larvaColor": "--cmp-larva",
+    "pupaColor": "--cmp-pupa",
+    "wingColor": "--cmp-wing"
+  },
+  "tags": ["butterfly", "lifecycle", "metamorphosis", "insect", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "stage": "number(1-4)", "stageName": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.life.butterfly-lifecycle.interactive" role="img" aria-label="蝴蝶生命周期">
+  <svg class="bl__svg" viewBox="0 0 300 300" aria-hidden="true">
+    <defs>
+      <filter class="bl__glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <marker class="bl__arrow" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#BDBDBD"/>
+      </marker>
+      <marker class="bl__arrow-active" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#FF9800"/>
+      </marker>
+    </defs>
+
+    <!-- Curved arrows: top→right, right→bottom, bottom→left, left→top -->
+    <path class="bl__arc" data-arc="1" d="M175,68 Q230,30 240,125" fill="none" stroke="#BDBDBD" stroke-width="1.8" marker-end="url(#bl__arrow)"/>
+    <path class="bl__arc" data-arc="2" d="M232,175 Q270,230 175,240" fill="none" stroke="#BDBDBD" stroke-width="1.8" marker-end="url(#bl__arrow)"/>
+    <path class="bl__arc" data-arc="3" d="M125,232 Q70,270 60,175" fill="none" stroke="#BDBDBD" stroke-width="1.8" marker-end="url(#bl__arrow)"/>
+    <path class="bl__arc" data-arc="4" d="M68,125 Q30,70 125,60" fill="none" stroke="#BDBDBD" stroke-width="1.8" marker-end="url(#bl__arrow)"/>
+
+    <!-- Center title -->
+    <text x="150" y="146" text-anchor="middle" font-size="13" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037" font-weight="bold">蝴蝶的一生</text>
+    <text x="150" y="162" text-anchor="middle" font-size="8" font-family="'Microsoft YaHei',sans-serif" fill="#8D6E63">Butterfly Lifecycle</text>
+
+    <!-- Stage 1: 卵 Egg (top center 150,55) -->
+    <g class="bl__stage" data-stage="1" style="cursor:pointer">
+      <circle class="bl__ring" cx="150" cy="55" r="32" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Leaf -->
+      <path d="M133,58 Q140,38 150,35 Q160,38 167,58 Q160,65 150,67 Q140,65 133,58Z" fill="#66BB6A" stroke="#43A047" stroke-width="0.8"/>
+      <line x1="150" y1="38" x2="150" y2="65" stroke="#43A047" stroke-width="0.6" opacity="0.5"/>
+      <line x1="143" y1="48" x2="150" y2="52" stroke="#43A047" stroke-width="0.4" opacity="0.4"/>
+      <line x1="157" y1="48" x2="150" y2="52" stroke="#43A047" stroke-width="0.4" opacity="0.4"/>
+      <!-- Eggs on leaf -->
+      <ellipse cx="145" cy="52" rx="3" ry="2.2" fill="var(--cmp-egg, #FFFDE7)" stroke="#E0D8A8" stroke-width="0.5"/>
+      <ellipse cx="152" cy="48" rx="2.8" ry="2" fill="var(--cmp-egg, #FFFDE7)" stroke="#E0D8A8" stroke-width="0.5"/>
+      <ellipse cx="155" cy="55" rx="3" ry="2.2" fill="var(--cmp-egg, #FFFDE7)" stroke="#E0D8A8" stroke-width="0.5"/>
+      <circle cx="145" cy="51.5" r="0.5" fill="#D4C87A" opacity="0.6"/>
+      <circle cx="152" cy="47.5" r="0.5" fill="#D4C87A" opacity="0.6"/>
+      <circle cx="155" cy="54.5" r="0.5" fill="#D4C87A" opacity="0.6"/>
+      <text x="150" y="82" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">卵</text>
+    </g>
+
+    <!-- Stage 2: 幼虫 Caterpillar (right center 245,150) -->
+    <g class="bl__stage" data-stage="2" style="cursor:pointer">
+      <circle class="bl__ring" cx="245" cy="150" r="32" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Branch -->
+      <line x1="228" y1="158" x2="264" y2="158" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Body segments -->
+      <ellipse cx="236" cy="151" rx="4.5" ry="4" fill="var(--cmp-larva, #8BC34A)" stroke="#689F38" stroke-width="0.5"/>
+      <ellipse cx="240" cy="149" rx="4.5" ry="4.2" fill="var(--cmp-larva, #8BC34A)" stroke="#689F38" stroke-width="0.5"/>
+      <ellipse cx="244" cy="148" rx="4.5" ry="4.2" fill="var(--cmp-larva, #8BC34A)" stroke="#689F38" stroke-width="0.5"/>
+      <ellipse cx="248" cy="148" rx="4.5" ry="4.2" fill="var(--cmp-larva, #8BC34A)" stroke="#689F38" stroke-width="0.5"/>
+      <ellipse cx="252" cy="149" rx="4.5" ry="4" fill="var(--cmp-larva, #8BC34A)" stroke="#689F38" stroke-width="0.5"/>
+      <ellipse cx="256" cy="150" rx="4.2" ry="3.8" fill="var(--cmp-larva, #8BC34A)" stroke="#689F38" stroke-width="0.5"/>
+      <ellipse cx="259.5" cy="151" rx="3.8" ry="3.5" fill="var(--cmp-larva, #8BC34A)" stroke="#689F38" stroke-width="0.5"/>
+      <!-- Head -->
+      <circle cx="233" cy="150" r="4" fill="#A5D6A7" stroke="#689F38" stroke-width="0.6"/>
+      <circle cx="231.5" cy="149" r="1" fill="#33691E"/>
+      <!-- Antennae -->
+      <line x1="231" y1="147" x2="228" y2="142" stroke="#689F38" stroke-width="0.6"/>
+      <line x1="233" y1="147" x2="231" y2="141" stroke="#689F38" stroke-width="0.6"/>
+      <!-- Tiny legs -->
+      <line x1="240" y1="153" x2="239" y2="157" stroke="#689F38" stroke-width="0.5"/>
+      <line x1="244" y1="152" x2="243" y2="157" stroke="#689F38" stroke-width="0.5"/>
+      <line x1="248" y1="152" x2="247" y2="157" stroke="#689F38" stroke-width="0.5"/>
+      <line x1="252" y1="153" x2="251" y2="157" stroke="#689F38" stroke-width="0.5"/>
+      <!-- Segment markings -->
+      <line x1="242" y1="145.5" x2="242" y2="152" stroke="#7CB342" stroke-width="0.4" opacity="0.5"/>
+      <line x1="246" y1="144.5" x2="246" y2="152" stroke="#7CB342" stroke-width="0.4" opacity="0.5"/>
+      <line x1="250" y1="145" x2="250" y2="152.5" stroke="#7CB342" stroke-width="0.4" opacity="0.5"/>
+      <line x1="254" y1="146" x2="254" y2="153" stroke="#7CB342" stroke-width="0.4" opacity="0.5"/>
+      <text x="245" y="175" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">幼虫</text>
+    </g>
+
+    <!-- Stage 3: 蛹 Chrysalis (bottom center 150,245) -->
+    <g class="bl__stage" data-stage="3" style="cursor:pointer">
+      <circle class="bl__ring" cx="150" cy="245" r="32" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Twig -->
+      <line x1="140" y1="224" x2="162" y2="222" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Silk thread -->
+      <path d="M150,225 Q151,228 150,232" fill="none" stroke="#BCAAA4" stroke-width="0.6"/>
+      <!-- Chrysalis body -->
+      <path d="M145,235 Q143,240 144,248 Q146,258 150,260 Q154,258 156,248 Q157,240 155,235 Q152,232 150,232 Q148,232 145,235Z" fill="var(--cmp-pupa, #795548)" stroke="#5D4037" stroke-width="0.8"/>
+      <!-- Texture lines -->
+      <path d="M146,238 Q150,237 154,238" fill="none" stroke="#6D4C41" stroke-width="0.4" opacity="0.5"/>
+      <path d="M145,243 Q150,241 155,243" fill="none" stroke="#6D4C41" stroke-width="0.4" opacity="0.5"/>
+      <path d="M145,248 Q150,246 155,248" fill="none" stroke="#6D4C41" stroke-width="0.4" opacity="0.5"/>
+      <path d="M146,253 Q150,251 154,253" fill="none" stroke="#6D4C41" stroke-width="0.4" opacity="0.5"/>
+      <!-- Highlight -->
+      <path d="M148,235 Q147,242 148,250" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-linecap="round"/>
+      <text x="150" y="275" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">蛹</text>
+    </g>
+
+    <!-- Stage 4: 成虫 Butterfly (left center 55,150) -->
+    <g class="bl__stage" data-stage="4" style="cursor:pointer">
+      <circle class="bl__ring" cx="55" cy="150" r="32" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Upper wings -->
+      <path d="M55,150 Q38,130 35,120 Q34,112 42,110 Q52,112 55,125Z" fill="var(--cmp-wing, #FF9800)" stroke="#E65100" stroke-width="0.7"/>
+      <path d="M55,150 Q72,130 75,120 Q76,112 68,110 Q58,112 55,125Z" fill="var(--cmp-wing, #FF9800)" stroke="#E65100" stroke-width="0.7"/>
+      <!-- Lower wings -->
+      <path d="M55,150 Q38,160 33,168 Q32,175 40,176 Q50,172 55,160Z" fill="var(--cmp-wing, #FF9800)" stroke="#E65100" stroke-width="0.7" opacity="0.9"/>
+      <path d="M55,150 Q72,160 77,168 Q78,175 70,176 Q60,172 55,160Z" fill="var(--cmp-wing, #FF9800)" stroke="#E65100" stroke-width="0.7" opacity="0.9"/>
+      <!-- Wing patterns - spots -->
+      <circle cx="44" cy="122" r="3" fill="#FFF3E0" opacity="0.7"/>
+      <circle cx="66" cy="122" r="3" fill="#FFF3E0" opacity="0.7"/>
+      <circle cx="42" cy="130" r="1.8" fill="#E65100" opacity="0.4"/>
+      <circle cx="68" cy="130" r="1.8" fill="#E65100" opacity="0.4"/>
+      <circle cx="40" cy="168" r="2" fill="#FFF3E0" opacity="0.6"/>
+      <circle cx="70" cy="168" r="2" fill="#FFF3E0" opacity="0.6"/>
+      <!-- Wing veins -->
+      <line x1="55" y1="140" x2="42" y2="115" stroke="#E65100" stroke-width="0.4" opacity="0.3"/>
+      <line x1="55" y1="140" x2="68" y2="115" stroke="#E65100" stroke-width="0.4" opacity="0.3"/>
+      <line x1="55" y1="155" x2="38" y2="170" stroke="#E65100" stroke-width="0.3" opacity="0.3"/>
+      <line x1="55" y1="155" x2="72" y2="170" stroke="#E65100" stroke-width="0.3" opacity="0.3"/>
+      <!-- Body -->
+      <ellipse cx="55" cy="145" rx="2" ry="12" fill="#5D4037" stroke="#3E2723" stroke-width="0.5"/>
+      <!-- Antennae -->
+      <path d="M54,134 Q50,126 47,123" fill="none" stroke="#5D4037" stroke-width="0.8" stroke-linecap="round"/>
+      <path d="M56,134 Q60,126 63,123" fill="none" stroke="#5D4037" stroke-width="0.8" stroke-linecap="round"/>
+      <circle cx="47" cy="122.5" r="1" fill="#5D4037"/>
+      <circle cx="63" cy="122.5" r="1" fill="#5D4037"/>
+      <text x="55" y="185" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">成虫</text>
+    </g>
+  </svg>
+
+  <style>
+    .cmp[data-cmp-id="sci.life.butterfly-lifecycle.interactive"] {
+      width: var(--cmp-size, 300px); display: inline-block;
+    }
+    .cmp[data-cmp-id="sci.life.butterfly-lifecycle.interactive"] .bl__svg {
+      width: 100%; height: auto; display: block;
+    }
+    .cmp[data-cmp-id="sci.life.butterfly-lifecycle.interactive"] .bl__stage:hover .bl__ring {
+      stroke: rgba(255,152,0,0.25); stroke-width: 3;
+    }
+    .cmp[data-cmp-id="sci.life.butterfly-lifecycle.interactive"] .bl__ring {
+      transition: stroke 0.3s, stroke-width 0.3s;
+    }
+    .cmp[data-cmp-id="sci.life.butterfly-lifecycle.interactive"] .bl__arc {
+      transition: stroke 0.4s, stroke-width 0.4s;
+    }
+    @keyframes bl-pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    .cmp[data-cmp-id="sci.life.butterfly-lifecycle.interactive"] .bl__arc--active {
+      animation: bl-pulse 1.8s ease-in-out infinite;
+    }
+  </style>
+
+  <script>
+  (function(){
+    var root = document.currentScript && document.currentScript.closest
+      ? document.currentScript.closest('[data-cmp-id="sci.life.butterfly-lifecycle.interactive"]')
+      : null;
+    if(!root) return;
+
+    var svg = root.querySelector('.bl__svg');
+    if(!svg) return;
+
+    var uid = 'bl' + Math.random().toString(36).slice(2,8);
+    // Assign unique IDs to defs elements
+    svg.querySelectorAll('defs > [class^="bl__"]').forEach(function(el){
+      var cls = el.getAttribute('class');
+      var newId = uid + '_' + cls;
+      el.setAttribute('id', newId);
+    });
+    // Fix marker-end references on arcs
+    svg.querySelectorAll('.bl__arc').forEach(function(el){
+      el.setAttribute('marker-end', 'url(#' + uid + '_bl__arrow)');
+    });
+
+    var STAGES = ['卵','幼虫','蛹','成虫'];
+    var stageEls = svg.querySelectorAll('.bl__stage');
+    var arcEls = svg.querySelectorAll('.bl__arc');
+
+    var props = {};
+    try { props = JSON.parse(root.getAttribute('data-props')||'{}'); } catch(e){}
+    var current = Math.max(1, Math.min(4, props.stage || 1));
+
+    function setActive(stage){
+      current = stage;
+      stageEls.forEach(function(g){
+        var s = parseInt(g.getAttribute('data-stage'));
+        var ring = g.querySelector('.bl__ring');
+        if(s === stage){
+          ring.setAttribute('stroke', '#FF9800');
+          ring.setAttribute('stroke-width', '3');
+          ring.style.filter = 'url(#' + uid + '_bl__glow)';
+        } else {
+          ring.setAttribute('stroke', 'transparent');
+          ring.setAttribute('stroke-width', '3');
+          ring.style.filter = '';
+        }
+      });
+      arcEls.forEach(function(arc){
+        var a = parseInt(arc.getAttribute('data-arc'));
+        if(a === stage){
+          arc.setAttribute('stroke', '#FF9800');
+          arc.setAttribute('stroke-width', '2.5');
+          arc.setAttribute('marker-end', 'url(#' + uid + '_bl__arrow-active)');
+          arc.classList.add('bl__arc--active');
+        } else {
+          arc.setAttribute('stroke', '#BDBDBD');
+          arc.setAttribute('stroke-width', '1.8');
+          arc.setAttribute('marker-end', 'url(#' + uid + '_bl__arrow)');
+          arc.classList.remove('bl__arc--active');
+        }
+      });
+    }
+
+    function emitChange(stage){
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle',
+          values: { stage: stage, stageName: STAGES[stage - 1] }
+        }
+      }));
+    }
+
+    stageEls.forEach(function(g){
+      g.addEventListener('click', function(e){
+        e.stopPropagation();
+        var s = parseInt(g.getAttribute('data-stage'));
+        setActive(s);
+        emitChange(s);
+      });
+    });
+
+    setActive(current);
+
+    new MutationObserver(function(){
+      try {
+        var p = JSON.parse(root.getAttribute('data-props')||'{}');
+        if(p.stage !== undefined){
+          var s = Math.max(1, Math.min(4, p.stage));
+          if(s !== current){ setActive(s); }
+        }
+      } catch(e){}
+    }).observe(root, { attributes: true, attributeFilter: ['data-props','style'] });
+  })();
+  </script>
+</div>

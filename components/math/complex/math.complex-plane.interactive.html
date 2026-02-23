@@ -1,0 +1,282 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.complex-plane.interactive",
+  "name": "复数平面（交互式）",
+  "nameEn": "Complex Plane (Interactive)",
+  "category": "math/complex",
+  "version": "1.0.0",
+  "viewport": { "w": 520, "h": 440 },
+  "tags": ["math","complex","plane","argand","modulus","argument","interactive"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "pointColor", "type": "color",  "default": "#e53935", "desc": "点颜色" },
+    { "key": "gridColor",  "type": "color",  "default": "#e0e0e0", "desc": "网格颜色" },
+    { "key": "traceColor", "type": "color",  "default": "#ff9800", "desc": "轨迹颜色" },
+    { "key": "realPart",   "type": "number", "default": 3, "min": -5, "max": 5, "desc": "实部 a" },
+    { "key": "imagPart",   "type": "number", "default": 2, "min": -5, "max": 5, "desc": "虚部 b" },
+    { "key": "operation",  "type": "enum",   "default": "none", "enum": ["none","add","multiply","conjugate","power"], "desc": "运算" },
+    { "key": "showPolar",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示极坐标" },
+    { "key": "showTrace",  "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示轨迹" },
+    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",      "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "pointColor": "--cmp-point", "gridColor": "--cmp-grid", "traceColor": "--cmp-trace", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "update", "values": { "real": "number", "imag": "number", "modulus": "number", "argument": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.complex-plane.interactive" role="img" aria-label="复数平面（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.complex-plane.interactive"]{
+      --h:var(--cmp-size,440px);display:inline-block;
+      width:calc(var(--h)*520/440);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,152,0,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="math.complex-plane.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.complex-plane.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="math.complex-plane.interactive"] .cp__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="cp__arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-stroke,#37474f)"/></marker>
+      <marker id="cp__arrR" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-point,#e53935)"/></marker>
+    </defs>
+
+    <text x="260" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">复数平面 (Argand 图)</text>
+
+    <!-- 坐标系 -->
+    <g transform="translate(220,220)">
+      <!-- 网格 -->
+      <g class="cp__grid" stroke="var(--cmp-grid,#e0e0e0)" stroke-width="0.5">
+        <line x1="-180" y1="-180" x2="-180" y2="180"/><line x1="-144" y1="-180" x2="-144" y2="180"/>
+        <line x1="-108" y1="-180" x2="-108" y2="180"/><line x1="-72" y1="-180" x2="-72" y2="180"/>
+        <line x1="-36" y1="-180" x2="-36" y2="180"/><line x1="36" y1="-180" x2="36" y2="180"/>
+        <line x1="72" y1="-180" x2="72" y2="180"/><line x1="108" y1="-180" x2="108" y2="180"/>
+        <line x1="144" y1="-180" x2="144" y2="180"/><line x1="180" y1="-180" x2="180" y2="180"/>
+        <line x1="-180" y1="-180" x2="180" y2="-180"/><line x1="-180" y1="-144" x2="180" y2="-144"/>
+        <line x1="-180" y1="-108" x2="180" y2="-108"/><line x1="-180" y1="-72" x2="180" y2="-72"/>
+        <line x1="-180" y1="-36" x2="180" y2="-36"/><line x1="-180" y1="36" x2="180" y2="36"/>
+        <line x1="-180" y1="72" x2="180" y2="72"/><line x1="-180" y1="108" x2="180" y2="108"/>
+        <line x1="-180" y1="144" x2="180" y2="144"/><line x1="-180" y1="180" x2="180" y2="180"/>
+      </g>
+
+      <!-- 坐标轴 -->
+      <line x1="-190" y1="0" x2="190" y2="0" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5" marker-end="url(#cp__arr)"/>
+      <line x1="0" y1="190" x2="0" y2="-190" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5" marker-end="url(#cp__arr)"/>
+      <text x="195" y="4" font-size="11" fill="var(--cmp-stroke,#37474f)" font-weight="600">Re</text>
+      <text x="5" y="-192" font-size="11" fill="var(--cmp-stroke,#37474f)" font-weight="600">Im</text>
+
+      <!-- 刻度 -->
+      <g font-size="8" fill="#999" text-anchor="middle">
+        <text x="-180" y="14">-5</text><text x="-144" y="14">-4</text><text x="-108" y="14">-3</text>
+        <text x="-72" y="14">-2</text><text x="-36" y="14">-1</text>
+        <text x="36" y="14">1</text><text x="72" y="14">2</text><text x="108" y="14">3</text>
+        <text x="144" y="14">4</text><text x="180" y="14">5</text>
+        <text x="-14" y="-176">5i</text><text x="-14" y="-140">4i</text><text x="-14" y="-104">3i</text>
+        <text x="-14" y="-68">2i</text><text x="-14" y="-32">i</text>
+        <text x="-14" y="40">-i</text><text x="-14" y="76">-2i</text><text x="-14" y="112">-3i</text>
+        <text x="-14" y="148">-4i</text><text x="-14" y="184">-5i</text>
+      </g>
+
+      <!-- 轨迹 -->
+      <polyline class="cp__trace" fill="none" stroke="var(--cmp-trace,#ff9800)" stroke-width="1.5" opacity="0.6"/>
+
+      <!-- 模长线 -->
+      <line class="cp__modLine" x1="0" y1="0" x2="0" y2="0" stroke="var(--cmp-point,#e53935)" stroke-width="2" marker-end="url(#cp__arrR)"/>
+
+      <!-- 实部虚部投影 -->
+      <line class="cp__projRe" x1="0" y1="0" x2="0" y2="0" stroke="var(--cmp-point,#e53935)" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+      <line class="cp__projIm" x1="0" y1="0" x2="0" y2="0" stroke="#1e88e5" stroke-width="1" stroke-dasharray="4,3" opacity="0.5"/>
+
+      <!-- 辐角弧 -->
+      <path class="cp__argArc" fill="none" stroke="#ff9800" stroke-width="1.5" opacity="0.6"/>
+
+      <!-- 复数点 -->
+      <circle class="cp__point" r="6" fill="var(--cmp-point,#e53935)"/>
+      <text class="cp__pointLabel" font-size="11" font-weight="700" fill="var(--cmp-point,#e53935)">z</text>
+
+      <!-- 共轭点 -->
+      <circle class="cp__conjPoint" r="5" fill="#1e88e5" opacity="0" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+      <text class="cp__conjLabel" font-size="10" fill="#1e88e5" opacity="0">z̄</text>
+    </g>
+
+    <!-- 数据面板 -->
+    <g transform="translate(400,35)">
+      <rect x="0" y="0" width="110" height="170" rx="6" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="55" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="var(--cmp-stroke,#37474f)">复数 z</text>
+
+      <text x="8" y="38" font-size="9" fill="#666">直角坐标:</text>
+      <text class="cp__rectVal cp__data" x="8" y="52" font-size="11" fill="var(--cmp-point,#e53935)">3 + 2i</text>
+
+      <text x="8" y="72" font-size="9" fill="#666">模 |z|:</text>
+      <text class="cp__modVal cp__data" x="8" y="86" font-size="11" fill="var(--cmp-point,#e53935)">3.61</text>
+
+      <text x="8" y="106" font-size="9" fill="#666">辐角 θ:</text>
+      <text class="cp__argVal cp__data" x="8" y="120" font-size="11" fill="#ff9800">33.7°</text>
+
+      <text x="8" y="140" font-size="9" fill="#666">极坐标:</text>
+      <text class="cp__polarVal cp__data" x="8" y="154" font-size="10" fill="#666">3.61∠33.7°</text>
+    </g>
+
+    <!-- 公式 -->
+    <g transform="translate(260,415)">
+      <text x="0" y="0" text-anchor="middle" font-size="10" fill="#999">z = a + bi = |z|(cosθ + i·sinθ) = |z|e^(iθ)</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.complex-plane.interactive')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var a=Math.max(-5,Math.min(5,Number(P.realPart)||3));
+    var b=Math.max(-5,Math.min(5,Number(P.imagPart)||2));
+    var op=P.operation||'none';
+    var showPolar=(P.showPolar!=='off');
+    var showTrace=(P.showTrace==='on');
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+
+    var scale=36; /* px per unit */
+
+    var point=root.querySelector('.cp__point');
+    var pointLabel=root.querySelector('.cp__pointLabel');
+    var modLine=root.querySelector('.cp__modLine');
+    var projRe=root.querySelector('.cp__projRe');
+    var projIm=root.querySelector('.cp__projIm');
+    var argArc=root.querySelector('.cp__argArc');
+    var conjPoint=root.querySelector('.cp__conjPoint');
+    var conjLabel=root.querySelector('.cp__conjLabel');
+    var traceLine=root.querySelector('.cp__trace');
+
+    var rectVal=root.querySelector('.cp__rectVal');
+    var modVal=root.querySelector('.cp__modVal');
+    var argVal=root.querySelector('.cp__argVal');
+    var polarVal=root.querySelector('.cp__polarVal');
+
+    var trace=[];
+
+    function updatePoint(re,im){
+      var px=re*scale,py=-im*scale;
+      point.setAttribute('cx',px);point.setAttribute('cy',py);
+      pointLabel.setAttribute('x',px+10);pointLabel.setAttribute('y',py-10);
+
+      modLine.setAttribute('x2',px);modLine.setAttribute('y2',py);
+
+      /* 投影 */
+      projRe.setAttribute('x1',px);projRe.setAttribute('y1',py);
+      projRe.setAttribute('x2',px);projRe.setAttribute('y2',0);
+      projIm.setAttribute('x1',px);projIm.setAttribute('y1',py);
+      projIm.setAttribute('x2',0);projIm.setAttribute('y2',py);
+
+      /* 模和辐角 */
+      var mod=Math.sqrt(re*re+im*im);
+      var arg=Math.atan2(im,re)*180/Math.PI;
+
+      /* 辐角弧 */
+      if(mod>0.1&&showPolar){
+        var r=Math.min(mod*scale*0.3,40);
+        var endX=r*Math.cos(Math.atan2(im,re));
+        var endY=-r*Math.sin(Math.atan2(im,re));
+        var largeArc=Math.abs(arg)>180?1:0;
+        var sweep=arg>=0?0:1;
+        argArc.setAttribute('d','M'+r+',0 A'+r+','+r+' 0 '+largeArc+','+sweep+' '+endX.toFixed(1)+','+endY.toFixed(1));
+        argArc.style.display='';
+      }else{
+        argArc.style.display='none';
+      }
+
+      /* 共轭 */
+      if(op==='conjugate'){
+        conjPoint.setAttribute('cx',px);conjPoint.setAttribute('cy',-py);
+        conjPoint.setAttribute('opacity','0.8');
+        conjLabel.setAttribute('x',px+10);conjLabel.setAttribute('y',-py-10);
+        conjLabel.setAttribute('opacity','0.8');
+      }else{
+        conjPoint.setAttribute('opacity','0');
+        conjLabel.setAttribute('opacity','0');
+      }
+
+      /* 数据 */
+      var sign=im>=0?'+':'-';
+      rectVal.textContent=re.toFixed(1)+' '+sign+' '+Math.abs(im).toFixed(1)+'i';
+      modVal.textContent=mod.toFixed(2);
+      argVal.textContent=arg.toFixed(1)+'°';
+      polarVal.textContent=mod.toFixed(2)+'∠'+arg.toFixed(1)+'°';
+
+      /* 轨迹 */
+      if(showTrace){
+        trace.push({x:px,y:py});
+        if(trace.length>500)trace.shift();
+        var pts='';
+        for(var i=0;i<trace.length;i++){
+          pts+=(i?'L':'M')+trace[i].x.toFixed(1)+','+trace[i].y.toFixed(1);
+        }
+        traceLine.setAttribute('points',pts.replace(/^M/,''));
+      }
+    }
+
+    updatePoint(a,b);
+
+    /* 动画：旋转点 */
+    var time=0,animId=0,lastT=0;
+    var baseAngle=Math.atan2(b,a);
+    var baseMod=Math.sqrt(a*a+b*b);
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04)*speed;
+      lastT=t;
+      time+=dt;
+
+      if(op==='power'){
+        /* z^n 动画 */
+        var n=1+time*0.3;
+        var newMod=Math.pow(baseMod,n);
+        var newArg=baseAngle*n;
+        if(newMod>5)newMod=5;
+        var re=newMod*Math.cos(newArg);
+        var im=newMod*Math.sin(newArg);
+        updatePoint(re,im);
+      }else if(op==='multiply'){
+        /* 乘以 e^(it) 旋转 */
+        var angle=baseAngle+time*0.5;
+        var re=baseMod*Math.cos(angle);
+        var im=baseMod*Math.sin(angle);
+        updatePoint(re,im);
+      }else{
+        /* 静态或微动 */
+        var wobble=Math.sin(time*2)*0.05;
+        updatePoint(a+wobble,b+wobble);
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

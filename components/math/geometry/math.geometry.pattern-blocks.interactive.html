@@ -1,0 +1,307 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.pattern-blocks.interactive",
+  "name": "图案积木",
+  "nameEn": "Pattern Blocks",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 320 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["pattern-blocks", "shapes", "tessellation", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "drag", "values": { "placedCount": "number", "shapes": "array" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.pattern-blocks.interactive" role="img" aria-label="图案积木">
+  <style>
+    .cmp[data-cmp-id="math.geometry.pattern-blocks.interactive"] {
+      --sz: var(--cmp-size, 360px);
+      display: inline-block; width: var(--sz); height: calc(var(--sz) * 320 / 360);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.pattern-blocks.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+    .cmp[data-cmp-id="math.geometry.pattern-blocks.interactive"] .pb__pal:hover {
+      filter: brightness(1.08); cursor: pointer;
+    }
+    .cmp[data-cmp-id="math.geometry.pattern-blocks.interactive"] .pb__placed { cursor: grab; }
+    .cmp[data-cmp-id="math.geometry.pattern-blocks.interactive"] .pb__placed:hover { filter: brightness(1.05); }
+    .cmp[data-cmp-id="math.geometry.pattern-blocks.interactive"] .pb__dragging { cursor: grabbing; }
+  </style>
+
+  <svg viewBox="0 0 360 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+
+<script>
+(function() {
+  var sc = document.currentScript;
+  if (!sc) return;
+  var root = sc.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.pattern-blocks.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'pb_' + Math.random().toString(36).slice(2, 8);
+  var NS = 'http://www.w3.org/2000/svg';
+  var PI = Math.PI, cos = Math.cos, sin = Math.sin;
+
+  /* Shape definitions: type, name, color, path points (centered at 0,0) */
+  var SHAPES = [
+    { type: 'triangle', name: '正三角形', color: '#4CAF50', light: '#66BB6A', dark: '#388E3C',
+      pts: function() { var s=30,h=s*Math.sqrt(3)/2; return [[0,-h*2/3],[-s/2,h/3],[s/2,h/3]]; } },
+    { type: 'square', name: '正方形', color: '#FF9800', light: '#FFA726', dark: '#F57C00',
+      pts: function() { var s=15; return [[-s,-s],[s,-s],[s,s],[-s,s]]; } },
+    { type: 'hexagon', name: '正六边形', color: '#FFEB3B', light: '#FFF176', dark: '#FBC02D',
+      pts: function() { var r=20,p=[]; for(var i=0;i<6;i++){var a=PI/6+i*PI/3;p.push([r*cos(a),r*sin(a)]);}return p; } },
+    { type: 'rhombus', name: '菱形', color: '#2196F3', light: '#42A5F5', dark: '#1976D2',
+      pts: function() { return [[0,-10],[15,0],[0,10],[-15,0]]; } },
+    { type: 'trapezoid', name: '梯形', color: '#F44336', light: '#EF5350', dark: '#D32F2F',
+      pts: function() { return [[-7.5,-10],[7.5,-10],[15,10],[-15,10]]; } },
+    { type: 'thinRhombus', name: '细菱形', color: '#D7CCC8', light: '#EFEBE9', dark: '#A1887F',
+      pts: function() { return [[0,-6],[15,0],[0,6],[-15,0]]; } }
+  ];
+
+  var placed = []; // {type, x, y, rotation}
+  var ghost = null; // {typeIdx} - shape attached to cursor
+  var ghostPos = { x: 180, y: 190 };
+  var dragIdx = -1, dragOff = { x: 0, y: 0 };
+  var longTimer = null;
+
+  function ptsStr(pts, cx, cy, rot) {
+    var r = (rot || 0) * PI / 180;
+    return pts.map(function(p) {
+      var x = p[0] * cos(r) - p[1] * sin(r) + cx;
+      var y = p[0] * sin(r) + p[1] * cos(r) + cy;
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    }).join(' ');
+  }
+
+  function shapeHTML(def, cx, cy, rot, cls, extra) {
+    var pts = def.pts();
+    var r = (rot || 0) * PI / 180;
+    /* 3D edge effect: top lighter, bottom darker */
+    var h = '';
+    h += '<polygon points="' + ptsStr(pts, cx, cy, rot) + '" fill="' + def.color + '" stroke="#37474F" stroke-width="0.8" stroke-linejoin="round"' + (cls ? ' class="' + cls + '"' : '') + (extra || '') + '/>';
+    /* light top edge */
+    var topPts = pts.length <= 4 ? [pts[0], pts[pts.length - 1]] : [pts[0], pts[1]];
+    h += '<line x1="' + (topPts[0][0] * cos(r) - topPts[0][1] * sin(r) + cx).toFixed(1) + '" y1="' + (topPts[0][0] * sin(r) + topPts[0][1] * cos(r) + cy).toFixed(1) + '" x2="' + (topPts[1][0] * cos(r) - topPts[1][1] * sin(r) + cx).toFixed(1) + '" y2="' + (topPts[1][0] * sin(r) + topPts[1][1] * cos(r) + cy).toFixed(1) + '" stroke="' + def.light + '" stroke-width="1.5" stroke-linecap="round" pointer-events="none"/>';
+    return h;
+  }
+
+  function svgPt(e) {
+    var pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    var ctm = svg.getScreenCTM();
+    return ctm ? pt.matrixTransform(ctm.inverse()) : null;
+  }
+
+  function emit() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'drag',
+        values: { placedCount: placed.length, shapes: placed.map(function(s) {
+          return { type: SHAPES[s.type].type, x: Math.round(s.x), y: Math.round(s.y), rotation: s.rotation };
+        }) } }
+    }));
+  }
+
+  function render() {
+    var h = '';
+    /* defs for drop shadow */
+    h += '<defs><filter id="' + uid + '_sh"><feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-opacity="0.25"/></filter>';
+    h += '<filter id="' + uid + '_shd"><feDropShadow dx="1.5" dy="2" stdDeviation="2.5" flood-opacity="0.35"/></filter></defs>';
+
+    /* background */
+    h += '<rect width="360" height="320" fill="#FAFAFA" rx="4"/>';
+
+    /* palette area */
+    h += '<rect x="0" y="0" width="360" height="58" fill="#F5F5F5" rx="4"/>';
+    h += '<line x1="0" y1="58" x2="360" y2="58" stroke="#E0E0E0" stroke-width="0.5"/>';
+
+    /* palette shapes */
+    for (var i = 0; i < SHAPES.length; i++) {
+      var def = SHAPES[i];
+      var cx = 30 + i * 55, cy = 22;
+      h += '<g class="pb__pal" data-pal="' + i + '">';
+      h += shapeHTML(def, cx, cy, 0, '', '');
+      h += '<text x="' + cx + '" y="' + 46 + '" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="7" fill="#757575">' + def.name + '</text>';
+      h += '</g>';
+    }
+
+    /* canvas grid hint (subtle triangular dots) */
+    var gs = 20;
+    for (var gy = 75; gy < 315; gy += gs * Math.sqrt(3) / 2) {
+      var row = Math.round((gy - 75) / (gs * Math.sqrt(3) / 2));
+      var off = (row % 2) ? gs / 2 : 0;
+      for (var gx = 10 + off; gx < 355; gx += gs) {
+        h += '<circle cx="' + gx.toFixed(1) + '" cy="' + gy.toFixed(1) + '" r="0.6" fill="#E0E0E0"/>';
+      }
+    }
+
+    /* placed shapes */
+    for (var i = 0; i < placed.length; i++) {
+      var s = placed[i], def = SHAPES[s.type];
+      var isDragging = (dragIdx === i);
+      var scale = isDragging ? ' transform="translate(' + s.x.toFixed(1) + ',' + s.y.toFixed(1) + ') scale(1.06) translate(' + (-s.x).toFixed(1) + ',' + (-s.y).toFixed(1) + ')"' : '';
+      var filt = isDragging ? uid + '_shd' : uid + '_sh';
+      h += '<g class="pb__placed' + (isDragging ? ' pb__dragging' : '') + '" data-idx="' + i + '" filter="url(#' + filt + ')"' + scale + '>';
+      h += shapeHTML(def, s.x, s.y, s.rotation, '', '');
+      h += '</g>';
+    }
+
+    /* ghost shape following cursor */
+    if (ghost !== null) {
+      var def = SHAPES[ghost.typeIdx];
+      h += '<g opacity="0.7" filter="url(#' + uid + '_shd)" pointer-events="none">';
+      h += shapeHTML(def, ghostPos.x, ghostPos.y, 0, '', '');
+      h += '</g>';
+    }
+
+    /* info bar */
+    h += '<text x="8" y="316" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="9" fill="#9E9E9E">已放置: ' + placed.length + ' 块</text>';
+    if (placed.length > 0) {
+      h += '<g class="pb__pal" data-action="clear"><rect x="310" y="305" width="42" height="14" rx="3" fill="#EF5350"/>';
+      h += '<text x="331" y="315" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="8" fill="#fff" pointer-events="none">清除</text></g>';
+    }
+
+    svg.innerHTML = h;
+  }
+
+  function hitPlaced(p) {
+    /* reverse order so topmost shape is hit first */
+    for (var i = placed.length - 1; i >= 0; i--) {
+      var s = placed[i], def = SHAPES[s.type], pts = def.pts();
+      var r = s.rotation * PI / 180;
+      /* point-in-polygon test */
+      var tx = p.x - s.x, ty = p.y - s.y;
+      /* un-rotate */
+      var ux = tx * cos(-r) - ty * sin(-r);
+      var uy = tx * sin(-r) + ty * cos(-r);
+      if (pointInPoly(ux, uy, pts)) return i;
+    }
+    return -1;
+  }
+
+  function pointInPoly(x, y, pts) {
+    var inside = false, n = pts.length;
+    for (var i = 0, j = n - 1; i < n; j = i++) {
+      var xi = pts[i][0], yi = pts[i][1], xj = pts[j][0], yj = pts[j][1];
+      if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+    }
+    return inside;
+  }
+
+  function snapToGrid(x, y) {
+    var gs = 20, halfGs = gs / 2;
+    var rowH = gs * Math.sqrt(3) / 2;
+    var row = Math.round((y - 75) / rowH);
+    var sy = 75 + row * rowH;
+    var off = (row % 2) ? halfGs : 0;
+    var sx = Math.round((x - 10 - off) / gs) * gs + 10 + off;
+    return { x: sx, y: sy };
+  }
+
+  /* Event handling */
+  svg.addEventListener('pointerdown', function(e) {
+    var p = svgPt(e);
+    if (!p) return;
+
+    /* clear button */
+    var clr = e.target.closest('[data-action="clear"]');
+    if (clr) { placed = []; ghost = null; render(); emit(); return; }
+
+    /* palette click: pick up ghost */
+    var pal = e.target.closest('[data-pal]');
+    if (pal && !pal.hasAttribute('data-action')) {
+      var idx = parseInt(pal.getAttribute('data-pal'));
+      if (idx >= 0 && idx < SHAPES.length) {
+        ghost = { typeIdx: idx };
+        ghostPos.x = p.x; ghostPos.y = Math.max(p.y, 70);
+        render();
+      }
+      return;
+    }
+
+    /* if ghost active, place it */
+    if (ghost !== null && p.y > 58) {
+      var sn = snapToGrid(p.x, p.y);
+      placed.push({ type: ghost.typeIdx, x: sn.x, y: sn.y, rotation: 0 });
+      ghost = null;
+      render(); emit();
+      return;
+    }
+    if (ghost !== null && p.y <= 58) { ghost = null; render(); return; }
+
+    /* drag existing shape */
+    if (p.y > 58) {
+      var hi = hitPlaced(p);
+      if (hi >= 0) {
+        dragIdx = hi;
+        dragOff.x = p.x - placed[hi].x;
+        dragOff.y = p.y - placed[hi].y;
+        svg.setPointerCapture(e.pointerId);
+        render();
+      }
+    }
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    var p = svgPt(e);
+    if (!p) return;
+    if (ghost !== null) {
+      ghostPos.x = p.x; ghostPos.y = Math.max(p.y, 65);
+      render();
+      return;
+    }
+    if (dragIdx >= 0) {
+      placed[dragIdx].x = p.x - dragOff.x;
+      placed[dragIdx].y = Math.max(p.y - dragOff.y, 65);
+      render();
+    }
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (dragIdx >= 0) {
+      var s = placed[dragIdx];
+      var sn = snapToGrid(s.x, s.y);
+      s.x = sn.x; s.y = sn.y;
+      dragIdx = -1;
+      render(); emit();
+    }
+    clearTimeout(longTimer);
+  });
+
+  svg.addEventListener('pointercancel', function() { dragIdx = -1; clearTimeout(longTimer); render(); });
+
+  /* double-click to rotate */
+  svg.addEventListener('dblclick', function(e) {
+    var p = svgPt(e);
+    if (!p || p.y <= 58) return;
+    var hi = hitPlaced(p);
+    if (hi >= 0) {
+      placed[hi].rotation = (placed[hi].rotation + 60) % 360;
+      render(); emit();
+    }
+  });
+
+  /* right-click to remove */
+  svg.addEventListener('contextmenu', function(e) {
+    var p = svgPt(e);
+    if (!p || p.y <= 58) return;
+    var hi = hitPlaced(p);
+    if (hi >= 0) {
+      e.preventDefault();
+      placed.splice(hi, 1);
+      render(); emit();
+    }
+  });
+
+  render();
+})();
+</script>

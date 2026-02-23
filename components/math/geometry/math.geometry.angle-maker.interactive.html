@@ -1,0 +1,321 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.angle-maker.interactive",
+  "name": "角度认识",
+  "nameEn": "Angle Maker",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 600, "desc": "组件尺寸" },
+    { "key": "angle", "type": "number", "default": 45, "min": 0, "max": 360, "desc": "当前角度" },
+    { "key": "rayColor", "type": "color", "default": "#1565C0", "desc": "射线颜色" },
+    { "key": "arcColor", "type": "color", "default": "#FF9800", "desc": "角弧颜色" },
+    { "key": "fillColor", "type": "color", "default": "rgba(255,152,0,0.15)", "desc": "角区域填充" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "rayColor": "--cmp-ray",
+    "arcColor": "--cmp-arc",
+    "fillColor": "--cmp-fill"
+  },
+  "tags": ["angle", "degree", "rotation", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "rotate", "values": { "angle": "number(0-360)", "type": "string" } },
+    { "name": "cmp:changeend", "type": "rotate", "values": { "angle": "number(0-360)", "type": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.angle-maker.interactive" role="img" aria-label="角度认识">
+  <style>
+    .cmp[data-cmp-id="math.geometry.angle-maker.interactive"] {
+      --size: var(--cmp-size, 300px);
+      display: inline-block;
+      width: var(--size);
+      height: var(--size);
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.angle-maker.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+    .cmp[data-cmp-id="math.geometry.angle-maker.interactive"] .am__handle {
+      cursor: grab;
+    }
+    .cmp[data-cmp-id="math.geometry.angle-maker.interactive"] .am__handle:active {
+      cursor: grabbing;
+    }
+    .cmp[data-cmp-id="math.geometry.angle-maker.interactive"] .am__label {
+      font-family: Arial, sans-serif; font-weight: bold; pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="am_arrow_f" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <path d="M0,0 L8,3 L0,6" fill="none" stroke-width="1.2"/>
+      </marker>
+      <marker id="am_arrow_m" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <path d="M0,0 L8,3 L0,6" fill="none" stroke-width="1.2"/>
+      </marker>
+    </defs>
+    <!-- degree tick marks -->
+    <g class="am__ticks"></g>
+    <!-- sector fill -->
+    <path class="am__sector" fill-opacity="1"/>
+    <!-- angle arc -->
+    <path class="am__arc" fill="none" stroke-width="2" stroke-linecap="round"/>
+    <!-- right angle square -->
+    <path class="am__right" fill="none" stroke-width="1.5" style="display:none"/>
+    <!-- fixed ray -->
+    <line class="am__ray-fixed" stroke-width="2.5" stroke-linecap="round" marker-end="url(#am_arrow_f)"/>
+    <!-- movable ray -->
+    <line class="am__ray-move" stroke-width="2.5" stroke-linecap="round" marker-end="url(#am_arrow_m)"/>
+    <!-- vertex -->
+    <circle class="am__vertex" r="4"/>
+    <!-- drag handle -->
+    <circle class="am__handle" r="10" fill="rgba(21,101,192,0.15)" stroke-width="1.5"/>
+    <!-- degree text -->
+    <text class="am__label am__deg" font-size="14" text-anchor="middle"></text>
+    <!-- type text -->
+    <text class="am__label am__type" font-size="13" text-anchor="middle" x="150" y="248"></text>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.angle-maker.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var VX = 150, VY = 200, RAY = 130, ARC_R = 40, TICK_R = 100;
+  var SNAPS = [0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360];
+  var SNAP_TOL = 3;
+
+  var sector  = svg.querySelector('.am__sector');
+  var arc     = svg.querySelector('.am__arc');
+  var rightSq = svg.querySelector('.am__right');
+  var rayF    = svg.querySelector('.am__ray-fixed');
+  var rayM    = svg.querySelector('.am__ray-move');
+  var vertex  = svg.querySelector('.am__vertex');
+  var handle  = svg.querySelector('.am__handle');
+  var degTxt  = svg.querySelector('.am__deg');
+  var typeTxt = svg.querySelector('.am__type');
+  var ticksG  = svg.querySelector('.am__ticks');
+  var arrowF  = svg.querySelector('#am_arrow_f path');
+  var arrowM  = svg.querySelector('#am_arrow_m path');
+
+  var angle = 45;
+  var dragging = false;
+
+  function css(prop, fb) {
+    var v = getComputedStyle(root).getPropertyValue(prop).trim();
+    return v || fb;
+  }
+
+  function classify(a) {
+    if (a === 0) return '零角';
+    if (a < 90) return '锐角';
+    if (a === 90) return '直角';
+    if (a < 180) return '钝角';
+    if (a === 180) return '平角';
+    if (a < 360) return '优角';
+    return '周角';
+  }
+
+  function deg2rad(d) { return d * Math.PI / 180; }
+
+  function tipXY(a) {
+    var r = deg2rad(a);
+    return { x: VX + RAY * Math.cos(-r), y: VY + RAY * Math.sin(-r) };
+  }
+
+  function arcPath(r, startDeg, endDeg) {
+    if (endDeg - startDeg >= 360) {
+      var mx1 = VX + r, my1 = VY;
+      var mx2 = VX - r, my2 = VY;
+      return 'M' + mx1 + ',' + my1 + ' A' + r + ',' + r + ' 0 1,0 ' + mx2 + ',' + my2
+           + ' A' + r + ',' + r + ' 0 1,0 ' + mx1 + ',' + my1;
+    }
+    var s = deg2rad(startDeg), e = deg2rad(endDeg);
+    var sx = VX + r * Math.cos(-s), sy = VY + r * Math.sin(-s);
+    var ex = VX + r * Math.cos(-e), ey = VY + r * Math.sin(-e);
+    var large = (endDeg - startDeg) > 180 ? 1 : 0;
+    return 'M' + sx.toFixed(2) + ',' + sy.toFixed(2)
+         + ' A' + r + ',' + r + ' 0 ' + large + ',0 ' + ex.toFixed(2) + ',' + ey.toFixed(2);
+  }
+
+  function sectorPath(a) {
+    if (a <= 0) return '';
+    var arcD = arcPath(ARC_R, 0, Math.min(a, 360));
+    return 'M' + VX + ',' + VY + ' L' + (VX + ARC_R) + ',' + VY + ' '
+         + arcD.slice(arcD.indexOf('A'))
+         + ' Z';
+  }
+
+  function drawTicks() {
+    var html = '', col = css('--cmp-ray', '#1565C0');
+    for (var d = 0; d <= 180; d += 30) {
+      var r = deg2rad(d), c = Math.cos(-r), s = Math.sin(-r);
+      var ix = VX+(TICK_R-6)*c, iy = VY+(TICK_R-6)*s;
+      var ox = VX+TICK_R*c, oy = VY+TICK_R*s;
+      var tx = VX+(TICK_R+12)*c, ty = VY+(TICK_R+12)*s;
+      html += '<line x1="'+ix.toFixed(1)+'" y1="'+iy.toFixed(1)+'" x2="'+ox.toFixed(1)+'" y2="'+oy.toFixed(1)+'" stroke="'+col+'" stroke-width="1" opacity="0.3"/>';
+      html += '<text x="'+tx.toFixed(1)+'" y="'+(ty+4).toFixed(1)+'" text-anchor="middle" font-size="9" font-family="Arial,sans-serif" fill="'+col+'" opacity="0.4">'+d+'\u00B0</text>';
+    }
+    html += '<circle cx="'+VX+'" cy="'+VY+'" r="'+TICK_R+'" fill="none" stroke="'+col+'" stroke-width="0.5" opacity="0.15" stroke-dasharray="3,3"/>';
+    ticksG.innerHTML = html;
+  }
+
+  function render() {
+    var rayC  = css('--cmp-ray', '#1565C0');
+    var arcC  = css('--cmp-arc', '#FF9800');
+    var fillC = css('--cmp-fill', 'rgba(255,152,0,0.15)');
+    var a = Math.round(angle);
+
+    /* arrows */
+    arrowF.setAttribute('stroke', rayC);
+    arrowM.setAttribute('stroke', rayC);
+
+    /* fixed ray */
+    rayF.setAttribute('x1', VX); rayF.setAttribute('y1', VY);
+    rayF.setAttribute('x2', VX + RAY); rayF.setAttribute('y2', VY);
+    rayF.setAttribute('stroke', rayC);
+
+    /* movable ray */
+    var tip = tipXY(a);
+    rayM.setAttribute('x1', VX); rayM.setAttribute('y1', VY);
+    rayM.setAttribute('x2', tip.x); rayM.setAttribute('y2', tip.y);
+    rayM.setAttribute('stroke', rayC);
+
+    /* vertex */
+    vertex.setAttribute('cx', VX); vertex.setAttribute('cy', VY);
+    vertex.setAttribute('fill', rayC);
+
+    /* handle */
+    handle.setAttribute('cx', tip.x); handle.setAttribute('cy', tip.y);
+    handle.setAttribute('stroke', rayC);
+
+    /* sector fill */
+    if (a > 0) {
+      sector.setAttribute('d', sectorPath(a));
+      sector.setAttribute('fill', fillC);
+      sector.style.display = '';
+    } else {
+      sector.style.display = 'none';
+    }
+
+    /* arc */
+    if (a > 0 && a < 360) {
+      arc.setAttribute('d', arcPath(ARC_R, 0, a));
+      arc.setAttribute('stroke', arcC);
+      arc.style.display = '';
+    } else if (a >= 360) {
+      arc.setAttribute('d', arcPath(ARC_R, 0, 360));
+      arc.setAttribute('stroke', arcC);
+      arc.style.display = '';
+    } else {
+      arc.style.display = 'none';
+    }
+
+    /* right angle square */
+    if (a === 90) {
+      var sq = 10;
+      rightSq.setAttribute('d', 'M' + (VX + sq) + ',' + VY
+        + ' L' + (VX + sq) + ',' + (VY - sq)
+        + ' L' + VX + ',' + (VY - sq));
+      rightSq.setAttribute('stroke', arcC);
+      rightSq.style.display = '';
+    } else {
+      rightSq.style.display = 'none';
+    }
+
+    /* degree label — position along bisector of the angle */
+    var bisect = deg2rad(a / 2);
+    var lblR = ARC_R + 18;
+    var lx = VX + lblR * Math.cos(-bisect), ly = VY + lblR * Math.sin(-bisect);
+    degTxt.setAttribute('x', lx.toFixed(1));
+    degTxt.setAttribute('y', (ly + 5).toFixed(1));
+    degTxt.setAttribute('fill', arcC);
+    degTxt.textContent = a + '\u00B0';
+
+    /* type label */
+    typeTxt.setAttribute('fill', arcC);
+    typeTxt.textContent = classify(a);
+
+    drawTicks();
+  }
+
+  /* ── pointer helpers ── */
+  function svgPt(cx, cy) {
+    var pt = svg.createSVGPoint();
+    pt.x = cx; pt.y = cy;
+    var ctm = svg.getScreenCTM();
+    return ctm ? pt.matrixTransform(ctm.inverse()) : null;
+  }
+
+  function angleFromPointer(e) {
+    var p = svgPt(e.clientX, e.clientY);
+    if (!p) return angle;
+    var dx = p.x - VX, dy = -(p.y - VY);
+    var rad = Math.atan2(dy, dx);
+    var deg = rad * 180 / Math.PI;
+    if (deg < 0) deg += 360;
+    return Math.round(deg);
+  }
+
+  function snapAngle(a) {
+    for (var i = 0; i < SNAPS.length; i++) {
+      if (Math.abs(a - SNAPS[i]) <= SNAP_TOL) return SNAPS[i];
+    }
+    return a;
+  }
+
+  function emitEvt(name) {
+    var a = Math.round(angle);
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'rotate',
+                values: { angle: a, type: classify(a) } }
+    }));
+  }
+
+  /* ── interaction ── */
+  handle.addEventListener('pointerdown', function(e) {
+    e.preventDefault(); e.stopPropagation();
+    dragging = true;
+    svg.setPointerCapture(e.pointerId);
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!dragging) return;
+    e.preventDefault();
+    angle = angleFromPointer(e);
+    render();
+    emitEvt('cmp:change');
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!dragging) return;
+    dragging = false;
+    angle = snapAngle(Math.round(angle));
+    render();
+    try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+    emitEvt('cmp:changeend');
+  });
+
+  svg.addEventListener('pointercancel', function() { dragging = false; });
+
+  /* unique marker IDs */
+  var uid = 'am_' + Math.random().toString(36).slice(2, 8);
+  var mf = svg.querySelector('#am_arrow_f'), mm = svg.querySelector('#am_arrow_m');
+  mf.id = uid + '_f'; mm.id = uid + '_m';
+  rayF.setAttribute('marker-end', 'url(#'+uid+'_f)');
+  rayM.setAttribute('marker-end', 'url(#'+uid+'_m)');
+  render();
+})();
+</script>

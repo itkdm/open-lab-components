@@ -1,0 +1,330 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.earth.moon-phases.interactive",
+  "name": "月相变化",
+  "nameEn": "Moon Phases",
+  "category": "science/earth",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "组件宽度" },
+    { "key": "phase", "type": "number", "default": 0, "min": 0, "max": 7, "desc": "月相（0-7）" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["moon", "phases", "lunar", "astronomy", "earth-science", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "phase": "number(0-7)", "phaseName": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.earth.moon-phases.interactive" role="img" aria-label="月相变化">
+  <style>
+    .cmp[data-cmp-id="sci.earth.moon-phases.interactive"] {
+      --w: var(--cmp-size, 360px);
+      display: inline-block; width: var(--w); height: calc(var(--w) * 300 / 360);
+      user-select: none;
+    }
+    .cmp[data-cmp-id="sci.earth.moon-phases.interactive"] svg {
+      width: 100%; height: 100%; display: block;
+    }
+    .cmp[data-cmp-id="sci.earth.moon-phases.interactive"] .mp__thumb {
+      cursor: pointer; transition: opacity 0.2s;
+    }
+    .cmp[data-cmp-id="sci.earth.moon-phases.interactive"] .mp__thumb:hover {
+      opacity: 0.85;
+    }
+    .cmp[data-cmp-id="sci.earth.moon-phases.interactive"] .mp__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-size: 13px; font-weight: 700; fill: #e8e8e8; pointer-events: none;
+    }
+    .cmp[data-cmp-id="sci.earth.moon-phases.interactive"] .mp__sublabel {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-size: 9px; fill: #aaa; pointer-events: none;
+    }
+    .cmp[data-cmp-id="sci.earth.moon-phases.interactive"] .mp__thumb-label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-size: 7px; fill: #999; pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <clipPath class="mp__clip-main"><circle cx="180" cy="90" r="50"/></clipPath>
+    </defs>
+
+    <!-- Background -->
+    <rect x="0" y="0" width="360" height="300" fill="#0a0e1a"/>
+
+    <!-- Stars -->
+    <g fill="#fff" opacity="0.7">
+      <circle cx="30" cy="25" r="1"/><circle cx="85" cy="12" r="0.8"/>
+      <circle cx="140" cy="40" r="0.6"/><circle cx="250" cy="18" r="1"/>
+      <circle cx="310" cy="35" r="0.7"/><circle cx="345" cy="60" r="0.8"/>
+      <circle cx="55" cy="70" r="0.5"/><circle cx="120" cy="55" r="0.9"/>
+      <circle cx="290" cy="65" r="0.6"/><circle cx="20" cy="130" r="0.7"/>
+      <circle cx="340" cy="120" r="0.5"/><circle cx="60" cy="160" r="0.6"/>
+      <circle cx="300" cy="150" r="0.8"/><circle cx="15" cy="200" r="0.5"/>
+      <circle cx="350" cy="190" r="0.7"/><circle cx="200" cy="30" r="0.6"/>
+      <circle cx="45" cy="105" r="0.4"/><circle cx="330" cy="85" r="0.6"/>
+      <circle cx="170" cy="170" r="0.5"/><circle cx="260" cy="160" r="0.4"/>
+    </g>
+    <g fill="#fff" opacity="0.4">
+      <circle cx="75" cy="42" r="0.4"/><circle cx="220" cy="55" r="0.5"/>
+      <circle cx="155" cy="15" r="0.3"/><circle cx="280" cy="40" r="0.4"/>
+      <circle cx="100" cy="140" r="0.3"/><circle cx="240" cy="130" r="0.4"/>
+    </g>
+
+    <!-- Main moon group (JS will build this) -->
+    <g class="mp__main-moon"></g>
+
+    <!-- Phase name labels -->
+    <text class="mp__label mp__phase-name" x="180" y="162" text-anchor="middle"></text>
+    <text class="mp__sublabel mp__phase-name-en" x="180" y="175" text-anchor="middle"></text>
+
+    <!-- Separator line -->
+    <line x1="20" y1="190" x2="340" y2="190" stroke="#333" stroke-width="0.5"/>
+
+    <!-- Thumbnail row (JS will build this) -->
+    <g class="mp__thumbs-row"></g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.earth.moon-phases.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'mp_' + Math.random().toString(36).slice(2, 8);
+  var NS = 'http://www.w3.org/2000/svg';
+
+  /* ── Phase data ── */
+  var phases = [
+    { name: '新月',   en: 'New Moon',         shadow: 1.0,  side: 'left'  },
+    { name: '蛾眉月', en: 'Waxing Crescent',  shadow: 0.7,  side: 'left'  },
+    { name: '上弦月', en: 'First Quarter',     shadow: 0.0,  side: 'left'  },
+    { name: '盈凸月', en: 'Waxing Gibbous',    shadow: -0.6, side: 'left'  },
+    { name: '满月',   en: 'Full Moon',         shadow: 0,    side: 'none'  },
+    { name: '亏凸月', en: 'Waning Gibbous',    shadow: -0.6, side: 'right' },
+    { name: '下弦月', en: 'Last Quarter',      shadow: 0.0,  side: 'right' },
+    { name: '残月',   en: 'Waning Crescent',   shadow: 0.7,  side: 'right' }
+  ];
+
+  var currentPhase = 0;
+
+  /* ── Unique clip IDs ── */
+  var mainClipId = uid + '_clip_main';
+  var mainClip = svg.querySelector('.mp__clip-main');
+  mainClip.setAttribute('id', mainClipId);
+
+  /* ── Helper: create SVG element ── */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) Object.keys(attrs).forEach(function(k) { e.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  /* ── Draw moon at (cx, cy) with given radius ── */
+  function drawMoon(parent, cx, cy, r, phaseIdx, clipId) {
+    var g = el('g', null, parent);
+    var p = phases[phaseIdx];
+
+    /* Clip path for this moon */
+    var defs = svg.querySelector('defs');
+    var cp = el('clipPath', { id: clipId }, defs);
+    el('circle', { cx: cx, cy: cy, r: r }, cp);
+
+    /* Moon surface - base lit color */
+    el('circle', { cx: cx, cy: cy, r: r, fill: '#d4d0c8' }, g);
+
+    /* Crater texture */
+    var craters = [
+      { dx: -0.3, dy: -0.25, dr: 0.18 },
+      { dx: 0.15, dy: 0.1, dr: 0.12 },
+      { dx: -0.1, dy: 0.3, dr: 0.1 },
+      { dx: 0.3, dy: -0.15, dr: 0.08 },
+      { dx: -0.25, dy: 0.05, dr: 0.06 },
+      { dx: 0.05, dy: -0.35, dr: 0.07 }
+    ];
+    craters.forEach(function(c) {
+      el('circle', {
+        cx: cx + c.dx * r, cy: cy + c.dy * r, r: c.dr * r,
+        fill: '#bbb8b0', opacity: '0.5'
+      }, g);
+    });
+
+    /* Shadow overlay */
+    if (phaseIdx === 4) return g; /* Full moon - no shadow */
+
+    if (phaseIdx === 0) {
+      /* New moon - full shadow */
+      el('circle', {
+        cx: cx, cy: cy, r: r,
+        fill: '#0a0e1a', opacity: '0.92',
+        'clip-path': 'url(#' + clipId + ')'
+      }, g);
+      return g;
+    }
+
+    /* For other phases, use a rect + ellipse combination */
+    var shadowG = el('g', { 'clip-path': 'url(#' + clipId + ')' }, g);
+
+    if (p.side === 'left') {
+      /* Shadow on left side (waxing phases 1-3) */
+      /* Draw a rect covering left half, then adjust with ellipse */
+      el('rect', {
+        x: cx - r, y: cy - r, width: r, height: r * 2,
+        fill: '#0a0e1a', opacity: '0.92'
+      }, shadowG);
+
+      if (phaseIdx === 1) {
+        /* Waxing crescent: large shadow, small lit area on right */
+        /* Add extra shadow ellipse extending right */
+        el('ellipse', {
+          cx: cx, cy: cy, rx: r * 0.5, ry: r,
+          fill: '#0a0e1a', opacity: '0.92'
+        }, shadowG);
+      } else if (phaseIdx === 3) {
+        /* Waxing gibbous: small shadow on left */
+        /* Remove most of the rect shadow by overlaying lit color */
+        el('ellipse', {
+          cx: cx, cy: cy, rx: r * 0.5, ry: r,
+          fill: '#d4d0c8'
+        }, shadowG);
+      }
+      /* Phase 2 (quarter): rect alone covers left half exactly */
+    } else if (p.side === 'right') {
+      /* Shadow on right side (waning phases 5-7) */
+      el('rect', {
+        x: cx, y: cy - r, width: r, height: r * 2,
+        fill: '#0a0e1a', opacity: '0.92'
+      }, shadowG);
+
+      if (phaseIdx === 7) {
+        /* Waning crescent: large shadow, small lit area on left */
+        el('ellipse', {
+          cx: cx, cy: cy, rx: r * 0.5, ry: r,
+          fill: '#0a0e1a', opacity: '0.92'
+        }, shadowG);
+      } else if (phaseIdx === 5) {
+        /* Waning gibbous: small shadow on right */
+        el('ellipse', {
+          cx: cx, cy: cy, rx: r * 0.5, ry: r,
+          fill: '#d4d0c8'
+        }, shadowG);
+      }
+      /* Phase 6 (quarter): rect alone covers right half exactly */
+    }
+
+    return g;
+  }
+
+  /* ── Render main moon ── */
+  function renderMain() {
+    var container = svg.querySelector('.mp__main-moon');
+    while (container.firstChild) container.removeChild(container.firstChild);
+
+    /* Remove old main clip if exists */
+    var oldClip = svg.querySelector('#' + uid + '_main');
+    if (oldClip) oldClip.parentNode.removeChild(oldClip);
+
+    drawMoon(container, 180, 90, 50, currentPhase, uid + '_main');
+
+    /* Subtle glow for non-new-moon */
+    if (currentPhase !== 0) {
+      var glow = el('circle', {
+        cx: 180, cy: 90, r: 54,
+        fill: 'none', stroke: '#ffe', 'stroke-width': '1.5', opacity: '0.15'
+      }, container);
+    }
+
+    /* Update labels */
+    var p = phases[currentPhase];
+    svg.querySelector('.mp__phase-name').textContent = p.name;
+    svg.querySelector('.mp__phase-name-en').textContent = p.en;
+  }
+
+  /* ── Render thumbnail row ── */
+  function renderThumbs() {
+    var container = svg.querySelector('.mp__thumbs-row');
+    while (container.firstChild) container.removeChild(container.firstChild);
+
+    /* Remove old thumb clips */
+    for (var i = 0; i < 8; i++) {
+      var old = svg.querySelector('#' + uid + '_t' + i);
+      if (old) old.parentNode.removeChild(old);
+    }
+
+    var startX = 27;
+    var spacing = 44;
+    var thumbR = 16;
+    var cy = 225;
+
+    for (var i = 0; i < 8; i++) {
+      var cx = startX + i * spacing;
+      var g = el('g', { 'class': 'mp__thumb', 'data-phase': i }, container);
+
+      /* Hit area */
+      el('rect', {
+        x: cx - 20, y: cy - 22, width: 40, height: 55,
+        fill: 'transparent'
+      }, g);
+
+      /* Active ring */
+      if (i === currentPhase) {
+        el('circle', {
+          cx: cx, cy: cy, r: thumbR + 3,
+          fill: 'none', stroke: '#5599ff', 'stroke-width': '1.5', opacity: '0.9'
+        }, g);
+      }
+
+      drawMoon(g, cx, cy, thumbR, i, uid + '_t' + i);
+
+      /* Thumb label */
+      el('text', {
+        x: cx, y: cy + thumbR + 12,
+        'text-anchor': 'middle',
+        'class': 'mp__thumb-label',
+        fill: i === currentPhase ? '#5599ff' : '#888'
+      }, g).textContent = phases[i].name;
+    }
+  }
+
+  /* ── Click handler ── */
+  svg.querySelector('.mp__thumbs-row').addEventListener('click', function(e) {
+    var thumb = e.target.closest('.mp__thumb');
+    if (!thumb) return;
+    var idx = parseInt(thumb.getAttribute('data-phase'), 10);
+    if (isNaN(idx) || idx === currentPhase) return;
+    currentPhase = idx;
+    render();
+    emitChange();
+  });
+
+  function emitChange() {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'toggle',
+        values: { phase: currentPhase, phaseName: phases[currentPhase].name }
+      }
+    }));
+  }
+
+  function render() {
+    renderMain();
+    renderThumbs();
+  }
+
+  /* ── Init ── */
+  var initPhase = parseInt(root.getAttribute('data-phase') || '0', 10);
+  if (initPhase >= 0 && initPhase <= 7) currentPhase = initPhase;
+  render();
+})();
+</script>

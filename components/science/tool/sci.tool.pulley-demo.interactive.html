@@ -1,0 +1,284 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.tool.pulley-demo.interactive",
+  "name": "滑轮",
+  "nameEn": "Pulley Demo",
+  "category": "science/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "mode", "type": "enum(fixed,movable)", "default": "fixed", "desc": "定滑轮/动滑轮" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["pulley", "simple-machine", "force", "physics", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "mode": "string", "effort": "number", "load": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.tool.pulley-demo.interactive" role="img" aria-label="滑轮">
+  <style>
+    .cmp[data-cmp-id="sci.tool.pulley-demo.interactive"] {
+      --_size: var(--cmp-size, 360px);
+      display: inline-block; width: var(--_size); height: auto;
+      user-select: none; font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    .cmp[data-cmp-id="sci.tool.pulley-demo.interactive"] svg { width: 100%; height: auto; display: block; }
+    .cmp[data-cmp-id="sci.tool.pulley-demo.interactive"] .pd__drag { cursor: grab; }
+    .cmp[data-cmp-id="sci.tool.pulley-demo.interactive"] .pd__drag:active { cursor: grabbing; }
+    .cmp[data-cmp-id="sci.tool.pulley-demo.interactive"] .pd__btn { cursor: pointer; }
+    .cmp[data-cmp-id="sci.tool.pulley-demo.interactive"] .pd__btn:hover rect { opacity: 0.85; }
+  </style>
+  <svg viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="pd__beam-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#9E9E9E"/><stop offset="100%" stop-color="#757575"/>
+      </linearGradient>
+      <radialGradient class="pd__wheel-grad" cx="0.4" cy="0.35" r="0.6">
+        <stop offset="0%" stop-color="#BDBDBD"/><stop offset="60%" stop-color="#9E9E9E"/><stop offset="100%" stop-color="#616161"/>
+      </radialGradient>
+      <linearGradient class="pd__load-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5C6BC0"/><stop offset="100%" stop-color="#3949AB"/>
+      </linearGradient>
+      <marker class="pd__arrow-mk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M0,1 L9,5 L0,9 Z" fill="#E53935"/>
+      </marker>
+    </defs>
+    <!-- Left: Fixed Pulley ─────────────────────── -->
+    <g class="pd__fixed-group">
+      <rect class="pd__beam-l" x="30" y="16" width="120" height="8" rx="2"/>
+      <rect x="42" y="10" width="7" height="10" rx="1" fill="#616161"/>
+      <rect x="131" y="10" width="7" height="10" rx="1" fill="#616161"/>
+      <rect x="87" y="22" width="6" height="8" rx="1" fill="#757575" stroke="#555" stroke-width="0.5"/>
+      <g class="pd__whl-l">
+        <circle class="pd__whl-l-o" cx="90" cy="44" r="18" stroke="#555" stroke-width="1.5"/>
+        <circle cx="90" cy="44" r="14" fill="none" stroke="#888" stroke-width="0.8"/>
+        <line x1="90" y1="26" x2="90" y2="62" stroke="#999" stroke-width="0.7"/>
+        <line x1="72" y1="44" x2="108" y2="44" stroke="#999" stroke-width="0.7"/>
+        <line x1="77.3" y1="31.3" x2="102.7" y2="56.7" stroke="#999" stroke-width="0.7"/>
+        <line x1="102.7" y1="31.3" x2="77.3" y2="56.7" stroke="#999" stroke-width="0.7"/>
+        <circle cx="90" cy="44" r="3" fill="#666" stroke="#444" stroke-width="0.8"/>
+      </g>
+      <path class="pd__rope-l" fill="none" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round"/>
+      <g class="pd__load-l-g">
+        <rect class="pd__load-l" rx="3" width="32" height="24" stroke="#283593" stroke-width="1"/>
+        <text class="pd__load-l-t" text-anchor="middle" font-size="10" font-weight="600" fill="#fff"/>
+      </g>
+      <line class="pd__eff-l" stroke="#E53935" stroke-width="2.5"/>
+      <text class="pd__efft-l" font-size="9" font-weight="600" fill="#E53935"/>
+      <circle class="pd__hdl-l pd__drag" r="7" fill="rgba(229,57,53,0.12)" stroke="#E53935" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="90" y="236" text-anchor="middle" font-size="11" font-weight="600" fill="#444">定滑轮</text>
+    </g>
+    <!-- Right: Movable Pulley ──────────────────── -->
+    <g class="pd__movable-group">
+      <rect class="pd__beam-r" x="210" y="16" width="120" height="8" rx="2"/>
+      <rect x="222" y="10" width="7" height="10" rx="1" fill="#616161"/>
+      <rect x="311" y="10" width="7" height="10" rx="1" fill="#616161"/>
+      <circle cx="248" cy="24" r="3.5" fill="#8D6E63" stroke="#5D4037" stroke-width="1"/>
+      <path class="pd__rope-r" fill="none" stroke="#8D6E63" stroke-width="2.5" stroke-linecap="round"/>
+      <g class="pd__whl-r">
+        <circle class="pd__whl-r-o" r="18" stroke="#555" stroke-width="1.5"/>
+        <circle r="14" fill="none" stroke="#888" stroke-width="0.8"/>
+        <line x1="-18" y1="0" x2="18" y2="0" stroke="#999" stroke-width="0.7"/>
+        <line x1="0" y1="-18" x2="0" y2="18" stroke="#999" stroke-width="0.7"/>
+        <line x1="-12.7" y1="-12.7" x2="12.7" y2="12.7" stroke="#999" stroke-width="0.7"/>
+        <line x1="12.7" y1="-12.7" x2="-12.7" y2="12.7" stroke="#999" stroke-width="0.7"/>
+        <circle r="3" fill="#666" stroke="#444" stroke-width="0.8"/>
+      </g>
+      <g class="pd__load-r-g">
+        <rect class="pd__load-r" rx="3" width="32" height="24" stroke="#283593" stroke-width="1"/>
+        <text class="pd__load-r-t" text-anchor="middle" font-size="10" font-weight="600" fill="#fff"/>
+      </g>
+      <line class="pd__eff-r" stroke="#E53935" stroke-width="2.5"/>
+      <text class="pd__efft-r" font-size="9" font-weight="600" fill="#E53935"/>
+      <circle class="pd__hdl-r pd__drag" r="7" fill="rgba(229,57,53,0.12)" stroke="#E53935" stroke-width="1.5" stroke-dasharray="3,2"/>
+      <text x="270" y="236" text-anchor="middle" font-size="11" font-weight="600" fill="#444">动滑轮</text>
+    </g>
+    <line x1="180" y1="12" x2="180" y2="230" stroke="#E0E0E0" stroke-width="1" stroke-dasharray="4,3"/>
+    <!-- Mode buttons -->
+    <g class="pd__btn pd__btn-f"><rect x="56" y="250" width="68" height="22" rx="11" stroke-width="1.5"/>
+      <text x="90" y="265" text-anchor="middle" font-size="10" font-weight="600">定滑轮</text></g>
+    <g class="pd__btn pd__btn-m"><rect x="236" y="250" width="68" height="22" rx="11" stroke-width="1.5"/>
+      <text x="270" y="265" text-anchor="middle" font-size="10" font-weight="600">动滑轮</text></g>
+  </svg>
+</div>
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  while (root && !(root.classList && root.classList.contains('cmp'))) root = root.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.tool.pulley-demo.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* Unique IDs */
+  var uid = 'pd_' + Math.random().toString(36).slice(2, 8);
+  var gm = { '.pd__beam-grad':'_bg', '.pd__wheel-grad':'_wg', '.pd__load-grad':'_lg', '.pd__arrow-mk':'_ar' };
+  var ids = {};
+  for (var s in gm) { var el = svg.querySelector(s); if (el) { ids[s] = uid + gm[s]; el.setAttribute('id', ids[s]); } }
+
+  var $ = function(c) { return svg.querySelector(c); };
+  /* Bind fills */
+  $('.pd__beam-l').setAttribute('fill', 'url(#' + ids['.pd__beam-grad'] + ')');
+  $('.pd__beam-r').setAttribute('fill', 'url(#' + ids['.pd__beam-grad'] + ')');
+  $('.pd__whl-l-o').setAttribute('fill', 'url(#' + ids['.pd__wheel-grad'] + ')');
+  $('.pd__whl-r-o').setAttribute('fill', 'url(#' + ids['.pd__wheel-grad'] + ')');
+  $('.pd__load-l').setAttribute('fill', 'url(#' + ids['.pd__load-grad'] + ')');
+  $('.pd__load-r').setAttribute('fill', 'url(#' + ids['.pd__load-grad'] + ')');
+  var mkUrl = 'url(#' + ids['.pd__arrow-mk'] + ')';
+
+  var ropeL = $('.pd__rope-l'), ropeR = $('.pd__rope-r');
+  var whlL = $('.pd__whl-l'), whlR = $('.pd__whl-r');
+  var ldLG = $('.pd__load-l-g'), ldRG = $('.pd__load-r-g');
+  var ldLT = $('.pd__load-l-t'), ldRT = $('.pd__load-r-t');
+  var effL = $('.pd__eff-l'), effR = $('.pd__eff-r');
+  var effLT = $('.pd__efft-l'), effRT = $('.pd__efft-r');
+  var hdlL = $('.pd__hdl-l'), hdlR = $('.pd__hdl-r');
+  var btnF = $('.pd__btn-f'), btnM = $('.pd__btn-m');
+
+  /* Constants */
+  var LOAD = 10, R = 18;
+  /* Fixed pulley: wheel at (90, 44), rope left at x=72, right at x=108 */
+  var FX = 90, FY = 44, FLX = 72, FRX = 108;
+  /* Movable pulley: anchor at (248, 24), wheel CX=270, effort rope at x=292 */
+  var AX = 248, AY = 24, MWX = 270, MRX = 292;
+  var YMIN = 75, YMAX = 200;
+
+  var mode = 'fixed', fLoadY = 155, mWheelY = 120;
+  var wRotL = 0, wRotR = 0;
+
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function readProps() {
+    var r = root.getAttribute('data-props');
+    if (!r) return {};
+    try { var o = JSON.parse(r); return o && typeof o === 'object' ? o : {}; } catch(e) { return {}; }
+  }
+
+  function render() {
+    /* ── Fixed Pulley ── */
+    /* Rope goes: load top → up left side → arc over top of wheel → down right side → effort handle */
+    var fLdTop = fLoadY;
+    /* Effort Y mirrors load: total rope constant, so effort end Y = fLoadY (symmetric) */
+    var fEffY = fLoadY;
+    /* Rope path: up left tangent, semicircle over top, down right tangent */
+    ropeL.setAttribute('d',
+      'M' + FLX + ',' + fLdTop + ' L' + FLX + ',' + FY +
+      ' A' + R + ',' + R + ' 0 0,1 ' + FRX + ',' + FY +
+      ' L' + FRX + ',' + fEffY);
+    /* Load block hangs from left rope */
+    ldLG.setAttribute('transform', 'translate(' + (FLX - 16) + ',' + fLdTop + ')');
+    ldLT.setAttribute('x', 16); ldLT.setAttribute('y', 16); ldLT.textContent = LOAD + 'N';
+    /* Effort arrow: red arrow pointing down from effort rope end */
+    effL.setAttribute('x1', FRX); effL.setAttribute('y1', fEffY + 3);
+    effL.setAttribute('x2', FRX); effL.setAttribute('y2', fEffY + 26);
+    effL.setAttribute('marker-end', mkUrl);
+    effLT.setAttribute('x', FRX + 6); effLT.setAttribute('y', fEffY + 18);
+    effLT.textContent = LOAD + 'N';
+    /* Drag handle at effort rope end */
+    hdlL.setAttribute('cx', FRX); hdlL.setAttribute('cy', fEffY);
+    /* Wheel rotation */
+    whlL.setAttribute('transform', 'rotate(' + wRotL.toFixed(1) + ',' + FX + ',' + FY + ')');
+
+    /* ── Movable Pulley ── */
+    /* Wheel center Y = mWheelY (moves with load) */
+    var mCY = mWheelY;
+    /* Rope: anchor(248,24) → down to left tangent of wheel → arc under wheel → up right to top */
+    /* Left tangent: (MWX - R, mCY), right tangent: (MWX + R, mCY) */
+    /* The rope wraps UNDER the wheel (arc goes downward) */
+    ropeR.setAttribute('d',
+      'M' + AX + ',' + AY +
+      ' L' + (MWX - R) + ',' + mCY +
+      ' A' + R + ',' + R + ' 0 0,0 ' + (MWX + R) + ',' + mCY +
+      ' L' + MRX + ',' + AY);
+    /* Wheel position */
+    whlR.setAttribute('transform', 'translate(' + MWX + ',' + mCY + ') rotate(' + wRotR.toFixed(1) + ')');
+    /* Load hangs below wheel */
+    ldRG.setAttribute('transform', 'translate(' + (MWX - 16) + ',' + (mCY + R + 3) + ')');
+    ldRT.setAttribute('x', 16); ldRT.setAttribute('y', 16); ldRT.textContent = LOAD + 'N';
+    /* Effort arrow: red arrow pointing up from top of right rope */
+    effR.setAttribute('x1', MRX); effR.setAttribute('y1', AY - 2);
+    effR.setAttribute('x2', MRX); effR.setAttribute('y2', AY - 25);
+    effR.setAttribute('marker-end', mkUrl);
+    effRT.setAttribute('x', MRX + 5); effRT.setAttribute('y', AY - 10);
+    effRT.textContent = (LOAD / 2) + 'N';
+    /* Drag handle at right rope top */
+    hdlR.setAttribute('cx', MRX); hdlR.setAttribute('cy', AY);
+
+    /* Buttons */
+    var bfr = btnF.querySelector('rect'), bft = btnF.querySelector('text');
+    var bmr = btnM.querySelector('rect'), bmt = btnM.querySelector('text');
+    bfr.setAttribute('fill', mode === 'fixed' ? '#1976D2' : '#E0E0E0');
+    bfr.setAttribute('stroke', mode === 'fixed' ? '#1565C0' : '#BDBDBD');
+    bft.setAttribute('fill', mode === 'fixed' ? '#fff' : '#666');
+    bmr.setAttribute('fill', mode === 'movable' ? '#1976D2' : '#E0E0E0');
+    bmr.setAttribute('stroke', mode === 'movable' ? '#1565C0' : '#BDBDBD');
+    bmt.setAttribute('fill', mode === 'movable' ? '#fff' : '#666');
+    /* Dim inactive side */
+    svg.querySelector('.pd__fixed-group').setAttribute('opacity', mode === 'movable' ? '0.45' : '1');
+    svg.querySelector('.pd__movable-group').setAttribute('opacity', mode === 'fixed' ? '0.45' : '1');
+    root.setAttribute('aria-label', '滑轮演示，' + (mode === 'fixed' ? '定滑轮：改变力的方向不省力' : '动滑轮：省一半力不改变方向'));
+  }
+
+  function emit() {
+    root.dispatchEvent(new CustomEvent('cmp:change', { bubbles: true, composed: true, detail: {
+      id: 'sci.tool.pulley-demo.interactive', type: 'toggle',
+      values: { mode: mode, effort: mode === 'fixed' ? LOAD : LOAD / 2, load: LOAD }
+    }}));
+  }
+
+  /* Drag */
+  var drag = null, dStartY = 0, dStartV = 0;
+  function pt(e) {
+    var r = svg.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * 360 / r.width, y: (e.clientY - r.top) * 280 / r.height };
+  }
+  function onDown(e) {
+    var p = pt(e);
+    var lx = +hdlL.getAttribute('cx'), ly = +hdlL.getAttribute('cy');
+    if (Math.hypot(p.x - lx, p.y - ly) < 18) {
+      drag = 'L'; dStartY = p.y; dStartV = fLoadY; mode = 'fixed';
+      e.preventDefault(); try { e.target.setPointerCapture(e.pointerId); } catch(_) {} return;
+    }
+    var rx = +hdlR.getAttribute('cx'), ry = +hdlR.getAttribute('cy');
+    if (Math.hypot(p.x - rx, p.y - ry) < 18) {
+      drag = 'R'; dStartY = p.y; dStartV = mWheelY; mode = 'movable';
+      e.preventDefault(); try { e.target.setPointerCapture(e.pointerId); } catch(_) {} return;
+    }
+  }
+  function onMove(e) {
+    if (!drag) return; e.preventDefault();
+    var p = pt(e), dy = p.y - dStartY;
+    if (drag === 'L') {
+      /* Pull effort down (dy>0) → load goes up (fLoadY decreases) */
+      var nv = clamp(dStartV - dy, YMIN, YMAX);
+      wRotL += (nv - fLoadY) * -3; fLoadY = nv;
+    } else {
+      /* Pull effort up (dy<0) → wheel goes up; movable: load moves half */
+      var nv2 = clamp(dStartV + dy * 0.5, YMIN - 20, YMAX - 30);
+      wRotR += (nv2 - mWheelY) * -3; mWheelY = nv2;
+    }
+    render(); emit();
+  }
+  function onUp() { if (!drag) return; drag = null; }
+
+  svg.addEventListener('pointerdown', onDown, { passive: false });
+  svg.addEventListener('pointermove', onMove, { passive: false });
+  svg.addEventListener('pointerup', onUp); svg.addEventListener('pointercancel', onUp);
+
+  btnF.addEventListener('click', function() { mode = 'fixed'; render(); emit(); });
+  btnM.addEventListener('click', function() { mode = 'movable'; render(); emit(); });
+
+  var props = readProps();
+  if (props.mode === 'movable') mode = 'movable';
+  render();
+
+  new MutationObserver(function() {
+    var p = readProps();
+    if (p.mode === 'fixed' || p.mode === 'movable') mode = p.mode;
+    render();
+  }).observe(root, { attributes: true, attributeFilter: ['style', 'data-props'] });
+})();
+</script>

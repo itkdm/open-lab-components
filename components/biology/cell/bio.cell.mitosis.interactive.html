@@ -1,0 +1,401 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.cell.mitosis.interactive",
+  "name": "有丝分裂（交互式）",
+  "nameEn": "Mitosis (Interactive)",
+  "category": "biology/cell",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 400 },
+  "tags": ["biology","cell","mitosis","division","chromosome","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "cellColor",      "type": "color",  "default": "#c8e6c9", "desc": "细胞颜色" },
+    { "key": "nucleusColor",   "type": "color",  "default": "#66bb6a", "desc": "细胞核颜色" },
+    { "key": "chromosomeColor","type": "color",  "default": "#e53935", "desc": "染色体颜色" },
+    { "key": "spindleColor",   "type": "color",  "default": "#78909c", "desc": "纺锤丝颜色" },
+    { "key": "phase",          "type": "enum",   "default": "interphase", "enum": ["interphase","prophase","metaphase","anaphase","telophase"], "desc": "当前分裂期" },
+    { "key": "autoPlay",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "自动播放" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.5, "max": 3, "desc": "播放速度" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "cellColor": "--cmp-cell", "nucleusColor": "--cmp-nucleus",
+    "chromosomeColor": "--cmp-chromo", "spindleColor": "--cmp-spindle", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "phase", "values": { "phase": "string — 当前期", "progress": "number(0-1)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.cell.mitosis.interactive" role="img" aria-label="有丝分裂（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.cell.mitosis.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;
+      width:calc(var(--h)*500/400);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(102,187,106,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.cell.mitosis.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="bio.cell.mitosis.interactive"] .mit__label{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px;font-weight:600}
+    .cmp[data-cmp-id="bio.cell.mitosis.interactive"] .mit__phase-text{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:11px;font-weight:700}
+    .cmp[data-cmp-id="bio.cell.mitosis.interactive"] .mit__phase-box{cursor:pointer}
+  </style>
+
+  <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="mit__cellG" cx="45%" cy="40%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.08"/>
+      </radialGradient>
+      <radialGradient id="mit__nucG" cx="45%" cy="40%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.1"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 主绘制区域 -->
+    <g class="mit__scene"></g>
+
+    <!-- 标注区域 -->
+    <g class="mit__labels"></g>
+
+    <!-- 阶段指示条 -->
+    <g class="mit__bar"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.cell.mitosis.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var PHASES=['interphase','prophase','metaphase','anaphase','telophase'];
+    var PHASE_CN=['间期','前期','中期','后期','末期'];
+
+    var phaseIdx=Math.max(0,PHASES.indexOf(P.phase||'interphase'));
+    var autoPlay=(P.autoPlay!=='off');
+    var speed=Math.max(0.5,Math.min(3,Number(P.speed)||1));
+    var showLabels=(P.showLabels!=='off');
+
+    var scene=root.querySelector('.mit__scene');
+    var labelsG=root.querySelector('.mit__labels');
+    var barG=root.querySelector('.mit__bar');
+
+    var CX=250,CY=175,CR=110; /* cell center & radius */
+
+    function el(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    /* ─── 绘制阶段指示条 ─── */
+    function drawBar(){
+      clear(barG);
+      var bw=80,bh=26,gap=6,totalW=PHASES.length*(bw+gap)-gap;
+      var sx=(500-totalW)/2, sy=365;
+      for(var i=0;i<PHASES.length;i++){
+        var g=el('g',{'class':'mit__phase-box','data-idx':i});
+        var rx=sx+i*(bw+gap);
+        g.appendChild(el('rect',{x:rx,y:sy,width:bw,height:bh,rx:4,
+          fill:i===phaseIdx?'var(--cmp-chromo,#e53935)':'#eceff1',
+          stroke:'var(--cmp-stroke,#37474f)',
+          'stroke-width':i===phaseIdx?'1.5':'0.8',
+          opacity:i===phaseIdx?'1':'0.7'}));
+        var t=el('text',{x:rx+bw/2,y:sy+bh/2+1,
+          'text-anchor':'middle','dominant-baseline':'central',
+          fill:i===phaseIdx?'#fff':'var(--cmp-stroke,#37474f)',
+          'font-size':'11','font-weight':'600',
+          'font-family':"Arial,'Microsoft YaHei',sans-serif"});
+        t.textContent=PHASE_CN[i];
+        g.appendChild(t);
+        barG.appendChild(g);
+      }
+    }
+
+    /* ─── 绘制各阶段 ─── */
+    function drawPhase(idx){
+      clear(scene);clear(labelsG);
+
+      if(idx===0) drawInterphase();
+      else if(idx===1) drawProphase();
+      else if(idx===2) drawMetaphase();
+      else if(idx===3) drawAnaphase();
+      else drawTelophase();
+
+      drawBar();
+    }
+
+    function addLabel(x,y,tx,ty,text){
+      if(!showLabels)return;
+      labelsG.appendChild(el('line',{x1:x,y1:y,x2:tx,y2:ty-6,
+        stroke:'#546e7a','stroke-width':'0.8','stroke-dasharray':'2,2'}));
+      var t=el('text',{x:tx,y:ty,'text-anchor':'middle',
+        fill:'var(--cmp-stroke,#37474f)',
+        'class':'mit__label'});
+      t.textContent=text;
+      labelsG.appendChild(t);
+    }
+
+    /* 间期 */
+    function drawInterphase(){
+      /* 细胞 */
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR,ry:CR*0.9,
+        fill:'var(--cmp-cell,#c8e6c9)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'var(--cmp-stroke-width,1.2)'}));
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR,ry:CR*0.9,
+        fill:'url(#mit__cellG)'}));
+      /* 细胞核 */
+      scene.appendChild(el('circle',{cx:CX,cy:CY,r:50,
+        fill:'var(--cmp-nucleus,#66bb6a)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'1',opacity:'0.8'}));
+      scene.appendChild(el('circle',{cx:CX,cy:CY,r:50,fill:'url(#mit__nucG)'}));
+      /* 核仁 */
+      scene.appendChild(el('circle',{cx:CX+8,cy:CY-8,r:12,
+        fill:'var(--cmp-nucleus,#66bb6a)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'0.8',opacity:'0.6'}));
+      /* 染色质（松散线条，均匀分布在核内） */
+      var chromatin=[
+        'M'+(CX-20)+','+(CY-15)+' Q'+(CX-10)+','+(CY-25)+' '+(CX+5)+','+(CY-17)+' Q'+(CX+15)+','+(CY-7)+' '+(CX)+','+(CY),
+        'M'+(CX+10)+','+(CY-20)+' Q'+(CX+20)+','+(CY-13)+' '+(CX+25)+','+(CY-5)+' Q'+(CX+18)+','+(CY+7)+' '+(CX+8)+','+(CY+3),
+        'M'+(CX-10)+','+(CY+5)+' Q'+(CX)+','+(CY+15)+' '+(CX+15)+','+(CY+10)+' Q'+(CX+22)+','+(CY+3)+' '+(CX+10)+','+(CY-3),
+        'M'+(CX-15)+','+(CY+3)+' Q'+(CX-22)+','+(CY+13)+' '+(CX-12)+','+(CY+23)+' Q'+(CX-2)+','+(CY+18)+' '+(CX-5)+','+(CY+10)
+      ];
+      for(var i=0;i<chromatin.length;i++){
+        scene.appendChild(el('path',{d:chromatin[i],fill:'none',
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'1.5',
+          'stroke-linecap':'round',opacity:'0.5'}));
+      }
+      addLabel(CX+CR+5,CY,CX+CR+55,CY,'细胞膜');
+      addLabel(CX+35,CY-35,CX+90,CY-65,'细胞核');
+      addLabel(CX+8,CY-8,CX+60,CY-45,'核仁');
+    }
+
+    /* 前期 */
+    function drawProphase(){
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR,ry:CR*0.9,
+        fill:'var(--cmp-cell,#c8e6c9)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'var(--cmp-stroke-width,1.2)'}));
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR,ry:CR*0.9,fill:'url(#mit__cellG)'}));
+      /* 核膜溶解（虚线） */
+      scene.appendChild(el('circle',{cx:CX,cy:CY,r:50,fill:'none',
+        stroke:'var(--cmp-nucleus,#66bb6a)','stroke-width':'1.2',
+        'stroke-dasharray':'4,4',opacity:'0.5'}));
+      /* 纺锤丝开始形成（左右两极，与后期/末期方向一致） */
+      var poles=[[CX-85,CY],[CX+85,CY]];
+      for(var p=0;p<poles.length;p++){
+        for(var a=-30;a<=30;a+=15){
+          var rad=a*Math.PI/180;
+          var ey=poles[p][1]+20*Math.sin(rad);
+          var ex=poles[p][0]+(p===0?15:-15)*Math.cos(rad);
+          scene.appendChild(el('line',{x1:poles[p][0],y1:poles[p][1],x2:ex,y2:ey,
+            stroke:'var(--cmp-spindle,#78909c)','stroke-width':'0.6',opacity:'0.4'}));
+        }
+        scene.appendChild(el('circle',{cx:poles[p][0],cy:poles[p][1],r:4,
+          fill:'var(--cmp-spindle,#78909c)',opacity:'0.7'}));
+      }
+      /* 染色体凝缩（X形），分布在细胞核区域内 */
+      var chrPos=[[CX-15,CY-18],[CX+15,CY-18],[CX-15,CY+18],[CX+15,CY+18]];
+      for(var i=0;i<chrPos.length;i++){
+        var cx=chrPos[i][0],cy=chrPos[i][1];
+        scene.appendChild(el('line',{x1:cx-6,y1:cy-8,x2:cx+6,y2:cy+8,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2.5','stroke-linecap':'round'}));
+        scene.appendChild(el('line',{x1:cx+6,y1:cy-8,x2:cx-6,y2:cy+8,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2.5','stroke-linecap':'round'}));
+        scene.appendChild(el('circle',{cx:cx,cy:cy,r:2,fill:'#fff',opacity:'0.8'}));
+      }
+      addLabel(CX,CY+CR*0.9+5,CX,CY+CR*0.9+25,'细胞膜');
+      addLabel(poles[1][0],poles[1][1],CX+CR+30,CY-20,'中心体');
+      addLabel(chrPos[1][0]+10,chrPos[1][1],CX+80,CY-45,'染色体');
+      addLabel(CX,CY-55,CX,CY-75,'核膜溶解');
+    }
+
+    /* 中期 */
+    function drawMetaphase(){
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR,ry:CR*0.9,
+        fill:'var(--cmp-cell,#c8e6c9)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'var(--cmp-stroke-width,1.2)'}));
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR,ry:CR*0.9,fill:'url(#mit__cellG)'}));
+      /* 赤道板（垂直虚线，因为纺锤丝是水平方向） */
+      scene.appendChild(el('line',{x1:CX,y1:CY-55,x2:CX,y2:CY+55,
+        stroke:'var(--cmp-stroke,#37474f)','stroke-width':'1',
+        'stroke-dasharray':'4,3',opacity:'0.4'}));
+      /* 纺锤丝（左右两极） */
+      var poles=[[CX-90,CY],[CX+90,CY]];
+      var chrY=[CY-20,CY-7,CY+7,CY+20];
+      for(var p=0;p<poles.length;p++){
+        scene.appendChild(el('circle',{cx:poles[p][0],cy:poles[p][1],r:4,
+          fill:'var(--cmp-spindle,#78909c)',opacity:'0.7'}));
+        for(var i=0;i<chrY.length;i++){
+          scene.appendChild(el('line',{x1:poles[p][0],y1:poles[p][1],x2:CX,y2:chrY[i],
+            stroke:'var(--cmp-spindle,#78909c)','stroke-width':'0.7',opacity:'0.5'}));
+        }
+      }
+      /* 染色体排列在赤道板（垂直排列） */
+      for(var i=0;i<chrY.length;i++){
+        var cy=chrY[i];
+        scene.appendChild(el('line',{x1:CX-7,y1:cy-5,x2:CX+7,y2:cy+5,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2.5','stroke-linecap':'round'}));
+        scene.appendChild(el('line',{x1:CX+7,y1:cy-5,x2:CX-7,y2:cy+5,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2.5','stroke-linecap':'round'}));
+        scene.appendChild(el('circle',{cx:CX,cy:cy,r:2,fill:'#fff',opacity:'0.8'}));
+      }
+      addLabel(CX,CY+60,CX,CY+80,'赤道板');
+      addLabel(poles[0][0],poles[0][1],CX-CR-30,CY-20,'纺锤丝');
+      addLabel(CX+10,chrY[0],CX+70,CY-50,'染色体');
+      addLabel(CX,chrY[3],CX+65,CY+45,'着丝点');
+    }
+
+    /* 后期 */
+    function drawAnaphase(){
+      /* 细胞拉长 */
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR*1.2,ry:CR*0.75,
+        fill:'var(--cmp-cell,#c8e6c9)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'var(--cmp-stroke-width,1.2)'}));
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:CR*1.2,ry:CR*0.75,fill:'url(#mit__cellG)'}));
+      /* 纺锤丝 */
+      var poles=[[CX-80,CY],[CX+80,CY]];
+      for(var p=0;p<poles.length;p++){
+        scene.appendChild(el('circle',{cx:poles[p][0],cy:poles[p][1],r:4,
+          fill:'var(--cmp-spindle,#78909c)',opacity:'0.7'}));
+      }
+      /* 染色单体向两极移动 */
+      var leftChr=[[CX-50,CY-20],[CX-50,CY-7],[CX-50,CY+7],[CX-50,CY+20]];
+      var rightChr=[[CX+50,CY-20],[CX+50,CY-7],[CX+50,CY+7],[CX+50,CY+20]];
+      for(var i=0;i<leftChr.length;i++){
+        /* 纺锤丝连接 */
+        scene.appendChild(el('line',{x1:poles[0][0],y1:poles[0][1],x2:leftChr[i][0],y2:leftChr[i][1],
+          stroke:'var(--cmp-spindle,#78909c)','stroke-width':'0.6',opacity:'0.4'}));
+        scene.appendChild(el('line',{x1:poles[1][0],y1:poles[1][1],x2:rightChr[i][0],y2:rightChr[i][1],
+          stroke:'var(--cmp-spindle,#78909c)','stroke-width':'0.6',opacity:'0.4'}));
+        /* V形染色单体 — 左侧：尖端朝左（朝极），臂朝右（朝中心） */
+        var lx=leftChr[i][0],ly=leftChr[i][1];
+        scene.appendChild(el('line',{x1:lx,y1:ly,x2:lx+6,y2:ly+5,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2','stroke-linecap':'round'}));
+        scene.appendChild(el('line',{x1:lx,y1:ly,x2:lx+6,y2:ly-5,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2','stroke-linecap':'round'}));
+        /* V形染色单体 — 右侧：尖端朝右（朝极），臂朝左（朝中心） */
+        var rx=rightChr[i][0],ry=rightChr[i][1];
+        scene.appendChild(el('line',{x1:rx,y1:ry,x2:rx-6,y2:ry+5,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2','stroke-linecap':'round'}));
+        scene.appendChild(el('line',{x1:rx,y1:ry,x2:rx-6,y2:ry-5,
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'2','stroke-linecap':'round'}));
+      }
+      addLabel(CX,CY+CR*0.75+5,CX,CY+CR*0.75+25,'细胞膜');
+      addLabel(poles[0][0],poles[0][1]-8,poles[0][0],poles[0][1]-25,'纺锤丝');
+      addLabel(leftChr[0][0],leftChr[0][1],leftChr[0][0]-10,leftChr[0][1]-25,'染色单体');
+    }
+
+    /* 末期 */
+    function drawTelophase(){
+      /* 细胞缢裂 - 两个即将分开的细胞 */
+      scene.appendChild(el('path',{
+        d:'M145,'+CY+' Q145,'+(CY-80)+' 200,'+(CY-80)+' Q250,'+(CY-80)+' 250,'+CY+
+          ' Q250,'+(CY+80)+' 200,'+(CY+80)+' Q145,'+(CY+80)+' 145,'+CY+'Z',
+        fill:'var(--cmp-cell,#c8e6c9)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'var(--cmp-stroke-width,1.2)'}));
+      scene.appendChild(el('path',{
+        d:'M250,'+CY+' Q250,'+(CY-80)+' 305,'+(CY-80)+' Q355,'+(CY-80)+' 355,'+CY+
+          ' Q355,'+(CY+80)+' 305,'+(CY+80)+' Q250,'+(CY+80)+' 250,'+CY+'Z',
+        fill:'var(--cmp-cell,#c8e6c9)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'var(--cmp-stroke-width,1.2)'}));
+      /* 缢裂沟 */
+      scene.appendChild(el('ellipse',{cx:CX,cy:CY,rx:3,ry:25,
+        fill:'none',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'1.5',opacity:'0.6'}));
+      /* 新核膜 */
+      scene.appendChild(el('circle',{cx:200,cy:CY,r:30,
+        fill:'var(--cmp-nucleus,#66bb6a)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'1',opacity:'0.6'}));
+      scene.appendChild(el('circle',{cx:300,cy:CY,r:30,
+        fill:'var(--cmp-nucleus,#66bb6a)',stroke:'var(--cmp-stroke,#37474f)',
+        'stroke-width':'1',opacity:'0.6'}));
+      /* 染色质解旋 */
+      var decondense=[
+        [190,CY-10,205,CY-5],[195,CY+5,208,CY+10],
+        [290,CY-10,305,CY-5],[295,CY+5,308,CY+10]
+      ];
+      for(var i=0;i<decondense.length;i++){
+        var d=decondense[i];
+        scene.appendChild(el('line',{x1:d[0],y1:d[1],x2:d[2],y2:d[3],
+          stroke:'var(--cmp-chromo,#e53935)','stroke-width':'1.5',
+          'stroke-linecap':'round',opacity:'0.5'}));
+      }
+      addLabel(145,CY-40,100,CY-55,'细胞膜');
+      addLabel(200,CY-35,200,CY-70,'新细胞核');
+      addLabel(CX,CY-28,CX,CY-50,'缢裂沟');
+    }
+
+    /* ─── 初始绘制 ─── */
+    drawPhase(phaseIdx);
+
+    /* ─── 自动播放 ─── */
+    var animId=0,lastT=0,phaseTime=0;
+    var PHASE_DURATION=2500; /* ms per phase */
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=(t-lastT)*speed;
+      lastT=t;
+      phaseTime+=dt;
+
+      if(phaseTime>=PHASE_DURATION){
+        phaseTime=0;
+        phaseIdx=(phaseIdx+1)%PHASES.length;
+        drawPhase(phaseIdx);
+      }
+
+      var progress=phaseTime/PHASE_DURATION;
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'phase',
+          values:{phase:PHASES[phaseIdx],progress:Math.round(progress*100)/100}}}));
+
+      if(autoPlay)animId=requestAnimationFrame(tick);
+    }
+
+    if(autoPlay)animId=requestAnimationFrame(tick);
+
+    /* ─── 点击阶段切换 ─── */
+    barG.addEventListener('click',function(e){
+      var box=e.target.closest('.mit__phase-box');
+      if(!box)return;
+      var idx=parseInt(box.getAttribute('data-idx'));
+      if(isNaN(idx))return;
+      phaseIdx=idx;phaseTime=0;
+      drawPhase(phaseIdx);
+    });
+
+    /* ─── Props 变化 ─── */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      var newAuto=(P2.autoPlay!=='off');
+      speed=Math.max(0.5,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');
+      if(P2.phase){
+        var ni=PHASES.indexOf(P2.phase);
+        if(ni>=0&&ni!==phaseIdx){phaseIdx=ni;phaseTime=0;drawPhase(phaseIdx);}
+      }
+      if(newAuto&&!autoPlay){autoPlay=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newAuto&&autoPlay){autoPlay=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

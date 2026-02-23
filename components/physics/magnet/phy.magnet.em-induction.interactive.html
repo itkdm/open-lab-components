@@ -1,0 +1,272 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.magnet.em-induction.interactive",
+  "name": "电磁感应（交互式）",
+  "nameEn": "Electromagnetic Induction (Interactive)",
+  "category": "physics/magnet",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 380 },
+  "tags": ["physics","magnet","electromagnetic","induction","faraday","interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "coilColor",   "type": "color",  "default": "#ff7043", "desc": "线圈颜色" },
+    { "key": "magnetColor", "type": "color",  "default": "#e53935", "desc": "N极颜色" },
+    { "key": "magnetSColor","type": "color",  "default": "#2196f3", "desc": "S极颜色" },
+    { "key": "wireColor",   "type": "color",  "default": "#78909c", "desc": "导线颜色" },
+    { "key": "speed",       "type": "number", "default": 1, "min": 0.5, "max": 3, "desc": "速度" },
+    { "key": "showField",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示磁力线" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "coilColor": "--cmp-coil", "magnetColor": "--cmp-magN", "magnetSColor": "--cmp-magS",
+    "wireColor": "--cmp-wire", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "induction", "values": { "magnetPosition": "number", "emf": "number", "current": "string — left|right|none" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.magnet.em-induction.interactive" role="img" aria-label="电磁感应（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.magnet.em-induction.interactive"]{
+      --h:var(--cmp-size,380px);display:inline-block;
+      width:calc(var(--h)*480/380);height:var(--h);
+      filter:drop-shadow(0 0 calc(6px*var(--cmp-glow,0)) rgba(255,112,67,calc(.6*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.magnet.em-induction.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.magnet.em-induction.interactive"] .emi__label{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px;font-weight:600}
+    .cmp[data-cmp-id="phy.magnet.em-induction.interactive"] .emi__line{stroke:#546e7a;stroke-width:0.8;stroke-dasharray:2,2}
+  </style>
+
+  <svg viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="emi__arr" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="6" markerHeight="5" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="var(--cmp-wire,#78909c)"/>
+      </marker>
+      <linearGradient id="emi__magNG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ef5350"/>
+        <stop offset="100%" stop-color="#c62828"/>
+      </linearGradient>
+      <linearGradient id="emi__magSG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#42a5f5"/>
+        <stop offset="100%" stop-color="#1565c0"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 线圈（螺线管） -->
+    <g class="emi__coil">
+      <rect x="195" y="95" width="90" height="90" rx="6" fill="none"
+            stroke="var(--cmp-coil,#ff7043)" stroke-width="2.5" opacity="0.3"/>
+    </g>
+    <!-- 线圈环 -->
+    <g class="emi__loops"></g>
+
+    <!-- 磁铁 -->
+    <g class="emi__magnet">
+      <!-- N极 -->
+      <rect class="emi__magN" x="0" y="120" width="50" height="40" rx="3"
+            fill="url(#emi__magNG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text class="emi__magNT" x="25" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">N</text>
+      <!-- S极 -->
+      <rect class="emi__magS" x="-50" y="120" width="50" height="40" rx="3"
+            fill="url(#emi__magSG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text class="emi__magST" x="-25" y="145" text-anchor="middle" font-size="14" font-weight="700" fill="#fff">S</text>
+    </g>
+
+    <!-- 磁力线 -->
+    <g class="emi__field"></g>
+
+    <!-- 导线连接到电流计 -->
+    <g class="emi__wires">
+      <polyline points="195,100 195,60 140,60 140,310" fill="none"
+                stroke="var(--cmp-wire,#78909c)" stroke-width="1.5"/>
+      <polyline points="285,100 285,60 340,60 340,310" fill="none"
+                stroke="var(--cmp-wire,#78909c)" stroke-width="1.5"/>
+    </g>
+
+    <!-- 电流计 -->
+    <g class="emi__galv">
+      <rect x="130" y="310" width="220" height="50" rx="8"
+            fill="#eceff1" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2"/>
+      <!-- 表盘 -->
+      <circle cx="240" cy="330" r="18" fill="#fff" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <!-- 刻度 -->
+      <line x1="225" y1="330" x2="228" y2="330" stroke="#bdbdbd" stroke-width="0.5"/>
+      <line x1="255" y1="330" x2="252" y2="330" stroke="#bdbdbd" stroke-width="0.5"/>
+      <line x1="240" y1="315" x2="240" y2="318" stroke="#bdbdbd" stroke-width="0.5"/>
+      <!-- 零位标记 -->
+      <text x="240" y="350" text-anchor="middle" font-size="7" fill="#78909c" font-family="Arial,sans-serif">0</text>
+      <text x="224" y="335" text-anchor="middle" font-size="6" fill="#78909c" font-family="Arial,sans-serif">−</text>
+      <text x="256" y="335" text-anchor="middle" font-size="6" fill="#78909c" font-family="Arial,sans-serif">+</text>
+      <!-- 指针 -->
+      <line class="emi__needle" x1="240" y1="330" x2="240" y2="315"
+            stroke="#e53935" stroke-width="1.5" stroke-linecap="round"/>
+      <!-- 中心点 -->
+      <circle cx="240" cy="330" r="2" fill="#e53935"/>
+      <text x="240" y="368" text-anchor="middle" font-size="9" font-weight="600"
+            fill="var(--cmp-stroke,#37474f)" font-family="Arial,'Microsoft YaHei',sans-serif">电流计</text>
+    </g>
+
+    <!-- 标注 -->
+    <g class="emi__labels"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.magnet.em-induction.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var speed=Math.max(0.5,Math.min(3,Number(P.speed)||1));
+    var showField=(P.showField!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var running=(P.running!=='off');
+
+    var magnetG=root.querySelector('.emi__magnet');
+    var fieldG=root.querySelector('.emi__field');
+    var loopsG=root.querySelector('.emi__loops');
+    var labelsG=root.querySelector('.emi__labels');
+    var needle=root.querySelector('.emi__needle');
+
+    var COIL_CX=240, COIL_CY=140;
+    var MAG_REST=80; /* magnet center rest X */
+
+    function el(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    /* 绘制线圈环 */
+    function drawCoilLoops(){
+      clear(loopsG);
+      for(var i=0;i<8;i++){
+        var x=200+i*10;
+        loopsG.appendChild(el('ellipse',{cx:x,cy:COIL_CY,rx:6,ry:42,
+          fill:'none',stroke:'var(--cmp-coil,#ff7043)',
+          'stroke-width':'1.5',opacity:'0.7'}));
+      }
+    }
+
+    /* 绘制磁力线 */
+    function drawField(mx){
+      clear(fieldG);
+      if(!showField)return;
+      var nCx=mx+25, sCx=mx-25;
+      /* 简化磁力线：从N极出发弯曲到S极 */
+      var offsets=[[-15,20],[0,35],[15,20],[-15,-20],[0,-35],[15,-20]];
+      for(var i=0;i<offsets.length;i++){
+        var dy=offsets[i][0],spread=offsets[i][1];
+        var d='M'+nCx+','+(COIL_CY+dy)+
+              ' Q'+(nCx+40)+','+(COIL_CY+dy+spread)+
+              ' '+nCx+','+(COIL_CY+dy+spread*1.2)+
+              ' Q'+(sCx-10)+','+(COIL_CY+dy+spread)+
+              ' '+sCx+','+(COIL_CY+dy);
+        fieldG.appendChild(el('path',{d:d,fill:'none',
+          stroke:'#90a4ae','stroke-width':'0.6',opacity:'0.4',
+          'stroke-dasharray':'3,2'}));
+      }
+    }
+
+    /* 绘制标注 */
+    function drawLabels(mx){
+      clear(labelsG);
+      if(!showLabels)return;
+      /* 磁铁 */
+      var t1=el('text',{x:mx,y:175,'text-anchor':'middle',
+        'class':'emi__label',fill:'var(--cmp-stroke,#37474f)'});
+      t1.textContent='磁铁';labelsG.appendChild(t1);
+      /* 线圈 */
+      var t2=el('text',{x:COIL_CX,y:205,'text-anchor':'middle',
+        'class':'emi__label',fill:'var(--cmp-coil,#ff7043)'});
+      t2.textContent='线圈（螺线管）';labelsG.appendChild(t2);
+      /* N极 S极 */
+      var t3=el('text',{x:mx+25,y:115,'text-anchor':'middle',
+        'class':'emi__label',fill:'var(--cmp-magN,#e53935)'});
+      t3.textContent='N极';labelsG.appendChild(t3);
+      var t4=el('text',{x:mx-25,y:115,'text-anchor':'middle',
+        'class':'emi__label',fill:'var(--cmp-magS,#2196f3)'});
+      t4.textContent='S极';labelsG.appendChild(t4);
+    }
+
+    drawCoilLoops();
+
+    /* 动画 */
+    var phase=0,animId=0,lastT=0;
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=(t-lastT)/1000;
+      lastT=t;
+      phase+=dt*speed*0.8;
+
+      /* 磁铁位置：在线圈左侧到右侧之间振荡 */
+      var s=Math.sin(phase*Math.PI);
+      var mx=COIL_CX+s*120; /* oscillate ±120px around coil center */
+
+      magnetG.setAttribute('transform','translate('+mx+',0)');
+
+      /* 磁力线跟随 */
+      drawField(mx);
+
+      /* 电流计指针偏转 = 磁通变化率 ∝ 速度 = cos(phase) */
+      var velocity=Math.cos(phase*Math.PI);
+      var needleAngle=velocity*45; /* ±45 degrees */
+      if(needle){
+        needle.setAttribute('transform','rotate('+needleAngle+',240,330)');
+      }
+
+      /* 标注 */
+      drawLabels(mx);
+
+      /* 感应电流方向 */
+      var currentDir=velocity>0.05?'right':(velocity<-0.05?'left':'none');
+
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'induction',
+          values:{magnetPosition:Math.round(s*100)/100,
+                  emf:Math.round(Math.abs(velocity)*100)/100,
+                  current:currentDir}}}));
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+
+    if(running)animId=requestAnimationFrame(tick);
+    else{
+      magnetG.setAttribute('transform','translate('+MAG_REST+',0)');
+      drawField(MAG_REST);
+      drawLabels(MAG_REST);
+    }
+
+    /* Props 变化 */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.5,Math.min(3,Number(P2.speed)||1));
+      showField=(P2.showField!=='off');
+      showLabels=(P2.showLabels!=='off');
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

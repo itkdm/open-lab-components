@@ -1,0 +1,279 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.net-folding.interactive",
+  "name": "展开图",
+  "nameEn": "Net Folding",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "pattern", "type": "number", "default": 1, "min": 1, "max": 11, "desc": "展开图样式(1-11)" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["net", "folding", "cube", "3d", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "pattern": "number", "foldProgress": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.net-folding.interactive" role="img" aria-label="展开图">
+  <style>
+    .cmp[data-cmp-id="math.geometry.net-folding.interactive"] {
+      --sz: var(--cmp-size, 360px);
+      display: inline-block; width: var(--sz); height: calc(var(--sz) * 300 / 360);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.net-folding.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.net-folding.interactive') return;
+    var svg = root.querySelector('svg'); if (!svg) return;
+    var uid = 'nf_' + Math.random().toString(36).slice(2, 8);
+    var NS = 'http://www.w3.org/2000/svg';
+
+    var COLORS = ['#EF5350','#42A5F5','#66BB6A','#FF9800','#AB47BC','#FFEE58'];
+    var TXTCOL = ['#fff','#fff','#fff','#fff','#fff','#555'];
+
+    /* All 11 valid cube nets (programmatically verified). {r,c} on a grid. */
+    var NETS = [
+      [{r:0,c:1},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:1,c:3},{r:2,c:1}],  /* 1  十字 cross */
+      [{r:0,c:2},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:1,c:3},{r:2,c:1}],  /* 2  T偏右 */
+      [{r:0,c:0},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:1,c:3},{r:2,c:1}],  /* 3  T偏左 */
+      [{r:0,c:3},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:1,c:3},{r:2,c:1}],  /* 4  T端 */
+      [{r:0,c:2},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:2,c:1},{r:3,c:1}],  /* 5  L长 */
+      [{r:0,c:2},{r:0,c:3},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:2,c:1}],  /* 6  阶梯 */
+      [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:1,c:1},{r:2,c:1},{r:3,c:1}],  /* 7  十字长 */
+      [{r:0,c:3},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:1,c:3},{r:2,c:0}],  /* 8  Z形 */
+      [{r:0,c:0},{r:1,c:0},{r:1,c:1},{r:1,c:2},{r:2,c:2},{r:2,c:3}],  /* 9  S形 */
+      [{r:0,c:0},{r:0,c:1},{r:0,c:2},{r:1,c:2},{r:1,c:3},{r:1,c:4}],  /* 10 闪电 */
+      [{r:0,c:2},{r:0,c:3},{r:1,c:1},{r:1,c:2},{r:2,c:0},{r:2,c:1}]   /* 11 阶梯3 */
+    ];
+
+    var pattern = 0, folded = false, animating = false;
+
+    function parseProps() {
+      try { var r = root.getAttribute('data-props'); return r ? JSON.parse(r) || {} : {}; } catch(e) { return {}; }
+    }
+    function initFromProps() {
+      var p = parseProps();
+      pattern = Math.max(0, Math.min(10, Math.round(Number(p.pattern) || 1) - 1));
+    }
+    function el(tag, attrs) {
+      var e = document.createElementNS(NS, tag);
+      if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+    function emit() {
+      root.dispatchEvent(new CustomEvent('cmp:change', { bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle',
+          values: { pattern: pattern + 1, foldProgress: folded ? 1 : 0 } } }));
+    }
+
+    /* Bounding box of net */
+    function netBounds(net) {
+      var mr = 0, mc = 0;
+      for (var i = 0; i < net.length; i++) {
+        if (net[i].r > mr) mr = net[i].r;
+        if (net[i].c > mc) mc = net[i].c;
+      }
+      return { rows: mr + 1, cols: mc + 1 };
+    }
+
+    /* Dice-style dot pattern */
+    function drawDots(g, x, y, s, n, col) {
+      var cx = x + s / 2, cy = y + s / 2, off = s * 0.28, r = 2;
+      var P = {
+        1: [[0,0]],
+        2: [[-1,-1],[1,1]],
+        3: [[-1,-1],[0,0],[1,1]],
+        4: [[-1,-1],[1,-1],[-1,1],[1,1]],
+        5: [[-1,-1],[1,-1],[0,0],[-1,1],[1,1]],
+        6: [[-1,-1],[1,-1],[-1,0],[1,0],[-1,1],[1,1]]
+      };
+      var pts = P[n] || [];
+      for (var i = 0; i < pts.length; i++) {
+        g.appendChild(el('circle', { cx: cx + pts[i][0] * off, cy: cy + pts[i][1] * off, r: r, fill: col }));
+      }
+    }
+
+    /* Draw isometric cube */
+    function drawCube(show) {
+      var g = el('g', {});
+      var mx = 270, my = 130, L = 48;
+      var dx = L * Math.cos(Math.PI / 6), dy = L * Math.sin(Math.PI / 6);
+      /* Meeting point and 6 outer vertices */
+      var mp = [mx, my];
+      var vUp = [mx, my - L], vDL = [mx - dx, my + dy], vDR = [mx + dx, my + dy];
+      var vTL = [mx - dx, my - dy], vTR = [mx + dx, my - dy], vBT = [mx, my + L];
+      var op = show ? 1 : 0.3;
+
+      function poly(pts, fill) {
+        var d = 'M' + pts.map(function(p){ return p[0].toFixed(1)+','+p[1].toFixed(1); }).join('L') + 'Z';
+        return el('path', { d: d, fill: fill, stroke: '#fff', 'stroke-width': 1.2, opacity: op });
+      }
+      /* Top=face5(purple), Left=face3(green), Right=face4(orange) */
+      g.appendChild(poly([vUp, vTR, mp, vTL], COLORS[4]));
+      g.appendChild(poly([vTL, mp, vBT, vDL], COLORS[2]));
+      g.appendChild(poly([vTR, vDR, vBT, mp], COLORS[3]));
+
+      /* Face number labels on cube */
+      function ctr(a,b,c,d){ return [(a[0]+b[0]+c[0]+d[0])/4, (a[1]+b[1]+c[1]+d[1])/4]; }
+      var faces = [
+        { c: ctr(vUp,vTR,mp,vTL), idx: 4 },
+        { c: ctr(vTL,mp,vBT,vDL), idx: 2 },
+        { c: ctr(vTR,vDR,vBT,mp), idx: 3 }
+      ];
+      for (var i = 0; i < faces.length; i++) {
+        var t = el('text', { x: faces[i].c[0], y: faces[i].c[1] + 4,
+          'text-anchor': 'middle', 'font-size': show ? '14' : '11',
+          'font-weight': '700', fill: TXTCOL[faces[i].idx], opacity: op,
+          'font-family': "Arial,'Microsoft YaHei',sans-serif" });
+        t.textContent = faces[i].idx + 1;
+        g.appendChild(t);
+      }
+
+      /* Hidden face legend below cube */
+      var legend = [[0,'前'],[1,'后'],[4,'顶'],[5,'底']];
+      for (var j = 0; j < legend.length; j++) {
+        var lx = 210 + j * 38, ly2 = 200;
+        g.appendChild(el('rect', { x: lx, y: ly2, width: 12, height: 12, rx: 2,
+          fill: COLORS[legend[j][0]], opacity: 0.8 }));
+        var lt = el('text', { x: lx + 18, y: ly2 + 10, 'font-size': '9', fill: '#666',
+          'font-family': "Arial,'Microsoft YaHei',sans-serif" });
+        lt.textContent = (legend[j][0] + 1) + legend[j][1];
+        g.appendChild(lt);
+      }
+      return g;
+    }
+
+    /* Main draw */
+    function draw() {
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+      var net = NETS[pattern], b = netBounds(net);
+      var SQ = 26, GAP = 1, step = SQ + GAP;
+      var netW = b.cols * step - GAP, netH = b.rows * step - GAP;
+      var lx = 10 + (160 - netW) / 2, ly = 22 + (230 - netH) / 2;
+
+      /* Section titles */
+      var t1 = el('text', { x: 90, y: 15, 'text-anchor': 'middle', 'font-size': '11',
+        'font-weight': '600', fill: '#37474f', 'font-family': "Arial,'Microsoft YaHei',sans-serif" });
+      t1.textContent = '\u5C55\u5F00\u56FE'; svg.appendChild(t1);
+      var t2 = el('text', { x: 270, y: 15, 'text-anchor': 'middle', 'font-size': '11',
+        'font-weight': '600', fill: '#37474f', 'font-family': "Arial,'Microsoft YaHei',sans-serif" });
+      t2.textContent = '\u6B63\u65B9\u4F53'; svg.appendChild(t2);
+
+      /* Divider */
+      svg.appendChild(el('line', { x1: 180, y1: 22, x2: 180, y2: 255,
+        stroke: '#ddd', 'stroke-width': 0.8, 'stroke-dasharray': '4,3' }));
+
+      /* Net faces */
+      var netG = el('g', { 'data-net': '1' });
+      for (var i = 0; i < 6; i++) {
+        var fx = lx + net[i].c * step, fy = ly + net[i].r * step;
+        netG.appendChild(el('rect', { x: fx, y: fy, width: SQ, height: SQ, rx: 2,
+          fill: COLORS[i], stroke: '#fff', 'stroke-width': 0.5 }));
+        drawDots(netG, fx, fy, SQ, i + 1, TXTCOL[i]);
+      }
+      svg.appendChild(netG);
+
+      /* 3D cube */
+      svg.appendChild(drawCube(folded));
+
+      /* Controls */
+      drawControls();
+    }
+
+    function drawControls() {
+      var g = el('g', {});
+      g.appendChild(el('rect', { x: 10, y: 265, width: 340, height: 30, rx: 6,
+        fill: '#f5f5f5', stroke: '#e0e0e0', 'stroke-width': 0.8 }));
+
+      function btn(x, w, label, fill, txtFill, action) {
+        var bg = el('g', { cursor: 'pointer' });
+        bg.appendChild(el('rect', { x: x, y: 269, width: w, height: 22, rx: 4,
+          fill: fill, stroke: fill === '#fff' ? '#bbb' : 'none', 'stroke-width': 0.8 }));
+        var t = el('text', { x: x + w / 2, y: 284, 'text-anchor': 'middle',
+          'font-size': '11', 'font-weight': '600', fill: txtFill,
+          'font-family': "Arial,'Microsoft YaHei',sans-serif" });
+        t.textContent = label; bg.appendChild(t);
+        bg.addEventListener('click', action);
+        g.appendChild(bg);
+      }
+
+      btn(16, 32, '\u25C0', '#fff', '#555', function() {
+        if (animating) return;
+        pattern = (pattern + 10) % 11; folded = false; draw(); emit();
+      });
+
+      var ct = el('text', { x: 90, y: 284, 'text-anchor': 'middle', 'font-size': '11',
+        'font-weight': '600', fill: '#37474f', 'font-family': "Arial,'Microsoft YaHei',sans-serif" });
+      ct.textContent = '\u6837\u5F0F ' + (pattern + 1) + '/11'; g.appendChild(ct);
+
+      btn(130, 32, '\u25B6', '#fff', '#555', function() {
+        if (animating) return;
+        pattern = (pattern + 1) % 11; folded = false; draw(); emit();
+      });
+
+      btn(240, 56, folded ? '\u5C55\u5F00' : '\u6298\u53E0',
+        folded ? '#AB47BC' : '#42A5F5', '#fff', function() {
+        if (animating) return; animateFold(!folded);
+      });
+
+      btn(304, 40, '\u91CD\u7F6E', '#fff', '#777', function() {
+        if (animating) return; pattern = 0; folded = false; draw(); emit();
+      });
+
+      svg.appendChild(g);
+    }
+
+    /* Fold animation */
+    function animateFold(toFolded) {
+      animating = true;
+      var net = NETS[pattern], b = netBounds(net);
+      var SQ = 26, GAP = 1, step = SQ + GAP;
+      var netW = b.cols * step - GAP, netH = b.rows * step - GAP;
+      var lx = 10 + (160 - netW) / 2, ly = 22 + (230 - netH) / 2;
+      var cx = 0, cy = 0;
+      for (var i = 0; i < 6; i++) {
+        cx += lx + net[i].c * step + SQ / 2;
+        cy += ly + net[i].r * step + SQ / 2;
+      }
+      cx /= 6; cy /= 6;
+
+      var netG = svg.querySelector('g[data-net]');
+      if (!netG) { animating = false; return; }
+      var dur = 500, t0 = null;
+
+      function tick(ts) {
+        if (!t0) t0 = ts;
+        var t = Math.min(1, (ts - t0) / dur);
+        var ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        var p = toFolded ? ease : 1 - ease;
+        var s = 1 - p * 0.85;
+        netG.setAttribute('transform',
+          'translate(' + (cx * (1 - s)).toFixed(1) + ',' + (cy * (1 - s)).toFixed(1) + ') scale(' + s.toFixed(3) + ')');
+        netG.setAttribute('opacity', (1 - p * 0.6).toFixed(2));
+        if (t < 1) { requestAnimationFrame(tick); }
+        else { folded = toFolded; animating = false; draw(); emit(); }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    initFromProps(); draw(); emit();
+
+    new MutationObserver(function() {
+      initFromProps(); folded = false; draw(); emit();
+    }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+  })();
+  </script>
+</div>

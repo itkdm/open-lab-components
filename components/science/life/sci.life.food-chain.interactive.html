@@ -1,0 +1,264 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.life.food-chain.interactive",
+  "name": "食物链",
+  "nameEn": "Food Chain",
+  "category": "science/life",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 200 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 400, "min": 240, "max": 800, "desc": "组件宽度" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["food-chain", "ecosystem", "predator", "prey", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "selected": "string", "role": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.life.food-chain.interactive" role="img" aria-label="食物链">
+  <svg class="fc__svg" viewBox="0 0 400 200" aria-hidden="true">
+    <defs>
+      <linearGradient class="fc__bg-grad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#E8F5E9"/><stop offset="60%" stop-color="#C8E6C9"/><stop offset="100%" stop-color="#A5D6A7"/>
+      </linearGradient>
+      <linearGradient class="fc__sun-grad" x1="0.3" y1="0.2" x2="0.8" y2="0.9">
+        <stop offset="0%" stop-color="#FFF9C4"/><stop offset="100%" stop-color="#FFD54F"/>
+      </linearGradient>
+      <marker class="fc__arrowhead" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="7" markerHeight="5" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#E67E22"/>
+      </marker>
+      <marker class="fc__arrowhead-glow" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="7" markerHeight="5" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#F39C12"/>
+      </marker>
+      <filter class="fc__glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2.5" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+    </defs>
+    <!-- Background & ground -->
+    <rect width="400" height="200" fill="url(#fc__bg-grad)"/>
+    <rect x="0" y="140" width="400" height="60" fill="#8D6E63" opacity="0.2" rx="2"/>
+    <line x1="0" y1="140" x2="400" y2="140" stroke="#6D4C41" stroke-width="0.8" opacity="0.4"/>
+    <!-- Arrows -->
+    <path class="fc__arrow" data-from="sun" data-to="grass" d="M60,100 Q90,78 100,100" fill="none" stroke="#E67E22" stroke-width="1.8" marker-end="url(#fc__arrowhead)"/>
+    <path class="fc__arrow" data-from="grass" data-to="grasshopper" d="M140,100 Q170,78 180,100" fill="none" stroke="#E67E22" stroke-width="1.8" marker-end="url(#fc__arrowhead)"/>
+    <path class="fc__arrow" data-from="grasshopper" data-to="frog" d="M220,100 Q250,78 260,100" fill="none" stroke="#E67E22" stroke-width="1.8" marker-end="url(#fc__arrowhead)"/>
+    <path class="fc__arrow" data-from="frog" data-to="snake" d="M300,100 Q330,78 340,100" fill="none" stroke="#E67E22" stroke-width="1.8" marker-end="url(#fc__arrowhead)"/>
+    <!-- Arrow labels -->
+    <text class="fc__arrow-label" data-from="sun" data-to="grass" x="80" y="82" text-anchor="middle" font-size="6" fill="#BF6516" font-family="'Microsoft YaHei',sans-serif">能量</text>
+    <text class="fc__arrow-label" data-from="grass" data-to="grasshopper" x="160" y="82" text-anchor="middle" font-size="6" fill="#BF6516" font-family="'Microsoft YaHei',sans-serif">被吃</text>
+    <text class="fc__arrow-label" data-from="grasshopper" data-to="frog" x="240" y="82" text-anchor="middle" font-size="6" fill="#BF6516" font-family="'Microsoft YaHei',sans-serif">被吃</text>
+    <text class="fc__arrow-label" data-from="frog" data-to="snake" x="320" y="82" text-anchor="middle" font-size="6" fill="#BF6516" font-family="'Microsoft YaHei',sans-serif">被吃</text>
+    <!-- 1. Sun (x=40) -->
+    <g class="fc__org" data-org="sun" data-role="能量来源" style="cursor:pointer">
+      <circle class="fc__hit" cx="40" cy="110" r="24" fill="transparent"/>
+      <g opacity="0.7">
+        <polygon points="40,83 37,90 43,90" fill="#FFB300"/>
+        <polygon points="40,137 37,130 43,130" fill="#FFB300"/>
+        <polygon points="13,110 20,107 20,113" fill="#FFB300"/>
+        <polygon points="67,110 60,107 60,113" fill="#FFB300"/>
+        <polygon points="21,91 26,95 23,99" fill="#FFB300"/>
+        <polygon points="59,91 54,95 57,99" fill="#FFB300"/>
+        <polygon points="21,129 26,125 23,121" fill="#FFB300"/>
+        <polygon points="59,129 54,125 57,121" fill="#FFB300"/>
+      </g>
+      <circle cx="40" cy="110" r="14" fill="url(#fc__sun-grad)" stroke="#F9A825" stroke-width="0.8"/>
+      <circle cx="36" cy="106" r="2" fill="#FFF9C4" opacity="0.5"/>
+      <text x="40" y="152" text-anchor="middle" font-size="9" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037" font-weight="bold">太阳</text>
+      <text class="fc__role-label" x="40" y="162" text-anchor="middle" font-size="6.5" font-family="'Microsoft YaHei',sans-serif" fill="#8D6E63">能量来源</text>
+    </g>
+    <!-- 2. Grass (x=120) -->
+    <g class="fc__org" data-org="grass" data-role="生产者" style="cursor:pointer">
+      <circle class="fc__hit" cx="120" cy="110" r="24" fill="transparent"/>
+      <path d="M110,140 Q109,120 107,110" fill="none" stroke="#2E7D32" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M114,140 Q113,117 115,103" fill="none" stroke="#388E3C" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M118,140 Q119,114 117,98" fill="none" stroke="#43A047" stroke-width="2.8" stroke-linecap="round"/>
+      <path d="M122,140 Q121,118 124,105" fill="none" stroke="#388E3C" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M126,140 Q127,122 129,112" fill="none" stroke="#2E7D32" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M130,140 Q130,127 132,118" fill="none" stroke="#4CAF50" stroke-width="1.8" stroke-linecap="round"/>
+      <ellipse cx="120" cy="140" rx="14" ry="3" fill="#2E7D32" opacity="0.3"/>
+      <text x="120" y="152" text-anchor="middle" font-size="9" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037" font-weight="bold">草</text>
+      <text class="fc__role-label" x="120" y="162" text-anchor="middle" font-size="6.5" font-family="'Microsoft YaHei',sans-serif" fill="#8D6E63">生产者</text>
+    </g>
+    <!-- 3. Grasshopper (x=200) -->
+    <g class="fc__org" data-org="grasshopper" data-role="初级消费者" style="cursor:pointer">
+      <circle class="fc__hit" cx="200" cy="110" r="24" fill="transparent"/>
+      <ellipse cx="200" cy="125" rx="14" ry="6" fill="#66BB6A" stroke="#2E7D32" stroke-width="0.7"/>
+      <ellipse cx="213" cy="121" rx="5.5" ry="5" fill="#81C784" stroke="#2E7D32" stroke-width="0.7"/>
+      <circle cx="215.5" cy="119" r="2.2" fill="#1B5E20"/>
+      <circle cx="216" cy="118.5" r="0.8" fill="#fff" opacity="0.5"/>
+      <path d="M216,116 Q222,108 225,103" fill="none" stroke="#2E7D32" stroke-width="0.7" stroke-linecap="round"/>
+      <path d="M214,116 Q218,106 220,101" fill="none" stroke="#2E7D32" stroke-width="0.7" stroke-linecap="round"/>
+      <path d="M196,121 Q200,111 208,115" fill="#A5D6A7" stroke="#43A047" stroke-width="0.5" opacity="0.7"/>
+      <path d="M192,129 L185,121 L180,135" fill="none" stroke="#2E7D32" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M195,130 L189,122 L184,137" fill="none" stroke="#2E7D32" stroke-width="1.0" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="205" y1="129" x2="208" y2="137" stroke="#2E7D32" stroke-width="0.8"/>
+      <line x1="208" y1="128" x2="212" y2="136" stroke="#2E7D32" stroke-width="0.8"/>
+      <line x1="196" y1="121" x2="196" y2="129" stroke="#43A047" stroke-width="0.4" opacity="0.5"/>
+      <line x1="200" y1="120" x2="200" y2="130" stroke="#43A047" stroke-width="0.4" opacity="0.5"/>
+      <line x1="204" y1="120" x2="204" y2="129" stroke="#43A047" stroke-width="0.4" opacity="0.5"/>
+      <text x="200" y="152" text-anchor="middle" font-size="9" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037" font-weight="bold">蚱蜢</text>
+      <text class="fc__role-label" x="200" y="162" text-anchor="middle" font-size="6.5" font-family="'Microsoft YaHei',sans-serif" fill="#8D6E63">初级消费者</text>
+    </g>
+    <!-- 4. Frog (x=280) -->
+    <g class="fc__org" data-org="frog" data-role="次级消费者" style="cursor:pointer">
+      <circle class="fc__hit" cx="280" cy="110" r="24" fill="transparent"/>
+      <path d="M270,133 Q264,138 260,140 L265,140" fill="none" stroke="#2E7D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <line x1="265" y1="140" x2="258" y2="140" stroke="#2E7D32" stroke-width="1.2" stroke-linecap="round"/>
+      <ellipse cx="280" cy="129" rx="14" ry="10" fill="#4CAF50" stroke="#2E7D32" stroke-width="0.8"/>
+      <ellipse cx="280" cy="133" rx="10" ry="6" fill="#C8E6C9" opacity="0.6"/>
+      <ellipse cx="290" cy="119" rx="10" ry="8" fill="#66BB6A" stroke="#2E7D32" stroke-width="0.7"/>
+      <circle cx="294" cy="112" r="4.5" fill="#fff" stroke="#2E7D32" stroke-width="0.7"/>
+      <circle cx="286" cy="112" r="4.5" fill="#fff" stroke="#2E7D32" stroke-width="0.7"/>
+      <circle cx="294" cy="112" r="2.5" fill="#1B5E20"/>
+      <circle cx="286" cy="112" r="2.5" fill="#1B5E20"/>
+      <circle cx="295" cy="111" r="0.8" fill="#fff" opacity="0.6"/>
+      <circle cx="287" cy="111" r="0.8" fill="#fff" opacity="0.6"/>
+      <path d="M296,122 Q292,125 285,122" fill="none" stroke="#1B5E20" stroke-width="0.8"/>
+      <circle cx="296" cy="118" r="0.6" fill="#1B5E20"/>
+      <path d="M290,135 L295,140 L298,140" fill="none" stroke="#2E7D32" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="275" cy="126" r="2" fill="#388E3C" opacity="0.4"/>
+      <circle cx="282" cy="123" r="1.5" fill="#388E3C" opacity="0.4"/>
+      <text x="280" y="152" text-anchor="middle" font-size="9" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037" font-weight="bold">青蛙</text>
+      <text class="fc__role-label" x="280" y="162" text-anchor="middle" font-size="6.5" font-family="'Microsoft YaHei',sans-serif" fill="#8D6E63">次级消费者</text>
+    </g>
+    <!-- 5. Snake (x=360) -->
+    <g class="fc__org" data-org="snake" data-role="三级消费者" style="cursor:pointer">
+      <circle class="fc__hit" cx="360" cy="110" r="24" fill="transparent"/>
+      <path d="M350,138 Q342,132 345,124 Q348,116 356,114 Q364,112 368,118 Q372,124 366,130 Q360,136 355,132 Q350,128 354,122" fill="none" stroke="#8D6E63" stroke-width="5" stroke-linecap="round"/>
+      <path d="M350,138 Q342,132 345,124 Q348,116 356,114 Q364,112 368,118 Q372,124 366,130 Q360,136 355,132 Q350,128 354,122" fill="none" stroke="#A1887F" stroke-width="3.5" stroke-linecap="round"/>
+      <circle cx="347" cy="128" r="1.2" fill="#5D4037" opacity="0.5"/>
+      <circle cx="352" cy="118" r="1.2" fill="#5D4037" opacity="0.5"/>
+      <circle cx="362" cy="115" r="1.2" fill="#5D4037" opacity="0.5"/>
+      <circle cx="368" cy="122" r="1.2" fill="#5D4037" opacity="0.5"/>
+      <circle cx="362" cy="132" r="1.2" fill="#5D4037" opacity="0.5"/>
+      <path d="M354,122 L358,116 L362,120 Z" fill="#8D6E63" stroke="#5D4037" stroke-width="0.6"/>
+      <circle cx="358" cy="118" r="1.3" fill="#FDD835"/>
+      <ellipse cx="358" cy="118" rx="0.5" ry="1.2" fill="#1B5E20"/>
+      <path d="M355,119 L350,120 L348,118" fill="none" stroke="#E53935" stroke-width="0.6" stroke-linecap="round"/>
+      <path d="M350,120 L348,122" fill="none" stroke="#E53935" stroke-width="0.6" stroke-linecap="round"/>
+      <text x="360" y="152" text-anchor="middle" font-size="9" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037" font-weight="bold">蛇</text>
+      <text class="fc__role-label" x="360" y="162" text-anchor="middle" font-size="6.5" font-family="'Microsoft YaHei',sans-serif" fill="#8D6E63">三级消费者</text>
+    </g>
+    <!-- Title -->
+    <text x="200" y="14" text-anchor="middle" font-size="11" font-family="'Microsoft YaHei',sans-serif" fill="#33691E" font-weight="bold">食物链</text>
+    <text x="200" y="24" text-anchor="middle" font-size="6.5" font-family="'Microsoft YaHei',sans-serif" fill="#689F38">Food Chain — 能量流动方向 →</text>
+    <!-- Tooltip -->
+    <g class="fc__tooltip" opacity="0">
+      <rect class="fc__tip-bg" x="0" y="0" width="100" height="22" rx="4" fill="#333" opacity="0.85"/>
+      <text class="fc__tip-text" x="50" y="15" text-anchor="middle" font-size="8" font-family="'Microsoft YaHei',sans-serif" fill="#fff"></text>
+    </g>
+  </svg>
+
+  <style>
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"]{width:var(--cmp-size,400px);display:inline-block;user-select:none}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__svg{width:100%;height:auto;display:block}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__org{transition:opacity .3s}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__org:hover{filter:brightness(1.08)}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__arrow{transition:stroke .3s,stroke-width .3s,opacity .3s}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__arrow-label{transition:opacity .3s}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__org--dim{opacity:.25}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__arrow--dim{opacity:.15}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__label--dim{opacity:.15}
+    @keyframes fc-arrow-pulse{0%,100%{stroke-opacity:.7}50%{stroke-opacity:1}}
+    .cmp[data-cmp-id="sci.life.food-chain.interactive"] .fc__arrow--glow{animation:fc-arrow-pulse 1.5s ease-in-out infinite}
+  </style>
+
+  <script>
+  (function(){
+    var root=document.currentScript&&document.currentScript.closest
+      ?document.currentScript.closest('[data-cmp-id="sci.life.food-chain.interactive"]'):null;
+    if(!root)return;
+    var svg=root.querySelector('.fc__svg');
+    if(!svg)return;
+
+    var uid='fc'+Math.random().toString(36).slice(2,8);
+    svg.querySelectorAll('defs > [class^="fc__"]').forEach(function(el){
+      el.setAttribute('id',uid+'_'+el.getAttribute('class'));
+    });
+    svg.querySelectorAll('[fill^="url(#fc__"]').forEach(function(el){
+      el.setAttribute('fill',el.getAttribute('fill').replace('url(#fc__','url(#'+uid+'_fc__'));
+    });
+    svg.querySelectorAll('[marker-end^="url(#fc__"]').forEach(function(el){
+      el.setAttribute('marker-end',el.getAttribute('marker-end').replace('url(#fc__','url(#'+uid+'_fc__'));
+    });
+
+    var orgs=svg.querySelectorAll('.fc__org');
+    var arrows=svg.querySelectorAll('.fc__arrow');
+    var aLabels=svg.querySelectorAll('.fc__arrow-label');
+    var tooltip=svg.querySelector('.fc__tooltip');
+    var tipBg=svg.querySelector('.fc__tip-bg');
+    var tipText=svg.querySelector('.fc__tip-text');
+    var selected=null;
+
+    var NAMES={sun:'太阳',grass:'草',grasshopper:'蚱蜢',frog:'青蛙',snake:'蛇'};
+    var ROLES={sun:'能量来源',grass:'生产者',grasshopper:'初级消费者',frog:'次级消费者',snake:'三级消费者'};
+
+    function clearAll(){
+      orgs.forEach(function(g){g.classList.remove('fc__org--dim');g.style.filter=''});
+      arrows.forEach(function(a){
+        a.classList.remove('fc__arrow--dim','fc__arrow--glow');
+        a.setAttribute('stroke','#E67E22');a.setAttribute('stroke-width','1.8');
+        a.setAttribute('marker-end','url(#'+uid+'_fc__arrowhead)');a.style.filter='';
+      });
+      aLabels.forEach(function(l){l.classList.remove('fc__label--dim')});
+      tooltip.setAttribute('opacity','0');
+    }
+
+    function highlight(orgKey){
+      orgs.forEach(function(g){g.classList.add('fc__org--dim');g.style.filter=''});
+      arrows.forEach(function(a){a.classList.add('fc__arrow--dim');a.classList.remove('fc__arrow--glow');a.style.filter=''});
+      aLabels.forEach(function(l){l.classList.add('fc__label--dim')});
+      var sel=svg.querySelector('.fc__org[data-org="'+orgKey+'"]');
+      if(sel){sel.classList.remove('fc__org--dim');sel.style.filter='url(#'+uid+'_fc__glow)';}
+      arrows.forEach(function(a,i){
+        var from=a.getAttribute('data-from'),to=a.getAttribute('data-to');
+        if(from===orgKey||to===orgKey){
+          a.classList.remove('fc__arrow--dim');a.classList.add('fc__arrow--glow');
+          a.setAttribute('stroke','#F39C12');a.setAttribute('stroke-width','2.5');
+          a.setAttribute('marker-end','url(#'+uid+'_fc__arrowhead-glow)');
+          a.style.filter='url(#'+uid+'_fc__glow)';
+          var nb=(from===orgKey)?to:from;
+          var nG=svg.querySelector('.fc__org[data-org="'+nb+'"]');
+          if(nG)nG.classList.remove('fc__org--dim');
+          if(aLabels[i])aLabels[i].classList.remove('fc__label--dim');
+        }
+      });
+      var tipStr=NAMES[orgKey]+' — '+ROLES[orgKey];
+      tipText.textContent=tipStr;
+      var tw=tipStr.length*8+16;
+      tipBg.setAttribute('width',tw);tipText.setAttribute('x',tw/2);
+      var hit=svg.querySelector('.fc__org[data-org="'+orgKey+'"] .fc__hit');
+      if(hit){
+        var cx=parseFloat(hit.getAttribute('cx'));
+        tooltip.setAttribute('transform','translate('+(Math.max(tw/2,Math.min(400-tw/2,cx))-tw/2)+',172)');
+      }
+      tooltip.setAttribute('opacity','1');
+    }
+
+    function emit(sel,role){
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'toggle',values:{selected:sel,role:role}}}));
+    }
+
+    orgs.forEach(function(g){
+      g.addEventListener('click',function(e){
+        e.stopPropagation();
+        var k=g.getAttribute('data-org');
+        if(selected===k){selected=null;clearAll();emit('','');}
+        else{selected=k;highlight(k);emit(k,ROLES[k]||'');}
+      });
+    });
+
+    svg.addEventListener('click',function(e){
+      if(!e.target.closest('.fc__org')&&selected){selected=null;clearAll();emit('','');}
+    });
+
+    new MutationObserver(function(){
+      try{JSON.parse(root.getAttribute('data-props')||'{}');}catch(e){}
+    }).observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

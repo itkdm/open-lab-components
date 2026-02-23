@@ -1,0 +1,364 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.cell.photosynthesis.interactive",
+  "name": "光合作用（交互式）",
+  "nameEn": "Photosynthesis (Interactive)",
+  "category": "biology/cell",
+  "version": "1.0.0",
+  "viewport": { "w": 600, "h": 420 },
+  "tags": ["biology","cell","photosynthesis","chloroplast","light-reaction","calvin-cycle","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "lightColor",     "type": "color",  "default": "#fdd835", "desc": "光线颜色" },
+    { "key": "chloroplastColor","type": "color", "default": "#66bb6a", "desc": "叶绿体颜色" },
+    { "key": "waterColor",     "type": "color",  "default": "#42a5f5", "desc": "水分子颜色" },
+    { "key": "o2Color",        "type": "color",  "default": "#ef5350", "desc": "O₂颜色" },
+    { "key": "co2Color",       "type": "color",  "default": "#78909c", "desc": "CO₂颜色" },
+    { "key": "glucoseColor",   "type": "color",  "default": "#ff9800", "desc": "葡萄糖颜色" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showEquation",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示化学方程式" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "lightColor": "--cmp-light", "chloroplastColor": "--cmp-chloro",
+    "waterColor": "--cmp-water", "o2Color": "--cmp-o2", "co2Color": "--cmp-co2",
+    "glucoseColor": "--cmp-glucose", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "tick", "values": { "time": "number — 动画时间(s)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.cell.photosynthesis.interactive" role="img" aria-label="光合作用（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.cell.photosynthesis.interactive"]{
+      --h:var(--cmp-size,420px);display:inline-block;
+      width:calc(var(--h)*600/420);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(102,187,106,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.cell.photosynthesis.interactive"] svg{width:100%;height:100%;display:block}
+  </style>
+  <svg viewBox="0 0 600 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+
+<script>
+(function(){
+  var sc = document.currentScript; if (!sc) return;
+  var root = sc.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'bio.cell.photosynthesis.interactive') return;
+  var svg = root.querySelector('svg'); if (!svg) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  var uid = 'ps_' + Math.random().toString(36).slice(2, 8) + '_';
+
+  /* --- Props --- */
+  var P = {};
+  try { var r = root.getAttribute('data-props'); if (r) { var o = JSON.parse(r); if (o && typeof o === 'object') P = o; } } catch (e) {}
+  var speed = Math.max(0.2, Math.min(3, Number(P.speed) || 1));
+  var running = (P.running !== 'off');
+  var showLabels = (P.showLabels !== 'off');
+  var showEquation = (P.showEquation !== 'off');
+
+  /* --- Colors (fallback from CSS vars) --- */
+  var C = {
+    light: '#fdd835', chloro: '#66bb6a', water: '#42a5f5',
+    o2: '#ef5350', co2: '#78909c', glucose: '#ff9800', stroke: '#37474f'
+  };
+
+  /* --- Helpers --- */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(x, y, text, attrs, parent) {
+    var a = { x: x, y: y, 'font-family': "Arial,'Microsoft YaHei',sans-serif" };
+    if (attrs) for (var k in attrs) a[k] = attrs[k];
+    var t = el('text', a, parent);
+    t.textContent = text;
+    return t;
+  }
+
+  /* ============================================================
+     DEFS — all gradients, markers, filters use uid prefix
+     ============================================================ */
+  var defs = el('defs', null, svg);
+
+  /* Sun radial gradient */
+  var gSun = el('radialGradient', { id: uid + 'sun', cx: '0.3', cy: '0.3', r: '0.7' }, defs);
+  el('stop', { offset: '0', 'stop-color': '#fff9c4' }, gSun);
+  el('stop', { offset: '1', 'stop-color': C.light }, gSun);
+
+  /* Thylakoid gradient */
+  var gThy = el('linearGradient', { id: uid + 'thy', x1: '0', y1: '0', x2: '0', y2: '1' }, defs);
+  el('stop', { offset: '0', 'stop-color': '#4caf50' }, gThy);
+  el('stop', { offset: '1', 'stop-color': '#2e7d32' }, gThy);
+
+  /* Arrow markers */
+  function makeMarker(name, color) {
+    var m = el('marker', {
+      id: uid + name, markerWidth: '8', markerHeight: '6', refX: '7', refY: '3', orient: 'auto'
+    }, defs);
+    el('polygon', { points: '0,0 8,3 0,6', fill: color }, m);
+  }
+  makeMarker('arrW', C.water);
+  makeMarker('arrO2', C.o2);
+  makeMarker('arrCO2', C.co2);
+  makeMarker('arrGlu', C.glucose);
+  makeMarker('arrPur', '#7b1fa2');
+  makeMarker('arrCalvin', '#e65100');
+
+  /* ============================================================
+     STATIC STRUCTURE
+     ============================================================ */
+
+  /* Background regions */
+  el('rect', { x: 25, y: 30, width: 265, height: 310, rx: 14, fill: '#e8f5e9', stroke: 'none', opacity: '0.45' }, svg);
+  el('rect', { x: 310, y: 30, width: 265, height: 310, rx: 14, fill: '#fff3e0', stroke: 'none', opacity: '0.45' }, svg);
+
+  /* Chloroplast outer membrane */
+  el('ellipse', { cx: 300, cy: 195, rx: 270, ry: 160, fill: 'none', stroke: C.chloro, 'stroke-width': '2.5', 'stroke-dasharray': '8,4', opacity: '0.5' }, svg);
+
+  /* ---- Thylakoid stack (granum) ---- */
+  var thyX = 80, thyW = 130, thyH = 18, thyGap = 4, thyCount = 5;
+  var thyStartY = 110;
+  for (var i = 0; i < thyCount; i++) {
+    var ty = thyStartY + i * (thyH + thyGap);
+    el('rect', {
+      x: thyX, y: ty, width: thyW, height: thyH, rx: 9,
+      fill: 'url(#' + uid + 'thy)', stroke: '#2e7d32', 'stroke-width': '0.8'
+    }, svg);
+  }
+  /* Thylakoid connecting stroma lamellae */
+  var thyEndY = thyStartY + (thyCount - 1) * (thyH + thyGap) + thyH;
+  el('rect', { x: thyX + thyW + 4, y: thyStartY + 8, width: 6, height: thyEndY - thyStartY - 16, rx: 3, fill: '#66bb6a', opacity: '0.5' }, svg);
+
+  /* ---- Sun ---- */
+  el('circle', { cx: 42, cy: 22, r: 20, fill: 'url(#' + uid + 'sun)', stroke: '#f9a825', 'stroke-width': '1' }, svg);
+  /* Sun rays */
+  var rays = [
+    [62, 30, 80, thyStartY - 2],
+    [52, 40, 95, thyStartY + 10],
+    [58, 38, 115, thyStartY + 5],
+    [48, 42, 85, thyStartY + 25]
+  ];
+  rays.forEach(function(r) {
+    el('line', { x1: r[0], y1: r[1], x2: r[2], y2: r[3], stroke: C.light, 'stroke-width': '2', 'stroke-linecap': 'round', opacity: '0.7' }, svg);
+  });
+
+  /* ---- Calvin cycle ring ---- */
+  var calvinCX = 440, calvinCY = 190, calvinR = 75;
+  el('circle', { cx: calvinCX, cy: calvinCY, r: calvinR, fill: 'none', stroke: '#ffe0b2', 'stroke-width': '12', opacity: '0.3' }, svg);
+  el('circle', { cx: calvinCX, cy: calvinCY, r: calvinR, fill: 'none', stroke: '#ff9800', 'stroke-width': '2', 'stroke-dasharray': '6,3', opacity: '0.5' }, svg);
+  /* Calvin cycle arrows — 4 arcs with arrowheads */
+  var cArcs = [
+    'M' + calvinCX + ',' + (calvinCY - calvinR) + ' A' + calvinR + ',' + calvinR + ' 0 0,1 ' + (calvinCX + calvinR) + ',' + calvinCY,
+    'M' + (calvinCX + calvinR) + ',' + calvinCY + ' A' + calvinR + ',' + calvinR + ' 0 0,1 ' + calvinCX + ',' + (calvinCY + calvinR),
+    'M' + calvinCX + ',' + (calvinCY + calvinR) + ' A' + calvinR + ',' + calvinR + ' 0 0,1 ' + (calvinCX - calvinR) + ',' + calvinCY,
+    'M' + (calvinCX - calvinR) + ',' + calvinCY + ' A' + calvinR + ',' + calvinR + ' 0 0,1 ' + calvinCX + ',' + (calvinCY - calvinR)
+  ];
+  cArcs.forEach(function(d) {
+    el('path', { d: d, fill: 'none', stroke: '#e65100', 'stroke-width': '2', 'marker-end': 'url(#' + uid + 'arrCalvin)' }, svg);
+  });
+
+  /* ---- Flow arrows ---- */
+  /* H₂O → thylakoid (from bottom-left upward into thylakoid area) */
+  el('path', {
+    d: 'M55,310 C55,280 90,250 100,' + (thyEndY + 5),
+    fill: 'none', stroke: C.water, 'stroke-width': '2', 'marker-end': 'url(#' + uid + 'arrW)'
+  }, svg);
+
+  /* O₂ ← thylakoid (from thylakoid area upward to top-left) */
+  el('path', {
+    d: 'M180,' + thyStartY + ' C180,' + (thyStartY - 25) + ' 210,' + (thyStartY - 45) + ' 230,55',
+    fill: 'none', stroke: C.o2, 'stroke-width': '2', 'marker-end': 'url(#' + uid + 'arrO2)'
+  }, svg);
+
+  /* ATP arrow: thylakoid → Calvin */
+  el('path', {
+    d: 'M215,150 L355,150',
+    fill: 'none', stroke: '#7b1fa2', 'stroke-width': '2', 'stroke-dasharray': '5,3', 'marker-end': 'url(#' + uid + 'arrPur)'
+  }, svg);
+  /* NADPH arrow: thylakoid → Calvin */
+  el('path', {
+    d: 'M215,200 L355,200',
+    fill: 'none', stroke: '#7b1fa2', 'stroke-width': '2', 'stroke-dasharray': '5,3', 'marker-end': 'url(#' + uid + 'arrPur)'
+  }, svg);
+
+  /* CO₂ → Calvin (from top-right downward into Calvin cycle) */
+  el('path', {
+    d: 'M520,50 C500,70 475,90 ' + calvinCX + ',' + (calvinCY - calvinR + 5),
+    fill: 'none', stroke: C.co2, 'stroke-width': '2', 'marker-end': 'url(#' + uid + 'arrCO2)'
+  }, svg);
+
+  /* Glucose ← Calvin (from Calvin cycle downward-right out) */
+  el('path', {
+    d: 'M' + (calvinCX + 40) + ',' + (calvinCY + calvinR - 10) + ' C' + (calvinCX + 60) + ',' + (calvinCY + calvinR + 20) + ' 530,300 540,320',
+    fill: 'none', stroke: C.glucose, 'stroke-width': '2.5', 'marker-end': 'url(#' + uid + 'arrGlu)'
+  }, svg);
+
+  /* ---- Particle layer ---- */
+  var particlesG = el('g', null, svg);
+
+  /* ============================================================
+     LABELS
+     ============================================================ */
+  var labelsG = el('g', null, svg);
+
+  /* Region titles */
+  txt(155, 48, '光反应', { 'text-anchor': 'middle', 'font-size': '14', 'font-weight': 'bold', fill: '#2e7d32' }, labelsG);
+  txt(calvinCX, 48, '暗反应（Calvin循环）', { 'text-anchor': 'middle', 'font-size': '14', 'font-weight': 'bold', fill: '#e65100' }, labelsG);
+
+  /* Substance labels */
+  txt(35, 325, 'H₂O', { 'font-size': '11', fill: C.water, 'font-weight': '600' }, labelsG);
+  txt(235, 50, 'O₂↑', { 'font-size': '11', fill: C.o2, 'font-weight': '600' }, labelsG);
+  txt(525, 42, 'CO₂', { 'font-size': '11', fill: C.co2, 'font-weight': '600' }, labelsG);
+  txt(545, 335, 'C₆H₁₂O₆', { 'font-size': '11', fill: C.glucose, 'font-weight': '600' }, labelsG);
+
+  /* ATP / NADPH */
+  txt(275, 143, 'ATP', { 'text-anchor': 'middle', 'font-size': '10', fill: '#7b1fa2', 'font-weight': '600' }, labelsG);
+  txt(275, 215, 'NADPH', { 'text-anchor': 'middle', 'font-size': '10', fill: '#7b1fa2', 'font-weight': '600' }, labelsG);
+
+  /* Structure labels */
+  txt(thyX + thyW / 2, thyStartY - 8, '类囊体（基粒）', { 'text-anchor': 'middle', 'font-size': '9', fill: '#1b5e20' }, labelsG);
+  txt(calvinCX, calvinCY - 4, 'Calvin', { 'text-anchor': 'middle', 'font-size': '11', fill: '#e65100', 'font-weight': '600' }, labelsG);
+  txt(calvinCX, calvinCY + 10, '循环', { 'text-anchor': 'middle', 'font-size': '10', fill: '#e65100' }, labelsG);
+  txt(300, 355, '基质（叶绿体基质）', { 'text-anchor': 'middle', 'font-size': '9', fill: '#546e7a' }, labelsG);
+
+  labelsG.style.display = showLabels ? '' : 'none';
+
+  /* ============================================================
+     EQUATION
+     ============================================================ */
+  var eqG = el('g', null, svg);
+  el('rect', { x: 110, y: 388, width: 380, height: 26, rx: 5, fill: 'rgba(255,255,255,0.92)', stroke: C.stroke, 'stroke-width': '0.5' }, eqG);
+  txt(300, 406, '6CO₂ + 6H₂O  →  C₆H₁₂O₆ + 6O₂', { 'text-anchor': 'middle', 'font-size': '11', fill: C.stroke, 'font-weight': '600' }, eqG);
+  txt(300, 393, '光能', { 'text-anchor': 'middle', 'font-size': '7.5', fill: C.light }, eqG);
+
+  eqG.style.display = showEquation ? '' : 'none';
+
+  /* ============================================================
+     PARTICLE SYSTEM
+     ============================================================ */
+  var particles = [];
+  function Particle(type, x, y, vx, vy, life) {
+    this.type = type; this.x = x; this.y = y; this.vx = vx; this.vy = vy;
+    this.life = life; this.maxLife = life; this.el = null;
+  }
+
+  /* Photon: from sun → thylakoid */
+  function spawnPhoton() {
+    var sx = 42 + Math.random() * 20;
+    var sy = 22 + Math.random() * 15;
+    var tx = thyX + Math.random() * thyW;
+    var ty = thyStartY + Math.random() * (thyEndY - thyStartY);
+    var dx = tx - sx, dy = ty - sy;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    var sp = 90 * speed;
+    particles.push(new Particle('photon', sx, sy, dx / d * sp, dy / d * sp, d / sp));
+  }
+
+  /* O₂: from thylakoid upward */
+  function spawnO2() {
+    var x = thyX + 20 + Math.random() * (thyW - 40);
+    var y = thyStartY + Math.random() * 20;
+    particles.push(new Particle('o2', x, y, (Math.random() - 0.3) * 12, -35 * speed, 2.5 / speed));
+  }
+
+  /* CO₂: from top-right → Calvin cycle center */
+  function spawnCO2() {
+    var sx = 510 + Math.random() * 20;
+    var sy = 45 + Math.random() * 10;
+    var tx = calvinCX + (Math.random() - 0.5) * 30;
+    var ty = calvinCY + (Math.random() - 0.5) * 30;
+    var dx = tx - sx, dy = ty - sy;
+    var d = Math.sqrt(dx * dx + dy * dy);
+    var sp = 60 * speed;
+    particles.push(new Particle('co2', sx, sy, dx / d * sp, dy / d * sp, d / sp));
+  }
+
+  function initParticleEl(p) {
+    var attrs = {};
+    if (p.type === 'photon') {
+      attrs = { r: '3', fill: C.light, opacity: '0.9' };
+    } else if (p.type === 'o2') {
+      attrs = { r: '4', fill: C.o2, opacity: '0.75' };
+    } else if (p.type === 'co2') {
+      attrs = { r: '3.5', fill: C.co2, opacity: '0.7' };
+    }
+    p.el = el('circle', attrs, particlesG);
+  }
+
+  var time = 0, spawnTimer = 0;
+  var animId = 0, lastT = 0;
+
+  function tick(t) {
+    if (!lastT) lastT = t;
+    var dt = Math.min((t - lastT) / 1000, 0.05);
+    lastT = t;
+    time += dt;
+    spawnTimer += dt;
+
+    if (spawnTimer > 0.35 / speed) {
+      spawnTimer = 0;
+      spawnPhoton();
+      if (Math.random() < 0.35) spawnO2();
+      if (Math.random() < 0.25) spawnCO2();
+    }
+
+    for (var i = particles.length - 1; i >= 0; i--) {
+      var p = particles[i];
+      if (!p.el) initParticleEl(p);
+      p.x += p.vx * dt;
+      p.y += p.vy * dt;
+      p.life -= dt;
+      if (p.life <= 0) {
+        if (p.el && p.el.parentNode) p.el.parentNode.removeChild(p.el);
+        particles.splice(i, 1);
+        continue;
+      }
+      var alpha = Math.min(1, p.life / p.maxLife * 2);
+      p.el.setAttribute('cx', p.x);
+      p.el.setAttribute('cy', p.y);
+      p.el.setAttribute('opacity', alpha * 0.85);
+    }
+
+    if (running) animId = requestAnimationFrame(tick);
+  }
+
+  if (running) animId = requestAnimationFrame(tick);
+
+  /* Click to pause/resume */
+  root.addEventListener('click', function() {
+    running = !running;
+    if (running) { lastT = 0; animId = requestAnimationFrame(tick); }
+    else { cancelAnimationFrame(animId); animId = 0; }
+  });
+
+  /* Props observer */
+  var obs = new MutationObserver(function() {
+    var P2 = {};
+    try { var r2 = root.getAttribute('data-props'); if (r2) { var o2 = JSON.parse(r2); if (o2 && typeof o2 === 'object') P2 = o2; } } catch (e) {}
+    speed = Math.max(0.2, Math.min(3, Number(P2.speed) || 1));
+    var sl = (P2.showLabels !== 'off');
+    var se = (P2.showEquation !== 'off');
+    labelsG.style.display = sl ? '' : 'none';
+    eqG.style.display = se ? '' : 'none';
+    var newRun = (P2.running !== 'off');
+    if (newRun && !running) { running = true; lastT = 0; animId = requestAnimationFrame(tick); }
+    if (!newRun && running) { running = false; cancelAnimationFrame(animId); animId = 0; }
+  });
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+
+  window.addEventListener('beforeunload', function() {
+    cancelAnimationFrame(animId); obs.disconnect();
+  });
+})();
+</script>

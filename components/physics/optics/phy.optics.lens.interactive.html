@@ -1,0 +1,285 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.optics.lens.interactive",
+  "name": "凸透镜成像（交互式）",
+  "nameEn": "Convex Lens Imaging (Interactive)",
+  "category": "physics/optics",
+  "version": "1.0.0",
+  "viewport": { "w": 560, "h": 380 },
+  "tags": ["optics","lens","convex","image","focal","ray-diagram","interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "lensColor",   "type": "color",  "default": "#42a5f5", "desc": "透镜颜色" },
+    { "key": "objectColor", "type": "color",  "default": "#e53935", "desc": "物体颜色" },
+    { "key": "imageColor",  "type": "color",  "default": "#43a047", "desc": "像颜色" },
+    { "key": "rayColor",    "type": "color",  "default": "#ff9800", "desc": "光线颜色" },
+    { "key": "focalLength", "type": "number", "default": 80, "min": 40, "max": 150, "desc": "焦距(px)" },
+    { "key": "objectDist",  "type": "number", "default": 200, "min": 50, "max": 350, "desc": "物距(px)" },
+    { "key": "objectHeight","type": "number", "default": 50, "min": 20, "max": 80, "desc": "物高(px)" },
+    { "key": "showRays",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示光线" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",       "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "lensColor": "--cmp-lens", "objectColor": "--cmp-object", "imageColor": "--cmp-image",
+    "rayColor": "--cmp-ray", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "update", "values": { "objectDist": "number", "imageDist": "number", "magnification": "number", "imageType": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.optics.lens.interactive" role="img" aria-label="凸透镜成像（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.optics.lens.interactive"]{
+      --h:var(--cmp-size,380px);display:inline-block;
+      width:calc(var(--h)*560/380);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,152,0,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.optics.lens.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.optics.lens.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="phy.optics.lens.interactive"] .ln__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 560 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="ln__arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-ray,#ff9800)"/></marker>
+      <marker id="ln__arrDash" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-ray,#ff9800)" opacity="0.4"/></marker>
+    </defs>
+
+    <text x="280" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">凸透镜成像</text>
+
+    <g transform="translate(280,190)">
+      <!-- 主光轴 -->
+      <line x1="-260" y1="0" x2="260" y2="0" stroke="var(--cmp-stroke,#37474f)" stroke-width="1" opacity="0.4"/>
+
+      <!-- 透镜 -->
+      <path d="M0,-120 Q12,-60 12,0 Q12,60 0,120 Q-12,60 -12,0 Q-12,-60 0,-120Z" fill="var(--cmp-lens,#42a5f5)" fill-opacity="0.2" stroke="var(--cmp-lens,#42a5f5)" stroke-width="2"/>
+      <!-- 透镜箭头 -->
+      <polygon points="0,-125 -6,-115 6,-115" fill="var(--cmp-lens,#42a5f5)"/>
+      <polygon points="0,125 -6,115 6,115" fill="var(--cmp-lens,#42a5f5)"/>
+
+      <!-- 焦点标记 -->
+      <circle class="ln__F1" r="4" fill="var(--cmp-ray,#ff9800)"/>
+      <text class="ln__F1Label" y="18" text-anchor="middle" font-size="9" fill="var(--cmp-ray,#ff9800)" font-weight="600">F</text>
+      <circle class="ln__F2" r="4" fill="var(--cmp-ray,#ff9800)"/>
+      <text class="ln__F2Label" y="18" text-anchor="middle" font-size="9" fill="var(--cmp-ray,#ff9800)" font-weight="600">F'</text>
+
+      <!-- 2F标记 -->
+      <circle class="ln__2F1" r="3" fill="var(--cmp-stroke,#37474f)" opacity="0.4"/>
+      <text class="ln__2F1Label" y="18" text-anchor="middle" font-size="8" fill="#999">2F</text>
+      <circle class="ln__2F2" r="3" fill="var(--cmp-stroke,#37474f)" opacity="0.4"/>
+      <text class="ln__2F2Label" y="18" text-anchor="middle" font-size="8" fill="#999">2F'</text>
+
+      <!-- 光线 -->
+      <g class="ln__rays"></g>
+
+      <!-- 物体 -->
+      <g class="ln__object">
+        <line x1="0" y1="0" x2="0" y2="-50" stroke="var(--cmp-object,#e53935)" stroke-width="3"/>
+        <polygon points="0,-50 -6,-40 6,-40" fill="var(--cmp-object,#e53935)"/>
+        <text x="0" y="16" text-anchor="middle" font-size="9" fill="var(--cmp-object,#e53935)" font-weight="600">物</text>
+      </g>
+
+      <!-- 像 -->
+      <g class="ln__image">
+        <line class="ln__imageLine" x1="0" y1="0" x2="0" y2="50" stroke="var(--cmp-image,#43a047)" stroke-width="3"/>
+        <polygon class="ln__imageArrow" points="0,50 -6,40 6,40" fill="var(--cmp-image,#43a047)"/>
+        <text class="ln__imageLabel" x="0" y="-8" text-anchor="middle" font-size="9" fill="var(--cmp-image,#43a047)" font-weight="600">像</text>
+      </g>
+
+      <!-- 光心 -->
+      <circle r="3" fill="var(--cmp-stroke,#37474f)"/>
+      <text x="0" y="-135" text-anchor="middle" font-size="9" fill="var(--cmp-stroke,#37474f)">O</text>
+    </g>
+
+    <!-- 数据面板 -->
+    <g transform="translate(280,330)">
+      <rect x="-260" y="0" width="520" height="40" rx="6" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="ln__uVal ln__data" x="-240" y="16" font-size="10" fill="var(--cmp-object,#e53935)">u = 200 px</text>
+      <text class="ln__vVal ln__data" x="-240" y="32" font-size="10" fill="var(--cmp-image,#43a047)">v = 133 px</text>
+      <text class="ln__fVal ln__data" x="-80" y="16" font-size="10" fill="var(--cmp-ray,#ff9800)">f = 80 px</text>
+      <text class="ln__mVal ln__data" x="-80" y="32" font-size="10" fill="#666">m = -0.67</text>
+      <text class="ln__typeVal ln__data" x="80" y="16" font-size="10" fill="var(--cmp-stroke,#37474f)" font-weight="700">倒立缩小实像</text>
+      <text x="80" y="32" font-size="9" fill="#999">1/u + 1/v = 1/f</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.optics.lens.interactive')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var f=Math.max(40,Math.min(150,Number(P.focalLength)||80));
+    var u=Math.max(50,Math.min(350,Number(P.objectDist)||200));
+    var objH=Math.max(20,Math.min(80,Number(P.objectHeight)||50));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showRays=(P.showRays!=='off');
+
+    var NS='http://www.w3.org/2000/svg';
+
+    /* 焦点位置 */
+    root.querySelector('.ln__F1').setAttribute('cx',-f);
+    root.querySelector('.ln__F1Label').setAttribute('x',-f);
+    root.querySelector('.ln__F2').setAttribute('cx',f);
+    root.querySelector('.ln__F2Label').setAttribute('x',f);
+    root.querySelector('.ln__2F1').setAttribute('cx',-2*f);
+    root.querySelector('.ln__2F1Label').setAttribute('x',-2*f);
+    root.querySelector('.ln__2F2').setAttribute('cx',2*f);
+    root.querySelector('.ln__2F2Label').setAttribute('x',2*f);
+
+    var raysG=root.querySelector('.ln__rays');
+    var objectG=root.querySelector('.ln__object');
+    var imageG=root.querySelector('.ln__image');
+    var imageLine=root.querySelector('.ln__imageLine');
+    var imageArrow=root.querySelector('.ln__imageArrow');
+    var imageLabel=root.querySelector('.ln__imageLabel');
+
+    function update(objDist){
+      u=objDist;
+      /* 物体位置 */
+      objectG.setAttribute('transform','translate('+(-u)+',0)');
+      objectG.querySelector('line').setAttribute('y2',-objH);
+      objectG.querySelector('polygon').setAttribute('points','0,'+(-objH)+' -6,'+(-objH+10)+' 6,'+(-objH+10));
+
+      /* 成像公式: 1/v = 1/f - 1/u */
+      var v,imgH,imageType;
+      if(Math.abs(u-f)<2){
+        /* 物在焦点，不成像 */
+        v=Infinity;imgH=Infinity;imageType='不成像（平行光）';
+        imageG.style.display='none';
+      }else{
+        v=1/(1/f-1/u);
+        imgH=-v/u*objH;
+        imageG.style.display='';
+
+        if(v>0){
+          /* 实像 */
+          imageG.setAttribute('transform','translate('+v.toFixed(1)+',0)');
+          imageLine.setAttribute('y2',imgH.toFixed(1));
+          var arrY=imgH;var arrDir=imgH>0?-10:10;
+          imageArrow.setAttribute('points','0,'+arrY.toFixed(1)+' -6,'+(arrY+arrDir).toFixed(1)+' 6,'+(arrY+arrDir).toFixed(1));
+          imageLabel.setAttribute('y',imgH>0?imgH+16:-12);
+
+          if(u>2*f)imageType='倒立缩小实像';
+          else if(Math.abs(u-2*f)<2)imageType='倒立等大实像';
+          else imageType='倒立放大实像';
+        }else{
+          /* 虚像 */
+          imageG.setAttribute('transform','translate('+v.toFixed(1)+',0)');
+          imageLine.setAttribute('y2',imgH.toFixed(1));
+          var arrY2=imgH;var arrDir2=imgH>0?-10:10;
+          imageArrow.setAttribute('points','0,'+arrY2.toFixed(1)+' -6,'+(arrY2+arrDir2).toFixed(1)+' 6,'+(arrY2+arrDir2).toFixed(1));
+          imageLabel.setAttribute('y',imgH>0?imgH+16:-12);
+          imageLine.setAttribute('stroke-dasharray','5,3');
+          imageType='正立放大虚像';
+        }
+        if(v>0)imageLine.setAttribute('stroke-dasharray','none');
+      }
+
+      /* 光线 */
+      while(raysG.firstChild)raysG.removeChild(raysG.firstChild);
+      if(showRays&&v!==Infinity&&isFinite(v)){
+        var objTop={x:-u,y:-objH};
+
+        /* 光线1: 平行于主轴 → 过焦点 */
+        drawRay(objTop.x,objTop.y,0,objTop.y,'solid');
+        if(v>0){
+          drawRay(0,objTop.y,v,imgH,'solid');
+        }else{
+          drawRay(0,objTop.y,250,objTop.y+(250/(-v))*(imgH-objTop.y),'solid');
+          drawRay(0,objTop.y,v,imgH,'dash');
+        }
+
+        /* 光线2: 过光心 */
+        if(v>0){
+          drawRay(objTop.x,objTop.y,v,imgH,'solid');
+        }else{
+          var slope=objTop.y/objTop.x;
+          drawRay(objTop.x,objTop.y,250,250*slope,'solid');
+          drawRay(v,imgH,objTop.x,objTop.y,'dash');
+        }
+
+        /* 光线3: 过焦点 → 平行 */
+        var slopeF=(objTop.y-0)/(objTop.x-(-f));
+        var yAtLens=slopeF*(0-(-f));
+        drawRay(objTop.x,objTop.y,0,yAtLens,'solid');
+        if(v>0){
+          drawRay(0,yAtLens,v,imgH,'solid');
+        }else{
+          drawRay(0,yAtLens,250,yAtLens,'solid');
+          drawRay(0,yAtLens,v,imgH,'dash');
+        }
+      }
+
+      /* 数据 */
+      root.querySelector('.ln__uVal').textContent='u = '+u.toFixed(0);
+      root.querySelector('.ln__fVal').textContent='f = '+f.toFixed(0);
+      if(v!==Infinity&&isFinite(v)){
+        root.querySelector('.ln__vVal').textContent='v = '+Math.abs(v).toFixed(0)+(v<0?' (虚)':'');
+        root.querySelector('.ln__mVal').textContent='m = '+(imgH/objH).toFixed(2);
+      }else{
+        root.querySelector('.ln__vVal').textContent='v = ∞';
+        root.querySelector('.ln__mVal').textContent='m = ∞';
+      }
+      root.querySelector('.ln__typeVal').textContent=imageType||'';
+    }
+
+    function drawRay(x1,y1,x2,y2,type){
+      var line=document.createElementNS(NS,'line');
+      line.setAttribute('x1',x1.toFixed(1));line.setAttribute('y1',y1.toFixed(1));
+      line.setAttribute('x2',x2.toFixed(1));line.setAttribute('y2',y2.toFixed(1));
+      line.setAttribute('stroke','var(--cmp-ray,#ff9800)');
+      line.setAttribute('stroke-width','1.5');
+      if(type==='dash'){
+        line.setAttribute('stroke-dasharray','5,3');
+        line.setAttribute('opacity','0.4');
+      }
+      raysG.appendChild(line);
+    }
+
+    update(u);
+
+    /* 动画：物体缓慢移动 */
+    var time=0,animId=0,lastT=0;
+    var baseU=u;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04)*speed;
+      lastT=t;
+      time+=dt;
+
+      /* 物距在 f*0.6 到 3f 之间来回 */
+      var minU=f*0.6,maxU=f*3;
+      var phase=(Math.sin(time*0.3)+1)/2;
+      var curU=minU+phase*(maxU-minU);
+      update(curU);
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

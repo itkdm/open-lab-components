@@ -1,0 +1,218 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.earth.earth-layers.interactive",
+  "name": "地球圈层",
+  "nameEn": "Earth Layers",
+  "category": "science/earth",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 360 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "组件尺寸" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["earth", "layers", "crust", "mantle", "core", "geology", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "layer": "string", "layerName": "string", "depth": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.earth.earth-layers.interactive" role="img" aria-label="地球圈层">
+  <style>
+    .cmp[data-cmp-id="sci.earth.earth-layers.interactive"] {
+      display: inline-block; width: var(--cmp-size, 360px); user-select: none; position: relative;
+    }
+    .cmp[data-cmp-id="sci.earth.earth-layers.interactive"] svg { width: 100%; height: auto; display: block; }
+  </style>
+  <svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.earth.earth-layers.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'el_' + Math.random().toString(36).slice(2, 8) + '_';
+
+  /* --- Layer config --- */
+  var CX = 180, CY = 165, R = 130;
+  var LAYERS = [
+    { key: 'inner-core',   name: '内核',   nameEn: 'Inner Core',    r: 28,  color1: '#FFD54F', color2: '#FF8F00', depth: '5100-6371km', state: '固态', temp: '~5500°C' },
+    { key: 'outer-core',   name: '外核',   nameEn: 'Outer Core',    r: 58,  color1: '#FF8F00', color2: '#E65100', depth: '2900-5100km', state: '液态', temp: '~4500°C' },
+    { key: 'lower-mantle', name: '下地幔', nameEn: 'Lower Mantle',  r: 95,  color1: '#D32F2F', color2: '#B71C1C', depth: '670-2900km',  state: '固态', temp: '~3000°C' },
+    { key: 'upper-mantle', name: '上地幔', nameEn: 'Upper Mantle',  r: 122, color1: '#E65100', color2: '#BF360C', depth: '35-670km',    state: '固态(部分熔融)', temp: '~1500°C' },
+    { key: 'crust',        name: '地壳',   nameEn: 'Crust',         r: R,   color1: '#8D6E63', color2: '#6D4C41', depth: '0-35km',      state: '固态', temp: '~1000°C' }
+  ];
+
+  /* --- Build SVG entirely in JS so all IDs are unique --- */
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) Object.keys(attrs).forEach(function(k) { e.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  var defs = el('defs', null, svg);
+
+  /* Clip paths */
+  var clipLeft = el('clipPath', { id: uid + 'cl' }, defs);
+  el('rect', { x: 0, y: 0, width: CX, height: 360 }, clipLeft);
+
+  var clipRight = el('clipPath', { id: uid + 'cr' }, defs);
+  el('rect', { x: CX, y: 0, width: 360 - CX, height: 360 }, clipRight);
+
+  var clipCircle = el('clipPath', { id: uid + 'cc' }, defs);
+  el('circle', { cx: CX, cy: CY, r: R }, clipCircle);
+
+  /* Radial gradients for layers */
+  LAYERS.forEach(function(L) {
+    var g = el('radialGradient', { id: uid + L.key, cx: '0.45', cy: '0.4', r: '0.6' }, defs);
+    el('stop', { offset: '0%', 'stop-color': L.color1 }, g);
+    el('stop', { offset: '100%', 'stop-color': L.color2 }, g);
+  });
+
+  /* Ocean gradient */
+  var gOcean = el('radialGradient', { id: uid + 'ocean', cx: '0.4', cy: '0.35', r: '0.65' }, defs);
+  el('stop', { offset: '0%', 'stop-color': '#42A5F5' }, gOcean);
+  el('stop', { offset: '100%', 'stop-color': '#1565C0' }, gOcean);
+
+  /* Glow filter for active layer */
+  var filt = el('filter', { id: uid + 'glow', x: '-20%', y: '-20%', width: '140%', height: '140%' }, defs);
+  el('feGaussianBlur', { stdDeviation: '3', result: 'blur' }, filt);
+  var merge = el('feMerge', null, filt);
+  el('feMergeNode', { 'in': 'blur' }, merge);
+  el('feMergeNode', { 'in': 'SourceGraphic' }, merge);
+
+  /* ===== Right half: Earth surface ===== */
+  var gRight = el('g', { 'clip-path': 'url(#' + uid + 'cr)' }, svg);
+  var gRightInner = el('g', { 'clip-path': 'url(#' + uid + 'cc)' }, gRight);
+  el('circle', { cx: CX, cy: CY, r: R, fill: 'url(#' + uid + 'ocean)' }, gRightInner);
+  /* Continents */
+  el('ellipse', { cx: 225, cy: 110, rx: 30, ry: 20, fill: '#4CAF50', opacity: '0.7', transform: 'rotate(-10 225 110)' }, gRightInner);
+  el('ellipse', { cx: 260, cy: 165, rx: 20, ry: 28, fill: '#388E3C', opacity: '0.65', transform: 'rotate(15 260 165)' }, gRightInner);
+  el('ellipse', { cx: 210, cy: 225, rx: 24, ry: 14, fill: '#66BB6A', opacity: '0.6', transform: 'rotate(-5 210 225)' }, gRightInner);
+  el('ellipse', { cx: 280, cy: 125, rx: 14, ry: 9, fill: '#43A047', opacity: '0.55' }, gRightInner);
+  /* Clouds */
+  el('ellipse', { cx: 215, cy: 85, rx: 22, ry: 4.5, fill: '#fff', opacity: '0.45' }, gRightInner);
+  el('ellipse', { cx: 265, cy: 150, rx: 16, ry: 3.5, fill: '#fff', opacity: '0.35' }, gRightInner);
+  el('ellipse', { cx: 235, cy: 250, rx: 20, ry: 4, fill: '#fff', opacity: '0.3' }, gRightInner);
+  /* Atmosphere */
+  el('circle', { cx: CX, cy: CY, r: R, fill: 'none', stroke: '#81D4FA', 'stroke-width': '3', opacity: '0.3' }, gRightInner);
+
+  /* ===== Left half: cutaway layers ===== */
+  var gLeft = el('g', { 'clip-path': 'url(#' + uid + 'cl)' }, svg);
+  var layerEls = {};
+
+  /* Draw from outermost to innermost (each inner circle covers the outer) */
+  for (var i = LAYERS.length - 1; i >= 0; i--) {
+    var L = LAYERS[i];
+    var gLayer = el('g', { 'data-layer': L.key, style: 'cursor:pointer;transition:opacity 0.25s,filter 0.25s;' }, gLeft);
+    el('circle', { cx: CX, cy: CY, r: L.r, fill: 'url(#' + uid + L.key + ')' }, gLayer);
+    layerEls[L.key] = gLayer;
+  }
+
+  /* Dividing line & outer stroke */
+  el('line', { x1: CX, y1: CY - R - 1, x2: CX, y2: CY + R + 1, stroke: '#444', 'stroke-width': '1' }, svg);
+  el('circle', { cx: CX, cy: CY, r: R, fill: 'none', stroke: '#444', 'stroke-width': '1.2' }, svg);
+
+  /* ===== Labels ===== */
+  var labelData = [
+    { key: 'crust',        lx: 52, ly: 52,  px: CX - R + 8,  py: CY - R + 12 },
+    { key: 'upper-mantle', lx: 42, ly: 100, px: CX - 110,     py: CY - 70 },
+    { key: 'lower-mantle', lx: 38, ly: 155, px: CX - 80,      py: CY - 25 },
+    { key: 'outer-core',   lx: 38, ly: 210, px: CX - 48,      py: CY + 20 },
+    { key: 'inner-core',   lx: 42, ly: 260, px: CX - 18,      py: CY + 10 }
+  ];
+
+  labelData.forEach(function(ld) {
+    var info = null;
+    for (var j = 0; j < LAYERS.length; j++) { if (LAYERS[j].key === ld.key) { info = LAYERS[j]; break; } }
+    if (!info) return;
+    el('line', { x1: ld.px, y1: ld.py, x2: ld.lx + 2, y2: ld.ly - 4, stroke: '#888', 'stroke-width': '0.6', 'stroke-dasharray': '2,2' }, svg);
+    el('circle', { cx: ld.px, cy: ld.py, r: 2, fill: info.color1 }, svg);
+    var t1 = el('text', { x: ld.lx, y: ld.ly, 'font-family': "Arial,'Microsoft YaHei',sans-serif", 'font-size': '11', 'font-weight': '700', fill: '#333' }, svg);
+    t1.textContent = info.name;
+    var t2 = el('text', { x: ld.lx, y: ld.ly + 12, 'font-family': "Arial,'Microsoft YaHei',sans-serif", 'font-size': '8', fill: '#666', opacity: '0.85' }, svg);
+    t2.textContent = info.depth;
+  });
+
+  /* ===== Info panel (bottom) ===== */
+  var infoG = el('g', { style: 'display:none;pointer-events:none;' }, svg);
+  el('rect', { x: 40, y: 325, width: 280, height: 28, rx: 8, fill: '#37474f', opacity: '0.92' }, infoG);
+  var infoText = el('text', { x: 180, y: 344, 'text-anchor': 'middle', 'font-family': "Arial,'Microsoft YaHei',sans-serif", 'font-size': '11', 'font-weight': '600', fill: '#fff' }, infoG);
+
+  /* ===== Interaction ===== */
+  var active = null;
+
+  function setActive(key) {
+    active = (active === key) ? null : key;
+    LAYERS.forEach(function(L) {
+      var g = layerEls[L.key];
+      if (!g) return;
+      if (active) {
+        if (L.key === active) {
+          g.style.opacity = '1';
+          g.style.filter = 'url(#' + uid + 'glow)';
+        } else {
+          g.style.opacity = '0.3';
+          g.style.filter = '';
+        }
+      } else {
+        g.style.opacity = '1';
+        g.style.filter = '';
+      }
+    });
+    if (active) {
+      var d = null;
+      for (var j = 0; j < LAYERS.length; j++) { if (LAYERS[j].key === active) { d = LAYERS[j]; break; } }
+      if (d) {
+        infoText.textContent = d.name + '（' + d.nameEn + '）' + d.depth + ' | ' + d.state + ' | ' + d.temp;
+        infoG.style.display = '';
+      }
+    } else {
+      infoG.style.display = 'none';
+    }
+  }
+
+  svg.addEventListener('click', function(e) {
+    var t = e.target.closest('[data-layer]');
+    if (!t) return;
+    var key = t.getAttribute('data-layer');
+    setActive(key);
+    if (active) {
+      var d = null;
+      for (var j = 0; j < LAYERS.length; j++) { if (LAYERS[j].key === active) { d = LAYERS[j]; break; } }
+      if (d) {
+        root.dispatchEvent(new CustomEvent('cmp:change', {
+          bubbles: true, composed: true,
+          detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle',
+            values: { layer: active, layerName: d.name, depth: d.depth } }
+        }));
+      }
+    }
+  });
+
+  /* Hover effect */
+  svg.addEventListener('mouseover', function(e) {
+    var t = e.target.closest('[data-layer]');
+    if (t && !active) t.style.filter = 'brightness(1.12)';
+  });
+  svg.addEventListener('mouseout', function(e) {
+    var t = e.target.closest('[data-layer]');
+    if (t && !active) t.style.filter = '';
+  });
+
+  /* MutationObserver */
+  new MutationObserver(function() {
+    try {
+      var p = JSON.parse(root.getAttribute('data-props') || '{}');
+      if (p.size) root.style.setProperty('--cmp-size', p.size + 'px');
+    } catch (e) {}
+  }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+})();
+</script>

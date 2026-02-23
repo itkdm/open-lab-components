@@ -1,0 +1,500 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.genetics.punnett-square.interactive",
+  "name": "遗传分析棋盘格（交互式）",
+  "nameEn": "Punnett Square (Interactive)",
+  "category": "biology/genetics",
+  "version": "1.0.0",
+  "viewport": { "w": 420, "h": 500 },
+  "tags": ["biology","genetics","punnett-square","inheritance","allele","genotype","phenotype","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 500, "min": 300, "max": 700, "desc": "组件高度（宽度按比例缩放）" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "dominantColor",  "type": "color",  "default": "#7b1fa2", "desc": "显性纯合颜色" },
+    { "key": "recessiveColor", "type": "color",  "default": "#e0e0e0", "desc": "隐性纯合颜色" },
+    { "key": "heteroColor",    "type": "color",  "default": "#ba68c8", "desc": "杂合子颜色" },
+    { "key": "parent1",        "type": "enum",   "default": "Aa", "enum": ["AA","Aa","aa"], "desc": "父本基因型" },
+    { "key": "parent2",        "type": "enum",   "default": "Aa", "enum": ["AA","Aa","aa"], "desc": "母本基因型" },
+    { "key": "showRatio",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示比例" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "dominantColor": "--cmp-dominant",
+    "recessiveColor": "--cmp-recessive",
+    "heteroColor": "--cmp-hetero",
+    "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "select", "values": { "parent1": "string(AA|Aa|aa)", "parent2": "string(AA|Aa|aa)", "offspring": "object" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.genetics.punnett-square.interactive" role="img" aria-label="遗传分析棋盘格（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.genetics.punnett-square.interactive"]{
+      --h:var(--cmp-size,500px);
+      display:inline-block;
+      width:calc(var(--h)*420/500);
+      height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(123,31,162,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.genetics.punnett-square.interactive"] svg{
+      width:100%;height:100%;display:block;overflow:visible;
+    }
+    .cmp[data-cmp-id="bio.genetics.punnett-square.interactive"] .ps__clickable{
+      cursor:pointer;
+    }
+    .cmp[data-cmp-id="bio.genetics.punnett-square.interactive"] .ps__label{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px;font-weight:600;
+    }
+    .cmp[data-cmp-id="bio.genetics.punnett-square.interactive"] .ps__gene{
+      font-family:'Courier New',Courier,monospace;font-weight:700;
+    }
+    .cmp[data-cmp-id="bio.genetics.punnett-square.interactive"] .ps__title{
+      font-family:Arial,'Microsoft YaHei',sans-serif;font-size:13px;font-weight:700;
+    }
+  </style>
+
+  <svg viewBox="0 0 420 500" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="ps__domG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.08"/>
+      </linearGradient>
+    </defs>
+    <g class="ps__scene"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.genetics.punnett-square.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+    var scene=root.querySelector('.ps__scene');
+
+    /* ── Props ── */
+    var P={};
+    function readProps(){
+      P={};
+      try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+    }
+    readProps();
+
+    var GENOTYPES=['AA','Aa','aa'];
+    var parent1=GENOTYPES.indexOf(P.parent1)>=0?P.parent1:'Aa';
+    var parent2=GENOTYPES.indexOf(P.parent2)>=0?P.parent2:'Aa';
+    var showRatio=(P.showRatio!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    /* ── 工具 ── */
+    function el(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function alleles(gt){
+      if(gt==='AA')return['A','A'];
+      if(gt==='aa')return['a','a'];
+      return['A','a'];
+    }
+
+    function combine(a1,a2){
+      if(a1==='A'&&a2==='A')return'AA';
+      if(a1==='a'&&a2==='a')return'aa';
+      return'Aa';
+    }
+
+    function genoType(gt){
+      if(gt==='AA')return'dominant';
+      if(gt==='aa')return'recessive';
+      return'hetero';
+    }
+
+    function genoColor(gt){
+      var t=genoType(gt);
+      if(t==='dominant')return'var(--cmp-dominant,#7b1fa2)';
+      if(t==='recessive')return'var(--cmp-recessive,#e0e0e0)';
+      return'var(--cmp-hetero,#ba68c8)';
+    }
+
+    function genoTextColor(gt){
+      if(gt==='aa')return'#424242';
+      return'#ffffff';
+    }
+
+    function phenoName(gt){
+      if(gt==='aa')return'白色花';
+      return'紫色花';
+    }
+
+    /* 计算后代: 行=母本等位基因, 列=父本等位基因 */
+    function calcOffspring(p1,p2){
+      var a1=alleles(p1),a2=alleles(p2);
+      var grid=[];
+      for(var r=0;r<2;r++){
+        grid[r]=[];
+        for(var c=0;c<2;c++){
+          grid[r][c]=combine(a1[c],a2[r]);
+        }
+      }
+      return grid;
+    }
+
+    function calcRatios(grid){
+      var counts={AA:0,Aa:0,aa:0};
+      for(var r=0;r<2;r++)for(var c=0;c<2;c++)counts[grid[r][c]]++;
+      return{counts:counts,phenoDom:counts.AA+counts.Aa,phenoRec:counts.aa};
+    }
+
+    function gcd(a,b){return b===0?a:gcd(b,a%b);}
+    function simplify(a,b){
+      if(a===0&&b===0)return'0:0';
+      if(b===0)return'1:0';
+      if(a===0)return'0:1';
+      var g=gcd(a,b);return(a/g)+':'+(b/g);
+    }
+
+    function simplifyGenoDisplay(counts){
+      var aa=counts.AA,ab=counts.Aa,bb=counts.aa;
+      /* 只显示非零项 */
+      var parts=[];
+      if(aa>0)parts.push({gt:'AA',n:aa});
+      if(ab>0)parts.push({gt:'Aa',n:ab});
+      if(bb>0)parts.push({gt:'aa',n:bb});
+      if(parts.length===0)return{parts:[{gt:'AA',n:0}],str:'0'};
+      var g=parts[0].n;
+      for(var i=1;i<parts.length;i++)g=gcd(g,parts[i].n);
+      if(g===0)g=1;
+      var strs=[];
+      for(var i=0;i<parts.length;i++){
+        parts[i].n=parts[i].n/g;
+        strs.push(parts[i].n);
+      }
+      return{parts:parts,str:strs.join(':')};
+    }
+
+    function cycleGeno(gt){
+      var i=GENOTYPES.indexOf(gt);
+      return GENOTYPES[(i+1)%3];
+    }
+
+    /* ── 布局常量 ── */
+    var GX=130,GY=105;
+    var CELL=72,GAP=2;
+    var GRID_W=CELL*2+GAP;
+    var GRID_CX=GX+GRID_W/2;
+
+    /* ── 绘制小花朵 ── */
+    function drawFlower(cx,cy,petalColor,size){
+      var s=size||8;
+      var pr=s*0.38;
+      for(var i=0;i<5;i++){
+        var ang=(i*72-90)*Math.PI/180;
+        scene.appendChild(el('circle',{cx:cx+s*0.4*Math.cos(ang),cy:cy+s*0.4*Math.sin(ang),r:pr,
+          fill:petalColor,opacity:'0.7'}));
+      }
+      scene.appendChild(el('circle',{cx:cx,cy:cy,r:s*0.18,fill:'#fdd835'}));
+    }
+
+    /* ── 主绘制 ── */
+    function draw(){
+      clear(scene);
+      var grid=calcOffspring(parent1,parent2);
+      var ratios=calcRatios(grid);
+      var a1=alleles(parent1),a2=alleles(parent2);
+
+      /* 标题 */
+      if(showLabels){
+        var tt=el('text',{x:210,y:24,'text-anchor':'middle',
+          fill:'var(--cmp-stroke,#37474f)','class':'ps__title'});
+        tt.textContent='豌豆花色遗传分析 — 棋盘格法';
+        scene.appendChild(tt);
+      }
+
+      /* ── 父本（上方，对应列） ── */
+      if(showLabels){
+        var p1L=el('text',{x:GRID_CX,y:GY-58,'text-anchor':'middle',
+          fill:'var(--cmp-stroke,#37474f)','class':'ps__label'});
+        p1L.textContent='父本 ♂';
+        scene.appendChild(p1L);
+      }
+
+      /* 父本基因型按钮 */
+      var p1G=el('g',{'class':'ps__clickable','data-role':'parent1'});
+      p1G.appendChild(el('rect',{x:GRID_CX-32,y:GY-52,width:64,height:24,rx:5,
+        fill:genoColor(parent1),stroke:'var(--cmp-stroke,#37474f)','stroke-width':'1'}));
+      var p1T=el('text',{x:GRID_CX,y:GY-36,'text-anchor':'middle',
+        fill:genoTextColor(parent1),'class':'ps__gene','font-size':'14'});
+      p1T.textContent=parent1;
+      p1G.appendChild(p1T);
+      scene.appendChild(p1G);
+
+      /* 父本等位基因标头 */
+      for(var c=0;c<2;c++){
+        var cx=GX+c*(CELL+GAP)+CELL/2;
+        scene.appendChild(el('rect',{x:cx-16,y:GY-20,width:32,height:20,rx:3,
+          fill:a1[c]==='A'?'var(--cmp-dominant,#7b1fa2)':'var(--cmp-recessive,#e0e0e0)',
+          opacity:'0.85'}));
+        var ht=el('text',{x:cx,y:GY-6,'text-anchor':'middle',
+          fill:a1[c]==='A'?'#fff':'#424242','class':'ps__gene','font-size':'14'});
+        ht.textContent=a1[c];
+        scene.appendChild(ht);
+      }
+
+      /* ── 母本（左侧，对应行） ── */
+      if(showLabels){
+        var p2L=el('text',{x:GX-52,y:GY+CELL+GAP/2+4,'text-anchor':'middle',
+          fill:'var(--cmp-stroke,#37474f)','class':'ps__label',
+          transform:'rotate(-90,'+(GX-52)+','+(GY+CELL+GAP/2)+')'});
+        p2L.textContent='母本 ♀';
+        scene.appendChild(p2L);
+      }
+
+      /* 母本基因型按钮 */
+      var p2G=el('g',{'class':'ps__clickable','data-role':'parent2'});
+      p2G.appendChild(el('rect',{x:GX-68,y:GY+CELL+GAP/2-12,width:56,height:24,rx:5,
+        fill:genoColor(parent2),stroke:'var(--cmp-stroke,#37474f)','stroke-width':'1'}));
+      var p2T=el('text',{x:GX-40,y:GY+CELL+GAP/2+4,'text-anchor':'middle',
+        fill:genoTextColor(parent2),'class':'ps__gene','font-size':'14'});
+      p2T.textContent=parent2;
+      p2G.appendChild(p2T);
+      scene.appendChild(p2G);
+
+      /* 母本等位基因标头 */
+      for(var r=0;r<2;r++){
+        var cy=GY+r*(CELL+GAP)+CELL/2;
+        scene.appendChild(el('rect',{x:GX-24,y:cy-10,width:22,height:20,rx:3,
+          fill:a2[r]==='A'?'var(--cmp-dominant,#7b1fa2)':'var(--cmp-recessive,#e0e0e0)',
+          opacity:'0.85'}));
+        var ht2=el('text',{x:GX-13,y:cy+5,'text-anchor':'middle',
+          fill:a2[r]==='A'?'#fff':'#424242','class':'ps__gene','font-size':'14'});
+        ht2.textContent=a2[r];
+        scene.appendChild(ht2);
+      }
+
+      /* ── 棋盘格 2×2 ── */
+      for(var r=0;r<2;r++){
+        for(var c=0;c<2;c++){
+          var gt=grid[r][c];
+          var rx=GX+c*(CELL+GAP);
+          var ry=GY+r*(CELL+GAP);
+
+          scene.appendChild(el('rect',{x:rx,y:ry,width:CELL,height:CELL,rx:6,
+            fill:genoColor(gt),stroke:'var(--cmp-stroke,#37474f)',
+            'stroke-width':'var(--cmp-stroke-width,1.2)'}));
+          scene.appendChild(el('rect',{x:rx,y:ry,width:CELL,height:CELL,rx:6,
+            fill:'url(#ps__domG)','pointer-events':'none'}));
+
+          /* 花朵图标 */
+          drawFlower(rx+CELL/2,ry+16,gt==='aa'?'#ffffff':'#9c27b0',9);
+
+          /* 基因型 */
+          var gT=el('text',{x:rx+CELL/2,y:ry+CELL/2+2,'text-anchor':'middle',
+            'dominant-baseline':'central',
+            fill:genoTextColor(gt),'class':'ps__gene','font-size':'20'});
+          gT.textContent=gt;
+          scene.appendChild(gT);
+
+          /* 表现型 */
+          var pT=el('text',{x:rx+CELL/2,y:ry+CELL/2+18,'text-anchor':'middle',
+            fill:genoTextColor(gt),'class':'ps__label','font-size':'8',opacity:'0.85'});
+          pT.textContent=phenoName(gt);
+          scene.appendChild(pT);
+        }
+      }
+
+      /* ── 比例区域 ── */
+      if(!showRatio)return;
+
+      var baseY=GY+2*(CELL+GAP)+14;
+
+      /* 基因型比 */
+      var genoD=simplifyGenoDisplay(ratios.counts);
+      if(showLabels){
+        var grL=el('text',{x:42,y:baseY+12,fill:'var(--cmp-stroke,#37474f)','class':'ps__label'});
+        grL.textContent='基因型比:';
+        scene.appendChild(grL);
+      }
+
+      var grX=108;
+      for(var i=0;i<genoD.parts.length;i++){
+        var p=genoD.parts[i];
+        scene.appendChild(el('rect',{x:grX,y:baseY,width:26,height:16,rx:3,
+          fill:genoColor(p.gt),stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.6'}));
+        var ct=el('text',{x:grX+13,y:baseY+11,'text-anchor':'middle',
+          fill:genoTextColor(p.gt),'class':'ps__gene','font-size':'9'});
+        ct.textContent=p.gt;
+        scene.appendChild(ct);
+        grX+=30;
+        if(i<genoD.parts.length-1){
+          var sep=el('text',{x:grX,y:baseY+12,'text-anchor':'middle',
+            fill:'var(--cmp-stroke,#37474f)','class':'ps__label'});
+          sep.textContent=':';
+          scene.appendChild(sep);
+          grX+=10;
+        }
+      }
+      var grV=el('text',{x:grX+6,y:baseY+12,
+        fill:'var(--cmp-stroke,#37474f)','class':'ps__gene','font-size':'11'});
+      grV.textContent='= '+genoD.str;
+      scene.appendChild(grV);
+
+      /* 表现型比 */
+      baseY+=26;
+      var phenoStr=simplify(ratios.phenoDom,ratios.phenoRec);
+      if(showLabels){
+        var prL=el('text',{x:42,y:baseY+12,fill:'var(--cmp-stroke,#37474f)','class':'ps__label'});
+        prL.textContent='表现型比:';
+        scene.appendChild(prL);
+      }
+
+      var barX=108,barW=180,barH=16;
+      var domFrac=ratios.phenoDom/4;
+      var recFrac=ratios.phenoRec/4;
+
+      /* 底层完整圆角矩形 */
+      scene.appendChild(el('rect',{x:barX,y:baseY,width:barW,height:barH,rx:3,
+        fill:'var(--cmp-recessive,#e0e0e0)',stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.6'}));
+
+      if(domFrac>0){
+        /* 显性部分用 clipPath 裁剪到圆角范围内 */
+        var clipId='ps__barClip';
+        var defs=svg.querySelector('defs');
+        /* 清除旧 clip */
+        var oldClip=defs.querySelector('#'+clipId);
+        if(oldClip)defs.removeChild(oldClip);
+        var cp=el('clipPath',{id:clipId});
+        cp.appendChild(el('rect',{x:barX,y:baseY,width:barW,height:barH,rx:3}));
+        defs.appendChild(cp);
+
+        scene.appendChild(el('rect',{x:barX,y:baseY,width:barW*domFrac,height:barH,
+          fill:'#9c27b0','clip-path':'url(#'+clipId+')'}));
+      }
+
+      /* 条内文字 */
+      if(domFrac>0&&barW*domFrac>28){
+        var dT=el('text',{x:barX+barW*domFrac/2,y:baseY+11,'text-anchor':'middle',
+          fill:'#fff','class':'ps__label','font-size':'8'});
+        dT.textContent='紫色';
+        scene.appendChild(dT);
+      }
+      if(recFrac>0&&barW*recFrac>28){
+        var rT=el('text',{x:barX+barW*domFrac+barW*recFrac/2,y:baseY+11,'text-anchor':'middle',
+          fill:'#424242','class':'ps__label','font-size':'8'});
+        rT.textContent='白色';
+        scene.appendChild(rT);
+      }
+
+      var prV=el('text',{x:barX+barW+10,y:baseY+12,
+        fill:'var(--cmp-stroke,#37474f)','class':'ps__gene','font-size':'11'});
+      prV.textContent='= '+phenoStr;
+      scene.appendChild(prV);
+
+      /* ── 图例 ── */
+      baseY+=28;
+      if(showLabels){
+        var legT=el('text',{x:42,y:baseY+10,fill:'var(--cmp-stroke,#37474f)','class':'ps__label'});
+        legT.textContent='图例:';
+        scene.appendChild(legT);
+      }
+
+      var legends=[
+        {gt:'AA',color:'var(--cmp-dominant,#7b1fa2)',text:'显性纯合 (AA) — 紫色花',tc:'#fff',fc:'#9c27b0'},
+        {gt:'Aa',color:'var(--cmp-hetero,#ba68c8)',text:'杂合子 (Aa) — 紫色花',tc:'#fff',fc:'#9c27b0'},
+        {gt:'aa',color:'var(--cmp-recessive,#e0e0e0)',text:'隐性纯合 (aa) — 白色花',tc:'#424242',fc:'#ffffff'}
+      ];
+      var legX=90;
+      for(var i=0;i<legends.length;i++){
+        var ly=baseY+i*20;
+        scene.appendChild(el('rect',{x:legX,y:ly,width:16,height:16,rx:3,
+          fill:legends[i].color,stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.6'}));
+        drawFlower(legX+8,ly+8,legends[i].fc,5);
+        var lt=el('text',{x:legX+22,y:ly+12,
+          fill:'var(--cmp-stroke,#37474f)','class':'ps__label','font-size':'9'});
+        lt.textContent=legends[i].text;
+        scene.appendChild(lt);
+      }
+
+      /* 操作提示 */
+      var hintY=baseY+legends.length*20+10;
+      var hintT=el('text',{x:210,y:hintY,'text-anchor':'middle',
+        fill:'#90a4ae','font-size':'9',
+        'font-family':"Arial,'Microsoft YaHei',sans-serif"});
+      hintT.textContent='点击父本/母本基因型可切换组合';
+      scene.appendChild(hintT);
+    }
+
+    /* ── 初始绘制 ── */
+    draw();
+
+    /* ── 事件 ── */
+    function emitChange(){
+      var grid=calcOffspring(parent1,parent2);
+      var ratios=calcRatios(grid);
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true,composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'select',
+          values:{
+            parent1:parent1,
+            parent2:parent2,
+            offspring:{
+              grid:grid,
+              genotypeCounts:ratios.counts,
+              phenotypeDominant:ratios.phenoDom,
+              phenotypeRecessive:ratios.phenoRec
+            }
+          }
+        }
+      }));
+    }
+
+    /* ── 点击交互（用事件委托，兼容 SVG） ── */
+    scene.addEventListener('click',function(e){
+      var t=e.target;
+      /* 向上查找 ps__clickable 组 */
+      var g=null;
+      while(t&&t!==scene){
+        if(t.classList&&t.classList.contains('ps__clickable')){g=t;break;}
+        t=t.parentNode;
+      }
+      if(!g)return;
+      var role=g.getAttribute('data-role');
+      if(role==='parent1'){
+        parent1=cycleGeno(parent1);
+      }else if(role==='parent2'){
+        parent2=cycleGeno(parent2);
+      }else{return;}
+      draw();
+      emitChange();
+    });
+
+    /* ── MutationObserver ── */
+    var obs=new MutationObserver(function(){
+      readProps();
+      var newP1=GENOTYPES.indexOf(P.parent1)>=0?P.parent1:parent1;
+      var newP2=GENOTYPES.indexOf(P.parent2)>=0?P.parent2:parent2;
+      showRatio=(P.showRatio!=='off');
+      showLabels=(P.showLabels!=='off');
+      var changed=(newP1!==parent1||newP2!==parent2);
+      parent1=newP1;parent2=newP2;
+      draw();
+      if(changed)emitChange();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){obs.disconnect();});
+  })();
+  </script>
+</div>

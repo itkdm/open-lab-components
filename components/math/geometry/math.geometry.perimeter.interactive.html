@@ -1,0 +1,267 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.perimeter.interactive",
+  "name": "周长探索",
+  "nameEn": "Perimeter Explorer",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 320 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
+    { "key": "gridColor", "type": "color", "default": "#E0E0E0", "desc": "网格颜色" },
+    { "key": "shapeColor", "type": "color", "default": "#1E88E5", "desc": "图形颜色" },
+    { "key": "measureColor", "type": "color", "default": "#F44336", "desc": "测量标注颜色" }
+  ],
+  "cssVars": { "size": "--cmp-size", "gridColor": "--cmp-grid", "shapeColor": "--cmp-shape", "measureColor": "--cmp-measure" },
+  "tags": ["perimeter", "measurement", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "points": "array", "perimeter": "number", "sides": "number" } },
+    { "name": "cmp:changeend", "type": "adjust", "values": { "points": "array", "perimeter": "number", "sides": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.perimeter.interactive" role="img" aria-label="周长探索">
+  <style>
+    .cmp[data-cmp-id="math.geometry.perimeter.interactive"] {
+      --sz: var(--cmp-size, 320px);
+      display: inline-block; width: var(--sz); height: var(--sz);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.perimeter.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+    .cmp[data-cmp-id="math.geometry.perimeter.interactive"] .pe__vertex {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="math.geometry.perimeter.interactive"] .pe__vertex:hover {
+      fill-opacity: 0.8;
+    }
+  </style>
+
+  <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+
+<script>
+(function() {
+  var sc = document.currentScript;
+  if (!sc) return;
+  var root = sc.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.perimeter.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'pe_' + Math.random().toString(36).slice(2, 8);
+  var GX = 20, GY = 20, GW = 280, GH = 260, STEP = 20;
+  var COLS = GW / STEP, ROWS = GH / STEP;
+  var pts = []; // [{gx, gy}] in grid coords (0-based)
+  var dragIdx = -1, dragOff = null;
+  var REMOVE_R = 8;
+
+  function css(v, fb) {
+    var s = getComputedStyle(root).getPropertyValue(v).trim();
+    return s || fb;
+  }
+
+  function gx2px(gx) { return GX + gx * STEP; }
+  function gy2px(gy) { return GY + gy * STEP; }
+
+  function snapGrid(px, py) {
+    var gx = Math.round((px - GX) / STEP);
+    var gy = Math.round((py - GY) / STEP);
+    gx = Math.max(0, Math.min(COLS, gx));
+    gy = Math.max(0, Math.min(ROWS, gy));
+    return { gx: gx, gy: gy };
+  }
+
+  function dist(a, b) {
+    var dx = a.gx - b.gx, dy = a.gy - b.gy;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function sideLen(a, b) {
+    var d = dist(a, b);
+    return Math.round(d * 10) / 10;
+  }
+
+  function perimeter() {
+    if (pts.length < 2) return 0;
+    var sum = 0;
+    for (var i = 0; i < pts.length; i++) {
+      var j = (i + 1) % pts.length;
+      sum += dist(pts[i], pts[j]);
+    }
+    return Math.round(sum * 10) / 10;
+  }
+
+  function centroid() {
+    if (!pts.length) return { x: 160, y: 150 };
+    var sx = 0, sy = 0;
+    for (var i = 0; i < pts.length; i++) { sx += gx2px(pts[i].gx); sy += gy2px(pts[i].gy); }
+    return { x: sx / pts.length, y: sy / pts.length };
+  }
+
+  function emitEvt(name) {
+    var arr = pts.map(function(p) { return [p.gx, p.gy]; });
+    root.dispatchEvent(new CustomEvent(name, {
+      bubbles: true, composed: true,
+      detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust',
+        values: { points: arr, perimeter: perimeter(), sides: pts.length } }
+    }));
+  }
+
+  function render() {
+    var gc = css('--cmp-grid', '#E0E0E0');
+    var sc = css('--cmp-shape', '#1E88E5');
+    var mc = css('--cmp-measure', '#F44336');
+    var h = '';
+
+    h += '<rect width="320" height="320" fill="#FAFAFA" rx="4"/>';
+
+    // grid dots
+    for (var r = 0; r <= ROWS; r++) {
+      for (var c = 0; c <= COLS; c++) {
+        h += '<circle cx="' + gx2px(c) + '" cy="' + gy2px(r) + '" r="1.5" fill="' + gc + '"/>';
+      }
+    }
+
+    var n = pts.length;
+    var closed = n >= 3;
+
+    // polygon fill
+    if (closed) {
+      var pStr = '';
+      for (var i = 0; i < n; i++) {
+        pStr += (i ? ' ' : '') + gx2px(pts[i].gx) + ',' + gy2px(pts[i].gy);
+      }
+      h += '<polygon points="' + pStr + '" fill="' + sc + '" fill-opacity="0.12" stroke="none"/>';
+    }
+
+    // edges + labels
+    var cx = centroid();
+    if (n >= 2) {
+      var edges = closed ? n : n - 1;
+      for (var i = 0; i < edges; i++) {
+        var j = (i + 1) % n;
+        var x1 = gx2px(pts[i].gx), y1 = gy2px(pts[i].gy);
+        var x2 = gx2px(pts[j].gx), y2 = gy2px(pts[j].gy);
+        h += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="' + sc + '" stroke-width="2" stroke-linecap="round"/>';
+
+        // side length label at midpoint, offset outward from centroid
+        var mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+        var dx = mx - cx.x, dy = my - cx.y;
+        var dl = Math.sqrt(dx * dx + dy * dy) || 1;
+        var off = 10;
+        var lx = mx + dx / dl * off, ly = my + dy / dl * off;
+        var len = sideLen(pts[i], pts[j]);
+        h += '<text x="' + lx.toFixed(1) + '" y="' + (ly + 3).toFixed(1) + '" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="10" font-weight="bold" fill="' + mc + '">' + len + '</text>';
+      }
+    }
+
+    // vertices
+    for (var i = 0; i < n; i++) {
+      var vx = gx2px(pts[i].gx), vy = gy2px(pts[i].gy);
+      h += '<circle class="pe__vertex" data-vi="' + i + '" cx="' + vx + '" cy="' + vy + '" r="5" fill="' + sc + '" stroke="#fff" stroke-width="1.5"/>';
+    }
+
+    // bottom display
+    var peri = perimeter();
+    var pillW = 130, pillH = 20, pillX = 30, pillY = 293;
+    h += '<rect x="' + pillX + '" y="' + pillY + '" width="' + pillW + '" height="' + pillH + '" rx="10" fill="#37474F"/>';
+    h += '<text x="' + (pillX + pillW / 2) + '" y="' + (pillY + 14) + '" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="11" fill="#fff">周长 = ' + peri + ' 单位</text>';
+
+    var sideX = 200, sideY = 293;
+    h += '<rect x="' + sideX + '" y="' + sideY + '" width="' + 90 + '" height="' + pillH + '" rx="10" fill="#37474F"/>';
+    h += '<text x="' + (sideX + 45) + '" y="' + (sideY + 14) + '" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="11" fill="#fff">边数: ' + n + '</text>';
+
+    svg.innerHTML = h;
+  }
+
+  function svgPt(ex, ey) {
+    var pt = svg.createSVGPoint();
+    pt.x = ex; pt.y = ey;
+    var ctm = svg.getScreenCTM();
+    return ctm ? pt.matrixTransform(ctm.inverse()) : null;
+  }
+
+  function findVertex(px, py) {
+    for (var i = 0; i < pts.length; i++) {
+      var vx = gx2px(pts[i].gx), vy = gy2px(pts[i].gy);
+      var dx = px - vx, dy = py - vy;
+      if (Math.sqrt(dx * dx + dy * dy) <= REMOVE_R) return i;
+    }
+    return -1;
+  }
+
+  var pointerDown = false, moved = false, downPt = null;
+
+  svg.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    var p = svgPt(e.clientX, e.clientY);
+    if (!p) return;
+    pointerDown = true; moved = false;
+    downPt = p;
+
+    var vi = findVertex(p.x, p.y);
+    if (vi >= 0) {
+      dragIdx = vi;
+      svg.setPointerCapture(e.pointerId);
+      return;
+    }
+  });
+
+  svg.addEventListener('pointermove', function(e) {
+    if (!pointerDown) return;
+    e.preventDefault();
+    var p = svgPt(e.clientX, e.clientY);
+    if (!p) return;
+
+    if (dragIdx >= 0) {
+      moved = true;
+      var s = snapGrid(p.x, p.y);
+      pts[dragIdx] = s;
+      render();
+      emitEvt('cmp:change');
+    }
+  });
+
+  svg.addEventListener('pointerup', function(e) {
+    if (!pointerDown) return;
+    pointerDown = false;
+    var p = svgPt(e.clientX, e.clientY);
+
+    if (dragIdx >= 0) {
+      if (!moved) {
+        // click on vertex without drag = remove
+        pts.splice(dragIdx, 1);
+      } else {
+        if (p) {
+          var s = snapGrid(p.x, p.y);
+          pts[dragIdx] = s;
+        }
+      }
+      dragIdx = -1;
+      render();
+      emitEvt('cmp:changeend');
+      try { svg.releasePointerCapture(e.pointerId); } catch(ex) {}
+      return;
+    }
+
+    // click on empty grid = add vertex
+    if (p) {
+      var s = snapGrid(p.x, p.y);
+      if (s.gx >= 0 && s.gx <= COLS && s.gy >= 0 && s.gy <= ROWS) {
+        pts.push(s);
+        render();
+        emitEvt('cmp:changeend');
+      }
+    }
+  });
+
+  svg.addEventListener('pointercancel', function() {
+    pointerDown = false; dragIdx = -1;
+  });
+
+  render();
+})();
+</script>

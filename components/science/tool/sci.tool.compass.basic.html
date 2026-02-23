@@ -1,0 +1,328 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.tool.compass.basic",
+  "name": "指南针",
+  "nameEn": "Compass",
+  "category": "science/tool",
+  "version": "1.0.0",
+  "viewport": { "w": 200, "h": 200 },
+  "tags": ["compass", "direction", "magnet", "navigation", "science", "primary"],
+  "props": [
+    { "key": "size",             "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件尺寸" },
+    { "key": "rotation",         "type": "number",     "default": 0,   "min": -180, "max": 180, "desc": "磁针旋转角度(°)" },
+    { "key": "rimColor",         "type": "color",      "default": "#b0bec5", "desc": "外圈金属色" },
+    { "key": "dialColor",        "type": "color",      "default": "#fafafa", "desc": "表盘底色" },
+    { "key": "needleNorthColor", "type": "color",      "default": "#e53935", "desc": "磁针北极颜色" },
+    { "key": "needleSouthColor", "type": "color",      "default": "#cfd8dc", "desc": "磁针南极颜色" },
+    { "key": "markColor",        "type": "color",      "default": "#37474f", "desc": "刻度/文字颜色" }
+  ],
+  "cssVars": {
+    "size":             "--cmp-size",
+    "rotation":         "--cmp-rotation",
+    "rimColor":         "--cmp-rim-color",
+    "dialColor":        "--cmp-dial-color",
+    "needleNorthColor": "--cmp-needle-north",
+    "needleSouthColor": "--cmp-needle-south",
+    "markColor":        "--cmp-mark-color"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="sci.tool.compass.basic" role="img" aria-label="指南针">
+  <svg class="cp__svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 外圈金属渐变 (线性，模拟金属光泽) -->
+      <linearGradient class="cp__rim-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%"   stop-color="#f5f5f5"/>
+        <stop offset="18%"  stop-color="var(--cmp-rim-color,#b0bec5)"/>
+        <stop offset="45%"  stop-color="#e0e0e0"/>
+        <stop offset="55%"  stop-color="var(--cmp-rim-color,#b0bec5)"/>
+        <stop offset="82%"  stop-color="#90a4ae"/>
+        <stop offset="100%" stop-color="#cfd8dc"/>
+      </linearGradient>
+
+      <!-- 外圈内侧暗边 -->
+      <radialGradient class="cp__rim-inner" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="88%" stop-color="transparent"/>
+        <stop offset="96%" stop-color="rgba(0,0,0,0.08)"/>
+        <stop offset="100%" stop-color="rgba(0,0,0,0.15)"/>
+      </radialGradient>
+
+      <!-- 表盘渐变 -->
+      <radialGradient class="cp__dial-grad" cx="0.45" cy="0.4" r="0.6">
+        <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.6"/>
+        <stop offset="50%" stop-color="var(--cmp-dial-color,#fafafa)"/>
+        <stop offset="100%" stop-color="var(--cmp-dial-color,#fafafa)" stop-opacity="0.9"/>
+      </radialGradient>
+
+      <!-- 北极磁针渐变 -->
+      <linearGradient class="cp__n-grad" x1="0.5" y1="1" x2="0.5" y2="0">
+        <stop offset="0%"  stop-color="var(--cmp-needle-north,#e53935)" stop-opacity="0.8"/>
+        <stop offset="40%" stop-color="var(--cmp-needle-north,#e53935)"/>
+        <stop offset="100%" stop-color="var(--cmp-needle-north,#e53935)" stop-opacity="0.9"/>
+      </linearGradient>
+
+      <!-- 南极磁针渐变 -->
+      <linearGradient class="cp__s-grad" x1="0.5" y1="0" x2="0.5" y2="1">
+        <stop offset="0%"  stop-color="var(--cmp-needle-south,#cfd8dc)" stop-opacity="0.85"/>
+        <stop offset="40%" stop-color="var(--cmp-needle-south,#cfd8dc)"/>
+        <stop offset="100%" stop-color="#eceff1" stop-opacity="0.9"/>
+      </linearGradient>
+
+      <!-- 玻璃高光渐变 -->
+      <radialGradient class="cp__glass-grad" cx="0.35" cy="0.3" r="0.65">
+        <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.18"/>
+        <stop offset="50%" stop-color="#ffffff" stop-opacity="0.04"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+
+      <!-- 投影滤镜 -->
+      <filter class="cp__shadow-filter" x="-10%" y="-10%" width="130%" height="130%">
+        <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.22"/>
+      </filter>
+    </defs>
+
+    <!-- ===== 外层投影 ===== -->
+    <circle cx="100" cy="100" r="94" fill="none" class="cp__shadow-circle"/>
+
+    <!-- ===== 外圈金属边框 ===== -->
+    <circle class="cp__rim-outer" cx="100" cy="100" r="96"
+            stroke="#78909c" stroke-width="0.5"/>
+    <circle class="cp__rim-body" cx="100" cy="100" r="94"
+            stroke="#607d8b" stroke-width="1"/>
+    <!-- 金属边框内侧高光 -->
+    <circle cx="100" cy="100" r="92" fill="none"
+            stroke="#ffffff" stroke-width="0.6" opacity="0.3"/>
+    <!-- 内侧暗边 -->
+    <circle class="cp__rim-inner-ring" cx="100" cy="100" r="94" fill="none"/>
+
+    <!-- ===== 表盘 ===== -->
+    <circle class="cp__dial" cx="100" cy="100" r="86"
+            stroke="var(--cmp-mark-color,#37474f)" stroke-width="0.4" opacity="0.3"/>
+
+    <!-- 表盘内圈装饰 -->
+    <circle cx="100" cy="100" r="78" fill="none"
+            stroke="var(--cmp-mark-color,#37474f)" stroke-width="0.3" opacity="0.15"/>
+    <circle cx="100" cy="100" r="52" fill="none"
+            stroke="var(--cmp-mark-color,#37474f)" stroke-width="0.25" opacity="0.12"/>
+
+    <!-- ===== 度数刻度 (每30°) ===== -->
+    <g class="cp__ticks" stroke="var(--cmp-mark-color,#37474f)" stroke-linecap="round">
+      <!-- 0° / 360° (N) -->
+      <line x1="100" y1="16" x2="100" y2="26" stroke-width="1.8"/>
+      <!-- 30° -->
+      <line x1="142" y1="23.6" x2="138.7" y2="32.8" stroke-width="0.8" opacity="0.6"/>
+      <!-- 60° -->
+      <line x1="176.4" y1="58" x2="167.2" y2="61.3" stroke-width="0.8" opacity="0.6"/>
+      <!-- 90° (E) -->
+      <line x1="184" y1="100" x2="174" y2="100" stroke-width="1.8"/>
+      <!-- 120° -->
+      <line x1="176.4" y1="142" x2="167.2" y2="138.7" stroke-width="0.8" opacity="0.6"/>
+      <!-- 150° -->
+      <line x1="142" y1="176.4" x2="138.7" y2="167.2" stroke-width="0.8" opacity="0.6"/>
+      <!-- 180° (S) -->
+      <line x1="100" y1="184" x2="100" y2="174" stroke-width="1.8"/>
+      <!-- 210° -->
+      <line x1="58" y1="176.4" x2="61.3" y2="167.2" stroke-width="0.8" opacity="0.6"/>
+      <!-- 240° -->
+      <line x1="23.6" y1="142" x2="32.8" y2="138.7" stroke-width="0.8" opacity="0.6"/>
+      <!-- 270° (W) -->
+      <line x1="16" y1="100" x2="26" y2="100" stroke-width="1.8"/>
+      <!-- 300° -->
+      <line x1="23.6" y1="58" x2="32.8" y2="61.3" stroke-width="0.8" opacity="0.6"/>
+      <!-- 330° -->
+      <line x1="58" y1="23.6" x2="61.3" y2="32.8" stroke-width="0.8" opacity="0.6"/>
+    </g>
+
+    <!-- ===== 度数标注 (每30°) ===== -->
+    <g class="cp__degree-labels" fill="var(--cmp-mark-color,#37474f)" opacity="0.4"
+       font-family="'Helvetica Neue',Arial,sans-serif" font-size="7" text-anchor="middle">
+      <text x="100" y="36" font-size="0" opacity="0"/><!-- N位置留给方位字 -->
+      <text x="139.5" y="39">30</text>
+      <text x="166" y="65">60</text>
+      <!-- E位置留给方位字 -->
+      <text x="166" y="141">120</text>
+      <text x="139.5" y="167">150</text>
+      <!-- S位置留给方位字 -->
+      <text x="60.5" y="167">210</text>
+      <text x="34" y="141">240</text>
+      <!-- W位置留给方位字 -->
+      <text x="34" y="65">300</text>
+      <text x="60.5" y="39">330</text>
+    </g>
+
+    <!-- ===== 方位标签 (中英双语) ===== -->
+    <g font-family="'Helvetica Neue',Arial,sans-serif" font-weight="700" text-anchor="middle">
+      <!-- 北 N (红色突出) -->
+      <text x="100" y="35" font-size="11" fill="var(--cmp-needle-north,#e53935)">N</text>
+      <text x="100" y="43.5" font-size="7" fill="var(--cmp-needle-north,#e53935)" font-weight="400" opacity="0.7">北</text>
+      <!-- 东 E -->
+      <text x="170" y="103" font-size="10" fill="var(--cmp-mark-color,#37474f)">E</text>
+      <text x="170" y="112" font-size="7" fill="var(--cmp-mark-color,#37474f)" font-weight="400" opacity="0.6">东</text>
+      <!-- 南 S -->
+      <text x="100" y="173" font-size="10" fill="var(--cmp-mark-color,#37474f)">S</text>
+      <text x="100" y="181.5" font-size="7" fill="var(--cmp-mark-color,#37474f)" font-weight="400" opacity="0.6">南</text>
+      <!-- 西 W -->
+      <text x="30" y="103" font-size="10" fill="var(--cmp-mark-color,#37474f)">W</text>
+      <text x="30" y="112" font-size="7" fill="var(--cmp-mark-color,#37474f)" font-weight="400" opacity="0.6">西</text>
+    </g>
+
+    <!-- ===== 罗盘玫瑰装饰 (八方位细线) ===== -->
+    <g stroke="var(--cmp-mark-color,#37474f)" stroke-width="0.3" opacity="0.18">
+      <!-- NE -->
+      <line x1="100" y1="100" x2="148" y2="52"/>
+      <!-- SE -->
+      <line x1="100" y1="100" x2="148" y2="148"/>
+      <!-- SW -->
+      <line x1="100" y1="100" x2="52" y2="148"/>
+      <!-- NW -->
+      <line x1="100" y1="100" x2="52" y2="52"/>
+    </g>
+
+    <!-- ===== 磁针组 (可旋转) ===== -->
+    <g class="cp__needle-group">
+      <!-- 磁针阴影 -->
+      <polygon points="100,38 94,100 100,106 106,100"
+               fill="rgba(0,0,0,0.08)" transform="translate(1.5,2)"/>
+      <polygon points="100,162 106,100 100,94 94,100"
+               fill="rgba(0,0,0,0.05)" transform="translate(1.5,2)"/>
+
+      <!-- 北极 (红色，尖端朝上) -->
+      <polygon class="cp__n-half"
+               points="100,38 93,100 100,106 107,100"
+               stroke="var(--cmp-mark-color,#37474f)" stroke-width="0.8"
+               stroke-linejoin="round"/>
+      <!-- 北极高光 -->
+      <line x1="98" y1="52" x2="96" y2="88"
+            stroke="#ffffff" stroke-width="1.5" opacity="0.3" stroke-linecap="round"/>
+
+      <!-- 南极 (银白色，尖端朝下) -->
+      <polygon class="cp__s-half"
+               points="100,162 107,100 100,94 93,100"
+               stroke="var(--cmp-mark-color,#37474f)" stroke-width="0.8"
+               stroke-linejoin="round"/>
+      <!-- 南极高光 -->
+      <line x1="98" y1="148" x2="96" y2="112"
+            stroke="#ffffff" stroke-width="1.2" opacity="0.2" stroke-linecap="round"/>
+
+      <!-- 中心轴 (金属质感) -->
+      <circle cx="100" cy="100" r="5.5"
+              fill="#bdbdbd" stroke="var(--cmp-mark-color,#37474f)" stroke-width="0.8"/>
+      <circle cx="100" cy="100" r="3.5"
+              fill="#e0e0e0" stroke="none"/>
+      <circle cx="99" cy="99" r="1.8"
+              fill="#ffffff" opacity="0.5"/>
+    </g>
+
+    <!-- ===== 玻璃盖 (最上层) ===== -->
+    <circle class="cp__glass" cx="100" cy="100" r="86" fill="none"/>
+    <!-- 玻璃高光弧 (左上方椭圆) -->
+    <ellipse cx="78" cy="72" rx="36" ry="22"
+             fill="#ffffff" opacity="0.09"
+             transform="rotate(-25 78 72)"/>
+    <!-- 玻璃边缘高光 -->
+    <path d="M40,60 Q55,30 100,20" fill="none"
+          stroke="#ffffff" stroke-width="1.5" opacity="0.12" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.tool.compass.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── 唯一 ID（多实例安全） ── */
+  var uid = 'cp_' + Math.random().toString(36).slice(2, 8);
+
+  /* 为 defs 中的 class-based 渐变/滤镜分配唯一 id */
+  var gradMap = {
+    '.cp__rim-grad':     uid + '_rg',
+    '.cp__rim-inner':    uid + '_ri',
+    '.cp__dial-grad':    uid + '_dg',
+    '.cp__n-grad':       uid + '_ng',
+    '.cp__s-grad':       uid + '_sg',
+    '.cp__glass-grad':   uid + '_gg',
+    '.cp__shadow-filter': uid + '_sf'
+  };
+
+  for (var sel in gradMap) {
+    var el = svg.querySelector(sel);
+    if (el) el.setAttribute('id', gradMap[sel]);
+  }
+
+  /* 绑定 fill / filter 引用 */
+  var rimOuter = root.querySelector('.cp__rim-outer');
+  var rimBody  = root.querySelector('.cp__rim-body');
+  var rimInner = root.querySelector('.cp__rim-inner-ring');
+  var dial     = root.querySelector('.cp__dial');
+  var nHalf    = root.querySelector('.cp__n-half');
+  var sHalf    = root.querySelector('.cp__s-half');
+  var glass    = root.querySelector('.cp__glass');
+  var shadow   = root.querySelector('.cp__shadow-circle');
+
+  if (rimBody)  rimBody.setAttribute('fill', 'url(#' + gradMap['.cp__rim-grad'] + ')');
+  if (rimInner) rimInner.setAttribute('fill', 'url(#' + gradMap['.cp__rim-inner'] + ')');
+  if (dial)     dial.setAttribute('fill', 'url(#' + gradMap['.cp__dial-grad'] + ')');
+  if (nHalf)    nHalf.setAttribute('fill', 'url(#' + gradMap['.cp__n-grad'] + ')');
+  if (sHalf)    sHalf.setAttribute('fill', 'url(#' + gradMap['.cp__s-grad'] + ')');
+  if (glass)    glass.setAttribute('fill', 'url(#' + gradMap['.cp__glass-grad'] + ')');
+  if (shadow)   shadow.setAttribute('filter', 'url(#' + gradMap['.cp__shadow-filter'] + ')');
+
+  /* ── 读取 Props ── */
+  function parseProps() {
+    var raw = root.getAttribute('data-props');
+    if (!raw) return {};
+    try { var o = JSON.parse(raw); return (o && typeof o === 'object') ? o : {}; } catch(e) { return {}; }
+  }
+
+  function readNum(props, key, cssVar, fallback) {
+    if (props[key] !== undefined && isFinite(Number(props[key]))) return Number(props[key]);
+    var v = getComputedStyle(root).getPropertyValue(cssVar).trim();
+    var n = parseFloat(v);
+    return isFinite(n) ? n : fallback;
+  }
+
+  /* ── 渲染 ── */
+  var needleG = root.querySelector('.cp__needle-group');
+
+  function render() {
+    var props = parseProps();
+    var rotation = readNum(props, 'rotation', '--cmp-rotation', 0);
+    rotation = Math.max(-180, Math.min(180, rotation));
+
+    if (needleG) {
+      needleG.setAttribute('transform', 'rotate(' + rotation + ' 100 100)');
+    }
+
+    root.setAttribute('aria-label', '指南针' + (rotation !== 0 ? '，磁针偏转 ' + rotation + '°' : ''));
+  }
+
+  render();
+
+  /* 监听属性变化以支持动态更新 */
+  var observer = new MutationObserver(function() { render(); });
+  observer.observe(root, { attributes: true, attributeFilter: ['style', 'data-props'] });
+  window.addEventListener('beforeunload', function() { observer.disconnect(); }, { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="sci.tool.compass.basic"] {
+  --_size: var(--cmp-size, 200px);
+  display: inline-block;
+  width: var(--_size);
+  height: var(--_size);
+  user-select: none;
+}
+
+.cmp[data-cmp-id="sci.tool.compass.basic"] .cp__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+</style>

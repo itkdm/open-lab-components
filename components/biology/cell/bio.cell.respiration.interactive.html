@@ -1,0 +1,281 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.cell.respiration.interactive",
+  "name": "细胞呼吸（交互式）",
+  "nameEn": "Cellular Respiration (Interactive)",
+  "category": "biology/cell",
+  "version": "1.0.0",
+  "viewport": { "w": 600, "h": 540 },
+  "tags": ["biology","cell","respiration","ATP","glycolysis","krebs","mitochondria","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 540, "min": 300, "max": 700, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "glucoseColor",   "type": "color",  "default": "#ff9800", "desc": "葡萄糖颜色" },
+    { "key": "atpColor",       "type": "color",  "default": "#66bb6a", "desc": "ATP颜色" },
+    { "key": "o2Color",        "type": "color",  "default": "#42a5f5", "desc": "O₂颜色" },
+    { "key": "co2Color",       "type": "color",  "default": "#78909c", "desc": "CO₂颜色" },
+    { "key": "stage",          "type": "enum",   "default": "all", "enum": ["all","glycolysis","krebs","etc"], "desc": "显示阶段" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "glucoseColor": "--cmp-glucose", "atpColor": "--cmp-atp", "o2Color": "--cmp-o2", "co2Color": "--cmp-co2", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "stage", "values": { "stage": "string", "atpCount": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.cell.respiration.interactive" role="img" aria-label="细胞呼吸（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.cell.respiration.interactive"]{
+      --h:var(--cmp-size,540px);display:inline-block;
+      width:calc(var(--h)*600/540);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(102,187,106,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.cell.respiration.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="bio.cell.respiration.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 600 540" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="cr__arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="#78909c"/></marker>
+      <marker id="cr__arrO" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="#ef6c00"/></marker>
+      <linearGradient id="cr__mitoG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#e8f5e9"/><stop offset="1" stop-color="#a5d6a7"/>
+      </linearGradient>
+      <linearGradient id="cr__cytoG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#fff8e1"/><stop offset="1" stop-color="#ffecb3"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ══════ 标题 ══════ -->
+    <text x="300" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">细胞呼吸</text>
+    <text x="300" y="38" text-anchor="middle" font-size="9" fill="#78909c">C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + 约30~32 ATP</text>
+
+    <!-- ══════ 细胞质基质（只包含糖酵解） ══════ -->
+    <rect x="15" y="48" width="195" height="165" rx="12" fill="url(#cr__cytoG)" stroke="#ffcc80" stroke-width="1.5"/>
+    <text x="112" y="65" text-anchor="middle" font-size="10" font-weight="600" fill="#e65100">细胞质基质</text>
+
+    <!-- ══════ 阶段1: 糖酵解 ══════ -->
+    <g class="cr__glycolysis">
+      <rect x="28" y="75" width="170" height="125" rx="8" fill="rgba(255,255,255,0.75)" stroke="#ff9800" stroke-width="1.5"/>
+      <text x="113" y="93" text-anchor="middle" font-size="11" font-weight="700" fill="#e65100">① 糖酵解</text>
+      <text x="113" y="107" text-anchor="middle" font-size="8" fill="#999">（细胞质基质）</text>
+
+      <!-- 葡萄糖 -->
+      <circle class="cr__glucose" cx="56" cy="140" r="12" fill="var(--cmp-glucose,#ff9800)" opacity="0.85"/>
+      <text x="56" y="144" text-anchor="middle" font-size="8" fill="#fff" font-weight="700">G</text>
+      <text x="56" y="160" text-anchor="middle" font-size="7" fill="#e65100">葡萄糖</text>
+
+      <line x1="73" y1="140" x2="115" y2="140" stroke="#ef6c00" stroke-width="1.2" marker-end="url(#cr__arrO)"/>
+
+      <!-- 丙酮酸 ×2 -->
+      <circle cx="140" cy="135" r="8" fill="#ef6c00" opacity="0.75"/>
+      <text x="140" y="138" text-anchor="middle" font-size="6" fill="#fff" font-weight="600">P</text>
+      <circle cx="160" cy="135" r="8" fill="#ef6c00" opacity="0.75"/>
+      <text x="160" y="138" text-anchor="middle" font-size="6" fill="#fff" font-weight="600">P</text>
+      <text x="150" y="155" text-anchor="middle" font-size="7" fill="#bf360c">丙酮酸 ×2</text>
+
+      <text x="113" y="178" text-anchor="middle" font-size="8" fill="#2e7d32" font-weight="600">净产 2 ATP + 2 NADH</text>
+    </g>
+
+    <!-- ══════ 连接: 丙酮酸进入线粒体 ══════ -->
+    <path d="M170,200 Q195,225 230,230" fill="none" stroke="#78909c" stroke-width="1.2" marker-end="url(#cr__arr)" stroke-dasharray="4,2"/>
+    <text x="168" y="228" font-size="7" fill="#78909c">丙酮酸</text>
+    <text x="168" y="238" font-size="7" fill="#78909c">进入线粒体</text>
+
+    <!-- ══════ 线粒体 ══════ -->
+    <!--
+      线粒体中心 cx=400, cy=290
+      外膜 rx=180, ry=180 → 上边 y=110, 下边 y=470
+      内膜 rx=155, ry=155 → 上边 y=135, 下边 y=445
+      内部内容需要全部在 y=145 ~ y=435 之间
+    -->
+    <!-- 外膜 -->
+    <ellipse cx="400" cy="290" rx="180" ry="180" fill="url(#cr__mitoG)" stroke="#4caf50" stroke-width="2"/>
+    <!-- 内膜 -->
+    <ellipse cx="400" cy="290" rx="155" ry="155" fill="rgba(200,230,201,0.3)" stroke="#388e3c" stroke-width="1.3"/>
+    <!-- 嵴 -->
+    <path d="M270,240 Q292,228 296,250 Q300,272 278,278" fill="none" stroke="#388e3c" stroke-width="1.2" opacity="0.3"/>
+    <path d="M265,320 Q287,310 290,335 Q293,355 272,358" fill="none" stroke="#388e3c" stroke-width="1.2" opacity="0.3"/>
+    <path d="M515,230 Q496,244 500,268 Q504,288 525,283" fill="none" stroke="#388e3c" stroke-width="1.2" opacity="0.3"/>
+    <path d="M525,320 Q505,332 508,355 Q510,373 530,368" fill="none" stroke="#388e3c" stroke-width="1.2" opacity="0.3"/>
+    <!-- 膜标注 -->
+    <text x="400" y="124" text-anchor="middle" font-size="11" font-weight="600" fill="#2e7d32">线粒体</text>
+    <line x1="458" y1="128" x2="535" y2="138" stroke="#4caf50" stroke-width="0.7" stroke-dasharray="2,2"/>
+    <text x="540" y="142" font-size="8" fill="#4caf50">外膜</text>
+    <line x1="445" y1="142" x2="515" y2="155" stroke="#388e3c" stroke-width="0.7" stroke-dasharray="2,2"/>
+    <text x="520" y="159" font-size="8" fill="#388e3c">内膜(嵴)</text>
+
+    <!-- ══════ 丙酮酸氧化脱羧（线粒体基质内） ══════ -->
+    <g class="cr__pyruvateOx">
+      <rect x="300" y="160" width="170" height="58" rx="8" fill="rgba(255,255,255,0.6)" stroke="#ff8f00" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="385" y="178" text-anchor="middle" font-size="9" font-weight="600" fill="#e65100">丙酮酸氧化脱羧</text>
+
+      <circle cx="318" cy="200" r="6" fill="#ef6c00" opacity="0.7"/>
+      <text x="318" y="203" text-anchor="middle" font-size="5" fill="#fff">P</text>
+      <line x1="328" y1="200" x2="355" y2="200" stroke="#ef6c00" stroke-width="1" marker-end="url(#cr__arrO)"/>
+      <text x="418" y="203" text-anchor="middle" font-size="8" fill="#bf360c" font-weight="600">乙酰CoA ×2</text>
+      <text x="385" y="214" text-anchor="middle" font-size="7" fill="#78909c">释放 2CO₂ + 2NADH</text>
+    </g>
+
+    <!-- 连接: 丙酮酸氧化 → 柠檬酸循环 -->
+    <line x1="385" y1="220" x2="385" y2="240" stroke="#78909c" stroke-width="1" marker-end="url(#cr__arr)"/>
+
+    <!-- ══════ 阶段2: 柠檬酸循环 ══════ -->
+    <g class="cr__krebs">
+      <ellipse cx="385" cy="300" rx="72" ry="52" fill="rgba(255,255,255,0.4)" stroke="#ff9800" stroke-width="1" stroke-dasharray="4,2"/>
+      <text x="385" y="258" text-anchor="middle" font-size="10" font-weight="700" fill="#e65100">② 柠檬酸循环</text>
+      <text x="385" y="271" text-anchor="middle" font-size="7" fill="#999">（线粒体基质）</text>
+
+      <!-- 循环箭头 -->
+      <path d="M358,287 A32,25 0 1,1 358,318" fill="none" stroke="#ff9800" stroke-width="1.2" marker-end="url(#cr__arrO)" opacity="0.5"/>
+
+      <text x="385" y="305" text-anchor="middle" font-size="7" fill="#795548">6NADH + 2FADH₂</text>
+      <text x="385" y="320" text-anchor="middle" font-size="7" fill="#2e7d32" font-weight="600">2 GTP(ATP)</text>
+
+      <!-- CO₂ -->
+      <g class="cr__co2Krebs">
+        <circle cx="462" cy="288" r="6" fill="var(--cmp-co2,#78909c)" opacity="0.6"/>
+        <text x="462" y="291" text-anchor="middle" font-size="5" fill="#fff" font-weight="600">CO₂</text>
+        <text x="480" y="291" font-size="7" fill="#78909c">×4</text>
+      </g>
+    </g>
+
+    <!-- 连接: NADH/FADH₂ → 电子传递链 -->
+    <path d="M385,354 L385,370" fill="none" stroke="#7e57c2" stroke-width="1" marker-end="url(#cr__arr)"/>
+    <text x="405" y="366" font-size="7" fill="#7e57c2">NADH/FADH₂</text>
+
+    <!-- ══════ 阶段3: 氧化磷酸化 ══════ -->
+    <g class="cr__etc">
+      <rect x="295" y="375" width="190" height="60" rx="8" fill="rgba(255,255,255,0.5)" stroke="#42a5f5" stroke-width="1.5"/>
+      <text x="390" y="389" text-anchor="middle" font-size="10" font-weight="700" fill="#1565c0">③ 氧化磷酸化</text>
+      <text x="390" y="400" text-anchor="middle" font-size="7" fill="#999">（电子传递链 · 内膜）</text>
+
+      <!-- 复合体 I~IV + ATP合酶 -->
+      <g class="cr__etcChain">
+        <rect x="304" y="406" width="22" height="16" rx="3" fill="#5c6bc0" opacity="0.75"/>
+        <rect x="331" y="408" width="22" height="14" rx="3" fill="#7e57c2" opacity="0.75"/>
+        <rect x="358" y="406" width="22" height="16" rx="3" fill="#ab47bc" opacity="0.75"/>
+        <rect x="385" y="408" width="22" height="14" rx="3" fill="#ec407a" opacity="0.75"/>
+        <rect x="414" y="404" width="26" height="20" rx="3" fill="#43a047" opacity="0.8"/>
+        <text x="315" y="417" text-anchor="middle" font-size="6" fill="#fff" font-weight="600">Ⅰ</text>
+        <text x="342" y="418" text-anchor="middle" font-size="6" fill="#fff" font-weight="600">Ⅱ</text>
+        <text x="369" y="417" text-anchor="middle" font-size="6" fill="#fff" font-weight="600">Ⅲ</text>
+        <text x="396" y="418" text-anchor="middle" font-size="6" fill="#fff" font-weight="600">Ⅳ</text>
+        <text x="427" y="416" text-anchor="middle" font-size="5" fill="#fff" font-weight="600">ATP</text>
+        <text x="427" y="422" text-anchor="middle" font-size="5" fill="#fff" font-weight="600">合酶</text>
+      </g>
+
+      <!-- 电子动画点 -->
+      <circle class="cr__electron" cx="315" cy="404" r="3" fill="#ffeb3b"/>
+
+      <!-- O₂ 输入 -->
+      <circle cx="455" cy="414" r="7" fill="var(--cmp-o2,#42a5f5)" opacity="0.7"/>
+      <text x="455" y="417" text-anchor="middle" font-size="6" fill="#fff" font-weight="600">O₂</text>
+      <!-- → H₂O -->
+      <text x="472" y="428" font-size="6" fill="#42a5f5">→H₂O</text>
+
+      <!-- ATP产出 -->
+      <text x="390" y="432" text-anchor="middle" font-size="8" fill="#2e7d32" font-weight="700">→ 26~28 ATP</text>
+    </g>
+
+    <!-- ══════ ATP汇总（底部，线粒体下方） ══════ -->
+    <g class="cr__totalATP">
+      <rect x="130" y="485" width="340" height="42" rx="10" fill="var(--cmp-atp,#66bb6a)" opacity="0.9"/>
+      <text x="300" y="502" text-anchor="middle" font-size="8" fill="#fff">糖酵解 2ATP · 柠檬酸循环 2ATP · 电子传递链 26~28ATP</text>
+      <text x="300" y="519" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">≈ 30~32 ATP / 葡萄糖</text>
+    </g>
+
+    <!-- 动画粒子层 -->
+    <g class="cr__animParticles"></g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.cell.respiration.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+
+    var electron=root.querySelector('.cr__electron');
+    var animG=root.querySelector('.cr__animParticles');
+
+    var etcPos=[
+      {x:315,y:412},{x:342,y:414},{x:369,y:412},{x:396,y:414},{x:427,y:412}
+    ];
+
+    var floaters=[];
+    function spawnFloater(type,sx,sy,ex,ey){
+      var e=document.createElementNS(NS,'circle');
+      e.setAttribute('r',4);e.setAttribute('fill','var(--cmp-co2,#78909c)');e.setAttribute('opacity','0.7');
+      animG.appendChild(e);
+      floaters.push({el:e,sx:sx,sy:sy,ex:ex,ey:ey,t:0,dur:2.5+Math.random()*1.5});
+    }
+
+    var animId=0,lastT=0,time=0,spawnTimer=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04);
+      lastT=t;
+      time+=dt*speed;
+      spawnTimer+=dt*speed;
+
+      /* 电子沿传递链移动 */
+      var idx=Math.floor((time*1.5)%5);
+      var frac=(time*1.5)%1;
+      var nxt=(idx+1)%5;
+      electron.setAttribute('cx',etcPos[idx].x+(etcPos[nxt].x-etcPos[idx].x)*frac);
+      electron.setAttribute('cy',etcPos[idx].y+(etcPos[nxt].y-etcPos[idx].y)*frac);
+
+      /* 葡萄糖脉冲 */
+      var ge=root.querySelector('.cr__glucose');
+      if(ge)ge.setAttribute('opacity',0.7+0.3*Math.sin(time*2.5));
+
+      /* CO₂ 粒子 */
+      if(spawnTimer>2.2){
+        spawnTimer=0;
+        spawnFloater('co2',462,288,470+Math.random()*20-10,200+Math.random()*30);
+      }
+
+      for(var i=floaters.length-1;i>=0;i--){
+        var f=floaters[i];
+        f.t+=dt*speed;
+        var prog=Math.min(1,f.t/f.dur);
+        var ease=prog<0.5?2*prog*prog:1-Math.pow(-2*prog+2,2)/2;
+        f.el.setAttribute('cx',f.sx+(f.ex-f.sx)*ease);
+        f.el.setAttribute('cy',f.sy+(f.ey-f.sy)*ease);
+        f.el.setAttribute('opacity',0.7*(1-prog));
+        if(prog>=1){animG.removeChild(f.el);floaters.splice(i,1);}
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

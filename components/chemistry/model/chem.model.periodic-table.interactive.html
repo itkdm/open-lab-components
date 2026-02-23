@@ -1,0 +1,363 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.model.periodic-table.interactive",
+  "name": "元素周期表（交互式）",
+  "nameEn": "Periodic Table (Interactive)",
+  "category": "chemistry/model",
+  "version": "1.0.0",
+  "viewport": { "w": 720, "h": 420 },
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 420, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 0.5, "min": 0.2, "max": 2, "desc": "描边粗细" },
+    { "key": "highlightGroup", "type": "enum",   "default": "all", "enum": ["all","alkali","alkaline","transition","metalloid","nonmetal","noble","lanthanide","actinide","other-metal","post-transition"], "desc": "高亮元素族" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标签" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["chemistry","periodic-table","elements","interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "click", "values": { "element": "string — 元素符号", "atomicNumber": "number — 原子序数" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.model.periodic-table.interactive" role="img" aria-label="元素周期表（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.model.periodic-table.interactive"]{
+      --h:var(--cmp-size,420px);display:inline-block;width:calc(var(--h)*720/420);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,214,102,calc(.8*var(--cmp-glow,0))));
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="chem.model.periodic-table.interactive"] svg{width:100%;height:100%;display:block}
+    .cmp[data-cmp-id="chem.model.periodic-table.interactive"] .pt__cell{cursor:pointer;transition:opacity .15s}
+    .cmp[data-cmp-id="chem.model.periodic-table.interactive"] .pt__cell:hover .pt__bg{fill-opacity:0.55;stroke-width:1.5}
+    .cmp[data-cmp-id="chem.model.periodic-table.interactive"] .pt__dimmed{opacity:0.25}
+    .cmp[data-cmp-id="chem.model.periodic-table.interactive"] .pt__selected .pt__bg{fill-opacity:0.7;stroke-width:2}
+  </style>
+  <svg viewBox="0 0 720 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'chem.model.periodic-table.interactive') return;
+  var svg = root.querySelector('svg'); if (!svg) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  var uid = 'pt_' + Math.random().toString(36).slice(2, 8) + '_';
+
+  var P = {};
+  try { var r = root.getAttribute('data-props'); if (r) { var o = JSON.parse(r); if (o && typeof o === 'object') P = o; } } catch (e) {}
+
+  var highlightGroup = String(P.highlightGroup || 'all');
+  var showLabels = (P.showLabels !== 'off');
+  var strokeWidth = Math.max(0.2, Math.min(2, Number(P.strokeWidth) || 0.5));
+
+  /* ── helpers ── */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(x, y, text, attrs, parent) {
+    var a = { x: '' + x, y: '' + y };
+    if (attrs) for (var k in attrs) a[k] = attrs[k];
+    var t = el('text', a, parent);
+    t.textContent = text;
+    return t;
+  }
+
+  /* ── group colors & names ── */
+  var GC = {
+    'alkali':     '#ef5350', 'alkaline':   '#ffa726', 'transition': '#78909c',
+    'post-transition': '#8d6e63', 'metalloid':  '#ab47bc', 'nonmetal':   '#66bb6a',
+    'noble':      '#42a5f5', 'lanthanide': '#26c6da', 'actinide':   '#ec407a',
+    'other-metal':'#8d6e63'
+  };
+  var GN = {
+    'alkali':'碱金属','alkaline':'碱土金属','transition':'过渡金属',
+    'post-transition':'后过渡金属','metalloid':'准金属','nonmetal':'非金属',
+    'noble':'稀有气体','lanthanide':'镧系','actinide':'锕系'
+  };
+
+  /* ── ALL 118 elements: [sym, zh, Z, group, col, row] ──
+     col 1-18 for main table rows 1-7; lanthanides row=9, actinides row=10 (col 3-17) */
+  var DATA = [
+    /* Period 1 */
+    ['H','氢',1,'nonmetal',1,1],['He','氦',2,'noble',18,1],
+    /* Period 2 */
+    ['Li','锂',3,'alkali',1,2],['Be','铍',4,'alkaline',2,2],
+    ['B','硼',5,'metalloid',13,2],['C','碳',6,'nonmetal',14,2],
+    ['N','氮',7,'nonmetal',15,2],['O','氧',8,'nonmetal',16,2],
+    ['F','氟',9,'nonmetal',17,2],['Ne','氖',10,'noble',18,2],
+    /* Period 3 */
+    ['Na','钠',11,'alkali',1,3],['Mg','镁',12,'alkaline',2,3],
+    ['Al','铝',13,'post-transition',13,3],['Si','硅',14,'metalloid',14,3],
+    ['P','磷',15,'nonmetal',15,3],['S','硫',16,'nonmetal',16,3],
+    ['Cl','氯',17,'nonmetal',17,3],['Ar','氩',18,'noble',18,3],
+    /* Period 4 */
+    ['K','钾',19,'alkali',1,4],['Ca','钙',20,'alkaline',2,4],
+    ['Sc','钪',21,'transition',3,4],['Ti','钛',22,'transition',4,4],
+    ['V','钒',23,'transition',5,4],['Cr','铬',24,'transition',6,4],
+    ['Mn','锰',25,'transition',7,4],['Fe','铁',26,'transition',8,4],
+    ['Co','钴',27,'transition',9,4],['Ni','镍',28,'transition',10,4],
+    ['Cu','铜',29,'transition',11,4],['Zn','锌',30,'transition',12,4],
+    ['Ga','镓',31,'post-transition',13,4],['Ge','锗',32,'metalloid',14,4],
+    ['As','砷',33,'metalloid',15,4],['Se','硒',34,'nonmetal',16,4],
+    ['Br','溴',35,'nonmetal',17,4],['Kr','氪',36,'noble',18,4],
+    /* Period 5 */
+    ['Rb','铷',37,'alkali',1,5],['Sr','锶',38,'alkaline',2,5],
+    ['Y','钇',39,'transition',3,5],['Zr','锆',40,'transition',4,5],
+    ['Nb','铌',41,'transition',5,5],['Mo','钼',42,'transition',6,5],
+    ['Tc','锝',43,'transition',7,5],['Ru','钌',44,'transition',8,5],
+    ['Rh','铑',45,'transition',9,5],['Pd','钯',46,'transition',10,5],
+    ['Ag','银',47,'transition',11,5],['Cd','镉',48,'transition',12,5],
+    ['In','铟',49,'post-transition',13,5],['Sn','锡',50,'post-transition',14,5],
+    ['Sb','锑',51,'metalloid',15,5],['Te','碲',52,'metalloid',16,5],
+    ['I','碘',53,'nonmetal',17,5],['Xe','氙',54,'noble',18,5],
+    /* Period 6 */
+    ['Cs','铯',55,'alkali',1,6],['Ba','钡',56,'alkaline',2,6],
+    /* La-Lu → lanthanide row */
+    ['La','镧',57,'lanthanide',3,9],['Ce','铈',58,'lanthanide',4,9],
+    ['Pr','镨',59,'lanthanide',5,9],['Nd','钕',60,'lanthanide',6,9],
+    ['Pm','钷',61,'lanthanide',7,9],['Sm','钐',62,'lanthanide',8,9],
+    ['Eu','铕',63,'lanthanide',9,9],['Gd','钆',64,'lanthanide',10,9],
+    ['Tb','铽',65,'lanthanide',11,9],['Dy','镝',66,'lanthanide',12,9],
+    ['Ho','钬',67,'lanthanide',13,9],['Er','铒',68,'lanthanide',14,9],
+    ['Tm','铥',69,'lanthanide',15,9],['Yb','镱',70,'lanthanide',16,9],
+    ['Lu','镥',71,'lanthanide',17,9],
+    /* Period 6 continued */
+    ['Hf','铪',72,'transition',4,6],['Ta','钽',73,'transition',5,6],
+    ['W','钨',74,'transition',6,6],['Re','铼',75,'transition',7,6],
+    ['Os','锇',76,'transition',8,6],['Ir','铱',77,'transition',9,6],
+    ['Pt','铂',78,'transition',10,6],['Au','金',79,'transition',11,6],
+    ['Hg','汞',80,'transition',12,6],['Tl','铊',81,'post-transition',13,6],
+    ['Pb','铅',82,'post-transition',14,6],['Bi','铋',83,'post-transition',15,6],
+    ['Po','钋',84,'post-transition',16,6],['At','砹',85,'metalloid',17,6],
+    ['Rn','氡',86,'noble',18,6],
+    /* Period 7 */
+    ['Fr','钫',87,'alkali',1,7],['Ra','镭',88,'alkaline',2,7],
+    /* Ac-Lr → actinide row */
+    ['Ac','锕',89,'actinide',3,10],['Th','钍',90,'actinide',4,10],
+    ['Pa','镤',91,'actinide',5,10],['U','铀',92,'actinide',6,10],
+    ['Np','镎',93,'actinide',7,10],['Pu','钚',94,'actinide',8,10],
+    ['Am','镅',95,'actinide',9,10],['Cm','锔',96,'actinide',10,10],
+    ['Bk','锫',97,'actinide',11,10],['Cf','锎',98,'actinide',12,10],
+    ['Es','锿',99,'actinide',13,10],['Fm','镄',100,'actinide',14,10],
+    ['Md','钔',101,'actinide',15,10],['No','锘',102,'actinide',16,10],
+    ['Lr','铹',103,'actinide',17,10],
+    /* Period 7 continued */
+    ['Rf','𬬻',104,'transition',4,7],['Db','𬭊',105,'transition',5,7],
+    ['Sg','𬭳',106,'transition',6,7],['Bh','𬭛',107,'transition',7,7],
+    ['Hs','𬭶',108,'transition',8,7],['Mt','鿏',109,'transition',9,7],
+    ['Ds','𫟼',110,'transition',10,7],['Rg','𬬭',111,'transition',11,7],
+    ['Cn','鿔',112,'transition',12,7],['Nh','鿭',113,'post-transition',13,7],
+    ['Fl','𫓧',114,'post-transition',14,7],['Mc','镆',115,'post-transition',15,7],
+    ['Lv','𫟷',116,'post-transition',16,7],['Ts','鿬',117,'nonmetal',17,7],
+    ['Og','鿫',118,'noble',18,7]
+  ];
+
+  /* ── layout ── */
+  var CELL = 36, GAP = 2, OX = 14, OY = 36;
+  /* Lanthanide/actinide rows offset: row 9 → y after row 7 + gap, row 10 → below that */
+  function cellXY(col, row) {
+    var x = OX + (col - 1) * (CELL + GAP);
+    var y;
+    if (row <= 7) {
+      y = OY + (row - 1) * (CELL + GAP);
+    } else if (row === 9) {
+      /* lanthanide row: below row 7 with extra gap */
+      y = OY + 7 * (CELL + GAP) + 12;
+    } else {
+      /* actinide row 10 */
+      y = OY + 7 * (CELL + GAP) + 12 + (CELL + GAP);
+    }
+    return { x: x, y: y };
+  }
+
+  /* ── title ── */
+  txt(52, 18, '元素周期表', {
+    'text-anchor': 'start', 'font-size': '15', 'font-weight': '700',
+    fill: 'var(--cmp-stroke,#37474f)',
+    'font-family': "'Microsoft YaHei',Arial,sans-serif"
+  }, svg);
+
+  /* ── placeholder markers for La/Ac positions in main table ── */
+  function drawPlaceholder(col, row, label, color) {
+    var p = cellXY(col, row);
+    el('rect', {
+      x: '' + p.x, y: '' + p.y, width: '' + CELL, height: '' + CELL, rx: '3',
+      fill: color, 'fill-opacity': '0.1', stroke: color, 'stroke-width': '0.5',
+      'stroke-dasharray': '3,2'
+    }, svg);
+    txt(p.x + CELL / 2, p.y + CELL / 2 + 3, label, {
+      'text-anchor': 'middle', 'font-size': '7', fill: color,
+      'font-family': "'Microsoft YaHei',Arial,sans-serif"
+    }, svg);
+  }
+  drawPlaceholder(3, 6, '57-71', GC.lanthanide);
+  drawPlaceholder(3, 7, '89-103', GC.actinide);
+
+  /* ── grid group ── */
+  var gridG = el('g', null, svg);
+
+  function isDimmed(grp) {
+    if (highlightGroup === 'all') return false;
+    return grp !== highlightGroup;
+  }
+
+  /* ── render all cells ── */
+  DATA.forEach(function(d) {
+    var sym = d[0], zh = d[1], num = d[2], grp = d[3], col = d[4], row = d[5];
+    var pos = cellXY(col, row);
+    var x = pos.x, y = pos.y;
+    var color = GC[grp] || '#90a4ae';
+    var dimmed = isDimmed(grp);
+
+    var g = el('g', {
+      'class': 'pt__cell' + (dimmed ? ' pt__dimmed' : ''),
+      'data-sym': sym, 'data-num': '' + num, 'data-grp': grp
+    }, gridG);
+    g.style.transformOrigin = (x + CELL / 2) + 'px ' + (y + CELL / 2) + 'px';
+
+    el('rect', {
+      'class': 'pt__bg', x: '' + x, y: '' + y, width: '' + CELL, height: '' + CELL,
+      rx: '3', ry: '3', fill: color, 'fill-opacity': '0.25',
+      stroke: color, 'stroke-width': '' + strokeWidth
+    }, g);
+
+    if (showLabels) {
+      txt(x + 3, y + 9, '' + num, {
+        'font-size': '6', fill: 'var(--cmp-stroke,#37474f)',
+        'font-family': "Arial,'Microsoft YaHei',sans-serif"
+      }, g);
+      txt(x + CELL / 2, y + 22, sym, {
+        'text-anchor': 'middle', 'font-size': '12', 'font-weight': '700',
+        fill: 'var(--cmp-stroke,#37474f)',
+        'font-family': "Arial,'Microsoft YaHei',sans-serif"
+      }, g);
+      txt(x + CELL / 2, y + 32, zh, {
+        'text-anchor': 'middle', 'font-size': '6',
+        fill: 'var(--cmp-stroke,#37474f)',
+        'font-family': "'Microsoft YaHei',Arial,sans-serif"
+      }, g);
+    }
+
+    g.addEventListener('click', function() {
+      /* visual feedback: highlight selected cell */
+      var prev = gridG.querySelector('.pt__selected');
+      if (prev) prev.classList.remove('pt__selected');
+      g.classList.add('pt__selected');
+
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: {
+          id: root.getAttribute('data-cmp-id'), type: 'click',
+          values: { element: sym, atomicNumber: num, name: zh, group: grp }
+        }
+      }));
+
+      /* update info tooltip */
+      showTooltip(sym, zh, num, grp, color, pos);
+    });
+  });
+
+  /* ── period numbers (left side) ── */
+  for (var pr = 1; pr <= 7; pr++) {
+    var py = cellXY(1, pr);
+    txt(OX - 8, py.y + CELL / 2 + 3, '' + pr, {
+      'text-anchor': 'middle', 'font-size': '8', fill: '#999',
+      'font-family': "Arial,sans-serif"
+    }, svg);
+  }
+
+  /* ── group numbers (top) ── */
+  for (var gc = 1; gc <= 18; gc++) {
+    var gx = OX + (gc - 1) * (CELL + GAP) + CELL / 2;
+    txt(gx, OY - 4, '' + gc, {
+      'text-anchor': 'middle', 'font-size': '7', fill: '#bbb',
+      'font-family': "Arial,sans-serif"
+    }, svg);
+  }
+
+  /* ── lanthanide/actinide row labels ── */
+  var laPos = cellXY(3, 9);
+  txt(laPos.x - 10, laPos.y + CELL / 2 + 3, '镧系', {
+    'text-anchor': 'end', 'font-size': '7', fill: GC.lanthanide, 'font-weight': '600',
+    'font-family': "'Microsoft YaHei',Arial,sans-serif"
+  }, svg);
+  var acPos = cellXY(3, 10);
+  txt(acPos.x - 10, acPos.y + CELL / 2 + 3, '锕系', {
+    'text-anchor': 'end', 'font-size': '7', fill: GC.actinide, 'font-weight': '600',
+    'font-family': "'Microsoft YaHei',Arial,sans-serif"
+  }, svg);
+
+  /* ── legend (right-aligned, two rows) ── */
+  var legendKeys = ['alkali','alkaline','transition','post-transition','metalloid','nonmetal','noble','lanthanide','actinide'];
+  var legendY = 6;
+  var legendStartX = 250;
+  var lSpacing = 62;
+
+  legendKeys.forEach(function(k, i) {
+    var row = Math.floor(i / 5);
+    var col = i % 5;
+    var lx = legendStartX + col * lSpacing;
+    var ly = legendY + row * 14;
+    el('rect', {
+      x: '' + lx, y: '' + ly, width: '8', height: '8', rx: '2',
+      fill: GC[k], 'fill-opacity': '0.5'
+    }, svg);
+    txt(lx + 11, ly + 7, GN[k], {
+      'font-size': '7', fill: 'var(--cmp-stroke,#37474f)',
+      'font-family': "'Microsoft YaHei',Arial,sans-serif"
+    }, svg);
+  });
+
+  /* ── element info tooltip ── */
+  var tipG = el('g', { 'class': 'pt__tooltip', style: 'display:none' }, svg);
+
+  function showTooltip(sym, zh, num, grp, color, pos) {
+    while (tipG.firstChild) tipG.removeChild(tipG.firstChild);
+    /* position: to the right of H1-area, fixed spot */
+    var tx = 200, ty = 46;
+    el('rect', {
+      x: '' + tx, y: '' + ty, width: '120', height: '44', rx: '5',
+      fill: '#fff', stroke: color, 'stroke-width': '1.5', 'fill-opacity': '0.95'
+    }, tipG);
+    txt(tx + 10, ty + 16, num + '  ' + sym + '  ' + zh, {
+      'font-size': '11', 'font-weight': '700', fill: 'var(--cmp-stroke,#37474f)',
+      'font-family': "Arial,'Microsoft YaHei',sans-serif"
+    }, tipG);
+    txt(tx + 10, ty + 34, GN[grp] || grp, {
+      'font-size': '9', fill: color, 'font-weight': '600',
+      'font-family': "'Microsoft YaHei',Arial,sans-serif"
+    }, tipG);
+    tipG.style.display = '';
+  }
+
+  /* ── MutationObserver ── */
+  var obs = new MutationObserver(function() {
+    var P2 = {};
+    try { var r2 = root.getAttribute('data-props'); if (r2) { var o2 = JSON.parse(r2); if (o2 && typeof o2 === 'object') P2 = o2; } } catch (e) {}
+    var newHL = String(P2.highlightGroup || 'all');
+    if (newHL !== highlightGroup) {
+      highlightGroup = newHL;
+      var cells = gridG.querySelectorAll('.pt__cell');
+      for (var i = 0; i < cells.length; i++) {
+        var c = cells[i];
+        var g = c.getAttribute('data-grp');
+        if (isDimmed(g)) c.classList.add('pt__dimmed');
+        else c.classList.remove('pt__dimmed');
+      }
+    }
+  });
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+
+  window.addEventListener('beforeunload', function() { obs.disconnect(); });
+  })();
+  </script>
+</div>

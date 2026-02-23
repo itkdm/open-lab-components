@@ -642,6 +642,8 @@
         'subject-physics': '物理',
         'subject-chemistry': '化学',
         'subject-math': '数学',
+        'subject-biology': '生物',
+        'subject-science': '科学',
         'sort-by-name': '按名称',
         'sort-by-version': '按版本',
         'sort-by-category': '按分类',
@@ -674,6 +676,8 @@
         'subject-physics': 'Physics',
         'subject-chemistry': 'Chemistry',
         'subject-math': 'Math',
+        'subject-biology': 'Biology',
+        'subject-science': 'Science',
         'sort-by-name': 'By Name',
         'sort-by-version': 'By Version',
         'sort-by-category': 'By Category',
@@ -737,6 +741,32 @@
       }
     }
 
+    /* ── 筛选状态持久化 ── */
+    var FILTER_STATE_KEY = 'olc_filter_state';
+
+    function saveFilterState() {
+      var state = {
+        search: (document.getElementById('search')?.value || ''),
+        subject: document.getElementById('subjectFilter')?.value || '',
+        category: document.getElementById('categoryFilter')?.value || '',
+        sort: document.getElementById('sortFilter')?.value || 'name',
+        scroll: window.scrollY || 0
+      };
+      try { sessionStorage.setItem(FILTER_STATE_KEY, JSON.stringify(state)); } catch(e) {}
+    }
+
+    function restoreFilterState() {
+      try {
+        var raw = sessionStorage.getItem(FILTER_STATE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch(e) { return null; }
+    }
+
+    function clearFilterState() {
+      try { sessionStorage.removeItem(FILTER_STATE_KEY); } catch(e) {}
+    }
+
     async function loadRegistry() {
       try {
         const res = await fetch('./registry/registry.json');
@@ -751,7 +781,49 @@
         updateStats();
         buildSubjectFilter();
         buildCategoryFilter();
-        render();
+
+        /* 恢复之前的筛选状态 */
+        var saved = restoreFilterState();
+        if (saved) {
+          clearFilterState();
+          var searchEl = document.getElementById('search');
+          var subjectEl = document.getElementById('subjectFilter');
+          var categoryEl = document.getElementById('categoryFilter');
+          var sortEl = document.getElementById('sortFilter');
+
+          if (saved.search && searchEl) searchEl.value = saved.search;
+          if (saved.subject && subjectEl) {
+            subjectEl.value = saved.subject;
+            buildCategoryFilter();
+          }
+          if (saved.category && categoryEl) categoryEl.value = saved.category;
+          if (saved.sort && sortEl) sortEl.value = saved.sort;
+
+          filter();
+
+          /* 排序 */
+          if (saved.sort && saved.sort !== 'name') {
+            filtered.sort(function(a, b) {
+              if (saved.sort === 'version') return b.version.localeCompare(a.version);
+              if (saved.sort === 'category') return a.category.localeCompare(b.category);
+              return 0;
+            });
+          }
+
+          /* 恢复滚动位置（延迟等待渲染完成） */
+          if (saved.scroll > 0) {
+            /* 先加载足够多的条目以覆盖滚动位置 */
+            displayedCount = Math.max(displayedCount, Math.min(filtered.length, 64));
+            render();
+            requestAnimationFrame(function() {
+              window.scrollTo(0, saved.scroll);
+            });
+          } else {
+            render();
+          }
+        } else {
+          render();
+        }
         
         // 添加滚动事件监听器
         window.addEventListener('scroll', handleScroll, { passive: true });
@@ -954,6 +1026,8 @@
     }
 
     function openPlayground(id) {
+      /* 跳转前保存当前筛选状态到 sessionStorage */
+      saveFilterState();
       window.location.href = `./playground.html?id=${id}`;
     }
 

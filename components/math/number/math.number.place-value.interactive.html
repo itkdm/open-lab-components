@@ -1,0 +1,284 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.place-value.interactive",
+  "name": "数位表",
+  "nameEn": "Place Value Chart",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "组件宽度" },
+    { "key": "value", "type": "number", "default": 0, "min": 0, "max": 9999, "desc": "当前数值" },
+    { "key": "headerColor", "type": "color", "default": "#1565C0", "desc": "表头颜色" },
+    { "key": "blockColor", "type": "color", "default": "#42A5F5", "desc": "方块颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "headerColor": "--cmp-header",
+    "blockColor": "--cmp-block"
+  },
+  "tags": ["place-value", "number", "counting", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "value": "number", "thousands": "number", "hundreds": "number", "tens": "number", "ones": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.place-value.interactive" role="img" aria-label="数位表: 0">
+  <style>
+    .cmp[data-cmp-id="math.number.place-value.interactive"] {
+      --w: var(--cmp-size, 360px);
+      display: inline-block; width: var(--w);
+      height: calc(var(--w) * 280 / 360);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.number.place-value.interactive"] svg {
+      display: block; width: 100%; height: 100%; overflow: visible;
+    }
+    .cmp[data-cmp-id="math.number.place-value.interactive"] .pv__btn {
+      cursor: pointer; transition: opacity 0.12s ease;
+    }
+    .cmp[data-cmp-id="math.number.place-value.interactive"] .pv__btn:hover { opacity: 0.82; }
+    .cmp[data-cmp-id="math.number.place-value.interactive"] .pv__btn:active { opacity: 0.6; }
+    .cmp[data-cmp-id="math.number.place-value.interactive"] .pv__block {
+      transition: opacity 0.2s ease;
+    }
+  </style>
+  <svg viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter class="pv__shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.15"/>
+      </filter>
+    </defs>
+    <rect x="5" y="5" width="350" height="270" rx="8" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1"/>
+    <g class="pv__columns"></g>
+    <g class="pv__total">
+      <rect x="110" y="248" width="140" height="28" rx="14" fill="#37474f" opacity="0.9"/>
+      <text class="pv__total-text" x="180" y="268" text-anchor="middle" font-size="18"
+            font-weight="700" fill="#fff" font-family="'Nunito','Segoe UI',Arial,sans-serif">0</text>
+    </g>
+  </svg>
+  <script>
+  (function() {
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.number.place-value.interactive') return;
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = root.querySelector('svg');
+    var colsG = root.querySelector('.pv__columns');
+    var totalTxt = root.querySelector('.pv__total-text');
+    var uid = 'pv-' + Math.random().toString(36).slice(2, 8);
+    var flt = svg.querySelector('.pv__shadow');
+    if (flt) flt.setAttribute('id', uid + '-sh');
+    var fltUrl = flt ? 'url(#' + uid + '-sh)' : '';
+
+    /* Helper: create SVG element with attributes */
+    function el(tag, attrs) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in attrs) e.setAttribute(k, attrs[k]);
+      return e;
+    }
+
+    /* Props */
+    var props = {};
+    try { var r = root.getAttribute('data-props'); if (r) props = JSON.parse(r); } catch(e) {}
+    var value = Math.max(0, Math.min(9999, Math.round(Number(props.value) || 0)));
+
+    /* Layout */
+    var CW = 75, GAP = 10, SX = 15, HY = 12, HH = 30, BY = 48, BH = 160, DY = 225;
+    var LABELS = ['千位', '百位', '十位', '个位'];
+    var SHADES = ['#1565C0', '#1E88E5', '#42A5F5', '#64B5F6'];
+    var BSHADE = ['#0D47A1', '#1565C0', '#1E88E5', '#42A5F5'];
+    var FONT = "'Nunito','Segoe UI',Arial,sans-serif";
+
+    function digits(v) {
+      return [Math.floor(v/1000)%10, Math.floor(v/100)%10, Math.floor(v/10)%10, v%10];
+    }
+    function cx(i) { return SX + i * (CW + GAP); }
+
+    /* Draw +/- button */
+    function makeBtn(parent, x, y, action, col, isPlus) {
+      var g = el('g', {'class':'pv__btn','data-action':action,'data-col':String(col)});
+      g.appendChild(el('circle', {cx:x, cy:y, r:9, fill:isPlus?'#66bb6a':'#ef5350',
+        stroke:isPlus?'#2e7d32':'#c62828', 'stroke-width':'1'}));
+      g.appendChild(el('line', {x1:x-5, y1:y, x2:x+5, y2:y,
+        stroke:'#fff', 'stroke-width':'2', 'stroke-linecap':'round'}));
+      if (isPlus) g.appendChild(el('line', {x1:x, y1:y-5, x2:x, y2:y+5,
+        stroke:'#fff', 'stroke-width':'2', 'stroke-linecap':'round'}));
+      parent.appendChild(g);
+    }
+
+    /* Draw grid lines on a square block */
+    function drawGrid(parent, bx, by, sz, n, color) {
+      for (var i = 1; i < n; i++) {
+        parent.appendChild(el('line', {x1:bx+i*sz/n, y1:by, x2:bx+i*sz/n, y2:by+sz,
+          stroke:color, 'stroke-width':'0.3'}));
+        parent.appendChild(el('line', {x1:bx, y1:by+i*sz/n, x2:bx+sz, y2:by+i*sz/n,
+          stroke:color, 'stroke-width':'0.3'}));
+      }
+    }
+
+    /* Draw blocks for a digit in a column */
+    function drawBlocks(parent, ci, d, x0) {
+      if (d === 0) return;
+      var at = BY + 26, ah = BH - 52, aw = CW - 8, ox = x0 + 4;
+      var i, r, c, bx, by, rect, sz, gap, cols, bw, bh, tw, th, sx, sy, rows, off;
+
+      if (ci === 3) { /* Ones: 8x8 squares */
+        sz = 8; gap = 3; cols = 5;
+        tw = Math.min(d, cols) * (sz+gap) - gap; rows = Math.ceil(d/cols);
+        th = rows * (sz+gap) - gap; sx = ox + (aw-tw)/2; sy = at + (ah-th)/2;
+        for (i = 0; i < d; i++) {
+          r = Math.floor(i/cols); c = i%cols;
+          bx = sx + c*(sz+gap); by = sy + r*(sz+gap);
+          rect = el('rect', {'class':'pv__block', x:bx, y:by, width:sz, height:sz,
+            rx:1.5, fill:BSHADE[3], stroke:'#1565C0', 'stroke-width':'0.5'});
+          if (fltUrl) rect.setAttribute('filter', fltUrl);
+          parent.appendChild(rect);
+        }
+      } else if (ci === 2) { /* Tens: 6x30 bars */
+        bw = 6; bh = 30; gap = 3; cols = 5;
+        tw = Math.min(d,cols)*(bw+gap)-gap; rows = Math.ceil(d/cols);
+        th = rows*(bh+4)-4; sx = ox+(aw-tw)/2; sy = at+(ah-th)/2;
+        for (i = 0; i < d; i++) {
+          r = Math.floor(i/cols); c = i%cols;
+          bx = sx+c*(bw+gap); by = sy+r*(bh+4);
+          rect = el('rect', {'class':'pv__block', x:bx, y:by, width:bw, height:bh,
+            rx:1.5, fill:BSHADE[2], stroke:'#1565C0', 'stroke-width':'0.5'});
+          if (fltUrl) rect.setAttribute('filter', fltUrl);
+          parent.appendChild(rect);
+        }
+      } else if (ci === 1) { /* Hundreds: 20x20 flat squares with grid */
+        sz = 20; gap = 4; cols = 3;
+        tw = Math.min(d,cols)*(sz+gap)-gap; rows = Math.ceil(d/cols);
+        th = rows*(sz+gap)-gap; sx = ox+(aw-tw)/2; sy = at+(ah-th)/2;
+        for (i = 0; i < d; i++) {
+          r = Math.floor(i/cols); c = i%cols;
+          bx = sx+c*(sz+gap); by = sy+r*(sz+gap);
+          rect = el('rect', {'class':'pv__block', x:bx, y:by, width:sz, height:sz,
+            rx:2, fill:BSHADE[1], stroke:'#0D47A1', 'stroke-width':'0.6'});
+          if (fltUrl) rect.setAttribute('filter', fltUrl);
+          parent.appendChild(rect);
+          drawGrid(parent, bx, by, sz, 4, 'rgba(255,255,255,0.25)');
+        }
+      } else { /* Thousands: 22x22 cubes with 3D */
+        sz = 22; off = 4; gap = 5; cols = 3;
+        tw = Math.min(d,cols)*(sz+off+gap)-gap; rows = Math.ceil(d/cols);
+        th = rows*(sz+off+gap)-gap; sx = ox+(aw-tw)/2; sy = at+(ah-th)/2;
+        for (i = 0; i < d; i++) {
+          r = Math.floor(i/cols); c = i%cols;
+          bx = sx+c*(sz+off+gap); by = sy+r*(sz+off+gap);
+          /* Right face */
+          parent.appendChild(el('polygon', {'class':'pv__block', fill:'#0D47A1', opacity:'0.7',
+            points:(bx+sz)+','+by+' '+(bx+sz+off)+','+(by-off)+' '+(bx+sz+off)+','+(by+sz-off)+' '+(bx+sz)+','+(by+sz)}));
+          /* Top face */
+          parent.appendChild(el('polygon', {'class':'pv__block', fill:'#1E88E5', opacity:'0.7',
+            points:bx+','+by+' '+(bx+off)+','+(by-off)+' '+(bx+sz+off)+','+(by-off)+' '+(bx+sz)+','+by}));
+          /* Front face */
+          rect = el('rect', {'class':'pv__block', x:bx, y:by, width:sz, height:sz,
+            rx:1, fill:BSHADE[0], stroke:'#0D47A1', 'stroke-width':'0.6'});
+          parent.appendChild(rect);
+          drawGrid(parent, bx, by, sz, 4, 'rgba(255,255,255,0.2)');
+        }
+      }
+    }
+
+    /* Main render */
+    function render() {
+      colsG.innerHTML = '';
+      var d = digits(value);
+      for (var c = 0; c < 4; c++) {
+        var x = cx(c), g = el('g', {});
+        /* Column bg */
+        g.appendChild(el('rect', {x:x, y:BY, width:CW, height:BH, rx:4,
+          fill:'#fff', stroke:'#e0e0e0', 'stroke-width':'0.8'}));
+        /* Header */
+        g.appendChild(el('rect', {x:x, y:HY, width:CW, height:HH, rx:4, fill:SHADES[c]}));
+        var t = el('text', {x:x+CW/2, y:HY+20, 'text-anchor':'middle', 'font-size':'13',
+          'font-weight':'700', fill:'#fff', 'font-family':FONT});
+        t.textContent = LABELS[c]; g.appendChild(t);
+        /* +/- buttons */
+        makeBtn(g, x+CW/2, BY+12, 'plus', c, true);
+        makeBtn(g, x+CW/2, BY+BH-12, 'minus', c, false);
+        /* Blocks */
+        drawBlocks(g, c, d[c], x);
+        /* Digit label */
+        var dt = el('text', {x:x+CW/2, y:DY, 'text-anchor':'middle', 'font-size':'22',
+          'font-weight':'800', fill:SHADES[c], 'font-family':FONT});
+        dt.textContent = String(d[c]); g.appendChild(dt);
+        colsG.appendChild(g);
+      }
+      if (totalTxt) totalTxt.textContent = String(value);
+      root.setAttribute('aria-label', '数位表: ' + value);
+    }
+
+    /* Adjust digit with carry/borrow */
+    function adjustDigit(ci, delta) {
+      var d = digits(value), v = d[ci] + delta;
+      if (v > 9) {
+        d[ci] = 0;
+        if (ci > 0) {
+          d[ci-1]++;
+          for (var i = ci-1; i > 0; i--) { if (d[i] > 9) { d[i] = 0; d[i-1]++; } }
+          if (d[0] > 9) d[0] = 9;
+        }
+      } else if (v < 0) {
+        if (ci > 0) {
+          var ok = false;
+          for (var i = ci-1; i >= 0; i--) { if (d[i] > 0) { ok = true; break; } }
+          if (ok) {
+            d[ci] = 9;
+            for (var i = ci-1; i >= 0; i--) { d[i]--; if (d[i] >= 0) break; d[i] = 9; }
+          }
+        }
+      } else { d[ci] = v; }
+      var nv = Math.max(0, Math.min(9999, d[0]*1000 + d[1]*100 + d[2]*10 + d[3]));
+      if (nv !== value) { value = nv; render(); emitChange(); }
+    }
+
+    function emitChange() {
+      var d = digits(value);
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust',
+          values: { value:value, thousands:d[0], hundreds:d[1], tens:d[2], ones:d[3] } }
+      }));
+    }
+
+    /* Click handling */
+    svg.addEventListener('click', function(e) {
+      var btn = e.target.closest('.pv__btn');
+      if (!btn) return;
+      var col = parseInt(btn.getAttribute('data-col'), 10);
+      adjustDigit(col, btn.getAttribute('data-action') === 'plus' ? 1 : -1);
+    });
+
+    /* Keyboard */
+    root.setAttribute('tabindex', '0');
+    root.addEventListener('keydown', function(e) {
+      var k = e.key;
+      if (k === 'ArrowUp' || k === '+' || k === '=') { e.preventDefault(); adjustDigit(3, 1); }
+      else if (k === 'ArrowDown' || k === '-') { e.preventDefault(); adjustDigit(3, -1); }
+      else if (k === 'ArrowRight') { e.preventDefault(); adjustDigit(2, 1); }
+      else if (k === 'ArrowLeft') { e.preventDefault(); adjustDigit(2, -1); }
+    });
+
+    render();
+
+    /* Observe prop changes */
+    new MutationObserver(function(m) {
+      for (var i = 0; i < m.length; i++) {
+        if (m[i].attributeName === 'data-props') {
+          try {
+            var o = JSON.parse(root.getAttribute('data-props') || '{}');
+            if (o.value !== undefined) {
+              var nv = Math.max(0, Math.min(9999, Math.round(Number(o.value))));
+              if (nv !== value) { value = nv; render(); }
+            }
+          } catch(e) {}
+        }
+      }
+    }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+  })();
+  </script>
+</div>

@@ -1,0 +1,383 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.electric.field-lines.interactive",
+  "name": "电场线演示（交互式）",
+  "nameEn": "Electric Field Lines (Interactive)",
+  "category": "physics/electric",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 450 },
+  "tags": ["physics","electric","field","charge","coulomb","force","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "positiveColor",  "type": "color",  "default": "#e53935", "desc": "正电荷颜色" },
+    { "key": "negativeColor",  "type": "color",  "default": "#1e88e5", "desc": "负电荷颜色" },
+    { "key": "fieldColor",     "type": "color",  "default": "#ff9800", "desc": "场线颜色" },
+    { "key": "preset",         "type": "enum",   "default": "dipole", "enum": ["single-pos","single-neg","dipole","same-charge","quad"], "desc": "预设" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showEquipotential","type": "enum", "default": "off", "enum": ["on","off"], "desc": "显示等势线" },
+    { "key": "showTestCharge", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示试探电荷" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "positiveColor": "--cmp-pos", "negativeColor": "--cmp-neg", "fieldColor": "--cmp-field", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "preset", "values": { "preset": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.electric.field-lines.interactive" role="img" aria-label="电场线演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.electric.field-lines.interactive"]{
+      --h:var(--cmp-size,450px);display:inline-block;
+      width:calc(var(--h)*500/450);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,152,0,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.electric.field-lines.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.electric.field-lines.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="phy.electric.field-lines.interactive"] .ef__presetBtn{cursor:pointer}
+    .cmp[data-cmp-id="phy.electric.field-lines.interactive"] .ef__presetBtn:hover rect{opacity:0.9}
+  </style>
+
+  <svg viewBox="0 0 500 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="ef__arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+        <polygon points="0,0 8,3 0,6" fill="var(--cmp-field,#ff9800)" opacity="0.7"/>
+      </marker>
+      <radialGradient id="ef__posG" cx="35%" cy="35%">
+        <stop offset="0" stop-color="#fff" stop-opacity="0.5"/><stop offset="1" stop-color="#000" stop-opacity="0.15"/>
+      </radialGradient>
+    </defs>
+
+    <!-- 场域背景 -->
+    <rect x="20" y="40" width="460" height="350" rx="8" fill="#fafafa" stroke="#e0e0e0" stroke-width="0.5"/>
+
+    <!-- 场线 -->
+    <g class="ef__fieldLines"></g>
+    <!-- 等势线 -->
+    <g class="ef__equipotential"></g>
+    <!-- 电荷 -->
+    <g class="ef__charges"></g>
+    <!-- 试探电荷 -->
+    <g class="ef__testCharge"></g>
+    <!-- 力箭头 -->
+    <g class="ef__forceArrow"></g>
+
+    <!-- 标注 -->
+    <g class="ef__labels-g">
+      <text x="250" y="25" text-anchor="middle" font-size="13" font-weight="700" fill="var(--cmp-stroke,#37474f)">电场线演示</text>
+    </g>
+
+    <!-- 预设按钮 -->
+    <g class="ef__presets" transform="translate(250,425)">
+      <g class="ef__presetBtn" data-p="single-pos" transform="translate(-180,0)"><rect x="-38" y="-12" width="76" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">单正电荷</text></g>
+      <g class="ef__presetBtn" data-p="single-neg" transform="translate(-90,0)"><rect x="-38" y="-12" width="76" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">单负电荷</text></g>
+      <g class="ef__presetBtn" data-p="dipole" transform="translate(0,0)"><rect x="-38" y="-12" width="76" height="24" rx="5" fill="#5c6bc0" opacity="0.85"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">电偶极子</text></g>
+      <g class="ef__presetBtn" data-p="same-charge" transform="translate(90,0)"><rect x="-38" y="-12" width="76" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">同种电荷</text></g>
+      <g class="ef__presetBtn" data-p="quad" transform="translate(180,0)"><rect x="-38" y="-12" width="76" height="24" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">四极子</text></g>
+    </g>
+
+    <!-- 提示 -->
+    <text x="250" y="405" text-anchor="middle" font-size="9" fill="#999">拖拽电荷改变位置 · 点击空白放置试探电荷</text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.electric.field-lines.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var preset=P.preset||'dipole';
+    var showLabels=(P.showLabels!=='off');
+    var showEqui=(P.showEquipotential==='on');
+    var showTest=(P.showTestCharge!=='off');
+
+    var fieldG=root.querySelector('.ef__fieldLines');
+    var equiG=root.querySelector('.ef__equipotential');
+    var chargesG=root.querySelector('.ef__charges');
+    var testG=root.querySelector('.ef__testCharge');
+    var forceG=root.querySelector('.ef__forceArrow');
+    var labelsG=root.querySelector('.ef__labels-g');
+    var presetsG=root.querySelector('.ef__presets');
+
+    var CX=250,CY=215;
+
+    var PRESETS={
+      'single-pos':[{x:250,y:215,q:1}],
+      'single-neg':[{x:250,y:215,q:-1}],
+      'dipole':[{x:170,y:215,q:1},{x:330,y:215,q:-1}],
+      'same-charge':[{x:170,y:215,q:1},{x:330,y:215,q:1}],
+      'quad':[{x:190,y:155,q:1},{x:310,y:155,q:-1},{x:190,y:275,q:-1},{x:310,y:275,q:1}]
+    };
+
+    var charges=[];
+    var testPos={x:350,y:150};
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function loadPreset(name){
+      var p=PRESETS[name]||PRESETS.dipole;
+      charges=[];
+      for(var i=0;i<p.length;i++)charges.push({x:p[i].x,y:p[i].y,q:p[i].q});
+    }
+
+    function fieldAt(x,y){
+      var ex=0,ey=0;
+      for(var i=0;i<charges.length;i++){
+        var dx=x-charges[i].x,dy=y-charges[i].y;
+        var r2=dx*dx+dy*dy;
+        if(r2<100)r2=100;
+        var r3=Math.pow(r2,1.5);
+        var k=charges[i].q*5000;
+        ex+=k*dx/r3;
+        ey+=k*dy/r3;
+      }
+      return{x:ex,y:ey};
+    }
+
+    function potentialAt(x,y){
+      var v=0;
+      for(var i=0;i<charges.length;i++){
+        var dx=x-charges[i].x,dy=y-charges[i].y;
+        var r=Math.sqrt(dx*dx+dy*dy);
+        if(r<5)r=5;
+        v+=charges[i].q*500/r;
+      }
+      return v;
+    }
+
+    function traceFieldLine(sx,sy,dir,steps){
+      var pts=[{x:sx,y:sy}];
+      var x=sx,y=sy,ds=3*dir;
+      for(var s=0;s<steps;s++){
+        var e=fieldAt(x,y);
+        var mag=Math.sqrt(e.x*e.x+e.y*e.y);
+        if(mag<0.001)break;
+        x+=ds*e.x/mag;
+        y+=ds*e.y/mag;
+        if(x<20||x>480||y<40||y>390)break;
+        /* 检查是否到达负电荷 */
+        var hitCharge=false;
+        for(var c=0;c<charges.length;c++){
+          var dx=x-charges[c].x,dy=y-charges[c].y;
+          if(dx*dx+dy*dy<200){hitCharge=true;break;}
+        }
+        pts.push({x:x,y:y});
+        if(hitCharge)break;
+      }
+      return pts;
+    }
+
+    function render(){
+      clear(fieldG);clear(equiG);clear(chargesG);clear(testG);clear(forceG);
+
+      /* 场线 */
+      var NUM_LINES=12;
+      for(var ci=0;ci<charges.length;ci++){
+        if(charges[ci].q>0){
+          for(var l=0;l<NUM_LINES;l++){
+            var angle=l*Math.PI*2/NUM_LINES;
+            var sx=charges[ci].x+15*Math.cos(angle);
+            var sy=charges[ci].y+15*Math.sin(angle);
+            var pts=traceFieldLine(sx,sy,1,200);
+            if(pts.length>2){
+              var d='M'+pts[0].x.toFixed(1)+','+pts[0].y.toFixed(1);
+              for(var p=1;p<pts.length;p++)d+=' L'+pts[p].x.toFixed(1)+','+pts[p].y.toFixed(1);
+              fieldG.appendChild(elSvg('path',{d:d,fill:'none',
+                stroke:'var(--cmp-field,#ff9800)','stroke-width':'1.2',opacity:'0.6',
+                'marker-mid':'url(#ef__arrow)'}));
+            }
+          }
+        }else if(charges[ci].q<0){
+          /* 负电荷：反向追踪 */
+          var hasPos=charges.some(function(c){return c.q>0;});
+          if(!hasPos){
+            for(var l2=0;l2<NUM_LINES;l2++){
+              var angle2=l2*Math.PI*2/NUM_LINES;
+              var sx2=charges[ci].x+15*Math.cos(angle2);
+              var sy2=charges[ci].y+15*Math.sin(angle2);
+              var pts2=traceFieldLine(sx2,sy2,-1,200);
+              if(pts2.length>2){
+                var d2='M'+pts2[pts2.length-1].x.toFixed(1)+','+pts2[pts2.length-1].y.toFixed(1);
+                for(var p2=pts2.length-2;p2>=0;p2--)d2+=' L'+pts2[p2].x.toFixed(1)+','+pts2[p2].y.toFixed(1);
+                fieldG.appendChild(elSvg('path',{d:d2,fill:'none',
+                  stroke:'var(--cmp-field,#ff9800)','stroke-width':'1.2',opacity:'0.6',
+                  'marker-mid':'url(#ef__arrow)'}));
+              }
+            }
+          }
+        }
+      }
+
+      /* 等势线 */
+      if(showEqui){
+        var levels=[-8,-4,-2,-1,1,2,4,8];
+        for(var li=0;li<levels.length;li++){
+          var lv=levels[li];
+          /* 简单等势线：沿圆采样 */
+          for(var ci2=0;ci2<charges.length;ci2++){
+            var pts3=[];
+            for(var a=0;a<360;a+=3){
+              var ar=a*Math.PI/180;
+              /* 二分法找等势点 */
+              var rMin=10,rMax=250;
+              for(var iter=0;iter<15;iter++){
+                var rMid=(rMin+rMax)/2;
+                var tx=charges[ci2].x+rMid*Math.cos(ar);
+                var ty=charges[ci2].y+rMid*Math.sin(ar);
+                var v=potentialAt(tx,ty);
+                if(v>lv)rMin=rMid;else rMax=rMid;
+              }
+              var rx=(rMin+rMax)/2;
+              var px=charges[ci2].x+rx*Math.cos(ar);
+              var py=charges[ci2].y+rx*Math.sin(ar);
+              if(px>25&&px<475&&py>45&&py<385)pts3.push({x:px,y:py});
+            }
+            if(pts3.length>10){
+              var d3='M'+pts3[0].x.toFixed(1)+','+pts3[0].y.toFixed(1);
+              for(var p3=1;p3<pts3.length;p3++)d3+=' L'+pts3[p3].x.toFixed(1)+','+pts3[p3].y.toFixed(1);
+              d3+=' Z';
+              equiG.appendChild(elSvg('path',{d:d3,fill:'none',
+                stroke:lv>0?'#ef9a9a':'#90caf9','stroke-width':'0.8','stroke-dasharray':'3,3',opacity:'0.5'}));
+            }
+          }
+        }
+      }
+
+      /* 电荷 */
+      for(var ci3=0;ci3<charges.length;ci3++){
+        var ch=charges[ci3];
+        var color=ch.q>0?'var(--cmp-pos,#e53935)':'var(--cmp-neg,#1e88e5)';
+        chargesG.appendChild(elSvg('circle',{cx:ch.x,cy:ch.y,r:18,fill:color,stroke:'#fff','stroke-width':'2'}));
+        chargesG.appendChild(elSvg('circle',{cx:ch.x,cy:ch.y,r:18,fill:'url(#ef__posG)'}));
+        var sign=ch.q>0?'+':'−';
+        chargesG.appendChild(elSvg('text',{x:ch.x,y:ch.y+7,'text-anchor':'middle','font-size':'20','font-weight':'700',fill:'#fff'})).textContent=sign;
+        if(showLabels){
+          chargesG.appendChild(elSvg('text',{x:ch.x,y:ch.y+32,'text-anchor':'middle','font-size':'8',fill:color})).textContent=(ch.q>0?'+':'')+ch.q+'q';
+        }
+      }
+
+      /* 试探电荷 */
+      if(showTest){
+        testG.appendChild(elSvg('circle',{cx:testPos.x,cy:testPos.y,r:8,fill:'#66bb6a',stroke:'#fff','stroke-width':'1.5',style:'cursor:grab'}));
+        testG.appendChild(elSvg('text',{x:testPos.x,y:testPos.y+4,'text-anchor':'middle','font-size':'10','font-weight':'700',fill:'#fff'})).textContent='+';
+
+        /* 力箭头 */
+        var e2=fieldAt(testPos.x,testPos.y);
+        var mag2=Math.sqrt(e2.x*e2.x+e2.y*e2.y);
+        if(mag2>0.01){
+          var fLen=Math.min(60,mag2*15);
+          var fx=testPos.x+fLen*e2.x/mag2;
+          var fy=testPos.y+fLen*e2.y/mag2;
+          forceG.appendChild(elSvg('line',{x1:testPos.x,y1:testPos.y,x2:fx,y2:fy,
+            stroke:'#66bb6a','stroke-width':'2.5','stroke-linecap':'round'}));
+          /* 箭头 */
+          var aAngle=Math.atan2(fy-testPos.y,fx-testPos.x);
+          var ax1=fx-8*Math.cos(aAngle-0.4),ay1=fy-8*Math.sin(aAngle-0.4);
+          var ax2=fx-8*Math.cos(aAngle+0.4),ay2=fy-8*Math.sin(aAngle+0.4);
+          forceG.appendChild(elSvg('polygon',{points:fx+','+fy+' '+ax1+','+ay1+' '+ax2+','+ay2,fill:'#66bb6a'}));
+          if(showLabels){
+            forceG.appendChild(elSvg('text',{x:fx+8,y:fy-5,'font-size':'9','font-weight':'600',fill:'#2e7d32'})).textContent='F';
+          }
+        }
+      }
+
+      labelsG.style.display=showLabels?'':'none';
+    }
+
+    function updateTabs(){
+      var btns=presetsG.querySelectorAll('.ef__presetBtn');
+      for(var i=0;i<btns.length;i++){
+        var p2=btns[i].getAttribute('data-p');
+        var rect=btns[i].querySelector('rect');
+        rect.setAttribute('fill',p2===preset?'#5c6bc0':'#78909c');
+        rect.setAttribute('opacity',p2===preset?'0.85':'0.6');
+      }
+    }
+
+    loadPreset(preset);render();updateTabs();
+
+    /* 拖拽电荷 */
+    var dragIdx=-1,dragTest=false;
+    function onDown(e){
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var sy=(pt.clientY-rect.top)/rect.height*450;
+
+      /* 检查试探电荷 */
+      if(showTest){
+        var dtx=sx-testPos.x,dty=sy-testPos.y;
+        if(dtx*dtx+dty*dty<400){e.preventDefault();dragTest=true;bindDrag();return;}
+      }
+      /* 检查电荷 */
+      for(var i=0;i<charges.length;i++){
+        var dx=sx-charges[i].x,dy=sy-charges[i].y;
+        if(dx*dx+dy*dy<600){e.preventDefault();dragIdx=i;bindDrag();return;}
+      }
+      /* 点击空白：移动试探电荷 */
+      if(showTest&&sx>20&&sx<480&&sy>40&&sy<390){
+        testPos.x=sx;testPos.y=sy;render();
+      }
+    }
+    function bindDrag(){
+      document.addEventListener('mousemove',onMove,{passive:false});
+      document.addEventListener('mouseup',onUp);
+      document.addEventListener('touchmove',onMove,{passive:false});
+      document.addEventListener('touchend',onUp);
+    }
+    function onMove(e){
+      if(dragIdx<0&&!dragTest)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var sy=(pt.clientY-rect.top)/rect.height*450;
+      sx=Math.max(30,Math.min(470,sx));sy=Math.max(50,Math.min(380,sy));
+      if(dragTest){testPos.x=sx;testPos.y=sy;}
+      else if(dragIdx>=0){charges[dragIdx].x=sx;charges[dragIdx].y=sy;}
+      render();
+    }
+    function onUp(){dragIdx=-1;dragTest=false;
+      document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+      document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
+    }
+    svg.addEventListener('mousedown',onDown,{passive:false});
+    svg.addEventListener('touchstart',onDown,{passive:false});
+
+    /* 预设切换 */
+    presetsG.addEventListener('click',function(e){
+      var btn=e.target.closest('.ef__presetBtn');
+      if(!btn)return;
+      preset=btn.getAttribute('data-p');
+      loadPreset(preset);updateTabs();render();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'phy.electric.field-lines.interactive',type:'preset',values:{preset:preset}}}));
+    });
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      showLabels=(P2.showLabels!=='off');showEqui=(P2.showEquipotential==='on');showTest=(P2.showTestCharge!=='off');
+      if(P2.preset&&PRESETS[P2.preset]){preset=P2.preset;loadPreset(preset);updateTabs();}
+      render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

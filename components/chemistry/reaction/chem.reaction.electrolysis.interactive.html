@@ -1,0 +1,410 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.reaction.electrolysis.interactive",
+  "name": "电解水（交互式）",
+  "nameEn": "Electrolysis of Water (Interactive)",
+  "category": "chemistry/reaction",
+  "version": "1.0.0",
+  "viewport": { "w": 460, "h": 400 },
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 4, "desc": "描边粗细" },
+
+    { "key": "waterColor",    "type": "color",  "default": "#bbdefb", "desc": "水的颜色" },
+    { "key": "cathodeColor",  "type": "color",  "default": "#78909c", "desc": "阴极颜色" },
+    { "key": "anodeColor",    "type": "color",  "default": "#78909c", "desc": "阳极颜色" },
+    { "key": "h2Color",       "type": "color",  "default": "#e3f2fd", "desc": "氢气颜色" },
+    { "key": "o2Color",       "type": "color",  "default": "#ffcdd2", "desc": "氧气颜色" },
+    { "key": "wireColor",     "type": "color",  "default": "#f44336", "desc": "导线颜色" },
+
+    { "key": "voltage",       "type": "number", "default": 6,   "min": 1,   "max": 24,  "desc": "电压（V）" },
+    { "key": "running",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行状态" },
+    { "key": "showLabels",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标签" },
+    { "key": "showData",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "数据面板" },
+
+    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "waterColor": "--cmp-water", "cathodeColor": "--cmp-cathode", "anodeColor": "--cmp-anode",
+    "h2Color": "--cmp-h2", "o2Color": "--cmp-o2", "wireColor": "--cmp-wire",
+    "glow": "--cmp-glow"
+  },
+  "tags": ["chemistry","electrolysis","water","H2","O2","reaction","interactive","animated"],
+  "events": [
+    { "name": "cmp:change", "type": "tick", "values": { "voltage": "number(V)", "h2Volume": "number(mL)", "o2Volume": "number(mL)" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.reaction.electrolysis.interactive" role="img" aria-label="电解水（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.reaction.electrolysis.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;width:calc(var(--h)*1.15);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(100,181,246,calc(.8*var(--cmp-glow,0))));
+      user-select:none;touch-action:none;
+    }
+    .cmp[data-cmp-id="chem.reaction.electrolysis.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.reaction.electrolysis.interactive"] .elc__label{font-family:Arial,'Microsoft YaHei',sans-serif;font-weight:600}
+    .cmp[data-cmp-id="chem.reaction.electrolysis.interactive"] .elc__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+    .cmp[data-cmp-id="chem.reaction.electrolysis.interactive"] .elc__eq{font-family:'Times New Roman',serif;font-weight:700}
+  </style>
+
+  <svg viewBox="0 0 460 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- water gradient -->
+      <linearGradient id="elc__waterGrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--cmp-water,#bbdefb)" stop-opacity=".6"/>
+        <stop offset="100%" stop-color="var(--cmp-water,#bbdefb)" stop-opacity=".85"/>
+      </linearGradient>
+      <!-- H2 gas gradient -->
+      <linearGradient id="elc__h2Grad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="var(--cmp-h2,#e3f2fd)" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="var(--cmp-h2,#e3f2fd)" stop-opacity=".85"/>
+      </linearGradient>
+      <!-- O2 gas gradient -->
+      <linearGradient id="elc__o2Grad" x1="0" y1="1" x2="0" y2="0">
+        <stop offset="0%" stop-color="var(--cmp-o2,#ffcdd2)" stop-opacity=".3"/>
+        <stop offset="100%" stop-color="var(--cmp-o2,#ffcdd2)" stop-opacity=".85"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ═══ 1. Beaker / water container ═══ -->
+    <rect class="elc__beaker" x="80" y="240" width="300" height="130" rx="6"
+          fill="url(#elc__waterGrad)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- water surface line -->
+    <line x1="80" y1="240" x2="380" y2="240" stroke="var(--cmp-water,#bbdefb)" stroke-width="2" opacity=".6"/>
+
+    <!-- ═══ 2. Left collection tube (cathode / H₂) ═══ -->
+    <rect class="elc__tubeL" x="120" y="100" width="60" height="170" rx="4"
+          fill="url(#elc__waterGrad)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- tube top cap -->
+    <line x1="120" y1="100" x2="180" y2="100" stroke="var(--cmp-stroke,#37474f)" stroke-width="2"/>
+    <!-- H2 gas fill (dynamic height) -->
+    <rect class="elc__gasH2" x="121" y="100" width="58" height="0" rx="3"
+          fill="url(#elc__h2Grad)"/>
+
+    <!-- ═══ 3. Right collection tube (anode / O₂) ═══ -->
+    <rect class="elc__tubeR" x="280" y="100" width="60" height="170" rx="4"
+          fill="url(#elc__waterGrad)" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    <!-- tube top cap -->
+    <line x1="280" y1="100" x2="340" y2="100" stroke="var(--cmp-stroke,#37474f)" stroke-width="2"/>
+    <!-- O2 gas fill (dynamic height) -->
+    <rect class="elc__gasO2" x="281" y="100" width="58" height="0" rx="3"
+          fill="url(#elc__o2Grad)"/>
+
+    <!-- ═══ 4. Electrodes ═══ -->
+    <!-- Left electrode (cathode -) -->
+    <rect class="elc__cathode" x="143" y="260" width="14" height="80" rx="2"
+          fill="var(--cmp-cathode,#78909c)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+    <!-- Right electrode (anode +) -->
+    <rect class="elc__anode" x="303" y="260" width="14" height="80" rx="2"
+          fill="var(--cmp-anode,#78909c)" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8"/>
+
+    <!-- ═══ 5. Wires ═══ -->
+    <!-- Left wire: cathode up through tube, out top, to battery - -->
+    <polyline class="elc__wireL" fill="none" stroke="var(--cmp-wire,#f44336)" stroke-width="2"
+              points="150,260 150,80 150,50 190,30"/>
+    <!-- Right wire: anode up through tube, out top, to battery + -->
+    <polyline class="elc__wireR" fill="none" stroke="var(--cmp-wire,#f44336)" stroke-width="2"
+              points="310,260 310,80 310,50 270,30"/>
+
+    <!-- ═══ 6. Battery symbol ═══ -->
+    <g class="elc__battery">
+      <!-- battery body -->
+      <rect x="190" y="18" width="80" height="24" rx="4"
+            fill="#fff9c4" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <!-- battery internal lines (short=+, long=-) -->
+      <line x1="218" y1="23" x2="218" y2="37" stroke="var(--cmp-stroke,#37474f)" stroke-width="2.5"/>
+      <line x1="224" y1="26" x2="224" y2="34" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2"/>
+      <line x1="234" y1="23" x2="234" y2="37" stroke="var(--cmp-stroke,#37474f)" stroke-width="2.5"/>
+      <line x1="240" y1="26" x2="240" y2="34" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2"/>
+      <!-- + and - labels on battery -->
+      <text x="262" y="35" font-size="12" font-weight="700" fill="#d32f2f" text-anchor="middle">+</text>
+      <text x="198" y="35" font-size="12" font-weight="700" fill="#1565c0" text-anchor="middle">−</text>
+    </g>
+
+    <!-- ═══ 7. Bubble containers (populated by JS) ═══ -->
+    <g class="elc__bubblesH2"></g>
+    <g class="elc__bubblesO2"></g>
+
+    <!-- ═══ 8. Labels ═══ -->
+    <g class="elc__labels">
+      <!-- electrode labels -->
+      <text class="elc__label elc__lbl-cathode" x="150" y="355" font-size="11" fill="var(--cmp-stroke,#37474f)" text-anchor="middle">阴极(−)</text>
+      <text class="elc__label elc__lbl-anode" x="310" y="355" font-size="11" fill="var(--cmp-stroke,#37474f)" text-anchor="middle">阳极(+)</text>
+      <!-- gas labels -->
+      <text class="elc__label elc__lbl-h2" x="150" y="93" font-size="11" fill="#1565c0" text-anchor="middle">氢气(H₂)</text>
+      <text class="elc__label elc__lbl-o2" x="310" y="93" font-size="11" fill="#c62828" text-anchor="middle">氧气(O₂)</text>
+      <!-- battery label -->
+      <text class="elc__label elc__lbl-battery" x="230" y="13" font-size="10" fill="var(--cmp-stroke,#37474f)" text-anchor="middle">电源</text>
+      <!-- water label -->
+      <text class="elc__label elc__lbl-water" x="230" y="390" font-size="11" fill="var(--cmp-stroke,#37474f)" text-anchor="middle">水(H₂O)</text>
+      <!-- chemical equation -->
+      <text class="elc__eq elc__lbl-eq" x="230" y="380" font-size="10.5" fill="#37474f" text-anchor="middle">2H₂O → 2H₂↑ + O₂↑</text>
+    </g>
+
+    <!-- ═══ 9. Data panel ═══ -->
+    <g class="elc__panel">
+      <rect x="6" y="6" rx="4" width="108" height="72"
+            fill="rgba(255,255,255,.92)" stroke="var(--cmp-stroke,#37474f)" stroke-width=".8"/>
+      <text class="elc__data elc__d-volt" x="12" y="21" font-size="10.5" fill="var(--cmp-stroke,#37474f)"></text>
+      <text class="elc__data elc__d-h2" x="12" y="35" font-size="10.5" fill="#1565c0"></text>
+      <text class="elc__data elc__d-o2" x="12" y="49" font-size="10.5" fill="#c62828"></text>
+      <text class="elc__data elc__d-ratio" x="12" y="63" font-size="10.5" fill="var(--cmp-stroke,#37474f)"></text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.reaction.electrolysis.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    /* ─── Props ─── */
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var voltage=Math.max(1,Math.min(24,Number(P.voltage)||6));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var showData=(P.showData!=='off');
+
+    /* ─── Element refs ─── */
+    function q(c){return root.querySelector('.elc__'+c)}
+    var el={};
+    ['gasH2','gasO2','bubblesH2','bubblesO2',
+     'panel','d-volt','d-h2','d-o2','d-ratio',
+     'labels'
+    ].forEach(function(k){el[k]=q(k)});
+
+    if(!showData&&el['panel'])el['panel'].setAttribute('opacity','0');
+    if(!showLabels&&el['labels'])el['labels'].setAttribute('opacity','0');
+
+    /* ─── Constants ─── */
+    var TUBE_TOP=101;       /* inner top of tubes */
+    var TUBE_BOT=268;       /* where tube meets water */
+    var TUBE_H=TUBE_BOT-TUBE_TOP; /* max gas height */
+
+    var CATHODE_X=150;      /* center x of cathode */
+    var ANODE_X=310;        /* center x of anode */
+    var ELECTRODE_TOP=260;  /* top of electrodes (bubble spawn) */
+
+    var TUBE_L_LEFT=121;    /* left tube inner x */
+    var TUBE_L_RIGHT=179;
+    var TUBE_R_LEFT=281;
+    var TUBE_R_RIGHT=339;
+
+    /* ─── State ─── */
+    var h2Volume=0;         /* mL accumulated */
+    var o2Volume=0;
+    var MAX_VOL_H2=40;      /* mL at full tube */
+    var MAX_VOL_O2=20;
+
+    /* ─── Bubbles ─── */
+    var bubblesH2=[];
+    var bubblesO2=[];
+    var BUBBLE_R_MIN=1.5;
+    var BUBBLE_R_MAX=3.5;
+
+    var lastTime=0;
+    var h2SpawnAcc=0;
+    var o2SpawnAcc=0;
+
+    function spawnBubble(arr,cx,tubeLeft,tubeRight,color){
+      var bx=cx+(Math.random()-0.5)*10;
+      var br=BUBBLE_R_MIN+Math.random()*(BUBBLE_R_MAX-BUBBLE_R_MIN);
+      var b={
+        x:bx, y:ELECTRODE_TOP,
+        r:br,
+        vx:(Math.random()-0.5)*0.3,
+        tubeLeft:tubeLeft+br,
+        tubeRight:tubeRight-br,
+        color:color,
+        el:null
+      };
+      var circle=document.createElementNS('http://www.w3.org/2000/svg','circle');
+      circle.setAttribute('cx',b.x);
+      circle.setAttribute('cy',b.y);
+      circle.setAttribute('r',b.r);
+      circle.setAttribute('fill',color);
+      circle.setAttribute('opacity','0.7');
+      b.el=circle;
+      arr.push(b);
+      return b;
+    }
+
+    function removeBubble(arr,idx){
+      if(arr[idx].el&&arr[idx].el.parentNode){
+        arr[idx].el.parentNode.removeChild(arr[idx].el);
+      }
+      arr.splice(idx,1);
+    }
+
+    /* ─── Gas level rendering ─── */
+    function updateGasLevels(){
+      /* H2 gas fill */
+      var h2Frac=Math.min(1,h2Volume/MAX_VOL_H2);
+      var h2H=h2Frac*TUBE_H;
+      if(el['gasH2']){
+        el['gasH2'].setAttribute('y',TUBE_TOP);
+        el['gasH2'].setAttribute('height',h2H);
+      }
+      /* O2 gas fill */
+      var o2Frac=Math.min(1,o2Volume/MAX_VOL_O2);
+      var o2H=o2Frac*TUBE_H;
+      if(el['gasO2']){
+        el['gasO2'].setAttribute('y',TUBE_TOP);
+        el['gasO2'].setAttribute('height',o2H);
+      }
+    }
+
+    /* ─── Data panel ─── */
+    function updatePanel(){
+      if(!showData)return;
+      if(el['d-volt'])el['d-volt'].textContent='电压: '+voltage.toFixed(1)+' V';
+      if(el['d-h2'])el['d-h2'].textContent='H₂: '+h2Volume.toFixed(1)+' mL';
+      if(el['d-o2'])el['d-o2'].textContent='O₂: '+o2Volume.toFixed(1)+' mL';
+      if(el['d-ratio'])el['d-ratio'].textContent='H₂:O₂ = 2:1';
+    }
+
+    /* ─── Event dispatch ─── */
+    function emitChange(){
+      root.dispatchEvent(new CustomEvent('cmp:change',{
+        bubbles:true, composed:true,
+        detail:{
+          id:root.getAttribute('data-cmp-id'),
+          type:'tick',
+          values:{
+            voltage:voltage,
+            h2Volume:Math.round(h2Volume*10)/10,
+            o2Volume:Math.round(o2Volume*10)/10
+          }
+        }
+      }));
+    }
+
+    /* ─── Animation loop ─── */
+    var rafId=null;
+    var emitAcc=0;
+
+    function tick(ts){
+      if(!lastTime)lastTime=ts;
+      var dt=(ts-lastTime)/1000; /* seconds */
+      if(dt>0.1)dt=0.1; /* clamp */
+      lastTime=ts;
+
+      if(running&&h2Volume<MAX_VOL_H2){
+        var speed=voltage/6; /* normalized speed factor */
+
+        /* Gas production rate: proportional to voltage */
+        var h2Rate=0.8*speed;  /* mL/s base rate */
+        var o2Rate=0.4*speed;  /* half of H2 */
+        h2Volume=Math.min(MAX_VOL_H2,h2Volume+h2Rate*dt);
+        o2Volume=Math.min(MAX_VOL_O2,o2Volume+o2Rate*dt);
+
+        /* Spawn bubbles */
+        var h2SpawnRate=3*speed; /* bubbles per second */
+        var o2SpawnRate=1.5*speed;
+
+        h2SpawnAcc+=h2SpawnRate*dt;
+        o2SpawnAcc+=o2SpawnRate*dt;
+
+        while(h2SpawnAcc>=1){
+          h2SpawnAcc-=1;
+          var bh=spawnBubble(bubblesH2,CATHODE_X,TUBE_L_LEFT,TUBE_L_RIGHT,'var(--cmp-h2,#e3f2fd)');
+          if(el['bubblesH2'])el['bubblesH2'].appendChild(bh.el);
+        }
+        while(o2SpawnAcc>=1){
+          o2SpawnAcc-=1;
+          var bo=spawnBubble(bubblesO2,ANODE_X,TUBE_R_LEFT,TUBE_R_RIGHT,'var(--cmp-o2,#ffcdd2)');
+          if(el['bubblesO2'])el['bubblesO2'].appendChild(bo.el);
+        }
+
+        /* Move bubbles upward */
+        var riseSpeed=40*speed; /* px/s */
+        var gasTopH2=TUBE_TOP+Math.min(1,h2Volume/MAX_VOL_H2)*TUBE_H;
+        var gasTopO2=TUBE_TOP+Math.min(1,o2Volume/MAX_VOL_O2)*TUBE_H;
+
+        for(var i=bubblesH2.length-1;i>=0;i--){
+          var b=bubblesH2[i];
+          b.y-=riseSpeed*dt;
+          b.x+=b.vx;
+          /* keep within tube */
+          if(b.x<b.tubeLeft){b.x=b.tubeLeft;b.vx=Math.abs(b.vx);}
+          if(b.x>b.tubeRight){b.x=b.tubeRight;b.vx=-Math.abs(b.vx);}
+          /* remove if reached gas level */
+          if(b.y<=gasTopH2){
+            removeBubble(bubblesH2,i);
+          }else{
+            b.el.setAttribute('cx',b.x.toFixed(1));
+            b.el.setAttribute('cy',b.y.toFixed(1));
+          }
+        }
+        for(var j=bubblesO2.length-1;j>=0;j--){
+          var b2=bubblesO2[j];
+          b2.y-=riseSpeed*dt;
+          b2.x+=b2.vx;
+          if(b2.x<b2.tubeLeft){b2.x=b2.tubeLeft;b2.vx=Math.abs(b2.vx);}
+          if(b2.x>b2.tubeRight){b2.x=b2.tubeRight;b2.vx=-Math.abs(b2.vx);}
+          if(b2.y<=gasTopO2){
+            removeBubble(bubblesO2,j);
+          }else{
+            b2.el.setAttribute('cx',b2.x.toFixed(1));
+            b2.el.setAttribute('cy',b2.y.toFixed(1));
+          }
+        }
+      }
+
+      updateGasLevels();
+      updatePanel();
+
+      /* Emit change event ~4 times per second */
+      emitAcc+=dt;
+      if(emitAcc>=0.25){
+        emitAcc=0;
+        emitChange();
+      }
+
+      rafId=requestAnimationFrame(tick);
+    }
+
+    /* ─── Initial render ─── */
+    updateGasLevels();
+    updatePanel();
+    rafId=requestAnimationFrame(tick);
+
+    /* ─── MutationObserver for prop changes ─── */
+    var observer=new MutationObserver(function(mutations){
+      mutations.forEach(function(m){
+        if(m.type==='attributes'){
+          if(m.attributeName==='data-props'){
+            try{
+              var np=JSON.parse(root.getAttribute('data-props')||'{}');
+              if(np.voltage!==undefined)voltage=Math.max(1,Math.min(24,Number(np.voltage)||6));
+              if(np.running!==undefined)running=(np.running!=='off');
+              if(np.showLabels!==undefined){
+                showLabels=(np.showLabels!=='off');
+                if(el['labels'])el['labels'].setAttribute('opacity',showLabels?'1':'0');
+              }
+              if(np.showData!==undefined){
+                showData=(np.showData!=='off');
+                if(el['panel'])el['panel'].setAttribute('opacity',showData?'1':'0');
+              }
+            }catch(e){}
+          }
+        }
+      });
+    });
+    observer.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    /* ─── Cleanup ─── */
+    window.addEventListener('beforeunload',function(){
+      if(rafId)cancelAnimationFrame(rafId);
+      observer.disconnect();
+    });
+  })();
+  </script>
+</div>

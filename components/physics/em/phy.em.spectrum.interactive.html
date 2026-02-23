@@ -1,0 +1,232 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.em.spectrum.interactive",
+  "name": "电磁波谱（交互式）",
+  "nameEn": "Electromagnetic Spectrum (Interactive)",
+  "category": "physics/em",
+  "version": "1.0.0",
+  "viewport": { "w": 560, "h": 400 },
+  "tags": ["electromagnetic","spectrum","wavelength","frequency","light","radio","interactive"],
+  "props": [
+    { "key": "size",        "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "highlight",   "type": "color",  "default": "#ff9800", "desc": "高亮颜色" },
+    { "key": "showWave",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示波形动画" },
+    { "key": "selectedBand","type": "enum",   "default": "visible", "enum": ["radio","microwave","infrared","visible","ultraviolet","xray","gamma"], "desc": "选中波段" },
+    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",       "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "highlight": "--cmp-highlight", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "select", "values": { "band": "string", "wavelengthRange": "string", "frequencyRange": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.em.spectrum.interactive" role="img" aria-label="电磁波谱（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.em.spectrum.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;
+      width:calc(var(--h)*560/400);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,152,0,calc(.7*var(--cmp-glow,0))));
+      user-select:none;cursor:pointer;
+    }
+    .cmp[data-cmp-id="phy.em.spectrum.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.em.spectrum.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="phy.em.spectrum.interactive"] .em__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 560 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="em__visG" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#8b00ff"/><stop offset="16%" stop-color="#0000ff"/>
+        <stop offset="33%" stop-color="#00ffff"/><stop offset="50%" stop-color="#00ff00"/>
+        <stop offset="66%" stop-color="#ffff00"/><stop offset="83%" stop-color="#ff7f00"/>
+        <stop offset="100%" stop-color="#ff0000"/>
+      </linearGradient>
+    </defs>
+
+    <text x="280" y="24" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">电磁波谱</text>
+
+    <!-- 频率轴 -->
+    <g transform="translate(30,50)">
+      <text x="250" y="-5" text-anchor="middle" font-size="10" fill="#999">频率 (Hz) →</text>
+      <text x="250" y="195" text-anchor="middle" font-size="10" fill="#999">← 波长 (m)</text>
+    </g>
+
+    <!-- 波段条 -->
+    <g transform="translate(30,60)">
+      <!-- 无线电波 -->
+      <rect class="em__band" data-band="radio" x="0" y="0" width="72" height="40" rx="3" fill="#e57373" opacity="0.7"/>
+      <text x="36" y="25" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">无线电波</text>
+      <text x="36" y="52" text-anchor="middle" font-size="7" fill="#999">>1mm</text>
+      <text x="36" y="-5" text-anchor="middle" font-size="7" fill="#999">&lt;3×10¹¹</text>
+
+      <!-- 微波 -->
+      <rect class="em__band" data-band="microwave" x="72" y="0" width="72" height="40" rx="3" fill="#ff8a65" opacity="0.7"/>
+      <text x="108" y="25" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">微波</text>
+      <text x="108" y="52" text-anchor="middle" font-size="7" fill="#999">1mm-1m</text>
+      <text x="108" y="-5" text-anchor="middle" font-size="7" fill="#999">3×10⁸-¹¹</text>
+
+      <!-- 红外线 -->
+      <rect class="em__band" data-band="infrared" x="144" y="0" width="72" height="40" rx="3" fill="#ef5350" opacity="0.7"/>
+      <text x="180" y="25" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">红外线</text>
+      <text x="180" y="52" text-anchor="middle" font-size="7" fill="#999">700nm-1mm</text>
+      <text x="180" y="-5" text-anchor="middle" font-size="7" fill="#999">3×10¹¹-¹⁴</text>
+
+      <!-- 可见光 -->
+      <rect class="em__band" data-band="visible" x="216" y="0" width="72" height="40" rx="3" fill="url(#em__visG)"/>
+      <text x="252" y="25" text-anchor="middle" font-size="9" fill="#fff" font-weight="700" stroke="#333" stroke-width="0.3">可见光</text>
+      <text x="252" y="52" text-anchor="middle" font-size="7" fill="#999">380-700nm</text>
+      <text x="252" y="-5" text-anchor="middle" font-size="7" fill="#999">4-7.5×10¹⁴</text>
+
+      <!-- 紫外线 -->
+      <rect class="em__band" data-band="ultraviolet" x="288" y="0" width="72" height="40" rx="3" fill="#7e57c2" opacity="0.7"/>
+      <text x="324" y="25" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">紫外线</text>
+      <text x="324" y="52" text-anchor="middle" font-size="7" fill="#999">10-380nm</text>
+      <text x="324" y="-5" text-anchor="middle" font-size="7" fill="#999">7.5×10¹⁴-¹⁶</text>
+
+      <!-- X射线 -->
+      <rect class="em__band" data-band="xray" x="360" y="0" width="72" height="40" rx="3" fill="#5c6bc0" opacity="0.7"/>
+      <text x="396" y="25" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">X射线</text>
+      <text x="396" y="52" text-anchor="middle" font-size="7" fill="#999">0.01-10nm</text>
+      <text x="396" y="-5" text-anchor="middle" font-size="7" fill="#999">3×10¹⁶-¹⁹</text>
+
+      <!-- γ射线 -->
+      <rect class="em__band" data-band="gamma" x="432" y="0" width="72" height="40" rx="3" fill="#42a5f5" opacity="0.7"/>
+      <text x="468" y="25" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">γ射线</text>
+      <text x="468" y="52" text-anchor="middle" font-size="7" fill="#999">&lt;0.01nm</text>
+      <text x="468" y="-5" text-anchor="middle" font-size="7" fill="#999">>3×10¹⁹</text>
+
+      <!-- 选中高亮框 -->
+      <rect class="em__highlight" x="216" y="-3" width="78" height="46" rx="5" fill="none" stroke="var(--cmp-highlight,#ff9800)" stroke-width="2.5"/>
+    </g>
+
+    <!-- 可见光展开 -->
+    <g transform="translate(30,130)">
+      <text x="250" y="0" text-anchor="middle" font-size="10" font-weight="600" fill="var(--cmp-stroke,#37474f)">可见光谱展开</text>
+      <rect x="50" y="8" width="400" height="24" rx="4" fill="url(#em__visG)"/>
+      <text x="50" y="46" font-size="8" fill="#8b00ff">380nm</text>
+      <text x="107" y="46" font-size="8" fill="#0000ff" text-anchor="middle">蓝</text>
+      <text x="164" y="46" font-size="8" fill="#00aaaa" text-anchor="middle">青</text>
+      <text x="250" y="46" font-size="8" fill="#008800" text-anchor="middle">绿</text>
+      <text x="336" y="46" font-size="8" fill="#cc8800" text-anchor="middle">黄</text>
+      <text x="393" y="46" font-size="8" fill="#ff7f00" text-anchor="middle">橙</text>
+      <text x="445" y="46" font-size="8" fill="#ff0000" text-anchor="end">700nm</text>
+    </g>
+
+    <!-- 波形动画 -->
+    <g class="em__waveAnim" transform="translate(30,200)">
+      <text x="250" y="0" text-anchor="middle" font-size="10" font-weight="600" fill="var(--cmp-stroke,#37474f)">波形示意</text>
+      <line x1="0" y1="50" x2="500" y2="50" stroke="#e0e0e0" stroke-width="0.5"/>
+      <polyline class="em__waveLine" fill="none" stroke="var(--cmp-highlight,#ff9800)" stroke-width="2"/>
+      <text class="em__waveLabel" x="250" y="95" text-anchor="middle" font-size="10" fill="var(--cmp-stroke,#37474f)">可见光 λ ≈ 380-700 nm</text>
+    </g>
+
+    <!-- 信息面板 -->
+    <g transform="translate(280,310)">
+      <rect x="-250" y="0" width="500" height="75" rx="8" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="em__infoTitle" x="0" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="var(--cmp-highlight,#ff9800)">可见光</text>
+      <text class="em__infoWave" x="-230" y="38" font-size="9" fill="#666">波长范围: 380 - 700 nm</text>
+      <text class="em__infoFreq" x="-230" y="54" font-size="9" fill="#666">频率范围: 4.3×10¹⁴ - 7.5×10¹⁴ Hz</text>
+      <text class="em__infoUse" x="-230" y="70" font-size="9" fill="#666">应用: 人眼视觉、光纤通信、摄影</text>
+      <text class="em__infoEnergy" x="30" y="38" font-size="9" fill="#666">能量: 1.8 - 3.1 eV</text>
+      <text x="30" y="54" font-size="9" fill="#999">c = λf = 3×10⁸ m/s</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.em.spectrum.interactive')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var selected=P.selectedBand||'visible';
+
+    var BANDS={
+      radio:{name:'无线电波',wave:'>1 mm',freq:'<3×10¹¹ Hz',use:'广播、电视、通信',energy:'<1.24×10⁻³ eV',color:'#e57373',waveN:2,idx:0},
+      microwave:{name:'微波',wave:'1 mm - 1 m',freq:'3×10⁸ - 3×10¹¹ Hz',use:'微波炉、雷达、卫星通信',energy:'1.24×10⁻³ - 1.24 meV',color:'#ff8a65',waveN:5,idx:1},
+      infrared:{name:'红外线',wave:'700 nm - 1 mm',freq:'3×10¹¹ - 4.3×10¹⁴ Hz',use:'遥控器、热成像、夜视仪',energy:'1.24 meV - 1.8 eV',color:'#ef5350',waveN:12,idx:2},
+      visible:{name:'可见光',wave:'380 - 700 nm',freq:'4.3×10¹⁴ - 7.5×10¹⁴ Hz',use:'人眼视觉、光纤通信、摄影',energy:'1.8 - 3.1 eV',color:'#4caf50',waveN:25,idx:3},
+      ultraviolet:{name:'紫外线',wave:'10 - 380 nm',freq:'7.5×10¹⁴ - 3×10¹⁶ Hz',use:'杀菌消毒、验钞、光刻',energy:'3.1 - 124 eV',color:'#7e57c2',waveN:50,idx:4},
+      xray:{name:'X射线',wave:'0.01 - 10 nm',freq:'3×10¹⁶ - 3×10¹⁹ Hz',use:'医学影像、安检、晶体分析',energy:'124 eV - 124 keV',color:'#5c6bc0',waveN:100,idx:5},
+      gamma:{name:'γ射线',wave:'<0.01 nm',freq:'>3×10¹⁹ Hz',use:'放射治疗、核物理研究',energy:'>124 keV',color:'#42a5f5',waveN:200,idx:6}
+    };
+
+    var highlight=root.querySelector('.em__highlight');
+    var waveLine=root.querySelector('.em__waveLine');
+    var waveLabel=root.querySelector('.em__waveLabel');
+    var infoTitle=root.querySelector('.em__infoTitle');
+    var infoWave=root.querySelector('.em__infoWave');
+    var infoFreq=root.querySelector('.em__infoFreq');
+    var infoUse=root.querySelector('.em__infoUse');
+    var infoEnergy=root.querySelector('.em__infoEnergy');
+
+    function selectBand(band){
+      selected=band;
+      var b=BANDS[band];if(!b)return;
+      var hx=30+b.idx*72-3;
+      highlight.setAttribute('x',hx);
+
+      infoTitle.textContent=b.name;
+      infoWave.textContent='波长范围: '+b.wave;
+      infoFreq.textContent='频率范围: '+b.freq;
+      infoUse.textContent='应用: '+b.use;
+      infoEnergy.textContent='能量: '+b.energy;
+      waveLabel.textContent=b.name+' λ ≈ '+b.wave;
+    }
+    selectBand(selected);
+
+    /* 点击波段 */
+    var bands=root.querySelectorAll('.em__band');
+    for(var i=0;i<bands.length;i++){
+      bands[i].addEventListener('click',function(e){
+        var bn=this.getAttribute('data-band');
+        if(bn)selectBand(bn);
+      });
+    }
+
+    /* 波形动画 */
+    var time=0,animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04)*speed;
+      lastT=t;
+      time+=dt;
+
+      var b=BANDS[selected];
+      var wN=b?b.waveN:25;
+      var pts='';
+      for(var i=0;i<=500;i+=2){
+        var y=50+30*Math.sin(2*Math.PI*wN*i/500-time*5);
+        pts+=(i?'L':'M')+i+','+y.toFixed(1);
+      }
+      waveLine.setAttribute('points',pts.replace(/^M/,''));
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      if(P2.selectedBand&&BANDS[P2.selectedBand])selectBand(P2.selectedBand);
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

@@ -1,0 +1,233 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.measure.volume-model.interactive",
+  "name": "体积模型",
+  "nameEn": "Volume Model",
+  "category": "math/measure",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件宽度" },
+    { "key": "length", "type": "number", "default": 3, "min": 1, "max": 5, "desc": "长(格)" },
+    { "key": "width", "type": "number", "default": 2, "min": 1, "max": 5, "desc": "宽(格)" },
+    { "key": "height", "type": "number", "default": 2, "min": 1, "max": 5, "desc": "高(格)" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["volume", "cube", "3d", "measurement", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "length": "number", "width": "number", "height": "number", "volume": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.measure.volume-model.interactive" role="img" aria-label="体积模型">
+  <style>
+    .cmp[data-cmp-id="math.measure.volume-model.interactive"] {
+      --s: var(--cmp-size, 320px);
+      display: inline-block; width: var(--s); user-select: none; -webkit-user-select: none;
+    }
+    .cmp[data-cmp-id="math.measure.volume-model.interactive"] svg { width: 100%; height: auto; display: block }
+    .cmp[data-cmp-id="math.measure.volume-model.interactive"] .vm__btn { cursor: pointer; transition: opacity .15s }
+    .cmp[data-cmp-id="math.measure.volume-model.interactive"] .vm__btn:hover { opacity: .75 }
+  </style>
+  <svg viewBox="0 0 320 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs></defs>
+    <g class="vm__cubes"></g>
+    <g class="vm__labels"></g>
+    <g class="vm__controls"></g>
+  </svg>
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.measure.volume-model.interactive') return;
+    var svg = root.querySelector('svg'), NS = 'http://www.w3.org/2000/svg';
+
+    var S = { l: 3, w: 2, h: 2 };
+    try { var p = root.getAttribute('data-props');
+      if (p) { var o = JSON.parse(p); S.l = Math.max(1,Math.min(5,Number(o.length)||3));
+        S.w = Math.max(1,Math.min(5,Number(o.width)||2)); S.h = Math.max(1,Math.min(5,Number(o.height)||2)); }
+    } catch(e) {}
+
+    var CW = 24;
+    var cos30 = Math.cos(Math.PI / 6), sin30 = 0.5;
+    // Isometric axis vectors (screen deltas per grid unit)
+    var axX = [CW * cos30, CW * sin30];   // +x grid => right-down
+    var axY = [-CW * cos30, CW * sin30];   // +y grid => left-down
+    var axZ = [0, -CW];                     // +z grid => straight up
+
+    function isoX(gx, gy, gz) { return gx * axX[0] + gy * axY[0] + gz * axZ[0]; }
+    function isoY(gx, gy, gz) { return gx * axX[1] + gy * axY[1] + gz * axZ[1]; }
+    function r(v) { return Math.round(v * 100) / 100; }
+
+    function calcOrigin() {
+      // Compute offset to center cuboid in the 3D view area (y: 10..210)
+      var pts = [[0,0,0],[S.l,0,0],[0,S.w,0],[S.l,S.w,0],
+                 [0,0,S.h],[S.l,0,S.h],[0,S.w,S.h],[S.l,S.w,S.h]];
+      var mnX = Infinity, mxX = -Infinity, mnY = Infinity, mxY = -Infinity;
+      pts.forEach(function(c) {
+        var x = isoX(c[0],c[1],c[2]), y = isoY(c[0],c[1],c[2]);
+        if (x < mnX) mnX = x; if (x > mxX) mxX = x;
+        if (y < mnY) mnY = y; if (y > mxY) mxY = y;
+      });
+      return { ox: 160 - (mnX + mxX) / 2, oy: 115 - (mnY + mxY) / 2 };
+    }
+
+    function facePath(sx, sy, dx1, dy1, dx2, dy2) {
+      return 'M'+r(sx)+','+r(sy)+'l'+r(dx1)+','+r(dy1)+'l'+r(dx2)+','+r(dy2)
+        +'l'+r(-dx1)+','+r(-dy1)+'Z';
+    }
+
+    function drawCubes() {
+      var g = svg.querySelector('.vm__cubes'); g.innerHTML = '';
+      var o = calcOrigin();
+      // Painter's algorithm: back-to-front (gy high to low), bottom-to-top, left-to-right
+      for (var gy = S.w - 1; gy >= 0; gy--) {
+        for (var gz = 0; gz < S.h; gz++) {
+          for (var gx = 0; gx < S.l; gx++) {
+            // Top-back vertex of this unit cube (grid gx, gy, gz+1)
+            var bx = o.ox + isoX(gx, gy, gz + 1);
+            var by = o.oy + isoY(gx, gy, gz + 1);
+            // Top face
+            var pt = document.createElementNS(NS, 'path');
+            pt.setAttribute('d', facePath(bx, by, axX[0], axX[1], axY[0], axY[1]));
+            pt.setAttribute('fill', '#90CAF9'); pt.setAttribute('stroke', '#1565C0');
+            pt.setAttribute('stroke-width', '0.5'); g.appendChild(pt);
+            // Left face (from top-back, go along Y then down)
+            var pl = document.createElementNS(NS, 'path');
+            pl.setAttribute('d', facePath(bx, by, axY[0], axY[1], 0, CW));
+            pl.setAttribute('fill', '#42A5F5'); pl.setAttribute('stroke', '#1565C0');
+            pl.setAttribute('stroke-width', '0.5'); g.appendChild(pl);
+            // Right face (from top-right vertex, go along -Y then down)
+            var rx = bx + axX[0] + axY[0], ry = by + axX[1] + axY[1];
+            var pr = document.createElementNS(NS, 'path');
+            pr.setAttribute('d', facePath(rx, ry, -axY[0], -axY[1], 0, CW));
+            pr.setAttribute('fill', '#1E88E5'); pr.setAttribute('stroke', '#1565C0');
+            pr.setAttribute('stroke-width', '0.5'); g.appendChild(pr);
+          }
+        }
+      }
+    }
+
+    function addLine(parent, x1, y1, x2, y2, col) {
+      var l = document.createElementNS(NS, 'line');
+      l.setAttribute('x1',r(x1)); l.setAttribute('y1',r(y1));
+      l.setAttribute('x2',r(x2)); l.setAttribute('y2',r(y2));
+      l.setAttribute('stroke',col); l.setAttribute('stroke-width','1.2');
+      [[x1,y1],[x2,y2]].forEach(function(p){
+        var c = document.createElementNS(NS,'circle');
+        c.setAttribute('cx',r(p[0])); c.setAttribute('cy',r(p[1]));
+        c.setAttribute('r','1.5'); c.setAttribute('fill',col); parent.appendChild(c);
+      });
+      parent.appendChild(l);
+    }
+
+    function addText(parent, x, y, txt, col) {
+      var t = document.createElementNS(NS, 'text');
+      t.setAttribute('x',r(x)); t.setAttribute('y',r(y)); t.setAttribute('text-anchor','middle');
+      t.setAttribute('font-size','10'); t.setAttribute('font-weight','600'); t.setAttribute('fill',col);
+      t.setAttribute('font-family',"'Microsoft YaHei','PingFang SC',Arial,sans-serif");
+      t.textContent = txt; parent.appendChild(t);
+    }
+
+    function drawLabels() {
+      var g = svg.querySelector('.vm__labels'); g.innerHTML = '';
+      var o = calcOrigin(), off = 8;
+      // Bottom-front corner at grid (0,0,0)
+      var bx0 = o.ox + isoX(0,0,0), by0 = o.oy + isoY(0,0,0);
+      // 长 along x-axis: (0,0,0) -> (l,0,0)
+      var bx1 = o.ox + isoX(S.l,0,0), by1 = o.oy + isoY(S.l,0,0);
+      addLine(g, bx0, by0+off, bx1, by1+off, '#E53935');
+      addText(g, (bx0+bx1)/2, (by0+by1)/2+off+12, '长='+S.l, '#E53935');
+      // 宽 along y-axis: (0,0,0) -> (0,w,0)
+      var bx2 = o.ox + isoX(0,S.w,0), by2 = o.oy + isoY(0,S.w,0);
+      addLine(g, bx0, by0+off, bx2, by2+off, '#43A047');
+      addText(g, (bx0+bx2)/2, (by0+by2)/2+off+12, '宽='+S.w, '#43A047');
+      // 高 along z-axis at (0,w,0) -> (0,w,h)
+      var bx3 = o.ox + isoX(0,S.w,0), by3 = o.oy + isoY(0,S.w,0);
+      var bx4 = o.ox + isoX(0,S.w,S.h), by4 = o.oy + isoY(0,S.w,S.h);
+      addLine(g, bx3-off, by3, bx4-off, by4, '#1565C0');
+      addText(g, (bx3+bx4)/2-off-12, (by3+by4)/2+3, '高='+S.h, '#1565C0');
+    }
+
+    function drawControls() {
+      var g = svg.querySelector('.vm__controls'); g.innerHTML = '';
+      var ff = "'Microsoft YaHei','PingFang SC',Arial,sans-serif";
+      var dims = [
+        { key:'l', label:'长', val:S.l, color:'#E53935', y:228 },
+        { key:'w', label:'宽', val:S.w, color:'#43A047', y:244 },
+        { key:'h', label:'高', val:S.h, color:'#1565C0', y:260 }
+      ];
+      dims.forEach(function(d) {
+        // Minus button
+        var gm = document.createElementNS(NS,'g');
+        gm.classList.add('vm__btn'); gm.setAttribute('data-key',d.key); gm.setAttribute('data-delta','-1');
+        var rm = document.createElementNS(NS,'rect');
+        rm.setAttribute('x','68'); rm.setAttribute('y',d.y); rm.setAttribute('width','22');
+        rm.setAttribute('height','14'); rm.setAttribute('rx','3'); rm.setAttribute('fill','#e0e0e0');
+        var tm = document.createElementNS(NS,'text');
+        tm.setAttribute('x','79'); tm.setAttribute('y',d.y+11);
+        tm.setAttribute('text-anchor','middle'); tm.setAttribute('font-size','12');
+        tm.setAttribute('font-weight','700'); tm.setAttribute('fill','#555');
+        tm.setAttribute('font-family','Arial,sans-serif'); tm.setAttribute('pointer-events','none');
+        tm.textContent = '\u2212';
+        gm.appendChild(rm); gm.appendChild(tm); g.appendChild(gm);
+        // Label
+        var tl = document.createElementNS(NS,'text');
+        tl.setAttribute('x','115'); tl.setAttribute('y',d.y+11);
+        tl.setAttribute('text-anchor','middle'); tl.setAttribute('font-size','11');
+        tl.setAttribute('font-weight','600'); tl.setAttribute('fill',d.color);
+        tl.setAttribute('font-family',ff); tl.textContent = d.label+': '+d.val;
+        g.appendChild(tl);
+        // Plus button
+        var gp = document.createElementNS(NS,'g');
+        gp.classList.add('vm__btn'); gp.setAttribute('data-key',d.key); gp.setAttribute('data-delta','1');
+        var rp = document.createElementNS(NS,'rect');
+        rp.setAttribute('x','140'); rp.setAttribute('y',d.y); rp.setAttribute('width','22');
+        rp.setAttribute('height','14'); rp.setAttribute('rx','3'); rp.setAttribute('fill','#e0e0e0');
+        var tp = document.createElementNS(NS,'text');
+        tp.setAttribute('x','151'); tp.setAttribute('y',d.y+11);
+        tp.setAttribute('text-anchor','middle'); tp.setAttribute('font-size','12');
+        tp.setAttribute('font-weight','700'); tp.setAttribute('fill','#555');
+        tp.setAttribute('font-family','Arial,sans-serif'); tp.setAttribute('pointer-events','none');
+        tp.textContent = '+';
+        gp.appendChild(rp); gp.appendChild(tp); g.appendChild(gp);
+      });
+      // Volume pill
+      var vol = S.l * S.w * S.h;
+      var pill = '体积 = '+S.l+' \u00d7 '+S.w+' \u00d7 '+S.h+' = '+vol+' 立方单位';
+      var pr = document.createElementNS(NS,'rect');
+      pr.setAttribute('x','60'); pr.setAttribute('y','278'); pr.setAttribute('width','200');
+      pr.setAttribute('height','18'); pr.setAttribute('rx','9'); pr.setAttribute('fill','#37474F');
+      g.appendChild(pr);
+      var pt = document.createElementNS(NS,'text');
+      pt.setAttribute('x','160'); pt.setAttribute('y','290.5'); pt.setAttribute('text-anchor','middle');
+      pt.setAttribute('font-size','9.5'); pt.setAttribute('font-weight','600'); pt.setAttribute('fill','#fff');
+      pt.setAttribute('font-family',ff); pt.textContent = pill;
+      g.appendChild(pt);
+    }
+
+    function render() {
+      drawCubes(); drawLabels(); drawControls();
+      var vol = S.l * S.w * S.h;
+      root.setAttribute('aria-label','体积模型 '+S.l+'\u00d7'+S.w+'\u00d7'+S.h+'='+vol+'立方单位');
+    }
+
+    function emit() {
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{length:S.l,width:S.w,height:S.h,volume:S.l*S.w*S.h}}}));
+    }
+
+    svg.addEventListener('click',function(e){
+      var btn = e.target.closest('.vm__btn'); if (!btn) return;
+      e.preventDefault();
+      var key = btn.getAttribute('data-key'), delta = Number(btn.getAttribute('data-delta'));
+      S[key] = Math.max(1, Math.min(5, S[key] + delta));
+      render(); emit();
+    });
+
+    render();
+  })();
+  </script>
+</div>

@@ -1,0 +1,355 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.conic-section.interactive",
+  "name": "圆锥曲线（交互式）",
+  "nameEn": "Conic Section (Interactive)",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 440, "h": 400 },
+  "tags": ["math","geometry","conic","ellipse","parabola","hyperbola","interactive"],
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",       "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",  "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "axisColor",    "type": "color",  "default": "#37474f", "desc": "坐标轴颜色" },
+    { "key": "gridColor",    "type": "color",  "default": "#e0e0e0", "desc": "网格颜色" },
+    { "key": "curveColor",   "type": "color",  "default": "#1565c0", "desc": "曲线颜色" },
+    { "key": "focusColor",   "type": "color",  "default": "#e53935", "desc": "焦点颜色" },
+    { "key": "curveType",    "type": "enum",   "default": "ellipse", "enum": ["circle","ellipse","parabola","hyperbola"], "desc": "曲线类型" },
+    { "key": "paramA",       "type": "number", "default": 3, "min": 0.5, "max": 8, "desc": "参数a" },
+    { "key": "paramB",       "type": "number", "default": 2, "min": 0.5, "max": 8, "desc": "参数b" },
+    { "key": "showFoci",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示焦点" },
+    { "key": "showDirectrix","type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示准线" },
+    { "key": "showLabels",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "axisColor": "--cmp-axis", "gridColor": "--cmp-grid",
+    "curveColor": "--cmp-curve", "focusColor": "--cmp-focus", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "curveType": "string", "paramA": "number", "paramB": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.conic-section.interactive" role="img" aria-label="圆锥曲线（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.geometry.conic-section.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;
+      width:calc(var(--h)*440/400);height:var(--h);
+      filter:drop-shadow(0 0 calc(6px*var(--cmp-glow,0)) rgba(21,101,192,calc(.6*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="math.geometry.conic-section.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.geometry.conic-section.interactive"] .con__label{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10px;font-weight:600}
+    .cmp[data-cmp-id="math.geometry.conic-section.interactive"] .con__eq{font-family:'Times New Roman',serif;font-size:13px;font-weight:700;font-style:italic}
+    .cmp[data-cmp-id="math.geometry.conic-section.interactive"] .con__data{font-family:'Courier New',monospace;font-size:10px;font-weight:600}
+  </style>
+
+  <svg viewBox="0 0 440 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="con__arrow" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="6" markerHeight="5" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="var(--cmp-axis,#37474f)"/>
+      </marker>
+      <clipPath id="con__clip">
+        <rect x="30" y="20" width="380" height="340"/>
+      </clipPath>
+    </defs>
+
+    <!-- 网格 -->
+    <g class="con__grid"></g>
+
+    <!-- 坐标轴 -->
+    <g class="con__axes"></g>
+
+    <!-- 曲线 -->
+    <g class="con__curve" clip-path="url(#con__clip)"></g>
+
+    <!-- 焦点/顶点/标注 -->
+    <g class="con__points"></g>
+
+    <!-- 方程 -->
+    <text class="con__eq con__equation" x="220" y="16" text-anchor="middle"
+          fill="var(--cmp-curve,#1565c0)"></text>
+
+    <!-- 离心率 -->
+    <text class="con__data con__ecc" x="220" y="390" text-anchor="middle"
+          fill="var(--cmp-stroke,#37474f)" opacity="0.7"></text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.geometry.conic-section.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var curveType=P.curveType||'ellipse';
+    if(['circle','ellipse','parabola','hyperbola'].indexOf(curveType)<0)curveType='ellipse';
+    var a=Math.max(0.5,Math.min(8,Number(P.paramA)||3));
+    var b=Math.max(0.5,Math.min(8,Number(P.paramB)||2));
+    var showFoci=(P.showFoci!=='off');
+    var showDirectrix=(P.showDirectrix!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    /* 绘图区域 */
+    var PL=30,PT=20,PW=380,PH=340;
+    var OX=PL+PW/2, OY=PT+PH/2; /* 原点像素坐标 */
+    var SCALE=30; /* pixels per unit */
+
+    function toX(wx){return OX+wx*SCALE;}
+    function toY(wy){return OY-wy*SCALE;}
+
+    var gridG=root.querySelector('.con__grid');
+    var axesG=root.querySelector('.con__axes');
+    var curveG=root.querySelector('.con__curve');
+    var pointsG=root.querySelector('.con__points');
+    var eqEl=root.querySelector('.con__equation');
+    var eccEl=root.querySelector('.con__ecc');
+
+    function el(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function drawGrid(){
+      clear(gridG);
+      var xMin=-(PW/2)/SCALE, xMax=(PW/2)/SCALE;
+      var yMin=-(PH/2)/SCALE, yMax=(PH/2)/SCALE;
+      for(var x=Math.ceil(xMin);x<=Math.floor(xMax);x++){
+        if(x===0)continue;
+        gridG.appendChild(el('line',{x1:toX(x),y1:PT,x2:toX(x),y2:PT+PH,
+          stroke:'var(--cmp-grid,#e0e0e0)','stroke-width':'0.5'}));
+      }
+      for(var y=Math.ceil(yMin);y<=Math.floor(yMax);y++){
+        if(y===0)continue;
+        gridG.appendChild(el('line',{x1:PL,y1:toY(y),x2:PL+PW,y2:toY(y),
+          stroke:'var(--cmp-grid,#e0e0e0)','stroke-width':'0.5'}));
+      }
+    }
+
+    function drawAxes(){
+      clear(axesG);
+      /* X轴 */
+      axesG.appendChild(el('line',{x1:PL,y1:OY,x2:PL+PW,y2:OY,
+        stroke:'var(--cmp-axis,#37474f)','stroke-width':'1.2',
+        'marker-end':'url(#con__arrow)'}));
+      /* Y轴 */
+      axesG.appendChild(el('line',{x1:OX,y1:PT+PH,x2:OX,y2:PT,
+        stroke:'var(--cmp-axis,#37474f)','stroke-width':'1.2',
+        'marker-end':'url(#con__arrow)'}));
+      /* 刻度 */
+      var xMin=-(PW/2)/SCALE, xMax=(PW/2)/SCALE;
+      var yMin=-(PH/2)/SCALE, yMax=(PH/2)/SCALE;
+      for(var x=Math.ceil(xMin);x<=Math.floor(xMax);x++){
+        if(x===0)continue;
+        axesG.appendChild(el('line',{x1:toX(x),y1:OY-3,x2:toX(x),y2:OY+3,
+          stroke:'var(--cmp-axis,#37474f)','stroke-width':'0.8'}));
+        if(x%2===0){
+          var t=el('text',{x:toX(x),y:OY+14,'text-anchor':'middle',
+            'font-size':'8',fill:'var(--cmp-axis,#37474f)',opacity:'0.6',
+            'font-family':'Arial,sans-serif'});
+          t.textContent=x;axesG.appendChild(t);
+        }
+      }
+      for(var y=Math.ceil(yMin);y<=Math.floor(yMax);y++){
+        if(y===0)continue;
+        axesG.appendChild(el('line',{x1:OX-3,y1:toY(y),x2:OX+3,y2:toY(y),
+          stroke:'var(--cmp-axis,#37474f)','stroke-width':'0.8'}));
+        if(y%2===0){
+          var t=el('text',{x:OX-10,y:toY(y)+3,'text-anchor':'end',
+            'font-size':'8',fill:'var(--cmp-axis,#37474f)',opacity:'0.6',
+            'font-family':'Arial,sans-serif'});
+          t.textContent=y;axesG.appendChild(t);
+        }
+      }
+      /* O */
+      var ot=el('text',{x:OX-8,y:OY+14,'text-anchor':'end',
+        'font-size':'10',fill:'var(--cmp-axis,#37474f)','font-weight':'600',
+        'font-family':"'Times New Roman',serif",'font-style':'italic'});
+      ot.textContent='O';axesG.appendChild(ot);
+      /* x, y labels */
+      var xt=el('text',{x:PL+PW-2,y:OY-8,'text-anchor':'end',
+        'font-size':'11',fill:'var(--cmp-axis,#37474f)','font-style':'italic',
+        'font-family':"'Times New Roman',serif"});
+      xt.textContent='x';axesG.appendChild(xt);
+      var yt=el('text',{x:OX+12,y:PT+10,
+        'font-size':'11',fill:'var(--cmp-axis,#37474f)','font-style':'italic',
+        'font-family':"'Times New Roman',serif"});
+      yt.textContent='y';axesG.appendChild(yt);
+    }
+
+    function addPoint(wx,wy,color,label){
+      pointsG.appendChild(el('circle',{cx:toX(wx),cy:toY(wy),r:3.5,
+        fill:color,stroke:'#fff','stroke-width':'1'}));
+      if(showLabels&&label){
+        var t=el('text',{x:toX(wx)+6,y:toY(wy)-6,
+          'font-size':'10',fill:color,'font-weight':'600',
+          'font-family':"'Times New Roman',serif",'font-style':'italic'});
+        t.textContent=label;pointsG.appendChild(t);
+      }
+    }
+
+    function drawCurve(){
+      clear(curveG);clear(pointsG);
+      var pts,eqText='',eccText='';
+
+      if(curveType==='circle'){
+        /* x²+y²=a² */
+        curveG.appendChild(el('circle',{cx:toX(0),cy:toY(0),r:a*SCALE,
+          fill:'none',stroke:'var(--cmp-curve,#1565c0)',
+          'stroke-width':'2'}));
+        eqText='x² + y² = '+a.toFixed(1)+'²';
+        eccText='e = 0（圆）  r = '+a.toFixed(1);
+        addPoint(0,0,'var(--cmp-focus,#e53935)','O');
+        if(showLabels){
+          addPoint(a,0,'var(--cmp-curve,#1565c0)','('+a.toFixed(1)+',0)');
+        }
+      }
+      else if(curveType==='ellipse'){
+        /* x²/a²+y²/b²=1, a>b */
+        var aa=Math.max(a,b),bb=Math.min(a,b);
+        var c2=aa*aa-bb*bb;
+        var cc=Math.sqrt(Math.max(0,c2));
+        /* 用polyline近似椭圆 */
+        pts=[];
+        for(var i=0;i<=200;i++){
+          var th=i/200*2*Math.PI;
+          pts.push(toX(aa*Math.cos(th)).toFixed(1)+','+toY(bb*Math.sin(th)).toFixed(1));
+        }
+        curveG.appendChild(el('polyline',{points:pts.join(' '),fill:'none',
+          stroke:'var(--cmp-curve,#1565c0)','stroke-width':'2'}));
+        eqText='x²/'+aa.toFixed(1)+'² + y²/'+bb.toFixed(1)+'² = 1';
+        var ecc=cc/aa;
+        eccText='e = '+ecc.toFixed(3)+'  a='+aa.toFixed(1)+' b='+bb.toFixed(1)+' c='+cc.toFixed(2);
+        if(showFoci){
+          addPoint(cc,0,'var(--cmp-focus,#e53935)','F₁');
+          addPoint(-cc,0,'var(--cmp-focus,#e53935)','F₂');
+        }
+        if(showLabels){
+          addPoint(aa,0,'var(--cmp-curve,#1565c0)','A₁');
+          addPoint(-aa,0,'var(--cmp-curve,#1565c0)','A₂');
+          addPoint(0,bb,'var(--cmp-curve,#1565c0)','B₁');
+          addPoint(0,-bb,'var(--cmp-curve,#1565c0)','B₂');
+        }
+      }
+      else if(curveType==='parabola'){
+        /* y²=4ax (开口向右) */
+        var p=a; /* 焦点距离 */
+        pts=[];
+        for(var t=-8;t<=8;t+=0.05){
+          var yy=t;
+          var xx=yy*yy/(4*p);
+          if(xx>PW/2/SCALE)continue;
+          pts.push(toX(xx).toFixed(1)+','+toY(yy).toFixed(1));
+        }
+        curveG.appendChild(el('polyline',{points:pts.join(' '),fill:'none',
+          stroke:'var(--cmp-curve,#1565c0)','stroke-width':'2'}));
+        eqText='y² = '+((4*p)%1===0?(4*p):((4*p).toFixed(1)))+'x';
+        eccText='e = 1（抛物线）  p = '+p.toFixed(1);
+        if(showFoci){
+          addPoint(p,0,'var(--cmp-focus,#e53935)','F');
+        }
+        if(showDirectrix){
+          curveG.appendChild(el('line',{x1:toX(-p),y1:PT,x2:toX(-p),y2:PT+PH,
+            stroke:'var(--cmp-focus,#e53935)','stroke-width':'1',
+            'stroke-dasharray':'4,3',opacity:'0.6'}));
+          if(showLabels){
+            var dt=el('text',{x:toX(-p)-4,y:PT+15,'text-anchor':'end',
+              'font-size':'9',fill:'var(--cmp-focus,#e53935)',
+              'font-family':'Arial,sans-serif'});
+            dt.textContent='准线 x=-'+p.toFixed(1);
+            pointsG.appendChild(dt);
+          }
+        }
+        addPoint(0,0,'var(--cmp-curve,#1565c0)','O');
+      }
+      else if(curveType==='hyperbola'){
+        /* x²/a²-y²/b²=1 */
+        var cc=Math.sqrt(a*a+b*b);
+        /* 右支 */
+        pts=[];
+        for(var t=-3;t<=3;t+=0.02){
+          var xx=a/Math.cos(t);
+          var yy=b*Math.tan(t);
+          if(Math.abs(xx)>PW/2/SCALE||Math.abs(yy)>PH/2/SCALE)continue;
+          if(xx<a)continue;
+          pts.push(toX(xx).toFixed(1)+','+toY(yy).toFixed(1));
+        }
+        /* 排序 */
+        pts.sort(function(pa,pb){return parseFloat(pa.split(',')[1])-parseFloat(pb.split(',')[1]);});
+        if(pts.length>1)curveG.appendChild(el('polyline',{points:pts.join(' '),fill:'none',
+          stroke:'var(--cmp-curve,#1565c0)','stroke-width':'2'}));
+        /* 左支 */
+        var pts2=[];
+        for(var t=-3;t<=3;t+=0.02){
+          var xx=-a/Math.cos(t);
+          var yy=-b*Math.tan(t);
+          if(Math.abs(xx)>PW/2/SCALE||Math.abs(yy)>PH/2/SCALE)continue;
+          if(xx>-a)continue;
+          pts2.push(toX(xx).toFixed(1)+','+toY(yy).toFixed(1));
+        }
+        pts2.sort(function(pa,pb){return parseFloat(pa.split(',')[1])-parseFloat(pb.split(',')[1]);});
+        if(pts2.length>1)curveG.appendChild(el('polyline',{points:pts2.join(' '),fill:'none',
+          stroke:'var(--cmp-curve,#1565c0)','stroke-width':'2'}));
+        /* 渐近线 */
+        if(showDirectrix){
+          var slope=b/a;
+          var xLim=PW/2/SCALE;
+          curveG.appendChild(el('line',{x1:toX(-xLim),y1:toY(-xLim*slope),x2:toX(xLim),y2:toY(xLim*slope),
+            stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.8',
+            'stroke-dasharray':'5,3',opacity:'0.4'}));
+          curveG.appendChild(el('line',{x1:toX(-xLim),y1:toY(xLim*slope),x2:toX(xLim),y2:toY(-xLim*slope),
+            stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.8',
+            'stroke-dasharray':'5,3',opacity:'0.4'}));
+        }
+        eqText='x²/'+a.toFixed(1)+'² − y²/'+b.toFixed(1)+'² = 1';
+        var ecc=cc/a;
+        eccText='e = '+ecc.toFixed(3)+'  a='+a.toFixed(1)+' b='+b.toFixed(1)+' c='+cc.toFixed(2);
+        if(showFoci){
+          addPoint(cc,0,'var(--cmp-focus,#e53935)','F₁');
+          addPoint(-cc,0,'var(--cmp-focus,#e53935)','F₂');
+        }
+        if(showLabels){
+          addPoint(a,0,'var(--cmp-curve,#1565c0)','A₁');
+          addPoint(-a,0,'var(--cmp-curve,#1565c0)','A₂');
+        }
+      }
+
+      if(eqEl)eqEl.textContent=eqText;
+      if(eccEl)eccEl.textContent=eccText;
+    }
+
+    drawGrid();
+    drawAxes();
+    drawCurve();
+
+    /* Props 变化 */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      var ct=P2.curveType||'ellipse';
+      if(['circle','ellipse','parabola','hyperbola'].indexOf(ct)>=0)curveType=ct;
+      a=Math.max(0.5,Math.min(8,Number(P2.paramA)||3));
+      b=Math.max(0.5,Math.min(8,Number(P2.paramB)||2));
+      showFoci=(P2.showFoci!=='off');
+      showDirectrix=(P2.showDirectrix!=='off');
+      showLabels=(P2.showLabels!=='off');
+      drawCurve();
+
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'adjust',
+          values:{curveType:curveType,paramA:a,paramB:b}}}));
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

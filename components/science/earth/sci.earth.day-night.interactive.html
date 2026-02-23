@@ -1,0 +1,355 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.earth.day-night.interactive",
+  "name": "昼夜交替",
+  "nameEn": "Day & Night Cycle",
+  "category": "science/earth",
+  "version": "1.2.0",
+  "viewport": { "w": 360, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "rotation", "type": "number", "default": 0, "min": 0, "max": 360, "desc": "地球自转角度" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["day-night", "rotation", "earth", "sun", "astronomy", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "rotate", "values": { "rotation": "number(0-360)", "hour": "number(0-23)", "dayNight": "string" } },
+    { "name": "cmp:changeend", "type": "rotate", "values": { "rotation": "number(0-360)", "hour": "number(0-23)", "dayNight": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.earth.day-night.interactive" role="img" aria-label="昼夜交替">
+  <style>
+    .cmp[data-cmp-id="sci.earth.day-night.interactive"] {
+      --w: var(--cmp-size, 360px);
+      display: inline-block; width: var(--w); height: calc(var(--w) * 280 / 360);
+      user-select: none;
+    }
+    .cmp[data-cmp-id="sci.earth.day-night.interactive"] svg { width: 100%; height: 100%; display: block; }
+    .cmp[data-cmp-id="sci.earth.day-night.interactive"] .dn__earth-hit { cursor: grab; }
+    .cmp[data-cmp-id="sci.earth.day-night.interactive"] .dn__earth-hit:active { cursor: grabbing; }
+    .cmp[data-cmp-id="sci.earth.day-night.interactive"] .dn__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif; pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient class="dn__sun-glow" cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0%" stop-color="#FFF9C4"/>
+        <stop offset="40%" stop-color="#FFD54F"/>
+        <stop offset="100%" stop-color="#FF8F00" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient class="dn__sun-core" cx="0.35" cy="0.35" r="0.65">
+        <stop offset="0%" stop-color="#FFFDE7"/>
+        <stop offset="100%" stop-color="#FFB300"/>
+      </radialGradient>
+      <radialGradient class="dn__earth-ocean" cx="0.4" cy="0.35" r="0.65">
+        <stop offset="0%" stop-color="#42A5F5"/>
+        <stop offset="100%" stop-color="#0D47A1"/>
+      </radialGradient>
+      <!-- Shadow: sun is on the left, so shadow covers the RIGHT half of Earth -->
+      <linearGradient class="dn__shadow-grad" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+        <stop offset="20%" stop-color="#000" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.78"/>
+      </linearGradient>
+      <clipPath class="dn__earth-clip"><circle cx="220" cy="140" r="65"/></clipPath>
+    </defs>
+
+    <!-- Space background -->
+    <rect width="360" height="280" fill="#0a0e2a"/>
+    <!-- Stars -->
+    <g fill="#fff" opacity="0.7">
+      <circle cx="15" cy="20" r="1"/><circle cx="58" cy="45" r="0.7"/>
+      <circle cx="102" cy="12" r="0.9"/><circle cx="145" cy="62" r="0.5"/>
+      <circle cx="175" cy="25" r="0.8"/><circle cx="260" cy="18" r="0.6"/>
+      <circle cx="295" cy="50" r="1"/><circle cx="330" cy="30" r="0.7"/>
+      <circle cx="345" cy="75" r="0.5"/><circle cx="310" cy="95" r="0.6"/>
+      <circle cx="28" cy="100" r="0.6"/><circle cx="75" cy="85" r="0.4"/>
+      <circle cx="130" cy="95" r="0.7"/><circle cx="340" cy="200" r="0.8"/>
+      <circle cx="15" cy="180" r="0.5"/><circle cx="50" cy="220" r="0.6"/>
+      <circle cx="320" cy="250" r="0.7"/><circle cx="280" cy="230" r="0.4"/>
+    </g>
+    <g fill="#fff" opacity="0.4">
+      <circle cx="40" cy="60" r="0.4"/><circle cx="88" cy="30" r="0.3"/>
+      <circle cx="200" cy="10" r="0.4"/><circle cx="350" cy="140" r="0.3"/>
+      <circle cx="5" cy="250" r="0.3"/><circle cx="160" cy="45" r="0.3"/>
+    </g>
+
+    <!-- Sun rays (parallel beams toward Earth) -->
+    <g class="dn__rays" stroke="#FFD54F" stroke-width="1.2" opacity="0.18" stroke-linecap="round">
+      <line x1="75" y1="90" x2="155" y2="105"/>
+      <line x1="75" y1="110" x2="155" y2="118"/>
+      <line x1="75" y1="130" x2="155" y2="133"/>
+      <line x1="75" y1="150" x2="155" y2="148"/>
+      <line x1="75" y1="170" x2="155" y2="163"/>
+      <line x1="75" y1="190" x2="155" y2="176"/>
+    </g>
+
+    <!-- Sun glow -->
+    <circle cx="45" cy="140" r="52" class="dn__ref-sun-glow" opacity="0.5"/>
+    <!-- Sun body -->
+    <circle cx="45" cy="140" r="28" class="dn__ref-sun-core"/>
+    <circle cx="45" cy="140" r="28" fill="none" stroke="#FFA000" stroke-width="0.8" opacity="0.6"/>
+    <!-- Sun corona rays -->
+    <g stroke="#FFD54F" stroke-width="2.2" stroke-linecap="round" opacity="0.55">
+      <line x1="45" y1="107" x2="45" y2="100"/>
+      <line x1="45" y1="173" x2="45" y2="180"/>
+      <line x1="12" y1="140" x2="5" y2="140"/>
+      <line x1="78" y1="140" x2="85" y2="140"/>
+      <line x1="22" y1="117" x2="17" y2="112"/>
+      <line x1="68" y1="117" x2="73" y2="112"/>
+      <line x1="22" y1="163" x2="17" y2="168"/>
+      <line x1="68" y1="163" x2="73" y2="168"/>
+    </g>
+    <!-- Sun label -->
+    <text class="dn__label" x="45" y="195" text-anchor="middle" font-size="12" font-weight="600" fill="#FFD54F">太阳</text>
+
+    <!-- Earth group -->
+    <g class="dn__earth-group">
+      <!-- Ocean base -->
+      <circle cx="220" cy="140" r="65" class="dn__ref-ocean"/>
+      <!-- Atmosphere rim -->
+      <circle cx="220" cy="140" r="66.5" fill="none" stroke="#64B5F6" stroke-width="1.5" opacity="0.3"/>
+
+      <!-- Continents (rotate with Earth) -->
+      <g class="dn__continents">
+        <!-- Eurasia-like landmass -->
+        <path d="M205,100 Q215,95 230,98 Q245,100 250,108 Q255,118 248,125 Q240,120 232,122 Q225,128 218,125 Q210,118 205,110 Z" fill="#4CAF50" opacity="0.85"/>
+        <!-- Africa-like landmass -->
+        <path d="M210,132 Q215,128 222,130 Q228,135 226,145 Q222,155 216,158 Q210,155 208,148 Q206,140 210,132Z" fill="#66BB6A" opacity="0.8"/>
+        <!-- Americas-like landmass -->
+        <path d="M185,110 Q190,105 195,108 Q198,115 196,125 Q192,132 188,135 Q183,130 182,120 Z" fill="#43A047" opacity="0.8"/>
+        <!-- Small island -->
+        <path d="M248,140 Q252,137 256,140 Q254,145 248,143Z" fill="#81C784" opacity="0.75"/>
+        <!-- Australia-like -->
+        <path d="M240,155 Q248,152 254,156 Q256,162 250,166 Q243,164 240,158Z" fill="#4CAF50" opacity="0.75"/>
+        <!-- Cloud wisps -->
+        <ellipse cx="200" cy="115" rx="12" ry="3" fill="#fff" opacity="0.3" transform="rotate(-10 200 115)"/>
+        <ellipse cx="240" cy="135" rx="10" ry="2.5" fill="#fff" opacity="0.25" transform="rotate(5 240 135)"/>
+        <ellipse cx="215" cy="160" rx="8" ry="2" fill="#fff" opacity="0.2"/>
+        <!-- My location marker (red dot) -->
+        <circle class="dn__marker" cx="220" cy="108" r="3.5" fill="#F44336" stroke="#fff" stroke-width="1"/>
+      </g>
+
+      <!-- Shadow overlay (fixed — sun is always on the left) -->
+      <g class="dn__shadow-g">
+        <rect class="dn__shadow" x="220" y="75" width="70" height="130"/>
+      </g>
+
+      <!-- Earth outline -->
+      <circle cx="220" cy="140" r="65" fill="none" stroke="#1565C0" stroke-width="1" opacity="0.5"/>
+    </g>
+
+    <!-- Earth hit area for drag -->
+    <circle class="dn__earth-hit" cx="220" cy="140" r="65" fill="transparent"/>
+
+    <!-- Earth label -->
+    <text class="dn__label" x="220" y="218" text-anchor="middle" font-size="12" font-weight="600" fill="#64B5F6">地球</text>
+
+    <!-- Rotation arrow -->
+    <g class="dn__arrow" opacity="0.5">
+      <path d="M250,72 A40,40 0 0,1 262,82" fill="none" stroke="#aaa" stroke-width="1.2"/>
+      <polygon points="263,79 266,85 259,84" fill="#aaa"/>
+    </g>
+    <text class="dn__label" x="268" y="78" font-size="8" fill="#aaa">自转</text>
+
+    <!-- Status display -->
+    <g class="dn__status">
+      <rect class="dn__status-bg" x="140" y="240" width="160" height="30" rx="15" fill="#1a1e3a" stroke="#334" stroke-width="0.8"/>
+      <text class="dn__status-icon" x="165" y="260" text-anchor="middle" font-size="15" font-family="Arial,'Microsoft YaHei',sans-serif"></text>
+      <text class="dn__status-text" x="230" y="259" text-anchor="middle" font-size="13" font-weight="700" fill="#fff" font-family="Arial,'Microsoft YaHei',sans-serif"></text>
+    </g>
+  </svg>
+
+  <script>
+  (function() {
+    var script = document.currentScript; if (!script) return;
+    var root = script.closest ? script.closest('.cmp') : script.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'sci.earth.day-night.interactive') return;
+    var svg = root.querySelector('svg'); if (!svg) return;
+
+    /* ── Unique IDs to avoid multi-instance conflicts ── */
+    var uid = 'dn_' + Math.random().toString(36).slice(2, 8);
+
+    var defs = svg.querySelectorAll('defs [class^="dn__"]');
+    defs.forEach(function(el) {
+      var cls = el.getAttribute('class');
+      el.setAttribute('id', uid + '_' + cls);
+    });
+
+    function fixFill(el, cls) { if (el) el.setAttribute('fill', 'url(#' + uid + '_' + cls + ')'); }
+    function fixClip(el, cls) { if (el) el.setAttribute('clip-path', 'url(#' + uid + '_' + cls + ')'); }
+
+    fixFill(svg.querySelector('.dn__ref-sun-glow'), 'dn__sun-glow');
+    fixFill(svg.querySelector('.dn__ref-sun-core'), 'dn__sun-core');
+    fixFill(svg.querySelector('.dn__ref-ocean'), 'dn__earth-ocean');
+    fixFill(svg.querySelector('.dn__shadow'), 'dn__shadow-grad');
+    fixClip(svg.querySelector('.dn__continents'), 'dn__earth-clip');
+    fixClip(svg.querySelector('.dn__shadow-g'), 'dn__earth-clip');
+
+    var continents = svg.querySelector('.dn__continents');
+    var statusText = svg.querySelector('.dn__status-text');
+    var statusIcon = svg.querySelector('.dn__status-icon');
+    var statusBg = svg.querySelector('.dn__status-bg');
+    var hitArea = svg.querySelector('.dn__earth-hit');
+    if (!continents || !statusText || !hitArea) return;
+
+    var EX = 220, EY = 140;
+    var rotation = 0;
+    var dragging = false;
+    var lastAngle = 0;
+
+    // Read initial props
+    try {
+      var p = JSON.parse(root.getAttribute('data-props') || '{}');
+      if (p.rotation !== undefined) rotation = ((+p.rotation || 0) % 360 + 360) % 360;
+    } catch (e) {}
+
+    /*
+     * Geometry:
+     *   Sun is at the LEFT of the Earth. Left semicircle = lit, right = shadow.
+     *   Red marker starts at (220, 108) = top of Earth (12 o'clock position).
+     *   SVG rotate(deg, 220, 140) rotates clockwise.
+     *
+     *   Side view with North Pole up: Earth's west-to-east rotation appears
+     *   CLOCKWISE (surface at top moves rightward). So increasing `deg` = time advancing.
+     *
+     *   Marker position after rotation by `deg`:
+     *     screen_x = 220 + 65·sin(deg)   → right when deg∈(0°,180°), left when deg∈(180°,360°)
+     *
+     *   The marker at the TOP of Earth sits on the terminator (day/night boundary).
+     *   With clockwise rotation, the top moves toward the shadow side (right) first.
+     *   So top = sunset (18:00), right = midnight, bottom = sunrise, left = noon.
+     *
+     *   Time mapping:
+     *     deg=0   → 18:00 (sunset,   marker at top,    on terminator)
+     *     deg=90  → 00:00 (midnight, marker at right,  deepest shadow)
+     *     deg=180 → 06:00 (sunrise,  marker at bottom, on terminator)
+     *     deg=270 → 12:00 (noon,     marker at left,   facing sun)
+     *
+     *   hour = (18 + deg / 15) % 24
+     */
+
+    function calcHour(deg) {
+      var norm = ((deg % 360) + 360) % 360;
+      var h = (18 + norm / 15) % 24;
+      return h;
+    }
+
+    function isDaytime(deg) {
+      var h = calcHour(deg);
+      return h >= 6 && h < 18;
+    }
+
+    function timeLabel(deg) {
+      var h = calcHour(deg);
+      var hour = Math.floor(h);
+      var min = Math.round((h - hour) * 60);
+      if (min === 60) { hour++; min = 0; }
+      hour = hour % 24;
+      var hStr = (hour < 10 ? '0' : '') + hour + ':' + (min < 10 ? '0' : '') + min;
+
+      var period;
+      if (h >= 5 && h < 7) period = '日出';
+      else if (h >= 7 && h < 11) period = '上午';
+      else if (h >= 11 && h < 13) period = '正午';
+      else if (h >= 13 && h < 17) period = '下午';
+      else if (h >= 17 && h < 19) period = '日落';
+      else if (h >= 19 && h < 22) period = '夜晚';
+      else if (h >= 22 || h < 2) period = '深夜';
+      else period = '凌晨';
+
+      return { hStr: hStr, period: period, hour: hour };
+    }
+
+    function update() {
+      var norm = ((rotation % 360) + 360) % 360;
+      continents.setAttribute('transform', 'rotate(' + norm + ' ' + EX + ' ' + EY + ')');
+
+      var day = isDaytime(norm);
+      var info = timeLabel(norm);
+
+      var icon = day ? '\u2600' : '\uD83C\uDF19';
+      statusIcon.textContent = icon;
+      statusText.textContent = info.period + '  ' + info.hStr;
+      statusBg.setAttribute('fill', day ? '#1a2e1a' : '#1a1e3a');
+    }
+
+    function emitEvent(name) {
+      var norm = ((rotation % 360) + 360) % 360;
+      var info = timeLabel(norm);
+      root.dispatchEvent(new CustomEvent(name, {
+        bubbles: true, composed: true,
+        detail: {
+          id: root.getAttribute('data-cmp-id'),
+          type: 'rotate',
+          values: {
+            rotation: Math.round(norm),
+            hour: info.hour,
+            dayNight: isDaytime(norm) ? '白天' : '黑夜'
+          }
+        }
+      }));
+    }
+
+    function getAngle(e) {
+      var pt = svg.createSVGPoint();
+      var cx = e.touches ? e.touches[0].clientX : e.clientX;
+      var cy = e.touches ? e.touches[0].clientY : e.clientY;
+      pt.x = cx; pt.y = cy;
+      var svgPt = pt.matrixTransform(svg.getScreenCTM().inverse());
+      return Math.atan2(svgPt.y - EY, svgPt.x - EX) * 180 / Math.PI;
+    }
+
+    function onDown(e) {
+      e.preventDefault();
+      dragging = true;
+      lastAngle = getAngle(e);
+      hitArea.style.cursor = 'grabbing';
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+      e.preventDefault();
+      var angle = getAngle(e);
+      var delta = angle - lastAngle;
+      if (delta > 180) delta -= 360;
+      if (delta < -180) delta += 360;
+      rotation = ((rotation + delta) % 360 + 360) % 360;
+      lastAngle = angle;
+      update();
+      emitEvent('cmp:change');
+    }
+
+    function onUp() {
+      if (!dragging) return;
+      dragging = false;
+      hitArea.style.cursor = '';
+      emitEvent('cmp:changeend');
+    }
+
+    hitArea.addEventListener('mousedown', onDown);
+    hitArea.addEventListener('touchstart', onDown, { passive: false });
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('touchmove', onMove, { passive: false });
+    window.addEventListener('mouseup', onUp);
+    window.addEventListener('touchend', onUp);
+
+    // MutationObserver for external prop changes
+    new MutationObserver(function() {
+      try {
+        var p2 = JSON.parse(root.getAttribute('data-props') || '{}');
+        if (p2.rotation !== undefined) {
+          var r = ((+p2.rotation || 0) % 360 + 360) % 360;
+          if (Math.abs(r - rotation) > 0.5) { rotation = r; update(); }
+        }
+      } catch (e) {}
+    }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+
+    update();
+  })();
+  </script>
+</div>

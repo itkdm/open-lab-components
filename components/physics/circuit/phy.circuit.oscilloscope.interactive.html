@@ -1,0 +1,308 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.circuit.oscilloscope.interactive",
+  "name": "示波器（交互式）",
+  "nameEn": "Oscilloscope (Interactive)",
+  "category": "physics/circuit",
+  "version": "1.0.0",
+  "viewport": { "w": 480, "h": 380 },
+  "tags": ["physics","circuit","oscilloscope","waveform","signal","interactive"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth","type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "bodyColor",  "type": "color",  "default": "#263238", "desc": "机身颜色" },
+    { "key": "screenColor","type": "color",  "default": "#1b5e20", "desc": "屏幕底色" },
+    { "key": "traceColor", "type": "color",  "default": "#76ff03", "desc": "波形颜色" },
+    { "key": "gridColor",  "type": "color",  "default": "#2e7d32", "desc": "网格颜色" },
+    { "key": "frequency",  "type": "number", "default": 5, "min": 1, "max": 20, "desc": "频率(Hz)" },
+    { "key": "amplitude",  "type": "number", "default": 0.7, "min": 0.1, "max": 1, "desc": "振幅(0-1)" },
+    { "key": "waveform",   "type": "enum",   "default": "sine", "enum": ["sine","square","triangle","sawtooth"], "desc": "波形类型" },
+    { "key": "timeDiv",    "type": "number", "default": 10, "min": 1, "max": 50, "desc": "时基(ms/div)" },
+    { "key": "voltDiv",    "type": "number", "default": 1, "min": 0.1, "max": 5, "desc": "电压(V/div)" },
+    { "key": "showGrid",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示网格" },
+    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "bodyColor": "--cmp-body", "screenColor": "--cmp-screen",
+    "traceColor": "--cmp-trace", "gridColor": "--cmp-grid", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "signal", "values": { "frequency": "number(Hz)", "amplitude": "number(0-1)", "waveform": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.circuit.oscilloscope.interactive" role="img" aria-label="示波器（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.circuit.oscilloscope.interactive"]{
+      --h:var(--cmp-size,380px);display:inline-block;
+      width:calc(var(--h)*480/380);height:var(--h);
+      filter:drop-shadow(0 0 calc(6px*var(--cmp-glow,0)) rgba(118,255,3,calc(.6*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.circuit.oscilloscope.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.circuit.oscilloscope.interactive"] .osc__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="osc__bodyG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#455a64"/>
+        <stop offset="50%" stop-color="#263238"/>
+        <stop offset="100%" stop-color="#1a2327"/>
+      </linearGradient>
+      <linearGradient id="osc__bezelG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#37474f"/>
+        <stop offset="100%" stop-color="#1c2a30"/>
+      </linearGradient>
+      <filter id="osc__glow">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <clipPath id="osc__screenClip">
+        <rect x="30" y="30" width="300" height="240" rx="4"/>
+      </clipPath>
+    </defs>
+
+    <!-- 机身 -->
+    <rect x="5" y="10" width="470" height="360" rx="12"
+          fill="url(#osc__bodyG)" stroke="#1a2327" stroke-width="2"/>
+    <!-- 机身高光 -->
+    <rect x="5" y="10" width="470" height="8" rx="12" fill="#546e7a" opacity="0.3"/>
+
+    <!-- 屏幕边框 -->
+    <rect x="20" y="20" width="320" height="260" rx="8"
+          fill="url(#osc__bezelG)" stroke="#1a2327" stroke-width="1.5"/>
+
+    <!-- 屏幕 -->
+    <rect x="30" y="30" width="300" height="240" rx="4"
+          fill="var(--cmp-screen,#1b5e20)"/>
+
+    <!-- 网格 -->
+    <g class="osc__grid" clip-path="url(#osc__screenClip)"></g>
+
+    <!-- 波形 -->
+    <polyline class="osc__trace" fill="none"
+              stroke="var(--cmp-trace,#76ff03)" stroke-width="2"
+              stroke-linejoin="round" stroke-linecap="round"
+              filter="url(#osc__glow)"
+              clip-path="url(#osc__screenClip)"/>
+
+    <!-- 屏幕反光 -->
+    <rect x="30" y="30" width="300" height="60" rx="4"
+          fill="#ffffff" opacity="0.04"/>
+
+    <!-- 刻度标注 -->
+    <text class="osc__data osc__tdiv" x="35" y="278" font-size="9" fill="var(--cmp-trace,#76ff03)" opacity="0.8"></text>
+    <text class="osc__data osc__vdiv" x="35" y="44" font-size="9" fill="var(--cmp-trace,#76ff03)" opacity="0.8"></text>
+
+    <!-- 品牌文字 -->
+    <text x="170" y="295" font-size="10" font-weight="700"
+          font-family="'Courier New',monospace" fill="#78909c"
+          text-anchor="middle" letter-spacing="2">OSC-100</text>
+
+    <!-- 电源指示灯 -->
+    <circle class="osc__led" cx="25" y="305" r="4" cy="305"
+            fill="#76ff03" opacity="0.9"/>
+    <text x="35" y="308" font-size="7" fill="#78909c" font-family="Arial,sans-serif">POWER</text>
+
+    <!-- 控制面板区域 -->
+    <g class="osc__controls">
+      <!-- 频率旋钮 -->
+      <circle cx="390" cy="80" r="22" fill="#37474f" stroke="#263238" stroke-width="2"/>
+      <circle cx="390" cy="80" r="18" fill="#455a64"/>
+      <line x1="390" y1="80" x2="390" y2="64" stroke="#b0bec5" stroke-width="2" stroke-linecap="round"/>
+      <text x="390" y="115" font-size="8" fill="#90a4ae" text-anchor="middle" font-family="Arial,sans-serif">FREQ</text>
+
+      <!-- 振幅旋钮 -->
+      <circle cx="450" cy="80" r="22" fill="#37474f" stroke="#263238" stroke-width="2"/>
+      <circle cx="450" cy="80" r="18" fill="#455a64"/>
+      <line x1="450" y1="80" x2="450" y2="64" stroke="#b0bec5" stroke-width="2" stroke-linecap="round"/>
+      <text x="450" y="115" font-size="8" fill="#90a4ae" text-anchor="middle" font-family="Arial,sans-serif">AMP</text>
+
+      <!-- 时基旋钮 -->
+      <circle cx="390" cy="175" r="22" fill="#37474f" stroke="#263238" stroke-width="2"/>
+      <circle cx="390" cy="175" r="18" fill="#455a64"/>
+      <line x1="390" y1="175" x2="390" y2="159" stroke="#b0bec5" stroke-width="2" stroke-linecap="round"/>
+      <text x="390" y="210" font-size="8" fill="#90a4ae" text-anchor="middle" font-family="Arial,sans-serif">TIME/DIV</text>
+
+      <!-- 电压旋钮 -->
+      <circle cx="450" cy="175" r="22" fill="#37474f" stroke="#263238" stroke-width="2"/>
+      <circle cx="450" cy="175" r="18" fill="#455a64"/>
+      <line x1="450" y1="175" x2="450" y2="159" stroke="#b0bec5" stroke-width="2" stroke-linecap="round"/>
+      <text x="450" y="210" font-size="8" fill="#90a4ae" text-anchor="middle" font-family="Arial,sans-serif">VOLT/DIV</text>
+
+      <!-- 波形选择按钮 -->
+      <rect x="365" y="240" width="100" height="24" rx="4" fill="#37474f" stroke="#263238" stroke-width="1"/>
+      <text class="osc__wf-label" x="415" y="256" font-size="9" fill="#76ff03" text-anchor="middle"
+            font-family="'Courier New',monospace" font-weight="600"></text>
+    </g>
+
+    <!-- 底部接口 -->
+    <rect x="360" y="310" width="30" height="16" rx="3" fill="#37474f" stroke="#263238" stroke-width="1"/>
+    <text x="375" y="340" font-size="7" fill="#78909c" text-anchor="middle" font-family="Arial,sans-serif">CH1</text>
+    <rect x="400" y="310" width="30" height="16" rx="3" fill="#37474f" stroke="#263238" stroke-width="1"/>
+    <text x="415" y="340" font-size="7" fill="#78909c" text-anchor="middle" font-family="Arial,sans-serif">CH2</text>
+    <rect x="440" y="310" width="30" height="16" rx="3" fill="#37474f" stroke="#263238" stroke-width="1"/>
+    <text x="455" y="340" font-size="7" fill="#78909c" text-anchor="middle" font-family="Arial,sans-serif">EXT</text>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.circuit.oscilloscope.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var freq=Math.max(1,Math.min(20,Number(P.frequency)||5));
+    var amp=Math.max(0.1,Math.min(1,Number(P.amplitude)||0.7));
+    var waveform=P.waveform||'sine';
+    if(['sine','square','triangle','sawtooth'].indexOf(waveform)<0)waveform='sine';
+    var timeDiv=Math.max(1,Math.min(50,Number(P.timeDiv)||10));
+    var voltDiv=Math.max(0.1,Math.min(5,Number(P.voltDiv)||1));
+    var showGrid=(P.showGrid!=='off');
+    var running=(P.running!=='off');
+
+    var SX=30,SY=30,SW=300,SH=240;
+    var CX=SX+SW/2, CY=SY+SH/2;
+
+    var gridG=root.querySelector('.osc__grid');
+    var trace=root.querySelector('.osc__trace');
+    var tdivEl=root.querySelector('.osc__tdiv');
+    var vdivEl=root.querySelector('.osc__vdiv');
+    var wfLabel=root.querySelector('.osc__wf-label');
+    var ledEl=root.querySelector('.osc__led');
+
+    var WFNAMES={sine:'SINE ∿',square:'SQR ⊓',triangle:'TRI △',sawtooth:'SAW ⩘'};
+
+    /* 绘制网格 */
+    function drawGrid(){
+      while(gridG.firstChild)gridG.removeChild(gridG.firstChild);
+      if(!showGrid)return;
+      var divX=SW/10, divY=SH/8;
+      /* 主网格 */
+      for(var i=0;i<=10;i++){
+        var x=SX+i*divX;
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1',x);ln.setAttribute('y1',SY);
+        ln.setAttribute('x2',x);ln.setAttribute('y2',SY+SH);
+        ln.setAttribute('stroke','var(--cmp-grid,#2e7d32)');
+        ln.setAttribute('stroke-width',i===5?'0.8':'0.4');
+        ln.setAttribute('opacity',i===5?'0.6':'0.3');
+        gridG.appendChild(ln);
+      }
+      for(var j=0;j<=8;j++){
+        var y=SY+j*divY;
+        var ln=document.createElementNS(NS,'line');
+        ln.setAttribute('x1',SX);ln.setAttribute('y1',y);
+        ln.setAttribute('x2',SX+SW);ln.setAttribute('y2',y);
+        ln.setAttribute('stroke','var(--cmp-grid,#2e7d32)');
+        ln.setAttribute('stroke-width',j===4?'0.8':'0.4');
+        ln.setAttribute('opacity',j===4?'0.6':'0.3');
+        gridG.appendChild(ln);
+      }
+      /* 中心十字刻度 */
+      for(var i=0;i<50;i++){
+        var x=SX+i*(SW/50);
+        var tk=document.createElementNS(NS,'line');
+        tk.setAttribute('x1',x);tk.setAttribute('y1',CY-2);
+        tk.setAttribute('x2',x);tk.setAttribute('y2',CY+2);
+        tk.setAttribute('stroke','var(--cmp-grid,#2e7d32)');
+        tk.setAttribute('stroke-width','0.4');tk.setAttribute('opacity','0.5');
+        gridG.appendChild(tk);
+      }
+      for(var j=0;j<40;j++){
+        var y=SY+j*(SH/40);
+        var tk=document.createElementNS(NS,'line');
+        tk.setAttribute('x1',CX-2);tk.setAttribute('y1',y);
+        tk.setAttribute('x2',CX+2);tk.setAttribute('y2',y);
+        tk.setAttribute('stroke','var(--cmp-grid,#2e7d32)');
+        tk.setAttribute('stroke-width','0.4');tk.setAttribute('opacity','0.5');
+        gridG.appendChild(tk);
+      }
+    }
+
+    /* 波形函数 */
+    function waveVal(t){
+      var p=t*freq;
+      var frac=p-Math.floor(p);
+      switch(waveform){
+        case 'sine': return Math.sin(2*Math.PI*p);
+        case 'square': return frac<0.5?1:-1;
+        case 'triangle': return frac<0.5?(4*frac-1):(3-4*frac);
+        case 'sawtooth': return 2*frac-1;
+        default: return Math.sin(2*Math.PI*p);
+      }
+    }
+
+    var phase=0;
+    var animId=0;
+    var lastT=0;
+
+    function render(){
+      /* 波形 */
+      var pts=[];
+      var N=300;
+      var totalTime=10*timeDiv/1000; /* 10 divisions worth of time */
+      for(var i=0;i<=N;i++){
+        var t=phase+i/N*totalTime;
+        var v=waveVal(t)*amp;
+        var px=SX+i/N*SW;
+        var py=CY-v*(SH/2*0.9);
+        pts.push(px.toFixed(1)+','+py.toFixed(1));
+      }
+      if(trace)trace.setAttribute('points',pts.join(' '));
+
+      /* 标注 */
+      if(tdivEl)tdivEl.textContent=timeDiv+'ms/div  f='+freq+'Hz';
+      if(vdivEl)vdivEl.textContent=voltDiv.toFixed(1)+'V/div  A='+amp.toFixed(1);
+      if(wfLabel)wfLabel.textContent=WFNAMES[waveform]||waveform;
+    }
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=(t-lastT)/1000;
+      lastT=t;
+      phase+=dt;
+      render();
+      if(running)animId=requestAnimationFrame(tick);
+    }
+
+    drawGrid();
+    render();
+    if(running)animId=requestAnimationFrame(tick);
+    if(ledEl)ledEl.setAttribute('fill',running?'#76ff03':'#424242');
+
+    /* Props 变化 */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      freq=Math.max(1,Math.min(20,Number(P2.frequency)||5));
+      amp=Math.max(0.1,Math.min(1,Number(P2.amplitude)||0.7));
+      var wf=P2.waveform||'sine';
+      if(['sine','square','triangle','sawtooth'].indexOf(wf)>=0)waveform=wf;
+      timeDiv=Math.max(1,Math.min(50,Number(P2.timeDiv)||10));
+      voltDiv=Math.max(0.1,Math.min(5,Number(P2.voltDiv)||1));
+      showGrid=(P2.showGrid!=='off');
+      drawGrid();
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+      if(ledEl)ledEl.setAttribute('fill',running?'#76ff03':'#424242');
+      render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

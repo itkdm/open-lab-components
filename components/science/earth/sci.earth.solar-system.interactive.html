@@ -1,0 +1,398 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.earth.solar-system.interactive",
+  "name": "太阳系",
+  "nameEn": "Solar System",
+  "category": "science/earth",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 400 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 400, "min": 200, "max": 800, "desc": "组件尺寸" },
+    { "key": "speed", "type": "number", "default": 1, "min": 0, "max": 10, "desc": "公转速度倍率（0=静止）" },
+    { "key": "showOrbits", "type": "boolean", "default": true, "desc": "显示轨道线" },
+    { "key": "showLabels", "type": "boolean", "default": true, "desc": "显示行星名称" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "speed": "--cmp-speed"
+  },
+  "tags": ["solar-system", "planet", "orbit", "astronomy", "earth-science", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "planet": "string", "planetName": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.earth.solar-system.interactive" role="img" aria-label="太阳系">
+  <style>
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] {
+      --s: var(--cmp-size, 400px);
+      --spd: var(--cmp-speed, 1);
+      display: inline-block; width: var(--s); height: var(--s);
+      user-select: none; position: relative;
+    }
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] svg {
+      width: 100%; height: 100%; display: block;
+    }
+    /* Orbit groups rotate around center */
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__orbit-g {
+      transform-origin: 200px 200px;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-name: ss-revolve;
+    }
+    @keyframes ss-revolve { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    /* Counter-rotate labels so they stay upright */
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__label-g {
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-name: ss-counter;
+    }
+    @keyframes ss-counter { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+    /* Moon orbits Earth */
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__moon-g {
+      animation: ss-revolve 2.7s linear infinite;
+    }
+    /* Planet hover */
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__planet { cursor: pointer; }
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__planet:hover .ss__body {
+      filter: brightness(1.3);
+    }
+    /* Tooltip */
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__tip {
+      position: absolute; left: 50%; top: 12px; transform: translateX(-50%);
+      background: rgba(10,15,40,0.88); color: #e0e8ff; border: 1px solid rgba(100,140,255,0.35);
+      border-radius: 8px; padding: 6px 14px; font: 600 12px/1.5 Arial,'Microsoft YaHei',sans-serif;
+      pointer-events: none; opacity: 0; transition: opacity 0.25s; white-space: nowrap;
+      text-align: center; z-index: 2;
+    }
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__tip.ss__show { opacity: 1; }
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__tip-sub {
+      font-weight: 400; font-size: 10px; color: #90a4c0; display: block;
+    }
+    /* Star twinkle */
+    @keyframes ss-twinkle {
+      0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
+    }
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__star {
+      animation: ss-twinkle 3s ease-in-out infinite;
+    }
+    /* Sun pulse */
+    @keyframes ss-pulse {
+      0%, 100% { r: 30; opacity: 0.18; } 50% { r: 35; opacity: 0.28; }
+    }
+    .cmp[data-cmp-id="sci.earth.solar-system.interactive"] .ss__sun-pulse {
+      animation: ss-pulse 4s ease-in-out infinite;
+    }
+  </style>
+
+  <div class="ss__tip"></div>
+  <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- Background gradient -->
+      <radialGradient class="ss__bg-grad" cx="50%" cy="50%" r="70%">
+        <stop offset="0%" stop-color="#0a1128"/>
+        <stop offset="100%" stop-color="#020510"/>
+      </radialGradient>
+      <!-- Sun glow -->
+      <radialGradient class="ss__sun-grad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fff7a0"/>
+        <stop offset="40%" stop-color="#ffb300"/>
+        <stop offset="100%" stop-color="#ff6f00" stop-opacity="0"/>
+      </radialGradient>
+      <!-- Sun core -->
+      <radialGradient class="ss__sun-core" cx="40%" cy="38%">
+        <stop offset="0%" stop-color="#fffde7"/>
+        <stop offset="50%" stop-color="#ffd54f"/>
+        <stop offset="100%" stop-color="#ff8f00"/>
+      </radialGradient>
+      <!-- Jupiter stripe pattern -->
+      <pattern class="ss__jup-pat" width="20" height="6" patternUnits="userSpaceOnUse">
+        <rect width="20" height="6" fill="#FFCC80"/>
+        <rect y="2" width="20" height="1.5" fill="#e6a54a" opacity="0.5"/>
+      </pattern>
+    </defs>
+
+    <!-- Space background -->
+    <rect class="ss__bg" width="400" height="400" fill="url(#__bg)"/>
+
+    <!-- Stars -->
+    <g class="ss__stars"></g>
+
+    <!-- Orbit lines -->
+    <g class="ss__orbits"></g>
+
+    <!-- Sun outer glow -->
+    <circle class="ss__sun-glow" cx="200" cy="200" r="42" fill="url(#__sg)" opacity="0.6"/>
+    <circle class="ss__sun-pulse" cx="200" cy="200" fill="#ffb300" opacity="0.2"/>
+    <!-- Sun body -->
+    <circle class="ss__sun-body" cx="200" cy="200" r="25" fill="url(#__sc)"/>
+    <circle cx="200" cy="200" r="25" fill="none" stroke="#ffc107" stroke-width="0.5" opacity="0.4"/>
+
+    <!-- Planet orbit groups (populated by JS for multi-instance ID safety) -->
+    <g class="ss__planets"></g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.earth.solar-system.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'ss_' + Math.random().toString(36).slice(2, 8);
+  var NS = 'http://www.w3.org/2000/svg';
+  var CX = 200, CY = 200;
+
+  /* ── Unique gradient IDs ── */
+  var gradMap = {
+    'ss__bg-grad': '__bg', 'ss__sun-grad': '__sg',
+    'ss__sun-core': '__sc', 'ss__jup-pat': '__jp'
+  };
+  var refMap = {};
+  Object.keys(gradMap).forEach(function(cls) {
+    var el = svg.querySelector('.' + cls);
+    if (!el) return;
+    var nid = uid + gradMap[cls];
+    el.setAttribute('id', nid);
+    refMap[gradMap[cls]] = nid;
+  });
+  /* Patch fill references */
+  var patchFills = [
+    ['.ss__bg', '__bg'], ['.ss__sun-glow', '__sg'], ['.ss__sun-body', '__sc']
+  ];
+  patchFills.forEach(function(p) {
+    var el = svg.querySelector(p[0]);
+    if (el && refMap[p[1]]) el.setAttribute('fill', 'url(#' + refMap[p[1]] + ')');
+  });
+
+  /* ── Planet data ── */
+  var PLANETS = [
+    { id:'mercury', name:'水星', r:3,   orbit:45,  color:'#B0BEC5', period:2.4,   fact:'最小的行星，离太阳最近' },
+    { id:'venus',   name:'金星', r:4,   orbit:60,  color:'#FFE0B2', period:6.2,   fact:'最热的行星，自转方向相反' },
+    { id:'earth',   name:'地球', r:4.5, orbit:80,  color:'#42A5F5', period:10,    fact:'我们的家园，有液态水和生命' },
+    { id:'mars',    name:'火星', r:3.5, orbit:100, color:'#E57373', period:18.8,  fact:'红色星球，有太阳系最高的山' },
+    { id:'jupiter', name:'木星', r:10,  orbit:130, color:'#FFCC80', period:118,   fact:'最大的行星，有大红斑风暴' },
+    { id:'saturn',  name:'土星', r:8,   orbit:155, color:'#FFE082', period:294,   fact:'有美丽的光环，密度比水小' },
+    { id:'uranus',  name:'天王星', r:6,  orbit:175, color:'#80DEEA', period:840,  fact:'躺着自转的冰巨星' },
+    { id:'neptune', name:'海王星', r:5.5,orbit:190, color:'#5C6BC0', period:1650, fact:'最远的行星，风速最快' }
+  ];
+
+  /* ── Read props ── */
+  function readProps() {
+    var cs = getComputedStyle(root);
+    var spd = parseFloat(cs.getPropertyValue('--cmp-speed')) || 1;
+    if (spd < 0) spd = 0; if (spd > 10) spd = 10;
+    var P = {};
+    try { var d = root.getAttribute('data-props'); if (d) P = JSON.parse(d); } catch(e) {}
+    return {
+      speed: spd,
+      showOrbits: P.showOrbits !== false,
+      showLabels: P.showLabels !== false
+    };
+  }
+
+  /* ── Generate stars ── */
+  var starsG = svg.querySelector('.ss__stars');
+  for (var si = 0; si < 45; si++) {
+    var star = document.createElementNS(NS, 'circle');
+    star.setAttribute('cx', Math.random() * 400);
+    star.setAttribute('cy', Math.random() * 400);
+    star.setAttribute('r', Math.random() * 1.2 + 0.3);
+    star.setAttribute('fill', '#fff');
+    star.setAttribute('class', 'ss__star');
+    star.style.animationDelay = (Math.random() * 5).toFixed(1) + 's';
+    star.style.animationDuration = (2 + Math.random() * 4).toFixed(1) + 's';
+    starsG.appendChild(star);
+  }
+
+  /* ── Build orbits & planets ── */
+  var orbitsG = svg.querySelector('.ss__orbits');
+  var planetsG = svg.querySelector('.ss__planets');
+  var props = readProps();
+
+  function buildScene() {
+    while (orbitsG.firstChild) orbitsG.removeChild(orbitsG.firstChild);
+    while (planetsG.firstChild) planetsG.removeChild(planetsG.firstChild);
+    props = readProps();
+
+    /* Orbit lines */
+    if (props.showOrbits) {
+      PLANETS.forEach(function(p) {
+        var c = document.createElementNS(NS, 'circle');
+        c.setAttribute('cx', CX); c.setAttribute('cy', CY); c.setAttribute('r', p.orbit);
+        c.setAttribute('fill', 'none'); c.setAttribute('stroke', '#3a4a6a');
+        c.setAttribute('stroke-width', '0.6'); c.setAttribute('stroke-dasharray', '3,3');
+        c.setAttribute('opacity', '0.45');
+        orbitsG.appendChild(c);
+      });
+    }
+
+    /* Planets */
+    PLANETS.forEach(function(p, idx) {
+      var dur = props.speed > 0 ? (p.period / props.speed) : p.period;
+      var g = document.createElementNS(NS, 'g');
+      g.setAttribute('class', 'ss__orbit-g');
+      g.style.animationDuration = dur + 's';
+      /* Stagger start angles */
+      g.style.animationDelay = (-dur * (idx * 0.13 + 0.05)) + 's';
+      if (props.speed === 0) g.style.animationPlayState = 'paused';
+
+      var pg = document.createElementNS(NS, 'g');
+      pg.setAttribute('class', 'ss__planet');
+      pg.setAttribute('data-planet', p.id);
+      pg.setAttribute('data-name', p.name);
+
+      /* Planet body */
+      var body = document.createElementNS(NS, 'circle');
+      body.setAttribute('class', 'ss__body');
+      body.setAttribute('cx', CX + p.orbit); body.setAttribute('cy', CY);
+      body.setAttribute('r', p.r); body.setAttribute('fill', p.color);
+
+      /* Highlight on body */
+      var hl = document.createElementNS(NS, 'circle');
+      hl.setAttribute('cx', CX + p.orbit - p.r * 0.3);
+      hl.setAttribute('cy', CY - p.r * 0.3);
+      hl.setAttribute('r', p.r * 0.4); hl.setAttribute('fill', '#fff'); hl.setAttribute('opacity', '0.35');
+
+      pg.appendChild(body);
+      pg.appendChild(hl);
+
+      /* Jupiter stripes */
+      if (p.id === 'jupiter') {
+        var clip = document.createElementNS(NS, 'clipPath');
+        var clipId = uid + '_jclip';
+        clip.setAttribute('id', clipId);
+        var cc = document.createElementNS(NS, 'circle');
+        cc.setAttribute('cx', CX + p.orbit); cc.setAttribute('cy', CY); cc.setAttribute('r', p.r);
+        clip.appendChild(cc);
+        svg.querySelector('defs').appendChild(clip);
+        var stripes = document.createElementNS(NS, 'g');
+        stripes.setAttribute('clip-path', 'url(#' + clipId + ')');
+        for (var si2 = -10; si2 <= 10; si2 += 4) {
+          var sl = document.createElementNS(NS, 'line');
+          sl.setAttribute('x1', CX + p.orbit - p.r); sl.setAttribute('x2', CX + p.orbit + p.r);
+          sl.setAttribute('y1', CY + si2); sl.setAttribute('y2', CY + si2);
+          sl.setAttribute('stroke', '#c88a3a'); sl.setAttribute('stroke-width', '1.5');
+          sl.setAttribute('opacity', '0.35');
+          stripes.appendChild(sl);
+        }
+        pg.insertBefore(stripes, hl);
+      }
+
+      /* Saturn ring */
+      if (p.id === 'saturn') {
+        var ring = document.createElementNS(NS, 'ellipse');
+        ring.setAttribute('cx', CX + p.orbit); ring.setAttribute('cy', CY);
+        ring.setAttribute('rx', p.r + 6); ring.setAttribute('ry', 3);
+        ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#d4a843');
+        ring.setAttribute('stroke-width', '2'); ring.setAttribute('opacity', '0.7');
+        /* Insert ring behind highlight but after body */
+        pg.insertBefore(ring, hl);
+        /* Second thinner ring */
+        var ring2 = document.createElementNS(NS, 'ellipse');
+        ring2.setAttribute('cx', CX + p.orbit); ring2.setAttribute('cy', CY);
+        ring2.setAttribute('rx', p.r + 9); ring2.setAttribute('ry', 4);
+        ring2.setAttribute('fill', 'none'); ring2.setAttribute('stroke', '#c9a84c');
+        ring2.setAttribute('stroke-width', '0.8'); ring2.setAttribute('opacity', '0.45');
+        pg.insertBefore(ring2, hl);
+      }
+
+      /* Earth moon */
+      if (p.id === 'earth') {
+        var moonG = document.createElementNS(NS, 'g');
+        moonG.setAttribute('class', 'ss__moon-g');
+        moonG.style.transformOrigin = (CX + p.orbit) + 'px ' + CY + 'px';
+        if (props.speed === 0) moonG.style.animationPlayState = 'paused';
+        else moonG.style.animationDuration = (2.7 / props.speed) + 's';
+        var moon = document.createElementNS(NS, 'circle');
+        moon.setAttribute('cx', CX + p.orbit + 9); moon.setAttribute('cy', CY);
+        moon.setAttribute('r', 1.5); moon.setAttribute('fill', '#e0e0e0');
+        moonG.appendChild(moon);
+        pg.appendChild(moonG);
+      }
+
+      /* Label (counter-rotated to stay upright) */
+      if (props.showLabels) {
+        var lblG = document.createElementNS(NS, 'g');
+        lblG.setAttribute('class', 'ss__label-g');
+        lblG.style.transformOrigin = (CX + p.orbit) + 'px ' + (CY - p.r - 5) + 'px';
+        lblG.style.animationDuration = dur + 's';
+        lblG.style.animationDelay = (-dur * (idx * 0.13 + 0.05)) + 's';
+        if (props.speed === 0) lblG.style.animationPlayState = 'paused';
+        var lbl = document.createElementNS(NS, 'text');
+        lbl.setAttribute('x', CX + p.orbit); lbl.setAttribute('y', CY - p.r - 5);
+        lbl.setAttribute('text-anchor', 'middle');
+        lbl.setAttribute('font-size', p.r > 6 ? '7' : '6');
+        lbl.setAttribute('font-family', "Arial,'Microsoft YaHei',sans-serif");
+        lbl.setAttribute('fill', '#b0c4de'); lbl.setAttribute('opacity', '0.85');
+        lbl.setAttribute('pointer-events', 'none');
+        lbl.textContent = p.name;
+        lblG.appendChild(lbl);
+        pg.appendChild(lblG);
+      }
+
+      g.appendChild(pg);
+      planetsG.appendChild(g);
+    });
+  }
+
+  buildScene();
+
+  /* ── Click interaction ── */
+  var tip = root.querySelector('.ss__tip');
+  var selected = null;
+
+  planetsG.addEventListener('click', function(e) {
+    var planet = e.target.closest('.ss__planet');
+    if (!planet) return;
+    var pid = planet.getAttribute('data-planet');
+    var pname = planet.getAttribute('data-name');
+
+    if (selected === pid) {
+      tip.classList.remove('ss__show');
+      selected = null;
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: 'sci.earth.solar-system.interactive', type: 'toggle',
+          values: { planet: '', planetName: '' } }
+      }));
+      return;
+    }
+    selected = pid;
+    var data = PLANETS.filter(function(p) { return p.id === pid; })[0];
+    if (data) {
+      tip.innerHTML = '<span>' + data.name + ' ' + data.id.charAt(0).toUpperCase() + data.id.slice(1) +
+        '</span><span class="ss__tip-sub">' + data.fact + '</span>';
+      tip.classList.add('ss__show');
+    }
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: { id: 'sci.earth.solar-system.interactive', type: 'toggle',
+        values: { planet: pid, planetName: pname } }
+    }));
+  });
+
+  /* Click background to deselect */
+  svg.addEventListener('click', function(e) {
+    if (!e.target.closest('.ss__planet')) {
+      if (selected) {
+        selected = null;
+        tip.classList.remove('ss__show');
+        root.dispatchEvent(new CustomEvent('cmp:change', {
+          bubbles: true, composed: true,
+          detail: { id: 'sci.earth.solar-system.interactive', type: 'toggle',
+            values: { planet: '', planetName: '' } }
+        }));
+      }
+    }
+  });
+
+  /* ── Observe prop / style changes ── */
+  var obs = new MutationObserver(function() { buildScene(); });
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+})();
+</script>

@@ -1,0 +1,285 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.thermal.carnot-cycle.interactive",
+  "name": "卡诺循环（交互式）",
+  "nameEn": "Carnot Cycle (Interactive)",
+  "category": "physics/thermal",
+  "version": "1.0.0",
+  "viewport": { "w": 520, "h": 440 },
+  "tags": ["thermodynamics","carnot","cycle","PV-diagram","heat-engine","interactive"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "hotColor",   "type": "color",  "default": "#e53935", "desc": "高温颜色" },
+    { "key": "coldColor",  "type": "color",  "default": "#1e88e5", "desc": "低温颜色" },
+    { "key": "curveColor", "type": "color",  "default": "#ff9800", "desc": "曲线颜色" },
+    { "key": "Th",         "type": "number", "default": 600, "min": 400, "max": 1000, "desc": "高温热源(K)" },
+    { "key": "Tc",         "type": "number", "default": 300, "min": 200, "max": 500, "desc": "低温热源(K)" },
+    { "key": "speed",      "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "hotColor": "--cmp-hot", "coldColor": "--cmp-cold", "curveColor": "--cmp-curve", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "step", "values": { "step": "number", "stepName": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.thermal.carnot-cycle.interactive" role="img" aria-label="卡诺循环（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.thermal.carnot-cycle.interactive"]{
+      --h:var(--cmp-size,440px);display:inline-block;
+      width:calc(var(--h)*520/440);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(255,152,0,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.thermal.carnot-cycle.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.thermal.carnot-cycle.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="phy.thermal.carnot-cycle.interactive"] .ct__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="ct__hotG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a65"/><stop offset="1" stop-color="#e53935"/></linearGradient>
+      <linearGradient id="ct__coldG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#64b5f6"/><stop offset="1" stop-color="#1565c0"/></linearGradient>
+      <marker id="ct__arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-curve,#ff9800)"/></marker>
+      <marker id="ct__arrH" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-hot,#e53935)"/></marker>
+      <marker id="ct__arrC" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-cold,#1e88e5)"/></marker>
+    </defs>
+
+    <!-- 标题 -->
+    <text x="260" y="24" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">卡诺循环 P-V 图</text>
+
+    <!-- PV坐标系 -->
+    <g transform="translate(60,50)">
+      <!-- 坐标轴 -->
+      <line x1="0" y1="280" x2="340" y2="280" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <line x1="0" y1="0" x2="0" y2="280" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <text x="170" y="305" text-anchor="middle" font-size="12" fill="var(--cmp-stroke,#37474f)" font-weight="600">V (体积)</text>
+      <text x="-10" y="140" text-anchor="middle" font-size="12" fill="var(--cmp-stroke,#37474f)" font-weight="600" transform="rotate(-90,-10,140)">P (压强)</text>
+      <!-- 箭头 -->
+      <polygon points="340,280 332,276 332,284" fill="var(--cmp-stroke,#37474f)"/>
+      <polygon points="0,0 -4,8 4,8" fill="var(--cmp-stroke,#37474f)"/>
+
+      <!-- 网格 -->
+      <g opacity="0.1" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5">
+        <line x1="0" y1="56" x2="330" y2="56"/><line x1="0" y1="112" x2="330" y2="112"/>
+        <line x1="0" y1="168" x2="330" y2="168"/><line x1="0" y1="224" x2="330" y2="224"/>
+        <line x1="66" y1="0" x2="66" y2="280"/><line x1="132" y1="0" x2="132" y2="280"/>
+        <line x1="198" y1="0" x2="198" y2="280"/><line x1="264" y1="0" x2="264" y2="280"/>
+      </g>
+
+      <!-- 卡诺循环曲线 -->
+      <path class="ct__cycle" d="" fill="rgba(255,152,0,0.08)" stroke="var(--cmp-curve,#ff9800)" stroke-width="2.5" stroke-linejoin="round"/>
+
+      <!-- 四个状态点 -->
+      <circle class="ct__ptA" r="5" fill="var(--cmp-hot,#e53935)"/>
+      <circle class="ct__ptB" r="5" fill="var(--cmp-hot,#e53935)"/>
+      <circle class="ct__ptC" r="5" fill="var(--cmp-cold,#1e88e5)"/>
+      <circle class="ct__ptD" r="5" fill="var(--cmp-cold,#1e88e5)"/>
+
+      <!-- 状态标签 -->
+      <text class="ct__lbA" font-size="11" font-weight="700" fill="var(--cmp-hot,#e53935)">A</text>
+      <text class="ct__lbB" font-size="11" font-weight="700" fill="var(--cmp-hot,#e53935)">B</text>
+      <text class="ct__lbC" font-size="11" font-weight="700" fill="var(--cmp-cold,#1e88e5)">C</text>
+      <text class="ct__lbD" font-size="11" font-weight="700" fill="var(--cmp-cold,#1e88e5)">D</text>
+
+      <!-- 过程箭头标注 -->
+      <g class="ct__procLabels"></g>
+
+      <!-- 动画指示点 -->
+      <circle class="ct__dot" r="7" fill="var(--cmp-curve,#ff9800)" opacity="0.9"/>
+    </g>
+
+    <!-- 热机示意 -->
+    <g transform="translate(430,80)">
+      <rect x="-35" y="0" width="70" height="30" rx="4" fill="url(#ct__hotG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text x="0" y="20" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">高温热源</text>
+      <text class="ct__ThVal ct__data" x="0" y="42" text-anchor="middle" font-size="10" fill="var(--cmp-hot,#e53935)">600 K</text>
+
+      <!-- 热机 -->
+      <rect x="-25" y="60" width="50" height="40" rx="6" fill="#fff3e0" stroke="var(--cmp-curve,#ff9800)" stroke-width="1.5"/>
+      <text x="0" y="84" text-anchor="middle" font-size="10" fill="var(--cmp-curve,#ff9800)" font-weight="700">W</text>
+
+      <!-- Q_H 箭头 -->
+      <line x1="0" y1="30" x2="0" y2="60" stroke="var(--cmp-hot,#e53935)" stroke-width="2" marker-end="url(#ct__arrH)"/>
+      <text x="18" y="50" font-size="8" fill="var(--cmp-hot,#e53935)" font-weight="600">Q<tspan font-size="6" dy="2">H</tspan></text>
+
+      <rect x="-35" y="120" width="70" height="30" rx="4" fill="url(#ct__coldG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <text x="0" y="140" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">低温热源</text>
+      <text class="ct__TcVal ct__data" x="0" y="162" text-anchor="middle" font-size="10" fill="var(--cmp-cold,#1e88e5)">300 K</text>
+
+      <!-- Q_C 箭头 -->
+      <line x1="0" y1="100" x2="0" y2="120" stroke="var(--cmp-cold,#1e88e5)" stroke-width="2" marker-end="url(#ct__arrC)"/>
+      <text x="18" y="114" font-size="8" fill="var(--cmp-cold,#1e88e5)" font-weight="600">Q<tspan font-size="6" dy="2">C</tspan></text>
+
+      <!-- 效率 -->
+      <text x="0" y="185" text-anchor="middle" font-size="10" fill="var(--cmp-stroke,#37474f)" font-weight="600">效率 η</text>
+      <text class="ct__eff ct__data" x="0" y="200" text-anchor="middle" font-size="14" fill="var(--cmp-curve,#ff9800)" font-weight="700">50.0%</text>
+    </g>
+
+    <!-- 步骤说明 -->
+    <g class="ct__stepInfo" transform="translate(260,370)">
+      <rect x="-230" y="0" width="460" height="55" rx="8" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="ct__stepTitle" x="0" y="20" text-anchor="middle" font-size="11" font-weight="700" fill="var(--cmp-curve,#ff9800)">① 等温膨胀 (A→B)</text>
+      <text class="ct__stepDesc" x="0" y="38" text-anchor="middle" font-size="10" fill="#666">气体从高温热源吸热 Q_H，等温膨胀做功</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.thermal.carnot-cycle.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var Th=Math.max(400,Math.min(1000,Number(P.Th)||600));
+    var Tc=Math.max(200,Math.min(500,Number(P.Tc)||300));
+    if(Tc>=Th)Tc=Th-100;
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+
+    /* PV图坐标：A(V1,P1高) B(V2,P2) C(V3,P3低) D(V4,P4) */
+    var gW=330,gH=280;
+    /* 归一化坐标 */
+    var V1=0.12,V2=0.38,V3=0.82,V4=0.45;
+    var P1=0.88,P2=0.52,P3=0.12,P4=0.28;
+
+    function toXY(v,p){return{x:v*gW,y:(1-p)*gH};}
+    var A=toXY(V1,P1),B=toXY(V2,P2),C=toXY(V3,P3),D=toXY(V4,P4);
+
+    /* 等温线用双曲线近似，绝热线用更陡的曲线 */
+    function isotherm(from,to,n){
+      var pts=[];
+      for(var i=0;i<=n;i++){
+        var t=i/n;
+        var v=from.x+(to.x-from.x)*t;
+        /* PV=const → P=k/V */
+        var k=from.x*(gH-from.y);
+        var py=gH-k/v;
+        pts.push({x:v,y:Math.max(0,Math.min(gH,py))});
+      }
+      pts[0]={x:from.x,y:from.y};pts[n]={x:to.x,y:to.y};
+      return pts;
+    }
+    function adiabat(from,to,n){
+      var pts=[];
+      for(var i=0;i<=n;i++){
+        var t=i/n;
+        var v=from.x+(to.x-from.x)*t;
+        var gamma=1.4;
+        var k=from.x*Math.pow(gH-from.y,gamma);
+        var py=gH-Math.pow(k/Math.max(v,1),1/gamma);
+        pts.push({x:v,y:Math.max(0,Math.min(gH,py))});
+      }
+      pts[0]={x:from.x,y:from.y};pts[n]={x:to.x,y:to.y};
+      return pts;
+    }
+
+    var N=30;
+    var seg1=isotherm(A,B,N);  /* 等温膨胀 */
+    var seg2=adiabat(B,C,N);   /* 绝热膨胀 */
+    var seg3=isotherm(C,D,N);  /* 等温压缩 */
+    var seg4=adiabat(D,A,N);   /* 绝热压缩 */
+    var allPts=[].concat(seg1,seg2.slice(1),seg3.slice(1),seg4.slice(1));
+
+    /* 绘制路径 */
+    function ptsToD(pts){
+      var d='M'+pts[0].x.toFixed(1)+','+pts[0].y.toFixed(1);
+      for(var i=1;i<pts.length;i++)d+=' L'+pts[i].x.toFixed(1)+','+pts[i].y.toFixed(1);
+      return d+'Z';
+    }
+    root.querySelector('.ct__cycle').setAttribute('d',ptsToD(allPts));
+
+    /* 状态点 */
+    root.querySelector('.ct__ptA').setAttribute('cx',A.x);root.querySelector('.ct__ptA').setAttribute('cy',A.y);
+    root.querySelector('.ct__ptB').setAttribute('cx',B.x);root.querySelector('.ct__ptB').setAttribute('cy',B.y);
+    root.querySelector('.ct__ptC').setAttribute('cx',C.x);root.querySelector('.ct__ptC').setAttribute('cy',C.y);
+    root.querySelector('.ct__ptD').setAttribute('cx',D.x);root.querySelector('.ct__ptD').setAttribute('cy',D.y);
+
+    root.querySelector('.ct__lbA').setAttribute('x',A.x-12);root.querySelector('.ct__lbA').setAttribute('y',A.y-8);
+    root.querySelector('.ct__lbB').setAttribute('x',B.x+8);root.querySelector('.ct__lbB').setAttribute('y',B.y-8);
+    root.querySelector('.ct__lbC').setAttribute('x',C.x+8);root.querySelector('.ct__lbC').setAttribute('y',C.y+16);
+    root.querySelector('.ct__lbD').setAttribute('x',D.x-14);root.querySelector('.ct__lbD').setAttribute('y',D.y+16);
+
+    /* 过程标注箭头 */
+    var procG=root.querySelector('.ct__procLabels');
+    var NS='http://www.w3.org/2000/svg';
+    function addProcLabel(from,to,label,color,dy){
+      var mx=(from.x+to.x)/2,my=(from.y+to.y)/2+dy;
+      var t=document.createElementNS(NS,'text');
+      t.setAttribute('x',mx);t.setAttribute('y',my);
+      t.setAttribute('text-anchor','middle');t.setAttribute('font-size','9');
+      t.setAttribute('fill',color);t.setAttribute('font-weight','600');
+      t.textContent=label;procG.appendChild(t);
+    }
+    addProcLabel(A,B,'等温膨胀','var(--cmp-hot,#e53935)',-12);
+    addProcLabel(B,C,'绝热膨胀','#78909c',14);
+    addProcLabel(C,D,'等温压缩','var(--cmp-cold,#1e88e5)',20);
+    addProcLabel(D,A,'绝热压缩','#78909c',-10);
+
+    /* 效率 */
+    var eff=(1-Tc/Th)*100;
+    root.querySelector('.ct__eff').textContent=eff.toFixed(1)+'%';
+    root.querySelector('.ct__ThVal').textContent=Th+' K';
+    root.querySelector('.ct__TcVal').textContent=Tc+' K';
+
+    /* 步骤信息 */
+    var STEPS=[
+      {title:'① 等温膨胀 (A→B)',desc:'气体从高温热源吸热 Q_H，温度不变，体积增大',seg:seg1},
+      {title:'② 绝热膨胀 (B→C)',desc:'气体绝热膨胀，温度从 T_H 降至 T_C，继续做功',seg:seg2},
+      {title:'③ 等温压缩 (C→D)',desc:'气体向低温热源放热 Q_C，温度不变，体积减小',seg:seg3},
+      {title:'④ 绝热压缩 (D→A)',desc:'气体绝热压缩，温度从 T_C 升至 T_H，回到初态',seg:seg4}
+    ];
+    var stepTitle=root.querySelector('.ct__stepTitle');
+    var stepDesc=root.querySelector('.ct__stepDesc');
+    var dot=root.querySelector('.ct__dot');
+
+    var animId=0,lastT=0,phase=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04);
+      lastT=t;
+      phase+=dt*speed*0.25;
+      if(phase>1)phase-=1;
+
+      /* 确定当前步骤和位置 */
+      var totalPts=allPts.length;
+      var idx=phase*totalPts;
+      var i0=Math.floor(idx)%totalPts;
+      var frac=idx-Math.floor(idx);
+      var i1=(i0+1)%totalPts;
+      var cx=allPts[i0].x+(allPts[i1].x-allPts[i0].x)*frac;
+      var cy=allPts[i0].y+(allPts[i1].y-allPts[i0].y)*frac;
+      dot.setAttribute('cx',cx);dot.setAttribute('cy',cy);
+
+      /* 步骤 */
+      var stepIdx=Math.floor(phase*4)%4;
+      stepTitle.textContent=STEPS[stepIdx].title;
+      stepDesc.textContent=STEPS[stepIdx].desc;
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

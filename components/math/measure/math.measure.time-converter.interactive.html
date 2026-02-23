@@ -1,0 +1,295 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.measure.time-converter.interactive",
+  "name": "时间换算",
+  "nameEn": "Time Converter",
+  "category": "math/measure",
+  "version": "1.0.0",
+  "viewport": { "w": 340, "h": 260 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 340, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "seconds", "type": "number", "default": 3661, "min": 1, "max": 86400, "desc": "秒数" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["time", "conversion", "unit", "second", "minute", "hour", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "seconds": "number", "minutes": "number", "hours": "number", "display": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.measure.time-converter.interactive" role="img" aria-label="时间换算">
+  <style>
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] {
+      --s: var(--cmp-size, 340px);
+      display: inline-block; width: var(--s); user-select: none; -webkit-user-select: none;
+    }
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] svg { width: 100%; height: auto; display: block }
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] .tc__btn,
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] .tc__pre { cursor: pointer; transition: opacity .15s }
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] .tc__btn:hover,
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] .tc__pre:hover { opacity: .75 }
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] .tc__bar { transition: width .25s cubic-bezier(.4,0,.2,1) }
+    .cmp[data-cmp-id="math.measure.time-converter.interactive"] .tc__hand { transition: transform .3s ease }
+  </style>
+  <svg viewBox="0 0 340 260" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient class="tc__gS" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#42A5F5"/><stop offset="1" stop-color="#1E88E5"/>
+      </linearGradient>
+      <linearGradient class="tc__gM" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#66BB6A"/><stop offset="1" stop-color="#43A047"/>
+      </linearGradient>
+      <linearGradient class="tc__gH" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#FF9800"/><stop offset="1" stop-color="#F57C00"/>
+      </linearGradient>
+    </defs>
+    <!-- Title -->
+    <text x="170" y="15" text-anchor="middle" font-size="13" font-weight="700" fill="#37474F"
+          font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif">时间换算</text>
+    <!-- Conversion chain -->
+    <rect x="18" y="28" width="46" height="24" rx="5" fill="#42A5F5"/>
+    <text x="41" y="44" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="'Microsoft YaHei',Arial,sans-serif">秒</text>
+    <line x1="66" y1="40" x2="96" y2="40" stroke="#78909C" stroke-width="1.2" marker-end="url(#tc__arw)"/>
+    <text x="81" y="33" text-anchor="middle" font-size="7.5" fill="#e53935" font-family="Arial,sans-serif">×60</text>
+    <text x="81" y="53" text-anchor="middle" font-size="7.5" fill="#1565C0" font-family="Arial,sans-serif">÷60</text>
+    <rect x="98" y="28" width="46" height="24" rx="5" fill="#66BB6A"/>
+    <text x="121" y="44" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="'Microsoft YaHei',Arial,sans-serif">分</text>
+    <line x1="146" y1="40" x2="176" y2="40" stroke="#78909C" stroke-width="1.2" marker-end="url(#tc__arw)"/>
+    <text x="161" y="33" text-anchor="middle" font-size="7.5" fill="#e53935" font-family="Arial,sans-serif">×60</text>
+    <text x="161" y="53" text-anchor="middle" font-size="7.5" fill="#1565C0" font-family="Arial,sans-serif">÷60</text>
+    <rect x="178" y="28" width="46" height="24" rx="5" fill="#FF9800"/>
+    <text x="201" y="44" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="'Microsoft YaHei',Arial,sans-serif">时</text>
+    <line x1="226" y1="40" x2="256" y2="40" stroke="#78909C" stroke-width="1.2" marker-end="url(#tc__arw)"/>
+    <text x="241" y="33" text-anchor="middle" font-size="7.5" fill="#e53935" font-family="Arial,sans-serif">×24</text>
+    <text x="241" y="53" text-anchor="middle" font-size="7.5" fill="#1565C0" font-family="Arial,sans-serif">÷24</text>
+    <rect x="258" y="28" width="46" height="24" rx="5" fill="#AB47BC"/>
+    <text x="281" y="44" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="'Microsoft YaHei',Arial,sans-serif">日</text>
+    <marker class="tc__arw" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0,0 L6,3 L0,6 Z" fill="#78909C"/>
+    </marker>
+    <!-- Bar visualization -->
+    <rect x="15" y="68" width="280" height="20" rx="3" fill="#ECEFF1" stroke="#B0BEC5" stroke-width=".5"/>
+    <rect class="tc__bar tc__bH" x="15" y="68" width="0" height="20" rx="3"/>
+    <rect class="tc__bar tc__bM" x="15" y="68" width="0" height="20" rx="0"/>
+    <rect class="tc__bar tc__bS" x="15" y="68" width="0" height="20" rx="0"/>
+    <text class="tc__bHt" x="0" y="82" font-size="8" font-weight="700" fill="#fff" font-family="Arial,sans-serif"/>
+    <text class="tc__bMt" x="0" y="82" font-size="8" font-weight="700" fill="#fff" font-family="Arial,sans-serif"/>
+    <text class="tc__bSt" x="0" y="82" font-size="8" font-weight="700" fill="#fff" font-family="Arial,sans-serif"/>
+    <text class="tc__barSum" x="155" y="100" text-anchor="middle" font-size="9" fill="#37474F"
+          font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <!-- Clock face -->
+    <circle cx="265" cy="82" r="36" fill="#FAFAFA" stroke="#B0BEC5" stroke-width="1"/>
+    <g class="tc__ticks"/>
+    <line class="tc__hand tc__hH" x1="265" y1="82" x2="265" y2="58" stroke="#FF9800" stroke-width="2.2" stroke-linecap="round"/>
+    <line class="tc__hand tc__hM" x1="265" y1="82" x2="265" y2="52" stroke="#66BB6A" stroke-width="1.5" stroke-linecap="round"/>
+    <line class="tc__hand tc__hS" x1="265" y1="82" x2="265" y2="50" stroke="#e53935" stroke-width=".8" stroke-linecap="round"/>
+    <circle cx="265" cy="82" r="2.5" fill="#37474F"/>
+    <!-- Numeric display -->
+    <text class="tc__n1" x="15" y="122" font-size="10" font-weight="600" fill="#1565C0" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <text class="tc__n2" x="15" y="136" font-size="10" fill="#37474F" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <text class="tc__n3" x="15" y="150" font-size="10" fill="#37474F" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <text class="tc__n4" x="15" y="164" font-size="10" font-weight="700" fill="#E65100" font-family="'Microsoft YaHei','PingFang SC',Arial,sans-serif"/>
+    <!-- Controls: +/- rows -->
+    <g class="tc__ctrls"/>
+    <!-- Presets -->
+    <g class="tc__presets"/>
+  </svg>
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.measure.time-converter.interactive') return;
+    var svg = root.querySelector('svg'), NS = 'http://www.w3.org/2000/svg';
+    var uid = 'tc' + Math.random().toString(36).slice(2,8);
+    /* Assign unique IDs to gradients and marker */
+    var gS = svg.querySelector('.tc__gS'), gM = svg.querySelector('.tc__gM'), gH = svg.querySelector('.tc__gH');
+    var mk = svg.querySelector('.tc__arw');
+    if (gS) gS.setAttribute('id', uid + 'S');
+    if (gM) gM.setAttribute('id', uid + 'M');
+    if (gH) gH.setAttribute('id', uid + 'H');
+    if (mk) mk.setAttribute('id', uid + 'A');
+    /* Update marker refs */
+    svg.querySelectorAll('line[marker-end]').forEach(function(l){
+      l.setAttribute('marker-end', 'url(#' + uid + 'A)');
+    });
+
+    var MAX = 86400, BW = 280, BX = 15;
+    var secs = 3661;
+    try { var p = root.getAttribute('data-props'); if (p) { var o = JSON.parse(p); secs = Math.max(1, Math.min(MAX, Number(o.seconds) || 3661)); } } catch(e){}
+
+    /* Build clock ticks */
+    var CX = 265, CY = 82, CR = 33;
+    var tg = svg.querySelector('.tc__ticks');
+    for (var i = 0; i < 12; i++) {
+      var a = (i * 30 - 90) * Math.PI / 180;
+      var x1 = CX + CR * Math.cos(a), y1 = CY + CR * Math.sin(a);
+      var x2 = CX + (CR - 4) * Math.cos(a), y2 = CY + (CR - 4) * Math.sin(a);
+      var tk = document.createElementNS(NS, 'line');
+      tk.setAttribute('x1', x1.toFixed(1)); tk.setAttribute('y1', y1.toFixed(1));
+      tk.setAttribute('x2', x2.toFixed(1)); tk.setAttribute('y2', y2.toFixed(1));
+      tk.setAttribute('stroke', '#78909C'); tk.setAttribute('stroke-width', i % 3 === 0 ? '1.2' : '.6');
+      tg.appendChild(tk);
+    }
+
+    /* Build control rows */
+    var cg = svg.querySelector('.tc__ctrls');
+    var units = [
+      { label: '秒', delta: 1, color: '#42A5F5' },
+      { label: '分', delta: 60, color: '#66BB6A' },
+      { label: '时', delta: 3600, color: '#FF9800' }
+    ];
+    units.forEach(function(u, i) {
+      var y = 178 + i * 20;
+      var lt = document.createElementNS(NS, 'text');
+      lt.setAttribute('x', '15'); lt.setAttribute('y', String(y + 13));
+      lt.setAttribute('font-size', '10'); lt.setAttribute('font-weight', '600');
+      lt.setAttribute('fill', u.color); lt.setAttribute('font-family', "'Microsoft YaHei',Arial,sans-serif");
+      lt.textContent = u.label + ':';
+      cg.appendChild(lt);
+      /* value text */
+      var vt = document.createElementNS(NS, 'text');
+      vt.setAttribute('class', 'tc__cv' + i);
+      vt.setAttribute('x', '38'); vt.setAttribute('y', String(y + 13));
+      vt.setAttribute('font-size', '10'); vt.setAttribute('font-weight', '600');
+      vt.setAttribute('fill', '#37474F'); vt.setAttribute('font-family', 'Arial,sans-serif');
+      cg.appendChild(vt);
+      /* minus button */
+      var gm = document.createElementNS(NS, 'g');
+      gm.classList.add('tc__btn'); gm.setAttribute('data-delta', String(-u.delta));
+      var rm = document.createElementNS(NS, 'rect');
+      rm.setAttribute('x', '60'); rm.setAttribute('y', String(y)); rm.setAttribute('width', '22'); rm.setAttribute('height', '16'); rm.setAttribute('rx', '3'); rm.setAttribute('fill', '#e53935');
+      var tm = document.createElementNS(NS, 'text');
+      tm.setAttribute('x', '71'); tm.setAttribute('y', String(y + 12)); tm.setAttribute('text-anchor', 'middle');
+      tm.setAttribute('font-size', '12'); tm.setAttribute('font-weight', '700'); tm.setAttribute('fill', '#fff');
+      tm.setAttribute('font-family', 'Arial,sans-serif'); tm.setAttribute('pointer-events', 'none'); tm.textContent = '−';
+      gm.appendChild(rm); gm.appendChild(tm); cg.appendChild(gm);
+      /* plus button */
+      var gp = document.createElementNS(NS, 'g');
+      gp.classList.add('tc__btn'); gp.setAttribute('data-delta', String(u.delta));
+      var rp = document.createElementNS(NS, 'rect');
+      rp.setAttribute('x', '86'); rp.setAttribute('y', String(y)); rp.setAttribute('width', '22'); rp.setAttribute('height', '16'); rp.setAttribute('rx', '3'); rp.setAttribute('fill', '#43a047');
+      var tp = document.createElementNS(NS, 'text');
+      tp.setAttribute('x', '97'); tp.setAttribute('y', String(y + 12)); tp.setAttribute('text-anchor', 'middle');
+      tp.setAttribute('font-size', '12'); tp.setAttribute('font-weight', '700'); tp.setAttribute('fill', '#fff');
+      tp.setAttribute('font-family', 'Arial,sans-serif'); tp.setAttribute('pointer-events', 'none'); tp.textContent = '+';
+      gp.appendChild(rp); gp.appendChild(tp); cg.appendChild(gp);
+    });
+
+    /* Build preset buttons */
+    var pg = svg.querySelector('.tc__presets');
+    var presets = [
+      { label: '1分', val: 60 }, { label: '5分', val: 300 },
+      { label: '1时', val: 3600 }, { label: '1日', val: 86400 }
+    ];
+    presets.forEach(function(p, i) {
+      var g = document.createElementNS(NS, 'g');
+      g.classList.add('tc__pre'); g.setAttribute('data-val', String(p.val));
+      var r = document.createElementNS(NS, 'rect');
+      r.setAttribute('x', String(130 + i * 52)); r.setAttribute('y', '198');
+      r.setAttribute('width', '46'); r.setAttribute('height', '18'); r.setAttribute('rx', '4');
+      r.setAttribute('fill', '#546E7A');
+      var t = document.createElementNS(NS, 'text');
+      t.setAttribute('x', String(153 + i * 52)); t.setAttribute('y', '211');
+      t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', '9.5');
+      t.setAttribute('font-weight', '600'); t.setAttribute('fill', '#fff');
+      t.setAttribute('font-family', "'Microsoft YaHei',Arial,sans-serif");
+      t.setAttribute('pointer-events', 'none'); t.textContent = p.label;
+      g.appendChild(r); g.appendChild(t); pg.appendChild(g);
+    });
+
+    function decompose(s) {
+      var h = Math.floor(s / 3600), rm = s % 3600;
+      var m = Math.floor(rm / 60), rs = rm % 60;
+      return { h: h, m: m, s: rs };
+    }
+    function displayStr(d) {
+      var parts = [];
+      if (d.h > 0) parts.push(d.h + '时');
+      if (d.m > 0) parts.push(d.m + '分');
+      if (d.s > 0 || parts.length === 0) parts.push(d.s + '秒');
+      return parts.join(' ');
+    }
+
+    function render() {
+      var d = decompose(secs);
+      /* Bar visualization */
+      var hW = (d.h * 3600 / secs) * BW;
+      var mW = (d.m * 60 / secs) * BW;
+      var sW = (d.s / secs) * BW;
+      /* Ensure minimum visible width for non-zero segments */
+      if (d.h > 0 && hW < 3) hW = 3;
+      if (d.m > 0 && mW < 3) mW = 3;
+      if (d.s > 0 && sW < 3) sW = 3;
+
+      var bH = svg.querySelector('.tc__bH'), bM = svg.querySelector('.tc__bM'), bS = svg.querySelector('.tc__bS');
+      bH.setAttribute('width', hW); bH.setAttribute('fill', 'url(#' + uid + 'H)');
+      bM.setAttribute('x', BX + hW); bM.setAttribute('width', mW); bM.setAttribute('fill', 'url(#' + uid + 'M)');
+      bS.setAttribute('x', BX + hW + mW); bS.setAttribute('width', sW); bS.setAttribute('fill', 'url(#' + uid + 'S)');
+
+      /* Bar labels */
+      var bHt = svg.querySelector('.tc__bHt'), bMt = svg.querySelector('.tc__bMt'), bSt = svg.querySelector('.tc__bSt');
+      bHt.textContent = d.h > 0 && hW > 18 ? d.h + '时' : '';
+      bHt.setAttribute('x', String(BX + hW / 2)); bHt.setAttribute('text-anchor', 'middle');
+      bMt.textContent = d.m > 0 && mW > 18 ? d.m + '分' : '';
+      bMt.setAttribute('x', String(BX + hW + mW / 2)); bMt.setAttribute('text-anchor', 'middle');
+      bSt.textContent = d.s > 0 && sW > 18 ? d.s + '秒' : '';
+      bSt.setAttribute('x', String(BX + hW + mW + sW / 2)); bSt.setAttribute('text-anchor', 'middle');
+
+      svg.querySelector('.tc__barSum').textContent = secs + '秒 = ' + displayStr(d);
+
+      /* Clock hands */
+      var totalH = secs / 3600;
+      var hAngle = (totalH % 12) * 30 - 90;
+      var mAngle = ((secs % 3600) / 60) * 6 - 90;
+      var sAngle = (secs % 60) * 6 - 90;
+      var hLen = 18, mLen = 24, sLen = 28;
+      function handXY(angle, len) {
+        var r = angle * Math.PI / 180;
+        return { x: (CX + len * Math.cos(r)).toFixed(1), y: (CY + len * Math.sin(r)).toFixed(1) };
+      }
+      var hh = handXY(hAngle, hLen), mh = handXY(mAngle, mLen), sh = handXY(sAngle, sLen);
+      var hHand = svg.querySelector('.tc__hH'), mHand = svg.querySelector('.tc__hM'), sHand = svg.querySelector('.tc__hS');
+      hHand.setAttribute('x2', hh.x); hHand.setAttribute('y2', hh.y);
+      mHand.setAttribute('x2', mh.x); mHand.setAttribute('y2', mh.y);
+      sHand.setAttribute('x2', sh.x); sHand.setAttribute('y2', sh.y);
+
+      /* Numeric display */
+      svg.querySelector('.tc__n1').textContent = secs + ' 秒';
+      svg.querySelector('.tc__n2').textContent = '= ' + (secs / 60).toFixed(2) + ' 分';
+      svg.querySelector('.tc__n3').textContent = '= ' + (secs / 3600).toFixed(3) + ' 时';
+      svg.querySelector('.tc__n4').textContent = '= ' + displayStr(d);
+
+      /* Control row values */
+      svg.querySelector('.tc__cv0').textContent = String(d.s);
+      svg.querySelector('.tc__cv1').textContent = String(d.m);
+      svg.querySelector('.tc__cv2').textContent = String(d.h);
+
+      root.setAttribute('aria-label', '时间换算 ' + displayStr(d));
+    }
+
+    function emit() {
+      var d = decompose(secs);
+      root.dispatchEvent(new CustomEvent('cmp:change', { bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust',
+          values: { seconds: secs, minutes: +(secs / 60).toFixed(2), hours: +(secs / 3600).toFixed(3), display: displayStr(decompose(secs)) } } }));
+    }
+
+    svg.addEventListener('click', function(e) {
+      var btn = e.target.closest('.tc__btn');
+      if (btn) {
+        var delta = Number(btn.getAttribute('data-delta')) || 0;
+        secs = Math.max(1, Math.min(MAX, secs + delta));
+        render(); emit(); return;
+      }
+      var pre = e.target.closest('.tc__pre');
+      if (pre) {
+        secs = Math.max(1, Math.min(MAX, Number(pre.getAttribute('data-val')) || 60));
+        render(); emit();
+      }
+    });
+
+    render();
+  })();
+  </script>
+</div>

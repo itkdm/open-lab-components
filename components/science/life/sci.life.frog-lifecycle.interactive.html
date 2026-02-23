@@ -1,0 +1,276 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.life.frog-lifecycle.interactive",
+  "name": "青蛙生命周期",
+  "nameEn": "Frog Lifecycle",
+  "category": "science/life",
+  "version": "1.0.0",
+  "viewport": { "w": 320, "h": 320 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
+    { "key": "stage", "type": "number", "default": 1, "min": 1, "max": 5, "desc": "当前阶段" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["frog", "lifecycle", "metamorphosis", "amphibian", "science", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "stage": "number(1-5)", "stageName": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.life.frog-lifecycle.interactive" role="img" aria-label="青蛙生命周期">
+  <svg class="fl__svg" viewBox="0 0 320 320" aria-hidden="true">
+    <defs>
+      <filter class="fl__glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <marker class="fl__arrow" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#BDBDBD"/>
+      </marker>
+      <marker class="fl__arrow-active" viewBox="0 0 8 6" refX="7" refY="3" markerWidth="8" markerHeight="6" orient="auto">
+        <path d="M0,0 L8,3 L0,6 Z" fill="#4CAF50"/>
+      </marker>
+      <radialGradient class="fl__pond-grad" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#80CBC4"/>
+        <stop offset="100%" stop-color="#4DB6AC"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Curved arrows connecting stages clockwise: 1→2, 2→3, 3→4, 4→5, 5→1 -->
+    <path class="fl__arc" data-arc="1" d="M185,55 Q245,30 265,90" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+    <path class="fl__arc" data-arc="2" d="M280,125 Q300,200 275,215" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+    <path class="fl__arc" data-arc="3" d="M255,240 Q200,290 70,230" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+    <path class="fl__arc" data-arc="4" d="M42,210 Q10,160 42,110" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+    <path class="fl__arc" data-arc="5" d="M60,85 Q90,30 140,42" fill="none" stroke="#BDBDBD" stroke-width="1.5"/>
+
+    <!-- Center: pond scene -->
+    <ellipse class="fl__pond" cx="160" cy="165" rx="38" ry="24" fill="#4DB6AC" opacity="0.5"/>
+    <ellipse cx="160" cy="165" rx="32" ry="18" fill="#80CBC4" opacity="0.35"/>
+    <!-- Lily pad -->
+    <path d="M152,162 Q145,155 150,150 Q158,148 164,152 Q170,155 168,162 Q164,168 158,168 Q153,167 152,162Z" fill="#66BB6A" opacity="0.7"/>
+    <circle cx="158" cy="158" r="1" fill="#E91E63" opacity="0.6"/>
+    <text x="160" y="188" text-anchor="middle" font-size="11" font-family="'Microsoft YaHei',sans-serif" fill="#33691E" font-weight="bold">青蛙的一生</text>
+
+    <!-- Stage 1: 卵 Eggs (top center: 160, 45) -->
+    <g class="fl__stage" data-stage="1" style="cursor:pointer">
+      <circle class="fl__ring" cx="160" cy="45" r="30" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Water plant stem -->
+      <path d="M148,55 Q150,40 152,28" fill="none" stroke="#66BB6A" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M152,32 Q156,28 154,24" fill="none" stroke="#81C784" stroke-width="1"/>
+      <!-- Egg jelly cluster -->
+      <circle cx="155" cy="42" r="6" fill="rgba(200,230,255,0.25)" stroke="rgba(180,210,240,0.3)" stroke-width="0.5"/>
+      <circle cx="163" cy="40" r="5.5" fill="rgba(200,230,255,0.25)" stroke="rgba(180,210,240,0.3)" stroke-width="0.5"/>
+      <circle cx="159" cy="48" r="5" fill="rgba(200,230,255,0.2)" stroke="rgba(180,210,240,0.3)" stroke-width="0.5"/>
+      <circle cx="167" cy="46" r="5" fill="rgba(200,230,255,0.2)" stroke="rgba(180,210,240,0.3)" stroke-width="0.5"/>
+      <!-- Black egg dots -->
+      <circle cx="153" cy="41" r="2" fill="#212121"/><circle cx="157" cy="43" r="1.8" fill="#212121"/>
+      <circle cx="161" cy="39" r="2" fill="#212121"/><circle cx="165" cy="41" r="1.8" fill="#212121"/>
+      <circle cx="155" cy="47" r="1.8" fill="#212121"/><circle cx="159" cy="49" r="1.6" fill="#212121"/>
+      <circle cx="163" cy="47" r="1.8" fill="#212121"/><circle cx="167" cy="45" r="1.6" fill="#212121"/>
+      <text class="fl__label" x="160" y="72" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">卵</text>
+    </g>
+
+    <!-- Stage 2: 蝌蚪 Tadpole (upper-right: 270, 100) -->
+    <g class="fl__stage" data-stage="2" style="cursor:pointer">
+      <circle class="fl__ring" cx="270" cy="100" r="30" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Body -->
+      <ellipse cx="266" cy="98" rx="10" ry="7" fill="#37474F" stroke="#263238" stroke-width="0.6"/>
+      <!-- Head merging with body (larger front) -->
+      <ellipse cx="260" cy="97" rx="7" ry="6.5" fill="#455A64" stroke="#263238" stroke-width="0.5"/>
+      <!-- Eye -->
+      <circle cx="256" cy="94" r="2.2" fill="#FFF"/><circle cx="256" cy="94" r="1.2" fill="#212121"/>
+      <!-- Wavy tail -->
+      <path d="M276,98 Q282,93 286,98 Q290,103 294,98" fill="none" stroke="#546E7A" stroke-width="2" stroke-linecap="round"/>
+      <path d="M276,99 Q282,95 286,99" fill="none" stroke="#455A64" stroke-width="1" opacity="0.4"/>
+      <text class="fl__label" x="270" y="126" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">蝌蚪</text>
+    </g>
+
+    <!-- Stage 3: 长后腿 Tadpole with hind legs (lower-right: 270, 220) -->
+    <g class="fl__stage" data-stage="3" style="cursor:pointer">
+      <circle class="fl__ring" cx="270" cy="220" r="30" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Body (slightly larger) -->
+      <ellipse cx="265" cy="218" rx="11" ry="7.5" fill="#455A64" stroke="#263238" stroke-width="0.6"/>
+      <ellipse cx="258" cy="217" rx="7.5" ry="7" fill="#546E7A" stroke="#263238" stroke-width="0.5"/>
+      <!-- Eye -->
+      <circle cx="254" cy="214" r="2.2" fill="#FFF"/><circle cx="254" cy="214" r="1.2" fill="#212121"/>
+      <!-- Tail (still present) -->
+      <path d="M276,218 Q282,213 286,218 Q289,222 292,218" fill="none" stroke="#546E7A" stroke-width="1.8" stroke-linecap="round"/>
+      <!-- Hind legs -->
+      <path d="M272,224 L274,230 L278,232" fill="none" stroke="#37474F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M268,225 L269,231 L273,233" fill="none" stroke="#37474F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <text class="fl__label" x="270" y="248" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">长后腿</text>
+    </g>
+
+    <!-- Stage 4: 长前腿 Froglet (lower-left: 50, 220) -->
+    <g class="fl__stage" data-stage="4" style="cursor:pointer">
+      <circle class="fl__ring" cx="50" cy="220" r="30" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Body (more frog-shaped) -->
+      <ellipse cx="50" cy="218" rx="12" ry="8" fill="#558B2F" stroke="#33691E" stroke-width="0.6"/>
+      <!-- Head -->
+      <ellipse cx="40" cy="215" rx="8" ry="7" fill="#689F38" stroke="#33691E" stroke-width="0.5"/>
+      <!-- Eyes -->
+      <circle cx="36" cy="211" r="2.5" fill="#FFF"/><circle cx="36" cy="211" r="1.3" fill="#212121"/>
+      <!-- Mouth -->
+      <path d="M33,217 Q38,219 42,217" fill="none" stroke="#33691E" stroke-width="0.6"/>
+      <!-- Front legs -->
+      <path d="M43,222 L39,226 L36,225" fill="none" stroke="#558B2F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M46,223 L43,228 L40,227" fill="none" stroke="#558B2F" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Hind legs (larger, folded) -->
+      <path d="M58,224 L62,230 L66,228" fill="none" stroke="#558B2F" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M55,225 L58,232 L62,230" fill="none" stroke="#558B2F" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Short tail (being absorbed) -->
+      <path d="M62,218 Q66,216 68,218" fill="none" stroke="#7CB342" stroke-width="1.5" stroke-linecap="round"/>
+      <text class="fl__label" x="50" y="248" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">长前腿</text>
+    </g>
+
+    <!-- Stage 5: 成蛙 Adult Frog (upper-left: 50, 100) -->
+    <g class="fl__stage" data-stage="5" style="cursor:pointer">
+      <circle class="fl__ring" cx="50" cy="100" r="30" fill="none" stroke="transparent" stroke-width="3"/>
+      <!-- Body -->
+      <ellipse cx="50" cy="102" rx="16" ry="11" fill="#4CAF50" stroke="#2E7D32" stroke-width="0.7"/>
+      <!-- Darker spots -->
+      <circle cx="45" cy="99" r="2" fill="#388E3C" opacity="0.5"/>
+      <circle cx="53" cy="104" r="1.8" fill="#388E3C" opacity="0.5"/>
+      <circle cx="48" cy="107" r="1.5" fill="#388E3C" opacity="0.5"/>
+      <circle cx="57" cy="98" r="1.6" fill="#388E3C" opacity="0.4"/>
+      <!-- Head -->
+      <ellipse cx="40" cy="96" rx="10" ry="8" fill="#66BB6A" stroke="#2E7D32" stroke-width="0.6"/>
+      <!-- Protruding eyes -->
+      <circle cx="34" cy="89" r="4" fill="#81C784" stroke="#2E7D32" stroke-width="0.6"/>
+      <circle cx="44" cy="89" r="4" fill="#81C784" stroke="#2E7D32" stroke-width="0.6"/>
+      <circle cx="34" cy="89" r="2.2" fill="#FFF"/><circle cx="34" cy="89" r="1.2" fill="#212121"/>
+      <circle cx="44" cy="89" r="2.2" fill="#FFF"/><circle cx="44" cy="89" r="1.2" fill="#212121"/>
+      <!-- Wide mouth -->
+      <path d="M30,99 Q38,103 48,99" fill="none" stroke="#2E7D32" stroke-width="0.8"/>
+      <!-- Front legs (tucked) -->
+      <path d="M36,104 L32,110 L28,109" fill="none" stroke="#4CAF50" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M40,106 L37,112 L33,111" fill="none" stroke="#4CAF50" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      <!-- Back legs (folded) -->
+      <path d="M62,106 L68,112 L72,108 L76,112" fill="none" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M60,110 L65,116 L69,112 L73,116" fill="none" stroke="#4CAF50" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text class="fl__label" x="50" y="128" text-anchor="middle" font-size="10" font-family="'Microsoft YaHei',sans-serif" fill="#5D4037">成蛙</text>
+    </g>
+  </svg>
+
+  <style>
+    .cmp[data-cmp-id="sci.life.frog-lifecycle.interactive"] {
+      width: var(--cmp-size, 320px); display: inline-block;
+    }
+    .cmp[data-cmp-id="sci.life.frog-lifecycle.interactive"] .fl__svg {
+      width: 100%; height: auto; display: block;
+    }
+    .cmp[data-cmp-id="sci.life.frog-lifecycle.interactive"] .fl__ring {
+      transition: stroke 0.3s, stroke-width 0.3s;
+    }
+    .cmp[data-cmp-id="sci.life.frog-lifecycle.interactive"] .fl__stage:hover .fl__ring {
+      stroke: rgba(76,175,80,0.25); stroke-width: 3;
+    }
+    .cmp[data-cmp-id="sci.life.frog-lifecycle.interactive"] .fl__arc {
+      transition: stroke 0.4s, stroke-width 0.4s;
+    }
+    .cmp[data-cmp-id="sci.life.frog-lifecycle.interactive"] .fl__label {
+      pointer-events: none;
+    }
+    @keyframes fl-pulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    .cmp[data-cmp-id="sci.life.frog-lifecycle.interactive"] .fl__arc--active {
+      animation: fl-pulse 1.8s ease-in-out infinite;
+    }
+  </style>
+
+  <script>
+  (function(){
+    var root = document.currentScript && document.currentScript.closest
+      ? document.currentScript.closest('[data-cmp-id="sci.life.frog-lifecycle.interactive"]')
+      : null;
+    if(!root) return;
+
+    var svg = root.querySelector('.fl__svg');
+    if(!svg) return;
+
+    var uid = 'fl' + Math.random().toString(36).slice(2,8);
+    svg.querySelectorAll('defs > [class^="fl__"]').forEach(function(el){
+      var cls = el.getAttribute('class');
+      var newId = uid + '_' + cls;
+      el.setAttribute('id', newId);
+    });
+    svg.querySelectorAll('.fl__arc').forEach(function(el){
+      el.setAttribute('marker-end', 'url(#' + uid + '_fl__arrow)');
+    });
+    var pond = svg.querySelector('.fl__pond');
+    if(pond) pond.setAttribute('fill', 'url(#' + uid + '_fl__pond-grad)');
+
+    var STAGES = ['卵','蝌蚪','长后腿','长前腿','成蛙'];
+    var stageEls = svg.querySelectorAll('.fl__stage');
+    var arcEls = svg.querySelectorAll('.fl__arc');
+
+    var props = {};
+    try { props = JSON.parse(root.getAttribute('data-props')||'{}'); } catch(e){}
+    var current = Math.max(1, Math.min(5, props.stage || 1));
+
+    function setActive(stage){
+      current = stage;
+      stageEls.forEach(function(g){
+        var s = parseInt(g.getAttribute('data-stage'));
+        var ring = g.querySelector('.fl__ring');
+        if(s === stage){
+          ring.setAttribute('stroke', '#4CAF50');
+          ring.setAttribute('stroke-width', '3');
+          ring.style.filter = 'url(#' + uid + '_fl__glow)';
+        } else {
+          ring.setAttribute('stroke', 'transparent');
+          ring.setAttribute('stroke-width', '3');
+          ring.style.filter = '';
+        }
+      });
+      arcEls.forEach(function(arc){
+        var a = parseInt(arc.getAttribute('data-arc'));
+        if(a === stage){
+          arc.setAttribute('stroke', '#4CAF50');
+          arc.setAttribute('stroke-width', '2.5');
+          arc.setAttribute('marker-end', 'url(#' + uid + '_fl__arrow-active)');
+          arc.classList.add('fl__arc--active');
+        } else {
+          arc.setAttribute('stroke', '#BDBDBD');
+          arc.setAttribute('stroke-width', '1.5');
+          arc.setAttribute('marker-end', 'url(#' + uid + '_fl__arrow)');
+          arc.classList.remove('fl__arc--active');
+        }
+      });
+    }
+
+    function emitChange(stage){
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle',
+          values: { stage: stage, stageName: STAGES[stage - 1] }
+        }
+      }));
+    }
+
+    stageEls.forEach(function(g){
+      g.addEventListener('click', function(e){
+        e.stopPropagation();
+        var s = parseInt(g.getAttribute('data-stage'));
+        setActive(s);
+        emitChange(s);
+      });
+    });
+
+    setActive(current);
+
+    new MutationObserver(function(){
+      try {
+        var p = JSON.parse(root.getAttribute('data-props')||'{}');
+        if(p.stage !== undefined){
+          var s = Math.max(1, Math.min(5, p.stage));
+          if(s !== current){ setActive(s); }
+        }
+      } catch(e){}
+    }).observe(root, { attributes: true, attributeFilter: ['data-props','style'] });
+  })();
+  </script>
+</div>

@@ -1,0 +1,302 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.organ.stomach.basic",
+  "name": "胃部结构",
+  "nameEn": "Stomach Structure",
+  "category": "biology/organ",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 380 },
+  "tags": ["biology","organ","stomach","digestive","anatomy"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "stomachColor",   "type": "color",  "default": "#f48fb1", "desc": "胃壁颜色" },
+    { "key": "mucosaColor",    "type": "color",  "default": "#fce4ec", "desc": "黏膜颜色" },
+    { "key": "sphincterColor", "type": "color",  "default": "#ad1457", "desc": "括约肌颜色" },
+    { "key": "animate",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "蠕动动画" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "stomachColor": "--cmp-stomach", "mucosaColor": "--cmp-mucosa",
+    "sphincterColor": "--cmp-sphincter", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "peristalsis", "values": { "phase": "number(0-1) — 蠕动相位" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.organ.stomach.basic" role="img" aria-label="胃部结构">
+  <style>
+    .cmp[data-cmp-id="bio.organ.stomach.basic"]{
+      --h:var(--cmp-size,380px);display:inline-block;
+      width:calc(var(--h)*400/380);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(244,143,177,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.organ.stomach.basic"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="bio.organ.stomach.basic"] .stm__label{font-family:Arial,'Microsoft YaHei',sans-serif;font-size:10.5px;font-weight:600}
+    .cmp[data-cmp-id="bio.organ.stomach.basic"] .stm__line{stroke:#546e7a;stroke-width:0.8;stroke-dasharray:2,2}
+  </style>
+
+  <svg viewBox="0 0 400 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 胃壁3D渐变 -->
+      <radialGradient id="stm__gBody" cx="40%" cy="35%" r="60%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35"/>
+        <stop offset="60%" stop-color="#000000" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.15"/>
+      </radialGradient>
+      <!-- 胃底高光 -->
+      <radialGradient id="stm__gFundus" cx="35%" cy="30%" r="50%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.4"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.05"/>
+      </radialGradient>
+      <!-- 黏膜渐变 -->
+      <linearGradient id="stm__gMucosa" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3"/>
+        <stop offset="100%" stop-color="#000000" stop-opacity="0.1"/>
+      </linearGradient>
+    </defs>
+
+    <!-- 食管 esophagus -->
+    <g class="stm__esophagus">
+      <path d="M185,18 Q183,30 180,50 Q178,65 176,80"
+            fill="none" stroke="var(--cmp-stomach,#f48fb1)" stroke-width="16" stroke-linecap="round"/>
+      <path d="M185,18 Q183,30 180,50 Q178,65 176,80"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"
+            stroke-linecap="round" opacity="0.6"/>
+      <!-- 食管内腔 -->
+      <path d="M185,18 Q183,30 180,50 Q178,65 176,80"
+            fill="none" stroke="var(--cmp-mucosa,#fce4ec)" stroke-width="6" stroke-linecap="round"/>
+    </g>
+
+    <!-- 贲门 cardia (食管-胃连接处) -->
+    <ellipse class="stm__cardia" cx="176" cy="88" rx="12" ry="6"
+             fill="var(--cmp-sphincter,#ad1457)" opacity="0.7"
+             stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+
+    <!-- 胃主体轮廓 — 胃大弯+胃小弯 -->
+    <g class="stm__body">
+      <!-- 胃壁主体 -->
+      <path class="stm__wall" d="
+        M176,88
+        Q150,82 120,95
+        Q72,115 55,160
+        Q38,210 55,260
+        Q70,300 110,320
+        Q150,340 195,335
+        Q235,330 265,305
+        Q290,280 295,245
+        Q300,210 290,185
+        Q280,160 260,148
+        Q240,138 225,140
+        Q210,143 200,155
+        Q192,130 188,110
+        Q185,95 176,88
+        Z"
+        fill="var(--cmp-stomach,#f48fb1)"
+        stroke="var(--cmp-stroke,#37474f)"
+        stroke-width="var(--cmp-stroke-width,1.2)"/>
+      <!-- 3D高光叠加 -->
+      <path d="
+        M176,88
+        Q150,82 120,95
+        Q72,115 55,160
+        Q38,210 55,260
+        Q70,300 110,320
+        Q150,340 195,335
+        Q235,330 265,305
+        Q290,280 295,245
+        Q300,210 290,185
+        Q280,160 260,148
+        Q240,138 225,140
+        Q210,143 200,155
+        Q192,130 188,110
+        Q185,95 176,88
+        Z"
+        fill="url(#stm__gBody)" opacity="0.7"/>
+    </g>
+
+    <!-- 胃底 fundus (上方膨大部分) -->
+    <path class="stm__fundus-hl" d="
+      M176,88 Q150,82 120,95 Q85,110 68,140 Q100,100 150,90 Z"
+      fill="url(#stm__gFundus)" opacity="0.5"/>
+
+    <!-- 胃壁皱襞 rugae (内部波浪线) -->
+    <g class="stm__rugae" opacity="0.45">
+      <path d="M130,140 Q145,133 160,140 Q175,147 185,140"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M100,180 Q120,170 140,180 Q160,190 175,180"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M85,220 Q110,208 135,220 Q160,232 180,220"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M90,258 Q115,246 145,258 Q175,270 200,258"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9" stroke-linecap="round"/>
+      <path d="M115,292 Q145,280 175,292 Q205,304 230,292"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.9" stroke-linecap="round"/>
+    </g>
+
+    <!-- 黏膜层 — 贲门开口处可见 -->
+    <path d="M170,88 Q173,96 176,105 Q179,96 182,88"
+          fill="var(--cmp-mucosa,#fce4ec)" stroke="none" opacity="0.7"/>
+    <path d="M170,88 Q173,96 176,105 Q179,96 182,88"
+          fill="url(#stm__gMucosa)" opacity="0.5"/>
+
+    <!-- 幽门区域 pylorus -->
+    <g class="stm__pylorus">
+      <!-- 幽门管 -->
+      <path d="M260,148 Q275,145 290,150 Q310,158 325,165 Q340,172 350,175"
+            fill="none" stroke="var(--cmp-stomach,#f48fb1)" stroke-width="18" stroke-linecap="round"/>
+      <path d="M260,148 Q275,145 290,150 Q310,158 325,165 Q340,172 350,175"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"
+            stroke-linecap="round" opacity="0.5"/>
+      <!-- 幽门括约肌 pyloric sphincter -->
+      <ellipse class="stm__pyloric-sphincter" cx="340" cy="172" rx="6" ry="11"
+               fill="var(--cmp-sphincter,#ad1457)" opacity="0.8"
+               stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"/>
+    </g>
+
+    <!-- 十二指肠 duodenum -->
+    <g class="stm__duodenum">
+      <path d="M350,175 Q365,180 375,190 Q385,205 380,225 Q375,240 365,248"
+            fill="none" stroke="var(--cmp-stomach,#f48fb1)" stroke-width="14" stroke-linecap="round" opacity="0.7"/>
+      <path d="M350,175 Q365,180 375,190 Q385,205 380,225 Q375,240 365,248"
+            fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="var(--cmp-stroke-width,1.2)"
+            stroke-linecap="round" opacity="0.5"/>
+      <!-- 十二指肠内腔 -->
+      <path d="M350,175 Q365,180 375,190 Q385,205 380,225 Q375,240 365,248"
+            fill="none" stroke="var(--cmp-mucosa,#fce4ec)" stroke-width="5" stroke-linecap="round"/>
+    </g>
+
+    <!-- 胃小弯标记线 lesser curvature -->
+    <path d="M188,110 Q195,130 200,155 Q210,143 225,140 Q240,138 260,148"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6" opacity="0.3" stroke-dasharray="4,3"/>
+
+    <!-- 胃大弯标记线 greater curvature -->
+    <path d="M120,95 Q72,115 55,160 Q38,210 55,260 Q70,300 110,320 Q150,340 195,335 Q235,330 265,305"
+          fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.6" opacity="0.3" stroke-dasharray="4,3"/>
+
+    <!-- 标注 labels -->
+    <g class="stm__labels">
+      <!-- 食管 -->
+      <line class="stm__line" x1="185" y1="30" x2="240" y2="20"/>
+      <text class="stm__label" x="244" y="24" fill="var(--cmp-stroke,#37474f)">食管</text>
+
+      <!-- 贲门 -->
+      <line class="stm__line" x1="176" y1="88" x2="230" y2="68"/>
+      <text class="stm__label" x="234" y="72" fill="var(--cmp-stroke,#37474f)">贲门</text>
+
+      <!-- 胃底 -->
+      <line class="stm__line" x1="100" y1="110" x2="35" y2="90"/>
+      <text class="stm__label" x="8" y="94" fill="var(--cmp-stroke,#37474f)">胃底</text>
+
+      <!-- 胃体 -->
+      <line class="stm__line" x1="90" y1="220" x2="22" y2="210"/>
+      <text class="stm__label" x="8" y="205" fill="var(--cmp-stroke,#37474f)">胃体</text>
+
+      <!-- 胃壁皱襞 -->
+      <line class="stm__line" x1="140" y1="180" x2="22" y2="165"/>
+      <text class="stm__label" x="8" y="155" fill="var(--cmp-stroke,#37474f)">胃壁皱襞</text>
+
+      <!-- 幽门 -->
+      <line class="stm__line" x1="290" y1="155" x2="310" y2="120"/>
+      <text class="stm__label" x="314" y="124" fill="var(--cmp-stroke,#37474f)">幽门</text>
+
+      <!-- 幽门括约肌 -->
+      <line class="stm__line" x1="340" y1="160" x2="345" y2="130"/>
+      <text class="stm__label" x="320" y="125" fill="var(--cmp-stroke,#37474f)">幽门括约肌</text>
+
+      <!-- 十二指肠 -->
+      <line class="stm__line" x1="375" y1="210" x2="390" y2="260"/>
+      <text class="stm__label" x="370" y="274" fill="var(--cmp-stroke,#37474f)">十二指肠</text>
+
+      <!-- 胃大弯 -->
+      <line class="stm__line" x1="70" y1="300" x2="22" y2="310"/>
+      <text class="stm__label" x="8" y="314" fill="var(--cmp-stroke,#37474f)">胃大弯</text>
+
+      <!-- 胃小弯 -->
+      <line class="stm__line" x1="210" y1="148" x2="250" y2="100"/>
+      <text class="stm__label" x="254" y="98" fill="var(--cmp-stroke,#37474f)">胃小弯</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='bio.organ.stomach.basic')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var animate=(P.animate!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var labelsG=root.querySelector('.stm__labels');
+    if(labelsG&&!showLabels)labelsG.style.display='none';
+
+    if(!animate)return;
+
+    var rugae=root.querySelector('.stm__rugae');
+    var wall=root.querySelector('.stm__wall');
+    if(!rugae&&!wall)return;
+
+    var rugaePaths=rugae?rugae.querySelectorAll('path'):[];
+    var phase=0;
+    var animId=0;
+    var lastT=0;
+
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=(t-lastT)/1000;
+      lastT=t;
+      phase+=dt*0.4; /* slow peristalsis ~0.4 Hz */
+      if(phase>1)phase-=1;
+
+      var wave=Math.sin(phase*Math.PI*2);
+
+      /* Subtle wall deformation — scale the body slightly */
+      if(wall){
+        var sx=1+wave*0.008;
+        var sy=1-wave*0.006;
+        wall.setAttribute('transform',
+          'translate('+(200*(1-sx))+','+(200*(1-sy))+') scale('+sx+','+sy+')');
+      }
+
+      /* Animate rugae — shift each fold with phase offset */
+      for(var i=0;i<rugaePaths.length;i++){
+        var offset=Math.sin((phase+i*0.18)*Math.PI*2)*3;
+        rugaePaths[i].setAttribute('transform','translate('+offset+',0)');
+      }
+
+      /* Emit event */
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:root.getAttribute('data-cmp-id'),type:'peristalsis',
+          values:{phase:Math.round(phase*100)/100}}}));
+
+      animId=requestAnimationFrame(tick);
+    }
+
+    animId=requestAnimationFrame(tick);
+
+    /* Props observer */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      var newAnimate=(P2.animate!=='off');
+      if(!newAnimate&&animId){cancelAnimationFrame(animId);animId=0;}
+      if(newAnimate&&!animId){lastT=0;animId=requestAnimationFrame(tick);}
+      var newLabels=(P2.showLabels!=='off');
+      if(labelsG)labelsG.style.display=newLabels?'':'none';
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+
+    window.addEventListener('beforeunload',function(){
+      cancelAnimationFrame(animId);obs.disconnect();
+    });
+  })();
+  </script>
+</div>

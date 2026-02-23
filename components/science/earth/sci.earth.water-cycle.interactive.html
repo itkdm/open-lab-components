@@ -1,0 +1,376 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.earth.water-cycle.interactive",
+  "name": "水循环",
+  "nameEn": "Water Cycle",
+  "category": "science/earth",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 400, "min": 200, "max": 800, "desc": "组件宽度" },
+    { "key": "skyColor", "type": "color", "default": "#87CEEB", "desc": "天空颜色" },
+    { "key": "waterColor", "type": "color", "default": "#2196F3", "desc": "水面颜色" },
+    { "key": "mountainColor", "type": "color", "default": "#6D4C41", "desc": "山体颜色" },
+    { "key": "sunColor", "type": "color", "default": "#FFD54F", "desc": "太阳颜色" },
+    { "key": "labelColor", "type": "color", "default": "#333333", "desc": "标签颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "skyColor": "--cmp-sky",
+    "waterColor": "--cmp-water",
+    "mountainColor": "--cmp-mountain",
+    "sunColor": "--cmp-sun",
+    "labelColor": "--cmp-label"
+  },
+  "tags": ["water-cycle", "evaporation", "precipitation", "earth-science", "science", "primary", "interactive"],
+  "events": [
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "activeStage": "string — 当前高亮阶段ID",
+        "stageName": "string — 阶段中文名"
+      }
+    }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="sci.earth.water-cycle.interactive" role="img" aria-label="水循环">
+  <style>
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] {
+      --w: var(--cmp-size, 400px);
+      display: inline-block;
+      width: var(--w);
+      height: calc(var(--w) * 0.75);
+      user-select: none;
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] svg {
+      width: 100%; height: 100%; display: block;
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] .wc__stage {
+      cursor: pointer; opacity: 0.85; transition: opacity 0.3s;
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] .wc__stage:hover {
+      opacity: 1;
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] .wc__stage.wc__active {
+      opacity: 1; filter: drop-shadow(0 0 6px rgba(255,235,59,0.8));
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] .wc__label {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-size: 11px; font-weight: 700; pointer-events: none;
+      fill: var(--cmp-label, #333);
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] .wc__sublabel {
+      font-family: Arial, 'Microsoft YaHei', sans-serif;
+      font-size: 8px; font-weight: 400; pointer-events: none;
+      fill: var(--cmp-label, #333); opacity: 0.7;
+    }
+    /* Evaporation arrows rise */
+    @keyframes wc-rise {
+      0% { opacity: 0.8; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(-40px); }
+    }
+    /* Rain drops fall */
+    @keyframes wc-fall {
+      0% { opacity: 0; transform: translateY(-10px); }
+      20% { opacity: 0.9; }
+      100% { opacity: 0; transform: translateY(50px); }
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] .wc__evap-arrow {
+      animation: wc-rise 2.5s ease-in infinite;
+    }
+    .cmp[data-cmp-id="sci.earth.water-cycle.interactive"] .wc__raindrop {
+      animation: wc-fall 2s ease-in infinite;
+    }
+  </style>
+
+  <svg viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- Sky gradient -->
+      <linearGradient class="wc__grad-sky" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--cmp-sky, #87CEEB)"/>
+        <stop offset="100%" stop-color="#e8f4fd"/>
+      </linearGradient>
+      <!-- Sun glow -->
+      <radialGradient class="wc__grad-sun" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="var(--cmp-sun, #FFD54F)"/>
+        <stop offset="60%" stop-color="var(--cmp-sun, #FFD54F)" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="var(--cmp-sun, #FFD54F)" stop-opacity="0"/>
+      </radialGradient>
+      <!-- Mountain gradient -->
+      <linearGradient class="wc__grad-mtn" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#8D6E63"/>
+        <stop offset="100%" stop-color="var(--cmp-mountain, #6D4C41)"/>
+      </linearGradient>
+      <!-- Water gradient -->
+      <linearGradient class="wc__grad-water" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="var(--cmp-water, #2196F3)"/>
+        <stop offset="100%" stop-color="#1565C0"/>
+      </linearGradient>
+      <!-- Underground gradient -->
+      <linearGradient class="wc__grad-under" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#5D4037"/>
+        <stop offset="100%" stop-color="#3E2723"/>
+      </linearGradient>
+      <!-- Arrow marker -->
+      <marker class="wc__marker-arrow" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto">
+        <path d="M0,0 L6,2 L0,4 Z" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </marker>
+    </defs>
+
+    <!-- ===== BACKGROUND SCENE ===== -->
+    <!-- Sky -->
+    <rect class="wc__sky-rect" x="0" y="0" width="400" height="200" fill="url(#__sky)"/>
+
+    <!-- Sun -->
+    <circle class="wc__sun-glow" cx="350" cy="45" r="40" fill="url(#__sun)" opacity="0.5"/>
+    <circle cx="350" cy="45" r="22" fill="var(--cmp-sun, #FFD54F)"/>
+    <!-- Sun rays -->
+    <g stroke="var(--cmp-sun, #FFD54F)" stroke-width="1.5" stroke-linecap="round" opacity="0.6">
+      <line x1="350" y1="15" x2="350" y2="8"/>
+      <line x1="350" y1="75" x2="350" y2="82"/>
+      <line x1="320" y1="45" x2="313" y2="45"/>
+      <line x1="380" y1="45" x2="387" y2="45"/>
+      <line x1="329" y1="24" x2="324" y2="19"/>
+      <line x1="371" y1="66" x2="376" y2="71"/>
+      <line x1="371" y1="24" x2="376" y2="19"/>
+      <line x1="329" y1="66" x2="324" y2="71"/>
+    </g>
+
+    <!-- Mountain -->
+    <polygon points="0,200 80,60 180,200" class="wc__mtn-fill" fill="url(#__mtn)"/>
+    <!-- Snow cap -->
+    <polygon points="68,80 80,60 92,80" fill="#fff" opacity="0.9"/>
+    <polygon points="64,88 80,65 96,88" fill="#fff" opacity="0.5"/>
+    <!-- Vegetation -->
+    <g fill="#4CAF50" opacity="0.8">
+      <ellipse cx="50" cy="175" rx="12" ry="8"/>
+      <ellipse cx="70" cy="165" rx="10" ry="7"/>
+      <ellipse cx="35" cy="185" rx="14" ry="7"/>
+      <ellipse cx="110" cy="180" rx="11" ry="7"/>
+      <ellipse cx="130" cy="188" rx="13" ry="6"/>
+      <ellipse cx="90" cy="172" rx="9" ry="6"/>
+    </g>
+    <!-- Tree trunks -->
+    <g stroke="#5D4037" stroke-width="2" stroke-linecap="round">
+      <line x1="50" y1="183" x2="50" y2="175"/>
+      <line x1="70" y1="172" x2="70" y2="165"/>
+      <line x1="110" y1="187" x2="110" y2="180"/>
+    </g>
+
+    <!-- Ground / soil layer -->
+    <rect x="0" y="200" width="160" height="30" fill="#795548"/>
+    <!-- Underground -->
+    <rect x="0" y="230" width="160" height="70" class="wc__under-rect" fill="url(#__under)"/>
+
+    <!-- Ocean / lake -->
+    <rect x="140" y="200" width="260" height="100" class="wc__water-rect" fill="url(#__water)"/>
+    <!-- Wave pattern on water surface -->
+    <g stroke="#fff" stroke-width="1" opacity="0.3" fill="none">
+      <path d="M145,208 Q165,204 185,208 Q205,212 225,208 Q245,204 265,208 Q285,212 305,208 Q325,204 345,208 Q365,212 385,208"/>
+      <path d="M155,218 Q175,214 195,218 Q215,222 235,218 Q255,214 275,218 Q295,222 315,218 Q335,214 355,218 Q375,222 395,218"/>
+    </g>
+
+    <!-- Shore line -->
+    <line x1="140" y1="200" x2="140" y2="300" stroke="#5D4037" stroke-width="1" opacity="0.5"/>
+
+    <!-- ===== INTERACTIVE STAGES ===== -->
+
+    <!-- 1. Evaporation (蒸发) -->
+    <g class="wc__stage" data-stage="evaporation" data-name="蒸发">
+      <rect x="240" y="140" width="100" height="70" fill="transparent"/>
+      <g class="wc__evap-arrow" style="animation-delay:0s">
+        <path d="M260,195 Q258,178 262,165" stroke="var(--cmp-water, #2196F3)" stroke-width="2" fill="none" stroke-dasharray="3,2" opacity="0.7"/>
+        <polygon points="259,167 262,158 265,167" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </g>
+      <g class="wc__evap-arrow" style="animation-delay:0.6s">
+        <path d="M285,195 Q282,175 287,160" stroke="var(--cmp-water, #2196F3)" stroke-width="2" fill="none" stroke-dasharray="3,2" opacity="0.7"/>
+        <polygon points="284,162 287,153 290,162" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </g>
+      <g class="wc__evap-arrow" style="animation-delay:1.2s">
+        <path d="M310,195 Q307,180 312,168" stroke="var(--cmp-water, #2196F3)" stroke-width="2" fill="none" stroke-dasharray="3,2" opacity="0.7"/>
+        <polygon points="309,170 312,161 315,170" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </g>
+      <g class="wc__evap-arrow" style="animation-delay:1.8s">
+        <path d="M335,195 Q332,182 336,170" stroke="var(--cmp-water, #2196F3)" stroke-width="2" fill="none" stroke-dasharray="3,2" opacity="0.7"/>
+        <polygon points="333,172 336,163 339,172" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </g>
+      <text class="wc__label" x="295" y="152" text-anchor="middle">蒸发</text>
+      <text class="wc__sublabel" x="295" y="162" text-anchor="middle">Evaporation</text>
+    </g>
+
+    <!-- 2. Condensation (凝结) — Cloud -->
+    <g class="wc__stage" data-stage="condensation" data-name="凝结">
+      <ellipse cx="190" cy="52" rx="40" ry="18" fill="#fff" opacity="0.9"/>
+      <ellipse cx="175" cy="48" rx="25" ry="16" fill="#fff" opacity="0.95"/>
+      <ellipse cx="210" cy="48" rx="28" ry="15" fill="#f5f5f5" opacity="0.9"/>
+      <ellipse cx="195" cy="40" rx="22" ry="14" fill="#fff"/>
+      <ellipse cx="185" cy="58" rx="30" ry="10" fill="#e0e0e0" opacity="0.4"/>
+      <text class="wc__label" x="195" y="30" text-anchor="middle">凝结</text>
+      <text class="wc__sublabel" x="195" y="20" text-anchor="middle">Condensation</text>
+    </g>
+
+    <!-- 3. Precipitation (降水) — Rain -->
+    <g class="wc__stage" data-stage="precipitation" data-name="降水">
+      <rect x="170" y="65" width="70" height="135" fill="transparent"/>
+      <g class="wc__raindrop" style="animation-delay:0s">
+        <path d="M185,80 Q184,76 185,72 Q186,76 185,80 Z" fill="var(--cmp-water, #2196F3)" opacity="0.8"/>
+      </g>
+      <g class="wc__raindrop" style="animation-delay:0.3s">
+        <path d="M200,85 Q199,81 200,77 Q201,81 200,85 Z" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </g>
+      <g class="wc__raindrop" style="animation-delay:0.7s">
+        <path d="M192,90 Q191,86 192,82 Q193,86 192,90 Z" fill="var(--cmp-water, #2196F3)" opacity="0.8"/>
+      </g>
+      <g class="wc__raindrop" style="animation-delay:1.0s">
+        <path d="M210,78 Q209,74 210,70 Q211,74 210,78 Z" fill="var(--cmp-water, #2196F3)" opacity="0.6"/>
+      </g>
+      <g class="wc__raindrop" style="animation-delay:1.4s">
+        <path d="M178,88 Q177,84 178,80 Q179,84 178,88 Z" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </g>
+      <g class="wc__raindrop" style="animation-delay:0.5s">
+        <path d="M220,83 Q219,79 220,75 Q221,79 220,83 Z" fill="var(--cmp-water, #2196F3)" opacity="0.8"/>
+      </g>
+      <g class="wc__raindrop" style="animation-delay:1.7s">
+        <path d="M205,92 Q204,88 205,84 Q206,88 205,92 Z" fill="var(--cmp-water, #2196F3)" opacity="0.6"/>
+      </g>
+      <g class="wc__raindrop" style="animation-delay:1.1s">
+        <path d="M230,86 Q229,82 230,78 Q231,82 230,86 Z" fill="var(--cmp-water, #2196F3)" opacity="0.7"/>
+      </g>
+      <text class="wc__label" x="240" y="105" text-anchor="start">降水</text>
+      <text class="wc__sublabel" x="240" y="115" text-anchor="start">Precipitation</text>
+    </g>
+
+    <!-- 4. Collection (汇集) — Stream flowing down mountain -->
+    <g class="wc__stage" data-stage="collection" data-name="汇集">
+      <path d="M105,130 Q120,155 130,175 Q138,190 145,200"
+            stroke="var(--cmp-water, #2196F3)" stroke-width="3" fill="none"
+            stroke-linecap="round" opacity="0.8"/>
+      <path d="M108,133 Q123,158 133,178 Q140,192 147,200"
+            stroke="var(--cmp-water, #2196F3)" stroke-width="1.5" fill="none"
+            stroke-linecap="round" opacity="0.4"/>
+      <!-- Flow arrow -->
+      <polygon points="142,196 148,204 138,202" fill="var(--cmp-water, #2196F3)" opacity="0.8"/>
+      <text class="wc__label" x="125" y="145" text-anchor="start">汇集</text>
+      <text class="wc__sublabel" x="125" y="155" text-anchor="start">Collection</text>
+    </g>
+
+    <!-- 5. Groundwater (地下水) — Underground flow -->
+    <g class="wc__stage" data-stage="groundwater" data-name="地下水">
+      <rect x="10" y="235" width="140" height="50" fill="transparent"/>
+      <path d="M140,250 Q110,255 80,252 Q50,248 20,255"
+            stroke="var(--cmp-water, #2196F3)" stroke-width="2" fill="none"
+            stroke-dasharray="6,4" opacity="0.6" class="wc__gw-arrow"/>
+      <!-- Arrow head pointing left -->
+      <polygon points="25,252 18,255 25,258" fill="var(--cmp-water, #2196F3)" opacity="0.6"/>
+      <path d="M135,265 Q105,270 75,267 Q45,263 25,270"
+            stroke="var(--cmp-water, #2196F3)" stroke-width="1.5" fill="none"
+            stroke-dasharray="4,4" opacity="0.4"/>
+      <polygon points="30,267 23,270 30,273" fill="var(--cmp-water, #2196F3)" opacity="0.4"/>
+      <text class="wc__label" x="80" y="245" text-anchor="middle" fill="#B3E5FC">地下水</text>
+      <text class="wc__sublabel" x="80" y="255" text-anchor="middle" fill="#B3E5FC" opacity="0.8">Groundwater</text>
+    </g>
+
+    <!-- Connecting arrows (decorative, non-interactive) -->
+    <!-- Wind arrow from evaporation area toward cloud -->
+    <path d="M260,150 Q240,120 220,80 Q210,65 200,58"
+          stroke="#90A4AE" stroke-width="1" fill="none"
+          stroke-dasharray="4,3" opacity="0.5"/>
+    <polygon points="203,60 198,55 205,56" fill="#90A4AE" opacity="0.5"/>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.earth.water-cycle.interactive') return;
+
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  /* ── Unique IDs for multi-instance safety ── */
+  var uid = 'wc_' + Math.random().toString(36).slice(2, 8);
+  var gradientMap = {
+    'wc__grad-sky': '__sky',
+    'wc__grad-sun': '__sun',
+    'wc__grad-mtn': '__mtn',
+    'wc__grad-water': '__water',
+    'wc__grad-under': '__under',
+    'wc__marker-arrow': '__arrow'
+  };
+
+  var refMap = {};
+  Object.keys(gradientMap).forEach(function(cls) {
+    var el = svg.querySelector('.' + cls);
+    if (!el) return;
+    var newId = uid + gradientMap[cls];
+    el.setAttribute('id', newId);
+    refMap[gradientMap[cls]] = newId;
+  });
+
+  /* Update fill/stroke url() references */
+  var skyRect = svg.querySelector('.wc__sky-rect');
+  if (skyRect && refMap['__sky']) skyRect.setAttribute('fill', 'url(#' + refMap['__sky'] + ')');
+
+  var sunGlow = svg.querySelector('.wc__sun-glow');
+  if (sunGlow && refMap['__sun']) sunGlow.setAttribute('fill', 'url(#' + refMap['__sun'] + ')');
+
+  var mtnFill = svg.querySelector('.wc__mtn-fill');
+  if (mtnFill && refMap['__mtn']) mtnFill.setAttribute('fill', 'url(#' + refMap['__mtn'] + ')');
+
+  var waterRect = svg.querySelector('.wc__water-rect');
+  if (waterRect && refMap['__water']) waterRect.setAttribute('fill', 'url(#' + refMap['__water'] + ')');
+
+  var underRect = svg.querySelector('.wc__under-rect');
+  if (underRect && refMap['__under']) underRect.setAttribute('fill', 'url(#' + refMap['__under'] + ')');
+
+  /* ── Stage interaction ── */
+  var stages = root.querySelectorAll('.wc__stage');
+  var activeStage = null;
+
+  function emitChange(stageId, stageName) {
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true,
+      composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'toggle',
+        values: {
+          activeStage: stageId,
+          stageName: stageName
+        }
+      }
+    }));
+  }
+
+  for (var i = 0; i < stages.length; i++) {
+    (function(stage) {
+      stage.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var stageId = stage.getAttribute('data-stage');
+        var stageName = stage.getAttribute('data-name');
+
+        if (activeStage === stageId) {
+          /* Deactivate */
+          stage.classList.remove('wc__active');
+          activeStage = null;
+          emitChange('', '');
+        } else {
+          /* Deactivate previous */
+          for (var j = 0; j < stages.length; j++) {
+            stages[j].classList.remove('wc__active');
+          }
+          /* Activate clicked */
+          stage.classList.add('wc__active');
+          activeStage = stageId;
+          emitChange(stageId, stageName);
+        }
+      });
+    })(stages[i]);
+  }
+})();
+</script>

@@ -1,0 +1,267 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.fluid.bernoulli.interactive",
+  "name": "伯努利原理（交互式）",
+  "nameEn": "Bernoulli's Principle (Interactive)",
+  "category": "physics/fluid",
+  "version": "1.0.0",
+  "viewport": { "w": 540, "h": 400 },
+  "tags": ["fluid","bernoulli","pressure","velocity","venturi","interactive"],
+  "props": [
+    { "key": "size",       "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "fluidColor", "type": "color",  "default": "#42a5f5", "desc": "流体颜色" },
+    { "key": "pipeColor",  "type": "color",  "default": "#90a4ae", "desc": "管道颜色" },
+    { "key": "flowSpeed",  "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "流速(m/s)" },
+    { "key": "narrowRatio","type": "number", "default": 0.4, "min": 0.2, "max": 0.8, "desc": "缩窄比" },
+    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",      "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "showPressure","type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示压力计" },
+    { "key": "showVectors","type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示速度矢量" },
+    { "key": "showLabels", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "fluidColor": "--cmp-fluid", "pipeColor": "--cmp-pipe", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "tick", "values": { "v1": "number", "v2": "number", "P1": "number", "P2": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.fluid.bernoulli.interactive" role="img" aria-label="伯努利原理（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.fluid.bernoulli.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;
+      width:calc(var(--h)*540/400);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.fluid.bernoulli.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.fluid.bernoulli.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="phy.fluid.bernoulli.interactive"] .bn__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 540 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="bn__pipeG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#b0bec5"/><stop offset="1" stop-color="#78909c"/></linearGradient>
+      <marker id="bn__arr" markerWidth="7" markerHeight="5" refX="6" refY="2.5" orient="auto"><polygon points="0,0 7,2.5 0,5" fill="var(--cmp-fluid,#42a5f5)"/></marker>
+      <clipPath id="bn__pipeClip"><path class="bn__pipeShape"/></clipPath>
+    </defs>
+
+    <text x="270" y="24" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">伯努利原理 — 文丘里管</text>
+
+    <!-- 管道 -->
+    <g transform="translate(0,40)">
+      <!-- 管道外壁 -->
+      <path class="bn__pipeOuter" fill="url(#bn__pipeG)" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.5"/>
+      <!-- 流体填充 -->
+      <path class="bn__pipeInner" fill="var(--cmp-fluid,#42a5f5)" opacity="0.3"/>
+
+      <!-- 流线粒子 -->
+      <g class="bn__streamlines"></g>
+
+      <!-- 速度矢量 -->
+      <g class="bn__vectors"></g>
+
+      <!-- 压力计 - 宽管段 -->
+      <g class="bn__gauge1" transform="translate(120,0)">
+        <rect x="-3" y="-80" width="6" height="80" fill="#e3f2fd" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" rx="2"/>
+        <rect class="bn__level1" x="-2" y="-60" width="4" height="60" fill="var(--cmp-fluid,#42a5f5)" rx="1"/>
+        <text x="0" y="-85" text-anchor="middle" font-size="8" fill="var(--cmp-stroke,#37474f)" font-weight="600">P₁</text>
+        <text class="bn__P1Val bn__data" x="0" y="-95" text-anchor="middle" font-size="9" fill="var(--cmp-fluid,#42a5f5)">--- Pa</text>
+      </g>
+
+      <!-- 压力计 - 窄管段 -->
+      <g class="bn__gauge2" transform="translate(270,0)">
+        <rect x="-3" y="-80" width="6" height="80" fill="#e3f2fd" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" rx="2"/>
+        <rect class="bn__level2" x="-2" y="-30" width="4" height="30" fill="var(--cmp-fluid,#42a5f5)" rx="1"/>
+        <text x="0" y="-85" text-anchor="middle" font-size="8" fill="var(--cmp-stroke,#37474f)" font-weight="600">P₂</text>
+        <text class="bn__P2Val bn__data" x="0" y="-95" text-anchor="middle" font-size="9" fill="var(--cmp-fluid,#42a5f5)">--- Pa</text>
+      </g>
+
+      <!-- 压力计 - 恢复段 -->
+      <g class="bn__gauge3" transform="translate(420,0)">
+        <rect x="-3" y="-80" width="6" height="80" fill="#e3f2fd" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" rx="2"/>
+        <rect class="bn__level3" x="-2" y="-55" width="4" height="55" fill="var(--cmp-fluid,#42a5f5)" rx="1"/>
+        <text x="0" y="-85" text-anchor="middle" font-size="8" fill="var(--cmp-stroke,#37474f)" font-weight="600">P₃</text>
+        <text class="bn__P3Val bn__data" x="0" y="-95" text-anchor="middle" font-size="9" fill="var(--cmp-fluid,#42a5f5)">--- Pa</text>
+      </g>
+
+      <!-- 截面标注 -->
+      <g class="bn__sectionLabels">
+        <text x="120" y="130" text-anchor="middle" font-size="9" fill="#666">A₁ (宽)</text>
+        <text x="270" y="100" text-anchor="middle" font-size="9" fill="#666">A₂ (窄)</text>
+        <text x="420" y="130" text-anchor="middle" font-size="9" fill="#666">A₃ (宽)</text>
+      </g>
+    </g>
+
+    <!-- 公式与数据 -->
+    <g transform="translate(270,310)">
+      <rect x="-250" y="0" width="500" height="75" rx="8" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="0" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="var(--cmp-stroke,#37474f)">伯努利方程: P + ½ρv² = 常数</text>
+
+      <text x="-230" y="38" font-size="9" fill="#666">宽管: v₁ =</text>
+      <text class="bn__v1Val bn__data" x="-170" y="38" font-size="10" fill="var(--cmp-fluid,#42a5f5)">2.0 m/s</text>
+      <text x="-100" y="38" font-size="9" fill="#666">P₁ =</text>
+      <text class="bn__P1Data bn__data" x="-50" y="38" font-size="10" fill="var(--cmp-fluid,#42a5f5)">--- Pa</text>
+
+      <text x="-230" y="58" font-size="9" fill="#666">窄管: v₂ =</text>
+      <text class="bn__v2Val bn__data" x="-170" y="58" font-size="10" fill="#e53935">5.0 m/s</text>
+      <text x="-100" y="58" font-size="9" fill="#666">P₂ =</text>
+      <text class="bn__P2Data bn__data" x="-50" y="58" font-size="10" fill="#e53935">--- Pa</text>
+
+      <text x="60" y="38" font-size="9" fill="#666">连续性: A₁v₁ = A₂v₂</text>
+      <text x="60" y="58" font-size="9" fill="#666">流速↑ → 压强↓</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.fluid.bernoulli.interactive')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var v1=Math.max(0.5,Math.min(5,Number(P.flowSpeed)||2));
+    var narrowR=Math.max(0.2,Math.min(0.8,Number(P.narrowRatio)||0.4));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+
+    var v2=v1/narrowR;
+    var rho=1000;
+    var P0=101325;
+    var P1=P0;
+    var P2=P1+0.5*rho*(v1*v1-v2*v2);
+
+    var NS='http://www.w3.org/2000/svg';
+
+    /* 管道形状 */
+    var pW=540,pH=120;
+    var wideH=pH,narrowH=pH*narrowR;
+    var midY=pH/2;
+    /* 管道轮廓点 */
+    var x0=0,x1=160,x2=220,x3=320,x4=380,x5=540;
+    var topWide=midY-wideH/2+40,botWide=midY+wideH/2+40;
+    var topNarrow=midY-narrowH/2+40,botNarrow=midY+narrowH/2+40;
+
+    var outerD='M'+x0+','+topWide+' L'+x1+','+topWide+' Q'+(x1+30)+','+topWide+' '+(x1+30)+','+topNarrow
+      +' L'+(x3-30)+','+topNarrow+' Q'+(x3-30)+','+topWide+' '+x4+','+topWide+' L'+x5+','+topWide
+      +' L'+x5+','+botWide+' L'+x4+','+botWide+' Q'+(x3-30)+','+botWide+' '+(x3-30)+','+botNarrow
+      +' L'+(x1+30)+','+botNarrow+' Q'+(x1+30)+','+botWide+' '+x1+','+botWide+' L'+x0+','+botWide+' Z';
+
+    root.querySelector('.bn__pipeOuter').setAttribute('d',outerD);
+    root.querySelector('.bn__pipeInner').setAttribute('d',outerD);
+    if(root.querySelector('.bn__pipeShape'))root.querySelector('.bn__pipeShape').setAttribute('d',outerD);
+
+    /* 压力计液位 */
+    var maxH=70;
+    var h1=maxH*(P1/P0)*0.6;
+    var h2=maxH*Math.max(0.1,(P2/P0))*0.6;
+    var h3=h1*0.95;
+    root.querySelector('.bn__level1').setAttribute('y',-h1);root.querySelector('.bn__level1').setAttribute('height',h1);
+    root.querySelector('.bn__level2').setAttribute('y',-h2);root.querySelector('.bn__level2').setAttribute('height',Math.max(5,h2));
+    root.querySelector('.bn__level3').setAttribute('y',-h3);root.querySelector('.bn__level3').setAttribute('height',h3);
+
+    /* 数据 */
+    root.querySelector('.bn__P1Val').textContent=(P1/1000).toFixed(1)+' kPa';
+    root.querySelector('.bn__P2Val').textContent=(P2/1000).toFixed(1)+' kPa';
+    root.querySelector('.bn__P3Val').textContent=(P1*0.95/1000).toFixed(1)+' kPa';
+    root.querySelector('.bn__v1Val').textContent=v1.toFixed(1)+' m/s';
+    root.querySelector('.bn__v2Val').textContent=v2.toFixed(1)+' m/s';
+    root.querySelector('.bn__P1Data').textContent=(P1/1000).toFixed(1)+' kPa';
+    root.querySelector('.bn__P2Data').textContent=(P2/1000).toFixed(1)+' kPa';
+
+    /* 压力计位置调整 */
+    root.querySelector('.bn__gauge1').setAttribute('transform','translate(120,'+topWide+')');
+    root.querySelector('.bn__gauge2').setAttribute('transform','translate(270,'+topNarrow+')');
+    root.querySelector('.bn__gauge3').setAttribute('transform','translate(420,'+topWide+')');
+
+    /* 流线粒子 */
+    var streamG=root.querySelector('.bn__streamlines');
+    var dots=[];
+    var numDots=50;
+    var numRows=5;
+    for(var i=0;i<numDots;i++){
+      var row=i%numRows;
+      var rowFrac=(row+1)/(numRows+1);
+      dots.push({
+        x:Math.random()*pW,
+        row:row,
+        rowFrac:rowFrac,
+        el:null
+      });
+    }
+    dots.forEach(function(d){
+      var c=document.createElementNS(NS,'circle');
+      c.setAttribute('r','2');
+      c.setAttribute('fill','#fff');c.setAttribute('opacity','0.7');
+      streamG.appendChild(c);
+      d.el=c;
+    });
+
+    function getYAtX(x,rowFrac){
+      var tW,bW;
+      if(x<x1+30){tW=topWide;bW=botWide;}
+      else if(x<x3-30){tW=topNarrow;bW=botNarrow;}
+      else if(x<x4){
+        var t=(x-(x3-30))/(x4-(x3-30));
+        t=Math.min(1,Math.max(0,t));
+        tW=topNarrow+(topWide-topNarrow)*t;
+        bW=botNarrow+(botWide-botNarrow)*t;
+      }else{tW=topWide;bW=botWide;}
+      if(x>=x1&&x<x1+30){
+        var t2=(x-x1)/30;t2=Math.min(1,Math.max(0,t2));
+        tW=topWide+(topNarrow-topWide)*t2;
+        bW=botWide+(botNarrow-botWide)*t2;
+      }
+      return tW+(bW-tW)*rowFrac;
+    }
+
+    function getSpeedAtX(x){
+      if(x<x1)return v1;
+      if(x<x1+30){var t=(x-x1)/30;return v1+(v2-v1)*t;}
+      if(x<x3-30)return v2;
+      if(x<x4){var t2=(x-(x3-30))/(x4-(x3-30));return v2+(v1-v2)*t2;}
+      return v1;
+    }
+
+    var time=0,animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04)*speed;
+      lastT=t;
+      time+=dt;
+
+      var pxPerM=40;
+      for(var i=0;i<dots.length;i++){
+        var d=dots[i];
+        var spd=getSpeedAtX(d.x)*pxPerM;
+        d.x+=spd*dt;
+        if(d.x>pW+5)d.x=-5;
+        var y=getYAtX(d.x,d.rowFrac);
+        d.el.setAttribute('cx',d.x.toFixed(1));
+        d.el.setAttribute('cy',y.toFixed(1));
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2p={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2p=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2p.speed)||1));
+      var newRun=(P2p.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

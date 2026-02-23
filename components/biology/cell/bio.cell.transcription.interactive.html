@@ -1,0 +1,482 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "bio.cell.transcription.interactive",
+  "name": "RNA转录与翻译（交互式）",
+  "nameEn": "RNA Transcription & Translation (Interactive)",
+  "category": "biology/cell",
+  "version": "1.0.0",
+  "viewport": { "w": 560, "h": 450 },
+  "tags": ["biology","RNA","transcription","translation","DNA","ribosome","protein","interactive"],
+  "props": [
+    { "key": "size",         "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",       "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "dnaColor",     "type": "color",  "default": "#1565c0", "desc": "DNA颜色" },
+    { "key": "rnaColor",     "type": "color",  "default": "#e53935", "desc": "mRNA颜色" },
+    { "key": "ribosomeColor","type": "color",  "default": "#ff9800", "desc": "核糖体颜色" },
+    { "key": "proteinColor", "type": "color",  "default": "#43a047", "desc": "蛋白质颜色" },
+    { "key": "sequence",     "type": "string", "default": "TACGCTAGGATC", "desc": "DNA模板链序列(3→5)" },
+    { "key": "running",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",        "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "showLabels",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "dnaColor": "--cmp-dna", "rnaColor": "--cmp-rna", "ribosomeColor": "--cmp-ribosome",
+    "proteinColor": "--cmp-protein", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "step", "values": { "phase": "string", "codon": "string", "aminoAcid": "string" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="bio.cell.transcription.interactive" role="img" aria-label="RNA转录与翻译（交互式）">
+  <style>
+    .cmp[data-cmp-id="bio.cell.transcription.interactive"]{
+      --h:var(--cmp-size,450px);display:inline-block;
+      width:calc(var(--h)*560/450);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(229,57,53,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="bio.cell.transcription.interactive"] svg{width:100%;height:100%;display:block}
+  </style>
+  <svg viewBox="0 0 560 450" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+
+<script>
+(function(){
+  var sc = document.currentScript; if (!sc) return;
+  var root = sc.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'bio.cell.transcription.interactive') return;
+  var svg = root.querySelector('svg'); if (!svg) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  var uid = 'tr_' + Math.random().toString(36).slice(2, 8) + '_';
+
+  /* --- Props --- */
+  var P = {};
+  try { var r = root.getAttribute('data-props'); if (r) { var o = JSON.parse(r); if (o && typeof o === 'object') P = o; } } catch (e) {}
+
+  /* DNA模板链(3'→5')，默认 TACGCTAGGATC → mRNA: AUGCGAUCCUAG (AUG起始, UAG终止) */
+  var seq = (P.sequence || 'TACGCTAGGATC').toUpperCase().replace(/[^ATCG]/g, '');
+  if (seq.length < 3) seq = 'TACGCTAGGATC';
+  var speed = Math.max(0.2, Math.min(3, Number(P.speed) || 1));
+  var running = (P.running !== 'off');
+  var showLabels = (P.showLabels !== 'off');
+
+  /* --- Colors --- */
+  var COL = {
+    dna: '#1565c0', rna: '#e53935', ribosome: '#ff9800',
+    protein: '#43a047', stroke: '#37474f'
+  };
+  var baseColors = { A: '#e53935', T: '#1e88e5', C: '#43a047', G: '#ff9800', U: '#9c27b0' };
+
+  /* --- 碱基互补 --- */
+  function dnaComplement(b) { return { A: 'T', T: 'A', C: 'G', G: 'C' }[b] || 'N'; }
+  function dnaToRNA(b) { return { A: 'U', T: 'A', C: 'G', G: 'C' }[b] || 'N'; }
+
+  var codingStrand = seq.split('').map(dnaComplement).join('');
+  var mRNA = seq.split('').map(dnaToRNA).join('');
+
+  /* --- 密码子表 --- */
+  var CODON_TABLE = {
+    'AUG':'Met','UUU':'Phe','UUC':'Phe','UUA':'Leu','UUG':'Leu',
+    'CUU':'Leu','CUC':'Leu','CUA':'Leu','CUG':'Leu',
+    'AUU':'Ile','AUC':'Ile','AUA':'Ile',
+    'GUU':'Val','GUC':'Val','GUA':'Val','GUG':'Val',
+    'UCU':'Ser','UCC':'Ser','UCA':'Ser','UCG':'Ser',
+    'CCU':'Pro','CCC':'Pro','CCA':'Pro','CCG':'Pro',
+    'ACU':'Thr','ACC':'Thr','ACA':'Thr','ACG':'Thr',
+    'GCU':'Ala','GCC':'Ala','GCA':'Ala','GCG':'Ala',
+    'UAU':'Tyr','UAC':'Tyr','CAU':'His','CAC':'His',
+    'CAA':'Gln','CAG':'Gln','AAU':'Asn','AAC':'Asn',
+    'AAA':'Lys','AAG':'Lys','GAU':'Asp','GAC':'Asp',
+    'GAA':'Glu','GAG':'Glu','UGU':'Cys','UGC':'Cys',
+    'UGG':'Trp','CGU':'Arg','CGC':'Arg','CGA':'Arg','CGG':'Arg',
+    'AGU':'Ser','AGC':'Ser','AGG':'Arg','AGA':'Arg',
+    'GGU':'Gly','GGC':'Gly','GGA':'Gly','GGG':'Gly',
+    'UAA':'STOP','UAG':'STOP','UGA':'STOP'
+  };
+
+  /* --- 提取当前序列实际用到的密码子，用于右侧面板 --- */
+  var usedCodons = [];
+  for (var ci = 0; ci < Math.floor(mRNA.length / 3); ci++) {
+    var c = mRNA.substring(ci * 3, ci * 3 + 3);
+    usedCodons.push({ codon: c, aa: CODON_TABLE[c] || '???' });
+  }
+
+  /* --- Layout constants --- */
+  var baseW = 26;
+  var seqLen = seq.length;
+  var seqPixelW = seqLen * baseW;
+  /* 转录区左边距，使序列居中在左侧 320px 区域 */
+  var TX = 30;
+  var transY = 50;
+  var translateY = 220;
+
+  /* --- Helpers --- */
+  function el(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    if (attrs) for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function txt(x, y, text, attrs, parent) {
+    var a = { x: '' + x, y: '' + y, 'font-family': "Arial,'Microsoft YaHei',sans-serif" };
+    if (attrs) for (var k in attrs) a[k] = attrs[k];
+    var t = el('text', a, parent);
+    t.textContent = text;
+    return t;
+  }
+
+  /* ============================================================
+     DEFS
+     ============================================================ */
+  var defs = el('defs', null, svg);
+
+  var gRibo = el('linearGradient', { id: uid + 'riboG', x1: '0', y1: '0', x2: '0', y2: '1' }, defs);
+  el('stop', { offset: '0', 'stop-color': '#ffcc80' }, gRibo);
+  el('stop', { offset: '1', 'stop-color': '#ff9800' }, gRibo);
+
+  var gProt = el('linearGradient', { id: uid + 'protG', x1: '0', y1: '0', x2: '1', y2: '0' }, defs);
+  el('stop', { offset: '0', 'stop-color': '#66bb6a' }, gProt);
+  el('stop', { offset: '1', 'stop-color': '#388e3c' }, gProt);
+
+  /* ============================================================
+     TITLE
+     ============================================================ */
+  txt(280, 24, 'RNA 转录与翻译', {
+    'text-anchor': 'middle', 'font-size': '14', 'font-weight': '700', fill: COL.stroke
+  }, svg);
+
+  /* ============================================================
+     TRANSCRIPTION AREA
+     ============================================================ */
+  var transG = el('g', { transform: 'translate(' + TX + ',' + transY + ')' }, svg);
+
+  txt(0, 0, '① 转录 (Transcription)', {
+    'font-size': '11', 'font-weight': '700', fill: COL.dna
+  }, transG);
+
+  /* Labels */
+  var labelsTransG = el('g', null, transG);
+  txt(0, 25, "DNA 模板链 (3'→5'):", { 'font-size': '9', fill: '#999' }, labelsTransG);
+  txt(0, 70, "DNA 编码链 (5'→3'):", { 'font-size': '9', fill: '#999' }, labelsTransG);
+  txt(0, 115, "mRNA (5'→3'):", { 'font-size': '9', fill: '#999' }, labelsTransG);
+
+  /* Base containers */
+  var dnaTemplateG = el('g', { transform: 'translate(0,35)' }, transG);
+  var dnaCodingG = el('g', { transform: 'translate(0,80)' }, transG);
+  var mRNAG = el('g', { transform: 'translate(0,125)' }, transG);
+
+  /* Cursor */
+  var cursor = el('rect', {
+    x: '0', y: '30', width: '3', height: '110',
+    fill: COL.rna, opacity: '0.4', rx: '1'
+  }, transG);
+
+  /* Hydrogen bond lines between template and coding strands */
+  var hBondsG = el('g', { opacity: '0.3' }, transG);
+  for (var hi = 0; hi < seqLen; hi++) {
+    el('line', {
+      x1: '' + (hi * baseW + baseW / 2), y1: '53',
+      x2: '' + (hi * baseW + baseW / 2), y2: '80',
+      stroke: '#90a4ae', 'stroke-width': '1', 'stroke-dasharray': '2,2'
+    }, hBondsG);
+  }
+
+  /* Draw base function */
+  function drawBases(container, bases, color) {
+    while (container.firstChild) container.removeChild(container.firstChild);
+    for (var i = 0; i < bases.length; i++) {
+      var b = bases[i];
+      var bc = baseColors[b] || '#999';
+      el('rect', {
+        x: '' + (i * baseW), y: '0', width: '' + (baseW - 2), height: '18', rx: '3',
+        fill: bc, opacity: '0.15'
+      }, container);
+      var t = el('text', {
+        x: '' + (i * baseW + baseW / 2 - 1), y: '14',
+        'text-anchor': 'middle',
+        'font-family': "'Courier New',monospace", 'font-weight': '700', 'font-size': '12',
+        fill: bc
+      }, container);
+      t.textContent = b;
+    }
+  }
+
+  /* Draw static DNA strands */
+  drawBases(dnaTemplateG, seq.split(''));
+  drawBases(dnaCodingG, codingStrand.split(''));
+
+  /* ============================================================
+     TRANSLATION AREA
+     ============================================================ */
+  var transLG = el('g', { transform: 'translate(' + TX + ',' + translateY + ')' }, svg);
+
+  txt(0, 0, '② 翻译 (Translation)', {
+    'font-size': '11', 'font-weight': '700', fill: COL.ribosome
+  }, transLG);
+
+  /* mRNA for translation */
+  var mRNA2G = el('g', { transform: 'translate(0,25)' }, transLG);
+
+  /* Codon brackets — drawn during translation */
+  var codonBracketsG = el('g', { transform: 'translate(0,25)' }, transLG);
+
+  /* Ribosome */
+  var ribosomeG = el('g', { transform: 'translate(0,10)' }, transLG);
+  el('ellipse', {
+    cx: '0', cy: '50', rx: '35', ry: '22',
+    fill: 'url(#' + uid + 'riboG)', stroke: COL.stroke, 'stroke-width': '1', opacity: '0.8'
+  }, ribosomeG);
+  el('ellipse', {
+    cx: '0', cy: '28', rx: '28', ry: '15',
+    fill: '#ffe0b2', stroke: COL.stroke, 'stroke-width': '1', opacity: '0.8'
+  }, ribosomeG);
+  txt(0, 32, '核糖体', {
+    'text-anchor': 'middle', 'font-size': '8', fill: COL.stroke, 'font-weight': '600'
+  }, ribosomeG);
+
+  /* Codon display */
+  var codonDispG = el('g', { transform: 'translate(0,85)' }, transLG);
+  txt(0, 0, '当前密码子:', { 'font-size': '9', fill: '#999' }, codonDispG);
+  var codonVal = txt(72, 0, '---', {
+    'font-size': '12', fill: COL.rna, 'font-weight': '700',
+    'font-family': "'Courier New',monospace"
+  }, codonDispG);
+  txt(120, 0, '→ 氨基酸:', { 'font-size': '9', fill: '#999' }, codonDispG);
+  var aaVal = txt(185, 0, '---', {
+    'font-size': '12', fill: COL.protein, 'font-weight': '700',
+    'font-family': "'Courier New',monospace"
+  }, codonDispG);
+
+  /* Peptide chain */
+  txt(0, 115, '多肽链:', { 'font-size': '9', fill: '#999' }, transLG);
+  var peptideG = el('g', { transform: 'translate(0,125)' }, transLG);
+
+  /* ============================================================
+     CODON TABLE PANEL (right side) — shows codons from current sequence
+     ============================================================ */
+  var panelX = 355, panelY = translateY;
+  var panelH = 20 + usedCodons.length * 16 + 10;
+  if (panelH < 80) panelH = 80;
+
+  var panelG = el('g', { transform: 'translate(' + panelX + ',' + panelY + ')' }, svg);
+  el('rect', {
+    x: '0', y: '0', width: '180', height: '' + panelH, rx: '6',
+    fill: 'rgba(255,255,255,0.95)', stroke: '#e0e0e0', 'stroke-width': '0.5'
+  }, panelG);
+  txt(90, 18, '密码子对照', {
+    'text-anchor': 'middle', 'font-size': '10', 'font-weight': '700', fill: COL.stroke
+  }, panelG);
+
+  for (var pi = 0; pi < usedCodons.length; pi++) {
+    var uc = usedCodons[pi];
+    var label = uc.codon + ' → ' + uc.aa;
+    if (uc.codon === 'AUG') label += ' (起始)';
+    if (uc.aa === 'STOP') label = uc.codon + ' → 终止';
+    txt(10, 36 + pi * 16, label, {
+      'font-size': '9', fill: '#666',
+      'font-family': "'Courier New',monospace", 'font-weight': '600'
+    }, panelG);
+  }
+
+  /* Highlight row for current codon */
+  var panelHighlight = el('rect', {
+    x: '2', y: '26', width: '176', height: '15', rx: '3',
+    fill: COL.rna, opacity: '0', 'pointer-events': 'none'
+  }, panelG);
+
+  /* ============================================================
+     STEP INFO BAR (bottom)
+     ============================================================ */
+  var infoBarG = el('g', { transform: 'translate(280,410)' }, svg);
+  el('rect', {
+    x: '-250', y: '0', width: '500', height: '32', rx: '6',
+    fill: 'rgba(255,255,255,0.95)', stroke: '#e0e0e0', 'stroke-width': '0.5'
+  }, infoBarG);
+  var stepInfo = txt(0, 21, 'DNA → mRNA（转录）→ 蛋白质（翻译）：中心法则', {
+    'text-anchor': 'middle', 'font-size': '10', fill: COL.stroke
+  }, infoBarG);
+
+  /* ============================================================
+     LABELS visibility
+     ============================================================ */
+  labelsTransG.style.display = showLabels ? '' : 'none';
+
+  /* ============================================================
+     ANIMATION
+     ============================================================ */
+  var phase = 'transcription';
+  var transcriptIdx = 0;
+  var translateIdx = 0;
+  var peptides = [];
+  var totalCodons = Math.floor(mRNA.length / 3);
+
+  var time = 0, animId = 0, lastT = 0;
+  var stepTime = 0.8;
+
+  function drawPeptideChain() {
+    while (peptideG.firstChild) peptideG.removeChild(peptideG.firstChild);
+    var pw = 34, gap = 2;
+    for (var i = 0; i < peptides.length; i++) {
+      el('rect', {
+        x: '' + (i * (pw + gap)), y: '0', width: '' + pw, height: '20', rx: '4',
+        fill: 'url(#' + uid + 'protG)', opacity: '0.8'
+      }, peptideG);
+      txt(i * (pw + gap) + pw / 2, 14, peptides[i], {
+        'text-anchor': 'middle', 'font-size': '9', fill: '#fff', 'font-weight': '600'
+      }, peptideG);
+      /* Peptide bond line */
+      if (i > 0) {
+        el('line', {
+          x1: '' + ((i - 1) * (pw + gap) + pw), y1: '10',
+          x2: '' + (i * (pw + gap)), y2: '10',
+          stroke: COL.protein, 'stroke-width': '2'
+        }, peptideG);
+      }
+    }
+  }
+
+  function highlightPanelRow(idx) {
+    if (idx >= 0 && idx < usedCodons.length) {
+      panelHighlight.setAttribute('y', '' + (27 + idx * 16));
+      panelHighlight.setAttribute('opacity', '0.12');
+    } else {
+      panelHighlight.setAttribute('opacity', '0');
+    }
+  }
+
+  function drawCodonBrackets(upTo) {
+    while (codonBracketsG.firstChild) codonBracketsG.removeChild(codonBracketsG.firstChild);
+    for (var i = 0; i < upTo; i++) {
+      var bx = i * 3 * baseW;
+      var bw = 3 * baseW - 2;
+      var isActive = (i === upTo - 1);
+      el('rect', {
+        x: '' + bx, y: '20', width: '' + bw, height: '3', rx: '1',
+        fill: isActive ? COL.rna : '#ccc', opacity: isActive ? '0.8' : '0.3'
+      }, codonBracketsG);
+    }
+  }
+
+  function tick(t) {
+    if (!lastT) lastT = t;
+    var dt = Math.min((t - lastT) / 1000, 0.04) * speed;
+    lastT = t;
+    time += dt;
+
+    var stepProgress = time / stepTime;
+
+    if (phase === 'transcription') {
+      var idx = Math.min(Math.floor(stepProgress), mRNA.length);
+      if (idx !== transcriptIdx) {
+        transcriptIdx = idx;
+        drawBases(mRNAG, mRNA.substring(0, transcriptIdx).split(''));
+        cursor.setAttribute('x', '' + (transcriptIdx * baseW));
+        stepInfo.textContent = '转录中... DNA模板链 → mRNA (' + transcriptIdx + '/' + mRNA.length + ')';
+      }
+      if (transcriptIdx >= mRNA.length) {
+        phase = 'pause_before_translate';
+        time = 0; lastT = 0;
+        drawBases(mRNA2G, mRNA.split(''));
+        cursor.setAttribute('opacity', '0');
+        stepInfo.textContent = '转录完成，准备开始翻译...';
+      }
+    } else if (phase === 'pause_before_translate') {
+      if (time > 1.0) {
+        phase = 'translation';
+        time = 0; lastT = 0;
+        stepInfo.textContent = '开始翻译...';
+      }
+    } else if (phase === 'translation') {
+      var cIdx = Math.min(Math.floor(stepProgress), totalCodons);
+      if (cIdx !== translateIdx) {
+        translateIdx = cIdx;
+        if (translateIdx > 0 && translateIdx <= totalCodons) {
+          var codon = mRNA.substring((translateIdx - 1) * 3, translateIdx * 3);
+          var aa = CODON_TABLE[codon] || '???';
+          codonVal.textContent = codon;
+          aaVal.textContent = aa;
+
+          /* Ribosome position */
+          var rx = (translateIdx - 1) * 3 * baseW + baseW * 1.5;
+          ribosomeG.setAttribute('transform', 'translate(' + rx + ',10)');
+
+          /* Codon brackets */
+          drawCodonBrackets(translateIdx);
+
+          /* Highlight panel row */
+          highlightPanelRow(translateIdx - 1);
+
+          if (aa !== 'STOP') {
+            peptides.push(aa);
+            drawPeptideChain();
+            stepInfo.textContent = '翻译中... 密码子 ' + codon + ' → ' + aa + ' (' + translateIdx + '/' + totalCodons + ')';
+
+            root.dispatchEvent(new CustomEvent('cmp:change', {
+              bubbles: true, composed: true,
+              detail: {
+                id: root.getAttribute('data-cmp-id'), type: 'step',
+                values: { phase: 'translation', codon: codon, aminoAcid: aa }
+              }
+            }));
+          } else {
+            stepInfo.textContent = '遇到终止密码子 ' + codon + '，翻译完成！多肽链: ' + peptides.join('-');
+            phase = 'done';
+          }
+        }
+      }
+      if (translateIdx >= totalCodons && phase !== 'done') {
+        stepInfo.textContent = '翻译完成！多肽链: ' + peptides.join('-');
+        phase = 'done';
+      }
+    } else {
+      /* done → wait then loop */
+      if (time > 3.5) {
+        phase = 'transcription'; time = 0; lastT = 0;
+        transcriptIdx = 0; translateIdx = 0; peptides = [];
+        while (mRNAG.firstChild) mRNAG.removeChild(mRNAG.firstChild);
+        while (mRNA2G.firstChild) mRNA2G.removeChild(mRNA2G.firstChild);
+        while (peptideG.firstChild) peptideG.removeChild(peptideG.firstChild);
+        while (codonBracketsG.firstChild) codonBracketsG.removeChild(codonBracketsG.firstChild);
+        codonVal.textContent = '---'; aaVal.textContent = '---';
+        ribosomeG.setAttribute('transform', 'translate(0,10)');
+        cursor.setAttribute('x', '0');
+        cursor.setAttribute('opacity', '0.4');
+        highlightPanelRow(-1);
+        stepInfo.textContent = 'DNA → mRNA（转录）→ 蛋白质（翻译）：中心法则';
+      }
+    }
+
+    if (running) animId = requestAnimationFrame(tick);
+  }
+
+  if (running) animId = requestAnimationFrame(tick);
+
+  /* Click to pause/resume */
+  root.addEventListener('click', function() {
+    running = !running;
+    if (running) { lastT = 0; animId = requestAnimationFrame(tick); }
+    else { cancelAnimationFrame(animId); animId = 0; }
+  });
+
+  /* Props observer */
+  var obs = new MutationObserver(function() {
+    var P2 = {};
+    try { var r2 = root.getAttribute('data-props'); if (r2) { var o2 = JSON.parse(r2); if (o2 && typeof o2 === 'object') P2 = o2; } } catch (e) {}
+    speed = Math.max(0.2, Math.min(3, Number(P2.speed) || 1));
+    var sl = (P2.showLabels !== 'off');
+    labelsTransG.style.display = sl ? '' : 'none';
+    var newRun = (P2.running !== 'off');
+    if (newRun && !running) { running = true; lastT = 0; animId = requestAnimationFrame(tick); }
+    if (!newRun && running) { running = false; cancelAnimationFrame(animId); animId = 0; }
+  });
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+
+  window.addEventListener('beforeunload', function() {
+    cancelAnimationFrame(animId); obs.disconnect();
+  });
+})();
+</script>

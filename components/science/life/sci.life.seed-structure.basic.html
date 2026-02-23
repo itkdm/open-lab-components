@@ -1,0 +1,192 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "sci.life.seed-structure.basic",
+  "name": "种子结构",
+  "nameEn": "Seed Structure",
+  "category": "science/life",
+  "version": "1.0.0",
+  "viewport": { "w": 280, "h": 240 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 280, "min": 180, "max": 500, "desc": "组件宽度" },
+    { "key": "showLabels", "type": "boolean", "default": true, "desc": "显示标注" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["seed", "structure", "plant", "germination", "science", "primary"]
+}
+-->
+<div class="cmp" data-cmp-id="sci.life.seed-structure.basic" role="img" aria-label="种子结构">
+  <svg class="sd__svg" viewBox="0 0 280 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <!-- 种皮渐变 -->
+      <linearGradient class="sd__coat-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#A1887F"/>
+        <stop offset="40%" stop-color="#8D6E63"/>
+        <stop offset="100%" stop-color="#6D4C41"/>
+      </linearGradient>
+      <!-- 子叶渐变 -->
+      <radialGradient class="sd__coty-grad" cx="0.4" cy="0.4" r="0.7">
+        <stop offset="0%" stop-color="#FFFDE7"/>
+        <stop offset="60%" stop-color="#FFF8E1"/>
+        <stop offset="100%" stop-color="#F5E6B8"/>
+      </radialGradient>
+      <!-- 胚芽渐变 -->
+      <linearGradient class="sd__shoot-grad" x1="0.5" y1="1" x2="0.5" y2="0">
+        <stop offset="0%" stop-color="#AED581"/>
+        <stop offset="100%" stop-color="#C5E1A5"/>
+      </linearGradient>
+    </defs>
+
+    <!-- ===== 左半种子（完整子叶面） ===== -->
+    <g>
+      <!-- 种皮外层 -->
+      <ellipse class="sd__coat-l" cx="78" cy="120" rx="52" ry="72"
+               stroke="#5D4037" stroke-width="1.8"/>
+      <!-- 种皮纹理 -->
+      <path d="M38,80 Q50,78 58,85 M32,110 Q45,108 52,115 M36,140 Q48,138 56,145"
+            fill="none" stroke="#5D4037" stroke-width="0.5" opacity="0.2"/>
+      <!-- 子叶填充 -->
+      <ellipse class="sd__coty-l" cx="78" cy="120" rx="46" ry="66"
+               stroke="#D7CCC8" stroke-width="0.6"/>
+      <!-- 子叶纹理 -->
+      <path d="M50,90 Q70,88 95,95 M48,110 Q68,108 98,112 M50,135 Q70,133 95,138"
+            fill="none" stroke="#E6D9A8" stroke-width="0.8" opacity="0.5"/>
+      <!-- 种脐 -->
+      <ellipse cx="32" cy="120" rx="5" ry="3.5" fill="#5D4037" opacity="0.7"/>
+      <ellipse cx="32" cy="120" rx="3" ry="2" fill="#4E342E" opacity="0.5"/>
+    </g>
+
+    <!-- ===== 右半种子（胚面） ===== -->
+    <g>
+      <!-- 种皮外层 -->
+      <ellipse class="sd__coat-r" cx="198" cy="120" rx="52" ry="72"
+               stroke="#5D4037" stroke-width="1.8"/>
+      <!-- 子叶填充 -->
+      <ellipse class="sd__coty-r" cx="198" cy="120" rx="46" ry="66"
+               stroke="#D7CCC8" stroke-width="0.6"/>
+      <!-- 子叶纹理 -->
+      <path d="M175,88 Q195,86 220,92 M172,108 Q192,106 222,110 M175,132 Q195,130 220,135"
+            fill="none" stroke="#E6D9A8" stroke-width="0.8" opacity="0.5"/>
+
+      <!-- ===== 胚（位于右半子叶内表面中央） ===== -->
+      <!-- 胚轴（连接胚芽和胚根的短茎） -->
+      <rect x="194" y="100" width="7" height="40" rx="3" fill="#F5E6B8" stroke="#C8B88A" stroke-width="0.6"/>
+
+      <!-- 胚芽（顶部，带小叶芽） -->
+      <g>
+        <!-- 胚芽主体 -->
+        <path d="M197.5,100 Q193,90 190,82 Q188,76 192,72 Q197,68 197.5,74 L197.5,100"
+              fill="none" stroke="none"/>
+        <path class="sd__shoot" d="M194,100 Q190,90 188,82 Q186,74 191,70 Q195,67 197.5,74
+              Q200,67 204,70 Q209,74 207,82 Q205,90 201,100 Z"
+              stroke="#7CB342" stroke-width="0.8"/>
+        <!-- 小叶芽 -->
+        <path d="M195,78 Q192,72 195,68" fill="none" stroke="#8BC34A" stroke-width="0.8" opacity="0.7"/>
+        <path d="M200,78 Q203,72 200,68" fill="none" stroke="#8BC34A" stroke-width="0.8" opacity="0.7"/>
+      </g>
+
+      <!-- 胚根（底部，尖端朝下） -->
+      <path d="M194,140 Q194,148 192,155 Q190,162 195,168
+             Q197.5,172 200,168 Q205,162 203,155 Q201,148 201,140"
+            fill="#D2B48C" stroke="#A08060" stroke-width="0.8"/>
+      <!-- 胚根尖端 -->
+      <path d="M195,168 Q197.5,175 200,168" fill="#C4A67A" stroke="#A08060" stroke-width="0.5"/>
+    </g>
+
+    <!-- ===== 中间分隔间隙 ===== -->
+    <line x1="133" y1="55" x2="133" y2="185" stroke="#D7CCC8" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
+    <line x1="143" y1="55" x2="143" y2="185" stroke="#D7CCC8" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.5"/>
+
+    <!-- ===== 标注 ===== -->
+    <g class="sd__labels" font-size="8" font-family="Arial,'Microsoft YaHei',sans-serif"
+       fill="#333" font-weight="600">
+      <!-- 种皮 → 左半外层 -->
+      <line x1="30" y1="72" x2="12" y2="42" stroke="#999" stroke-width="0.6"/>
+      <circle cx="30" cy="72" r="1.2" fill="#999"/>
+      <text x="10" y="40" text-anchor="end" font-size="8" opacity="0.85">种皮</text>
+
+      <!-- 子叶 → 左半内部 -->
+      <line x1="78" y1="150" x2="78" y2="210" stroke="#999" stroke-width="0.6"/>
+      <circle cx="78" cy="150" r="1.2" fill="#999"/>
+      <text x="78" y="222" text-anchor="middle" font-size="8" opacity="0.85">子叶</text>
+
+      <!-- 种脐 → 左侧小点 -->
+      <line x1="32" y1="128" x2="12" y2="170" stroke="#999" stroke-width="0.6"/>
+      <circle cx="32" cy="128" r="1.2" fill="#999"/>
+      <text x="10" y="172" text-anchor="end" font-size="7.5" opacity="0.85">种脐</text>
+
+      <!-- 胚芽 → 右半上部 -->
+      <line x1="207" y1="78" x2="252" y2="38" stroke="#999" stroke-width="0.6"/>
+      <circle cx="207" cy="78" r="1.2" fill="#999"/>
+      <text x="254" y="40" font-size="8" opacity="0.85">胚芽</text>
+
+      <!-- 胚轴 → 右半中部 -->
+      <line x1="205" y1="120" x2="252" y2="120" stroke="#999" stroke-width="0.6"/>
+      <circle cx="205" cy="120" r="1.2" fill="#999"/>
+      <text x="254" y="123" font-size="8" opacity="0.85">胚轴</text>
+
+      <!-- 胚根 → 右半下部 -->
+      <line x1="207" y1="160" x2="252" y2="200" stroke="#999" stroke-width="0.6"/>
+      <circle cx="207" cy="160" r="1.2" fill="#999"/>
+      <text x="254" y="202" font-size="8" opacity="0.85">胚根</text>
+    </g>
+  </svg>
+</div>
+
+<script>
+(function() {
+  var root = document.currentScript && document.currentScript.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'sci.life.seed-structure.basic') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'sd_' + Math.random().toString(36).slice(2, 8);
+
+  /* 为渐变分配唯一 id */
+  var gradMap = {
+    '.sd__coat-grad':  uid + '_cg',
+    '.sd__coty-grad':  uid + '_yg',
+    '.sd__shoot-grad': uid + '_sg'
+  };
+  for (var sel in gradMap) {
+    var el = svg.querySelector(sel);
+    if (el) el.setAttribute('id', gradMap[sel]);
+  }
+
+  /* 绑定 fill 引用 */
+  var coatL = svg.querySelector('.sd__coat-l');
+  var coatR = svg.querySelector('.sd__coat-r');
+  var cotyL = svg.querySelector('.sd__coty-l');
+  var cotyR = svg.querySelector('.sd__coty-r');
+  var shoot = svg.querySelector('.sd__shoot');
+
+  if (coatL) coatL.setAttribute('fill', 'url(#' + gradMap['.sd__coat-grad'] + ')');
+  if (coatR) coatR.setAttribute('fill', 'url(#' + gradMap['.sd__coat-grad'] + ')');
+  if (cotyL) cotyL.setAttribute('fill', 'url(#' + gradMap['.sd__coty-grad'] + ')');
+  if (cotyR) cotyR.setAttribute('fill', 'url(#' + gradMap['.sd__coty-grad'] + ')');
+  if (shoot) shoot.setAttribute('fill', 'url(#' + gradMap['.sd__shoot-grad'] + ')');
+
+  /* 标注显隐 */
+  var labels = root.querySelector('.sd__labels');
+
+  function update() {
+    var props = {};
+    try { var r = root.getAttribute('data-props'); if (r) props = JSON.parse(r) || {}; } catch (e) {}
+    if (labels) labels.style.display = (props.showLabels === false || props.showLabels === 'false') ? 'none' : '';
+  }
+  update();
+  var obs = new MutationObserver(update);
+  obs.observe(root, { attributes: true, attributeFilter: ['data-props'] });
+  window.addEventListener('beforeunload', function() { obs.disconnect(); }, { once: true });
+})();
+</script>
+
+<style>
+.cmp[data-cmp-id="sci.life.seed-structure.basic"] {
+  width: var(--cmp-size, 280px);
+  display: inline-block;
+}
+.cmp[data-cmp-id="sci.life.seed-structure.basic"] .sd__svg {
+  width: 100%; height: auto; display: block; overflow: visible;
+}
+</style>

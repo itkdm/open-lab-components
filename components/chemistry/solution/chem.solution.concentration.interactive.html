@@ -1,0 +1,262 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.solution.concentration.interactive",
+  "name": "溶液浓度（交互式）",
+  "nameEn": "Solution Concentration (Interactive)",
+  "category": "chemistry/solution",
+  "version": "1.0.0",
+  "viewport": { "w": 520, "h": 440 },
+  "tags": ["chemistry","solution","concentration","molarity","dilution","interactive"],
+  "props": [
+    { "key": "size",          "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "soluteColor",   "type": "color",  "default": "#1565c0", "desc": "溶质颜色" },
+    { "key": "solventColor",  "type": "color",  "default": "#e3f2fd", "desc": "溶剂颜色" },
+    { "key": "soluteMass",    "type": "number", "default": 10, "min": 1, "max": 50, "desc": "溶质质量(g)" },
+    { "key": "solventVolume", "type": "number", "default": 200, "min": 50, "max": 500, "desc": "溶剂体积(mL)" },
+    { "key": "molarMass",     "type": "number", "default": 58.44, "min": 10, "max": 300, "desc": "摩尔质量(g/mol)" },
+    { "key": "soluteName",    "type": "string", "default": "NaCl", "desc": "溶质名称" },
+    { "key": "running",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "speed",         "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "showParticles", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示粒子" },
+    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "soluteColor": "--cmp-solute", "solventColor": "--cmp-solvent", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "update", "values": { "molarity": "number", "massPercent": "number", "moles": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="chem.solution.concentration.interactive" role="img" aria-label="溶液浓度（交互式）">
+  <style>
+    .cmp[data-cmp-id="chem.solution.concentration.interactive"]{
+      --h:var(--cmp-size,440px);display:inline-block;
+      width:calc(var(--h)*520/440);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(21,101,192,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="chem.solution.concentration.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="chem.solution.concentration.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="chem.solution.concentration.interactive"] .sc__data{font-family:'Courier New',monospace;font-weight:600;font-variant-numeric:tabular-nums}
+  </style>
+
+  <svg viewBox="0 0 520 440" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <clipPath id="sc__beakerClip"><rect x="80" y="100" width="160" height="200" rx="4"/></clipPath>
+      <linearGradient id="sc__liqG" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="var(--cmp-solute,#1565c0)" stop-opacity="0.15"/>
+        <stop offset="1" stop-color="var(--cmp-solute,#1565c0)" stop-opacity="0.5"/>
+      </linearGradient>
+    </defs>
+
+    <text x="260" y="22" text-anchor="middle" font-size="14" font-weight="700" fill="var(--cmp-stroke,#37474f)">溶液浓度</text>
+
+    <!-- 烧杯 -->
+    <g transform="translate(20,40)">
+      <!-- 烧杯外壁 -->
+      <rect x="78" y="98" width="164" height="204" rx="6" fill="none" stroke="var(--cmp-stroke,#37474f)" stroke-width="2"/>
+      <!-- 烧杯内壁 -->
+      <rect x="80" y="100" width="160" height="200" rx="4" fill="var(--cmp-solvent,#e3f2fd)" opacity="0.3"/>
+
+      <!-- 液体 -->
+      <rect class="sc__liquid" x="80" y="140" width="160" height="160" fill="url(#sc__liqG)" clip-path="url(#sc__beakerClip)"/>
+
+      <!-- 刻度线 -->
+      <g stroke="var(--cmp-stroke,#37474f)" stroke-width="0.5" opacity="0.3">
+        <line x1="240" y1="140" x2="250" y2="140"/><text x="254" y="144" font-size="7" fill="#999">500mL</text>
+        <line x1="240" y1="172" x2="250" y2="172"/><text x="254" y="176" font-size="7" fill="#999">400mL</text>
+        <line x1="240" y1="204" x2="250" y2="204"/><text x="254" y="208" font-size="7" fill="#999">300mL</text>
+        <line x1="240" y1="236" x2="250" y2="236"/><text x="254" y="240" font-size="7" fill="#999">200mL</text>
+        <line x1="240" y1="268" x2="250" y2="268"/><text x="254" y="272" font-size="7" fill="#999">100mL</text>
+      </g>
+
+      <!-- 溶质粒子 -->
+      <g class="sc__particles" clip-path="url(#sc__beakerClip)"></g>
+
+      <!-- 搅拌棒 -->
+      <rect class="sc__stirrer" x="155" y="90" width="10" height="180" rx="3" fill="#90a4ae" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.6"/>
+
+      <!-- 溶质名称 -->
+      <text class="sc__soluteName" x="160" y="320" text-anchor="middle" font-size="11" fill="var(--cmp-stroke,#37474f)" font-weight="600">NaCl 溶液</text>
+    </g>
+
+    <!-- 浓度柱状图 -->
+    <g transform="translate(320,70)">
+      <text x="85" y="0" text-anchor="middle" font-size="11" font-weight="600" fill="var(--cmp-stroke,#37474f)">浓度指标</text>
+
+      <!-- 摩尔浓度 -->
+      <g transform="translate(0,20)">
+        <text x="0" y="12" font-size="9" fill="#666">摩尔浓度</text>
+        <rect x="0" y="18" width="170" height="16" rx="3" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="0.5"/>
+        <rect class="sc__barMol" x="0" y="18" width="80" height="16" rx="3" fill="var(--cmp-solute,#1565c0)" opacity="0.7"/>
+        <text class="sc__molVal sc__data" x="175" y="30" font-size="10" fill="var(--cmp-solute,#1565c0)">0.856 mol/L</text>
+      </g>
+
+      <!-- 质量分数 -->
+      <g transform="translate(0,60)">
+        <text x="0" y="12" font-size="9" fill="#666">质量分数</text>
+        <rect x="0" y="18" width="170" height="16" rx="3" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="0.5"/>
+        <rect class="sc__barMass" x="0" y="18" width="40" height="16" rx="3" fill="#ff9800" opacity="0.7"/>
+        <text class="sc__massVal sc__data" x="175" y="30" font-size="10" fill="#ff9800">4.76%</text>
+      </g>
+
+      <!-- 物质的量 -->
+      <g transform="translate(0,100)">
+        <text x="0" y="12" font-size="9" fill="#666">物质的量</text>
+        <rect x="0" y="18" width="170" height="16" rx="3" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="0.5"/>
+        <rect class="sc__barMoles" x="0" y="18" width="60" height="16" rx="3" fill="#43a047" opacity="0.7"/>
+        <text class="sc__molesVal sc__data" x="175" y="30" font-size="10" fill="#43a047">0.171 mol</text>
+      </g>
+    </g>
+
+    <!-- 数据面板 -->
+    <g transform="translate(320,230)">
+      <rect x="0" y="0" width="180" height="130" rx="6" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text x="90" y="18" text-anchor="middle" font-size="10" font-weight="700" fill="var(--cmp-stroke,#37474f)">溶液参数</text>
+
+      <text x="10" y="38" font-size="9" fill="#666">溶质:</text>
+      <text class="sc__soluteInfo sc__data" x="170" y="38" text-anchor="end" font-size="10" fill="var(--cmp-solute,#1565c0)">NaCl 10g</text>
+
+      <text x="10" y="56" font-size="9" fill="#666">摩尔质量:</text>
+      <text class="sc__mmInfo sc__data" x="170" y="56" text-anchor="end" font-size="10" fill="#666">58.44 g/mol</text>
+
+      <text x="10" y="74" font-size="9" fill="#666">溶剂体积:</text>
+      <text class="sc__volInfo sc__data" x="170" y="74" text-anchor="end" font-size="10" fill="#666">200 mL</text>
+
+      <text x="10" y="92" font-size="9" fill="#666">溶液质量:</text>
+      <text class="sc__totalInfo sc__data" x="170" y="92" text-anchor="end" font-size="10" fill="#666">210 g</text>
+
+      <text x="10" y="118" font-size="8" fill="#999">c = n/V = m/(M·V)</text>
+      <text x="10" y="128" font-size="8" fill="#999">ω = m_溶质/m_溶液 ×100%</text>
+    </g>
+
+    <!-- 公式说明 -->
+    <g transform="translate(260,400)">
+      <rect x="-240" y="0" width="480" height="30" rx="6" fill="rgba(255,255,255,0.95)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="sc__formula" x="0" y="20" text-anchor="middle" font-size="10" fill="var(--cmp-stroke,#37474f)">摩尔浓度 c = n/V | 质量分数 ω = m₁/(m₁+m₂) | n = m/M</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='chem.solution.concentration.interactive')return;
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var soluteMass=Math.max(1,Math.min(50,Number(P.soluteMass)||10));
+    var solventVol=Math.max(50,Math.min(500,Number(P.solventVolume)||200));
+    var molarMass=Math.max(10,Math.min(300,Number(P.molarMass)||58.44));
+    var soluteName=P.soluteName||'NaCl';
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showParticles=(P.showParticles!=='off');
+
+    var NS='http://www.w3.org/2000/svg';
+
+    /* 计算 */
+    var moles=soluteMass/molarMass;
+    var volL=solventVol/1000;
+    var molarity=moles/volL;
+    var totalMass=soluteMass+solventVol; /* 近似水密度=1 */
+    var massPercent=soluteMass/totalMass*100;
+
+    /* 液面高度 */
+    var maxVol=500;
+    var liqH=Math.min(200,solventVol/maxVol*200);
+    var liqY=300-liqH;
+    root.querySelector('.sc__liquid').setAttribute('y',liqY+40);
+    root.querySelector('.sc__liquid').setAttribute('height',liqH);
+
+    /* 颜色深度 */
+    var opacity=Math.min(0.8,molarity*0.3+0.1);
+    root.querySelector('.sc__liquid').setAttribute('fill-opacity',opacity);
+
+    /* 数据 */
+    root.querySelector('.sc__molVal').textContent=molarity.toFixed(3)+' mol/L';
+    root.querySelector('.sc__massVal').textContent=massPercent.toFixed(2)+'%';
+    root.querySelector('.sc__molesVal').textContent=moles.toFixed(3)+' mol';
+    root.querySelector('.sc__soluteInfo').textContent=soluteName+' '+soluteMass+'g';
+    root.querySelector('.sc__mmInfo').textContent=molarMass.toFixed(2)+' g/mol';
+    root.querySelector('.sc__volInfo').textContent=solventVol+' mL';
+    root.querySelector('.sc__totalInfo').textContent=totalMass.toFixed(0)+' g';
+    root.querySelector('.sc__soluteName').textContent=soluteName+' 溶液';
+
+    /* 柱状图 */
+    var maxMol=3;
+    root.querySelector('.sc__barMol').setAttribute('width',Math.min(170,molarity/maxMol*170));
+    root.querySelector('.sc__barMass').setAttribute('width',Math.min(170,massPercent/30*170));
+    root.querySelector('.sc__barMoles').setAttribute('width',Math.min(170,moles/1*170));
+
+    /* 粒子 */
+    var particlesG=root.querySelector('.sc__particles');
+    var particles=[];
+    if(showParticles){
+      var numP=Math.min(60,Math.round(molarity*20+5));
+      for(var i=0;i<numP;i++){
+        var px=85+Math.random()*150;
+        var py=liqY+45+Math.random()*(liqH-10);
+        var vx=(Math.random()-0.5)*1.5;
+        var vy=(Math.random()-0.5)*1.5;
+        var c=document.createElementNS(NS,'circle');
+        c.setAttribute('r',2.5+Math.random()*1.5);
+        c.setAttribute('fill','var(--cmp-solute,#1565c0)');
+        c.setAttribute('opacity','0.6');
+        particlesG.appendChild(c);
+        particles.push({x:px,y:py,vx:vx,vy:vy,el:c});
+      }
+    }
+
+    var time=0,animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.04)*speed;
+      lastT=t;
+      time+=dt;
+
+      /* 搅拌棒旋转效果 */
+      var stirrer=root.querySelector('.sc__stirrer');
+      var sx=155+Math.sin(time*2)*5;
+      stirrer.setAttribute('x',sx);
+
+      /* 粒子运动 */
+      for(var i=0;i<particles.length;i++){
+        var p=particles[i];
+        p.x+=p.vx;p.y+=p.vy;
+        /* 边界 */
+        if(p.x<85||p.x>235){p.vx*=-1;p.x=Math.max(85,Math.min(235,p.x));}
+        var minY=liqY+45,maxY=liqY+40+liqH-5;
+        if(p.y<minY||p.y>maxY){p.vy*=-1;p.y=Math.max(minY,Math.min(maxY,p.y));}
+        /* 搅拌影响 */
+        p.vx+=Math.sin(time*2)*0.02;
+        p.vy+=Math.cos(time*1.5)*0.01;
+        /* 限速 */
+        var spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+        if(spd>2){p.vx*=2/spd;p.vy*=2/spd;}
+        p.el.setAttribute('cx',p.x.toFixed(1));
+        p.el.setAttribute('cy',p.y.toFixed(1));
+      }
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

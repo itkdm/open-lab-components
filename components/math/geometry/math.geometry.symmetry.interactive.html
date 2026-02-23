@@ -1,0 +1,186 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.symmetry.interactive",
+  "name": "轴对称",
+  "nameEn": "Line Symmetry",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 300, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 600, "desc": "组件尺寸" },
+    { "key": "gridColor", "type": "color", "default": "#E0E0E0", "desc": "网格颜色" },
+    { "key": "shapeColor", "type": "color", "default": "#42A5F5", "desc": "图形颜色" },
+    { "key": "mirrorColor", "type": "color", "default": "#EF5350", "desc": "镜像颜色" },
+    { "key": "axisColor", "type": "color", "default": "#FF9800", "desc": "对称轴颜色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "gridColor": "--cmp-grid",
+    "shapeColor": "--cmp-shape",
+    "mirrorColor": "--cmp-mirror",
+    "axisColor": "--cmp-axis"
+  },
+  "tags": ["symmetry", "mirror", "reflection", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "points": "array", "mirrorPoints": "array" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.symmetry.interactive" role="img" aria-label="轴对称">
+  <style>
+    .cmp[data-cmp-id="math.geometry.symmetry.interactive"] {
+      --size: var(--cmp-size, 300px);
+      display: inline-block;
+      width: var(--size);
+      height: var(--size);
+      user-select: none;
+      touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.symmetry.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+    .cmp[data-cmp-id="math.geometry.symmetry.interactive"] .sy__dot {
+      cursor: pointer;
+    }
+    .cmp[data-cmp-id="math.geometry.symmetry.interactive"] .sy__dot:hover {
+      r: 6;
+    }
+    .cmp[data-cmp-id="math.geometry.symmetry.interactive"] .sy__grid-dot:hover {
+      r: 3; opacity: 0.6; cursor: pointer;
+    }
+    .cmp[data-cmp-id="math.geometry.symmetry.interactive"] .sy__label {
+      font-family: Arial, sans-serif; font-size: 12px; font-weight: bold; pointer-events: none;
+    }
+  </style>
+
+  <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+</div>
+
+<script>
+(function() {
+  var script = document.currentScript;
+  if (!script) return;
+  var root = script.previousElementSibling;
+  if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.symmetry.interactive') return;
+  var svg = root.querySelector('svg');
+  if (!svg) return;
+
+  var uid = 'sy_' + Math.random().toString(36).slice(2, 8);
+  var STEP = 20, AXIS = 150, W = 300, H = 300;
+  var points = [];
+
+  function css(prop, fb) {
+    var v = getComputedStyle(root).getPropertyValue(prop).trim();
+    return v || fb;
+  }
+
+  function mirror(pt) { return { x: W - pt.x, y: pt.y }; }
+
+  function snapToGrid(x, y) {
+    return { x: Math.round(x / STEP) * STEP, y: Math.round(y / STEP) * STEP };
+  }
+
+  function svgPt(e) {
+    var pt = svg.createSVGPoint();
+    pt.x = e.clientX; pt.y = e.clientY;
+    var ctm = svg.getScreenCTM();
+    return ctm ? pt.matrixTransform(ctm.inverse()) : null;
+  }
+
+  function findPoint(gx, gy) {
+    for (var i = 0; i < points.length; i++) {
+      if (points[i].x === gx && points[i].y === gy) return i;
+    }
+    return -1;
+  }
+
+  function emitChange() {
+    var mp = points.map(mirror);
+    root.dispatchEvent(new CustomEvent('cmp:change', {
+      bubbles: true, composed: true,
+      detail: {
+        id: root.getAttribute('data-cmp-id'),
+        type: 'adjust',
+        values: { points: points.slice(), mirrorPoints: mp }
+      }
+    }));
+  }
+
+  function render() {
+    var gridC = css('--cmp-grid', '#E0E0E0');
+    var shapeC = css('--cmp-shape', '#42A5F5');
+    var mirrorC = css('--cmp-mirror', '#EF5350');
+    var axisC = css('--cmp-axis', '#FF9800');
+
+    var html = '';
+    /* background */
+    html += '<rect width="300" height="300" fill="#FAFAFA" rx="4"/>';
+
+    /* grid dots */
+    for (var gx = STEP; gx < W; gx += STEP) {
+      for (var gy = STEP; gy < H; gy += STEP) {
+        if (gx === AXIS) continue;
+        var cls = gx < AXIS ? ' class="sy__grid-dot"' : '';
+        html += '<circle cx="' + gx + '" cy="' + gy + '" r="1.5" fill="' + gridC + '" opacity="0.5"' + cls + '/>';
+      }
+    }
+
+    /* axis */
+    html += '<line x1="150" y1="0" x2="150" y2="300" stroke="' + axisC + '" stroke-width="2" stroke-dasharray="6,4"/>';
+    html += '<text x="150" y="16" text-anchor="middle" class="sy__label" fill="' + axisC + '">对称轴</text>';
+
+    var n = points.length;
+    var mp = points.map(mirror);
+
+    /* filled polygons when 3+ points */
+    if (n >= 3) {
+      var lp = points.map(function(p) { return p.x + ',' + p.y; }).join(' ');
+      var rp = mp.map(function(p) { return p.x + ',' + p.y; }).join(' ');
+      html += '<polygon points="' + lp + '" fill="' + shapeC + '" fill-opacity="0.3" stroke="' + shapeC + '" stroke-width="1.5" stroke-linejoin="round"/>';
+      html += '<polygon points="' + rp + '" fill="' + mirrorC + '" fill-opacity="0.3" stroke="' + mirrorC + '" stroke-width="1.5" stroke-linejoin="round"/>';
+    } else if (n >= 2) {
+      /* lines only */
+      for (var i = 0; i < n - 1; i++) {
+        html += '<line x1="' + points[i].x + '" y1="' + points[i].y + '" x2="' + points[i + 1].x + '" y2="' + points[i + 1].y + '" stroke="' + shapeC + '" stroke-width="1.5"/>';
+        html += '<line x1="' + mp[i].x + '" y1="' + mp[i].y + '" x2="' + mp[i + 1].x + '" y2="' + mp[i + 1].y + '" stroke="' + mirrorC + '" stroke-width="1.5"/>';
+      }
+    }
+
+    /* dashed connection lines between point and its mirror */
+    for (var i = 0; i < n; i++) {
+      html += '<line x1="' + points[i].x + '" y1="' + points[i].y + '" x2="' + mp[i].x + '" y2="' + mp[i].y + '" stroke="' + gridC + '" stroke-width="0.8" stroke-dasharray="3,3"/>';
+    }
+
+    /* points (left) */
+    for (var i = 0; i < n; i++) {
+      html += '<circle class="sy__dot" cx="' + points[i].x + '" cy="' + points[i].y + '" r="5" fill="' + shapeC + '" stroke="#fff" stroke-width="1.5"/>';
+    }
+    /* mirror points (right) */
+    for (var i = 0; i < n; i++) {
+      html += '<circle cx="' + mp[i].x + '" cy="' + mp[i].y + '" r="5" fill="' + mirrorC + '" stroke="#fff" stroke-width="1.5" style="pointer-events:none"/>';
+    }
+
+    svg.innerHTML = html;
+  }
+
+  svg.addEventListener('click', function(e) {
+    var p = svgPt(e);
+    if (!p) return;
+    var g = snapToGrid(p.x, p.y);
+    /* only left side, not on axis */
+    if (g.x >= AXIS || g.x < STEP || g.y < STEP || g.y > H - STEP) return;
+
+    var idx = findPoint(g.x, g.y);
+    if (idx >= 0) {
+      points.splice(idx, 1);
+    } else {
+      points.push({ x: g.x, y: g.y });
+    }
+    render();
+    emitChange();
+  });
+
+  render();
+})();
+</script>

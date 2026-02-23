@@ -1,0 +1,273 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.wave.sound.interactive",
+  "name": "声波演示（交互式）",
+  "nameEn": "Sound Wave Demonstration (Interactive)",
+  "category": "physics/wave",
+  "version": "1.0.0",
+  "viewport": { "w": 550, "h": 350 },
+  "tags": ["physics","wave","sound","frequency","amplitude","longitudinal","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 350, "min": 250, "max": 500, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "waveColor",      "type": "color",  "default": "#5c6bc0", "desc": "波形颜色" },
+    { "key": "particleColor",  "type": "color",  "default": "#42a5f5", "desc": "粒子颜色" },
+    { "key": "frequency",      "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "频率(Hz)" },
+    { "key": "amplitude",      "type": "number", "default": 30, "min": 5, "max": 50, "desc": "振幅(px)" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "showParticles",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示粒子" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "waveColor": "--cmp-wave", "particleColor": "--cmp-particle", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "param", "values": { "frequency": "number", "amplitude": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.wave.sound.interactive" role="img" aria-label="声波演示（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.wave.sound.interactive"]{
+      --h:var(--cmp-size,350px);display:inline-block;
+      width:calc(var(--h)*550/350);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(92,107,192,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.wave.sound.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.wave.sound.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 550 350" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="sw__arrowR" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-stroke,#37474f)"/></marker>
+    </defs>
+
+    <!-- 声源（扬声器） -->
+    <g class="sw__speaker" transform="translate(30,100)">
+      <rect x="0" y="-20" width="15" height="40" rx="2" fill="#78909c" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <path d="M15,-20 L30,-35 L30,35 L15,20 Z" fill="#90a4ae" stroke="var(--cmp-stroke,#37474f)" stroke-width="1"/>
+      <!-- 振动线 -->
+      <path class="sw__vibLine1" d="M35,-15 Q45,-5 35,5 Q45,15 35,25" fill="none" stroke="#78909c" stroke-width="1.5" opacity="0.5"/>
+      <path class="sw__vibLine2" d="M42,-20 Q55,-5 42,10 Q55,25 42,30" fill="none" stroke="#78909c" stroke-width="1" opacity="0.3"/>
+    </g>
+
+    <!-- 横波显示区 -->
+    <g transform="translate(0,0)">
+      <!-- 坐标轴 -->
+      <line x1="70" y1="100" x2="530" y2="100" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" marker-end="url(#sw__arrowR)" opacity="0.5"/>
+      <line x1="70" y1="40" x2="70" y2="160" stroke="var(--cmp-stroke,#37474f)" stroke-width="0.8" opacity="0.5"/>
+      <!-- 波形 -->
+      <path class="sw__wavePath" d="" fill="none" stroke="var(--cmp-wave,#5c6bc0)" stroke-width="2.5"/>
+      <!-- 振幅标注 -->
+      <g class="sw__ampLabel"></g>
+    </g>
+
+    <!-- 纵波粒子区 -->
+    <g class="sw__particles" transform="translate(70,230)"></g>
+
+    <!-- 标注 -->
+    <g class="sw__labels-g">
+      <text x="300" y="20" text-anchor="middle" font-size="13" font-weight="700" fill="var(--cmp-stroke,#37474f)">声波演示</text>
+      <text x="300" y="180" text-anchor="middle" font-size="10" fill="#78909c">横波表示（位移-距离图）</text>
+      <text x="300" y="205" text-anchor="middle" font-size="10" fill="#78909c">纵波粒子运动</text>
+    </g>
+
+    <!-- 控制滑块 -->
+    <g transform="translate(70,310)">
+      <text x="0" y="-5" font-size="9" fill="#78909c">频率</text>
+      <rect x="0" y="0" width="180" height="5" rx="2.5" fill="#e0e0e0"/>
+      <rect class="sw__freqFill" x="0" y="0" width="60" height="5" rx="2.5" fill="#5c6bc0"/>
+      <circle class="sw__freqThumb" cx="60" cy="2.5" r="8" fill="#5c6bc0" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="sw__freqText" x="190" y="8" font-size="9" fill="#5c6bc0" font-weight="600">2.0 Hz</text>
+
+      <text x="260" y="-5" font-size="9" fill="#78909c">振幅</text>
+      <rect x="260" y="0" width="180" height="5" rx="2.5" fill="#e0e0e0"/>
+      <rect class="sw__ampFill" x="260" y="0" width="100" height="5" rx="2.5" fill="#ef5350"/>
+      <circle class="sw__ampThumb" cx="360" cy="2.5" r="8" fill="#ef5350" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="sw__ampText" x="450" y="8" font-size="9" fill="#ef5350" font-weight="600">30 px</text>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.wave.sound.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var freq=Math.max(0.5,Math.min(5,Number(P.frequency)||2));
+    var amp=Math.max(5,Math.min(50,Number(P.amplitude)||30));
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+    var showParticles=(P.showParticles!=='off');
+
+    var wavePath=root.querySelector('.sw__wavePath');
+    var particlesG=root.querySelector('.sw__particles');
+    var ampLabelG=root.querySelector('.sw__ampLabel');
+    var labelsG=root.querySelector('.sw__labels-g');
+    var freqFill=root.querySelector('.sw__freqFill');
+    var freqThumb=root.querySelector('.sw__freqThumb');
+    var freqText=root.querySelector('.sw__freqText');
+    var ampFill=root.querySelector('.sw__ampFill');
+    var ampThumb=root.querySelector('.sw__ampThumb');
+    var ampText=root.querySelector('.sw__ampText');
+
+    var NUM_PARTICLES=30;
+    var PARTICLE_SPACING=15;
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function updateSliders(){
+      var fp=(freq-0.5)/(5-0.5)*180;
+      freqFill.setAttribute('width',fp);
+      freqThumb.setAttribute('cx',fp);
+      freqText.textContent=freq.toFixed(1)+' Hz';
+
+      var ap=(amp-5)/(50-5)*180;
+      ampFill.setAttribute('width',ap);
+      ampThumb.setAttribute('cx',260+ap);
+      ampText.textContent=Math.round(amp)+' px';
+    }
+    updateSliders();
+
+    /* 粒子元素 */
+    var particleEls=[];
+    function initParticles(){
+      clear(particlesG);particleEls=[];
+      if(!showParticles)return;
+      for(var i=0;i<NUM_PARTICLES;i++){
+        var c=elSvg('circle',{cx:i*PARTICLE_SPACING,cy:20,r:4,
+          fill:'var(--cmp-particle,#42a5f5)',opacity:'0.7'});
+        particlesG.appendChild(c);
+        particleEls.push(c);
+      }
+    }
+    initParticles();
+
+    var time=0,animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.05);
+      lastT=t;
+      time+=dt*speed;
+
+      /* 横波 */
+      var d='';
+      for(var x=0;x<=460;x+=2){
+        var y=100-amp*Math.sin(2*Math.PI*(freq*x/460-time*freq));
+        d+=(x===0?'M':'L')+(70+x)+','+y;
+      }
+      wavePath.setAttribute('d',d);
+
+      /* 振幅标注 */
+      clear(ampLabelG);
+      if(showLabels){
+        /* 波长标注 */
+        var wl=460/freq;
+        if(wl<400){
+          var wx=70+wl*0.5;
+          ampLabelG.appendChild(elSvg('line',{x1:70,y1:170,x2:70+wl,y2:170,
+            stroke:'#ff9800','stroke-width':'1.5'}));
+          ampLabelG.appendChild(elSvg('line',{x1:70,y1:165,x2:70,y2:175,stroke:'#ff9800','stroke-width':'1'}));
+          ampLabelG.appendChild(elSvg('line',{x1:70+wl,y1:165,x2:70+wl,y2:175,stroke:'#ff9800','stroke-width':'1'}));
+          var lt=elSvg('text',{x:70+wl/2,y:178,'text-anchor':'middle','font-size':'8','font-weight':'600',fill:'#ff9800'});
+          lt.textContent='λ (波长)';ampLabelG.appendChild(lt);
+        }
+        /* 振幅标注 */
+        ampLabelG.appendChild(elSvg('line',{x1:65,y1:100,x2:65,y2:100-amp,
+          stroke:'var(--cmp-sin,#ef5350)','stroke-width':'1.5'}));
+        ampLabelG.appendChild(elSvg('line',{x1:62,y1:100,x2:68,y2:100,stroke:'#ef5350','stroke-width':'1'}));
+        ampLabelG.appendChild(elSvg('line',{x1:62,y1:100-amp,x2:68,y2:100-amp,stroke:'#ef5350','stroke-width':'1'}));
+        var at=elSvg('text',{x:58,y:100-amp/2+3,'text-anchor':'end','font-size':'8','font-weight':'600',fill:'#ef5350'});
+        at.textContent='A';ampLabelG.appendChild(at);
+      }
+
+      /* 纵波粒子 */
+      if(showParticles){
+        for(var i=0;i<particleEls.length;i++){
+          var baseX=i*PARTICLE_SPACING;
+          var displacement=amp*0.4*Math.sin(2*Math.PI*(freq*i/NUM_PARTICLES-time*freq));
+          particleEls[i].setAttribute('cx',baseX+displacement);
+          /* 密度可视化：颜色深浅 */
+          var nextDisp=amp*0.4*Math.sin(2*Math.PI*(freq*(i+1)/NUM_PARTICLES-time*freq));
+          var compression=displacement-nextDisp;
+          var op=0.4+0.5*Math.max(0,Math.min(1,(compression+amp*0.4)/(amp*0.8)));
+          particleEls[i].setAttribute('opacity',op);
+        }
+      }
+
+      labelsG.style.display=showLabels?'':'none';
+
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* 滑块拖拽 */
+    var dragType=null;
+    function startDrag(type){return function(e){e.preventDefault();dragType=type;
+      document.addEventListener('mousemove',onDrag,{passive:false});
+      document.addEventListener('mouseup',endDrag);
+      document.addEventListener('touchmove',onDrag,{passive:false});
+      document.addEventListener('touchend',endDrag);
+    };}
+    function onDrag(e){
+      if(!dragType)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*550;
+      if(dragType==='freq'){
+        var pos=Math.max(0,Math.min(180,sx-70));
+        freq=+(0.5+pos/180*(5-0.5)).toFixed(1);
+      }else{
+        var pos2=Math.max(0,Math.min(180,sx-330));
+        amp=Math.round(5+pos2/180*(50-5));
+      }
+      updateSliders();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'phy.wave.sound.interactive',type:'param',values:{frequency:freq,amplitude:amp}}}));
+    }
+    function endDrag(){dragType=null;
+      document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);
+      document.removeEventListener('touchmove',onDrag);document.removeEventListener('touchend',endDrag);
+    }
+    freqThumb.addEventListener('mousedown',startDrag('freq'),{passive:false});
+    freqThumb.addEventListener('touchstart',startDrag('freq'),{passive:false});
+    ampThumb.addEventListener('mousedown',startDrag('amp'),{passive:false});
+    ampThumb.addEventListener('touchstart',startDrag('amp'),{passive:false});
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      if(P2.frequency!=null)freq=Math.max(0.5,Math.min(5,Number(P2.frequency)||2));
+      if(P2.amplitude!=null)amp=Math.max(5,Math.min(50,Number(P2.amplitude)||30));
+      showLabels=(P2.showLabels!=='off');
+      var sp=(P2.showParticles!=='off');
+      if(sp!==showParticles){showParticles=sp;initParticles();}
+      updateSliders();
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>

@@ -1,0 +1,266 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.number.decimal-model.interactive",
+  "name": "小数模型",
+  "nameEn": "Decimal Model",
+  "category": "math/number",
+  "version": "1.0.0",
+  "viewport": { "w": 340, "h": 280 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 340, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "value", "type": "number", "default": 0, "min": 0, "max": 2.99, "desc": "当前小数值" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["decimal", "fraction", "number", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "adjust", "values": { "value": "number", "ones": "number", "tenths": "number", "hundredths": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.number.decimal-model.interactive" role="img" aria-label="小数模型: 0">
+  <style>
+    .cmp[data-cmp-id="math.number.decimal-model.interactive"] {
+      --w: var(--cmp-size, 340px);
+      display: inline-block; width: var(--w);
+      height: calc(var(--w) * 280 / 340);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.number.decimal-model.interactive"] svg {
+      display: block; width: 100%; height: 100%; overflow: visible;
+    }
+    .cmp[data-cmp-id="math.number.decimal-model.interactive"] .dm__btn {
+      cursor: pointer; transition: opacity 0.12s ease;
+    }
+    .cmp[data-cmp-id="math.number.decimal-model.interactive"] .dm__btn:hover { opacity: 0.82; }
+    .cmp[data-cmp-id="math.number.decimal-model.interactive"] .dm__btn:active { opacity: 0.6; }
+    .cmp[data-cmp-id="math.number.decimal-model.interactive"] .dm__block {
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+  </style>
+  <svg viewBox="0 0 340 280" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <filter class="dm__shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="1" stdDeviation="1" flood-color="#000" flood-opacity="0.12"/>
+      </filter>
+    </defs>
+    <rect x="2" y="2" width="336" height="276" rx="8" fill="#fafafa" stroke="#e0e0e0" stroke-width="1"/>
+    <g class="dm__zones"></g>
+    <g class="dm__display">
+      <rect x="110" y="242" width="120" height="30" rx="15" fill="#37474f" opacity="0.92"/>
+      <text class="dm__val" x="170" y="263" text-anchor="middle" font-size="18"
+            font-weight="700" fill="#fff" font-family="'Nunito','Segoe UI',Arial,sans-serif">0</text>
+    </g>
+  </svg>
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.number.decimal-model.interactive') return;
+    var NS = 'http://www.w3.org/2000/svg';
+    var svg = root.querySelector('svg');
+    var zonesG = root.querySelector('.dm__zones');
+    var valTxt = root.querySelector('.dm__val');
+    var uid = 'dm-' + Math.random().toString(36).slice(2, 8);
+    var flt = svg.querySelector('.dm__shadow');
+    if (flt) flt.setAttribute('id', uid + '-sh');
+    var fltUrl = flt ? 'url(#' + uid + '-sh)' : '';
+    var FONT = "'Nunito','Segoe UI',Arial,sans-serif";
+
+    function el(tag, a) {
+      var e = document.createElementNS(NS, tag);
+      for (var k in a) e.setAttribute(k, a[k]);
+      return e;
+    }
+
+    /* State */
+    var props = {};
+    try { var r = root.getAttribute('data-props'); if (r) props = JSON.parse(r); } catch(e) {}
+    var initVal = Math.max(0, Math.min(2.99, Number(props.value) || 0));
+    var ones = Math.floor(initVal);
+    var tenths = Math.floor((initVal - ones) * 10 + 0.001);
+    var hundredths = Math.round((initVal - ones - tenths * 0.1) * 100);
+    if (hundredths > 9) { hundredths = 9; }
+
+    /* Zone layout */
+    var ZONES = [
+      { label: '个位 (1)', x: 10, w: 110, color: '#1565C0', stroke: '#0D47A1', max: 2 },
+      { label: '十分位 (0.1)', x: 130, w: 95, color: '#42A5F5', stroke: '#1565C0', max: 9 },
+      { label: '百分位 (0.01)', x: 235, w: 95, color: '#90CAF9', stroke: '#42A5F5', max: 9 }
+    ];
+    var TITLE_Y = 14, AREA_Y = 28, AREA_H = 180, BTN_Y = 218;
+
+    function getValue() {
+      return Math.round((ones + tenths * 0.1 + hundredths * 0.01) * 100) / 100;
+    }
+
+    /* +/- button */
+    function makeBtn(parent, x, y, zone, isPlus) {
+      var g = el('g', {'class': 'dm__btn', 'data-zone': String(zone), 'data-act': isPlus ? 'plus' : 'minus'});
+      g.appendChild(el('circle', {cx: x, cy: y, r: 9, fill: isPlus ? '#66bb6a' : '#ef5350',
+        stroke: isPlus ? '#2e7d32' : '#c62828', 'stroke-width': '1'}));
+      g.appendChild(el('line', {x1: x - 4, y1: y, x2: x + 4, y2: y,
+        stroke: '#fff', 'stroke-width': '2', 'stroke-linecap': 'round'}));
+      if (isPlus) g.appendChild(el('line', {x1: x, y1: y - 4, x2: x, y2: y + 4,
+        stroke: '#fff', 'stroke-width': '2', 'stroke-linecap': 'round'}));
+      parent.appendChild(g);
+    }
+
+    /* Draw ones blocks: 50x50 grids with 10x10 internal lines */
+    function drawOnes(parent, z) {
+      var sz = 50, gap = 6, ox = z.x + (z.w - (ones > 1 ? sz * 2 + gap : sz)) / 2;
+      var oy = AREA_Y + (AREA_H - sz) / 2;
+      for (var i = 0; i < ones; i++) {
+        var bx = ox + i * (sz + gap);
+        var rect = el('rect', {'class': 'dm__block', x: bx, y: oy, width: sz, height: sz,
+          rx: 2, fill: z.color, stroke: z.stroke, 'stroke-width': '1'});
+        if (fltUrl) rect.setAttribute('filter', fltUrl);
+        parent.appendChild(rect);
+        /* 10x10 grid lines */
+        for (var g2 = 1; g2 < 10; g2++) {
+          parent.appendChild(el('line', {x1: bx + g2 * sz / 10, y1: oy, x2: bx + g2 * sz / 10, y2: oy + sz,
+            stroke: 'rgba(255,255,255,0.35)', 'stroke-width': '0.4'}));
+          parent.appendChild(el('line', {x1: bx, y1: oy + g2 * sz / 10, x2: bx + sz, y2: oy + g2 * sz / 10,
+            stroke: 'rgba(255,255,255,0.35)', 'stroke-width': '0.4'}));
+        }
+      }
+    }
+
+    /* Draw tenths bars: 8x50 vertical bars with 10 horizontal segments */
+    function drawTenths(parent, z) {
+      var bw = 8, bh = 50, gap = 2;
+      var tw = tenths * (bw + gap) - (tenths > 0 ? gap : 0);
+      var ox = z.x + (z.w - tw) / 2, oy = AREA_Y + (AREA_H - bh) / 2;
+      for (var i = 0; i < tenths; i++) {
+        var bx = ox + i * (bw + gap);
+        var rect = el('rect', {'class': 'dm__block', x: bx, y: oy, width: bw, height: bh,
+          rx: 1.5, fill: z.color, stroke: z.stroke, 'stroke-width': '0.6'});
+        if (fltUrl) rect.setAttribute('filter', fltUrl);
+        parent.appendChild(rect);
+        for (var s = 1; s < 10; s++) {
+          parent.appendChild(el('line', {x1: bx, y1: oy + s * bh / 10, x2: bx + bw, y2: oy + s * bh / 10,
+            stroke: 'rgba(255,255,255,0.4)', 'stroke-width': '0.3'}));
+        }
+      }
+    }
+
+    /* Draw hundredths: 8x8 tiny squares */
+    function drawHundredths(parent, z) {
+      var sz = 8, gap = 3, cols = 3;
+      var rows = Math.ceil(hundredths / cols);
+      var tw = Math.min(hundredths, cols) * (sz + gap) - gap;
+      var th = rows * (sz + gap) - (rows > 0 ? gap : 0);
+      var ox = z.x + (z.w - tw) / 2, oy = AREA_Y + (AREA_H - th) / 2;
+      for (var i = 0; i < hundredths; i++) {
+        var c = i % cols, r2 = Math.floor(i / cols);
+        var bx = ox + c * (sz + gap), by = oy + r2 * (sz + gap);
+        var rect = el('rect', {'class': 'dm__block', x: bx, y: by, width: sz, height: sz,
+          rx: 1.5, fill: z.color, stroke: z.stroke, 'stroke-width': '0.5'});
+        if (fltUrl) rect.setAttribute('filter', fltUrl);
+        parent.appendChild(rect);
+      }
+    }
+
+    /* Main render */
+    function render() {
+      zonesG.innerHTML = '';
+      for (var i = 0; i < 3; i++) {
+        var z = ZONES[i], g = el('g', {});
+        /* Zone background */
+        g.appendChild(el('rect', {x: z.x, y: AREA_Y, width: z.w, height: AREA_H, rx: 4,
+          fill: '#fff', stroke: '#e0e0e0', 'stroke-width': '0.8'}));
+        /* Title */
+        var t = el('text', {x: z.x + z.w / 2, y: TITLE_Y, 'text-anchor': 'middle',
+          'font-size': '10', 'font-weight': '700', fill: z.color, 'font-family': FONT});
+        t.textContent = z.label; g.appendChild(t);
+        /* Blocks */
+        if (i === 0) drawOnes(g, z);
+        else if (i === 1) drawTenths(g, z);
+        else drawHundredths(g, z);
+        /* Digit below zone */
+        var counts = [ones, tenths, hundredths];
+        var dt = el('text', {x: z.x + z.w / 2, y: BTN_Y - 2, 'text-anchor': 'middle',
+          'font-size': '14', 'font-weight': '800', fill: z.color, 'font-family': FONT});
+        dt.textContent = String(counts[i]); g.appendChild(dt);
+        /* +/- buttons */
+        makeBtn(g, z.x + z.w / 2 - 14, BTN_Y + 12, i, true);
+        makeBtn(g, z.x + z.w / 2 + 14, BTN_Y + 12, i, false);
+        zonesG.appendChild(g);
+      }
+      /* Value display */
+      var v = getValue();
+      valTxt.textContent = v.toFixed(2);
+      root.setAttribute('aria-label', '小数模型: ' + v.toFixed(2));
+    }
+
+    /* Auto-carry logic */
+    function carry() {
+      if (hundredths >= 10) { tenths += Math.floor(hundredths / 10); hundredths = hundredths % 10; }
+      if (tenths >= 10) { ones += Math.floor(tenths / 10); tenths = tenths % 10; }
+      if (ones > 2) { ones = 2; tenths = 9; hundredths = 9; }
+    }
+
+    function adjust(zone, delta) {
+      if (zone === 0) ones += delta;
+      else if (zone === 1) tenths += delta;
+      else hundredths += delta;
+      /* Clamp negatives */
+      if (hundredths < 0) hundredths = 0;
+      if (tenths < 0) tenths = 0;
+      if (ones < 0) ones = 0;
+      carry();
+      /* Enforce max 2.99 */
+      if (ones > 2 || (ones === 2 && tenths > 9)) { ones = 2; tenths = 9; hundredths = 9; }
+      render();
+      emitChange();
+    }
+
+    function emitChange() {
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'adjust',
+          values: { value: getValue(), ones: ones, tenths: tenths, hundredths: hundredths } }
+      }));
+    }
+
+    /* Click handling */
+    svg.addEventListener('click', function(e) {
+      var btn = e.target.closest('.dm__btn');
+      if (!btn) return;
+      var zone = parseInt(btn.getAttribute('data-zone'), 10);
+      adjust(zone, btn.getAttribute('data-act') === 'plus' ? 1 : -1);
+    });
+
+    /* Keyboard */
+    root.setAttribute('tabindex', '0');
+    root.addEventListener('keydown', function(e) {
+      var k = e.key;
+      if (k === 'ArrowUp' || k === '+' || k === '=') { e.preventDefault(); adjust(2, 1); }
+      else if (k === 'ArrowDown' || k === '-') { e.preventDefault(); adjust(2, -1); }
+      else if (k === 'ArrowRight') { e.preventDefault(); adjust(1, 1); }
+      else if (k === 'ArrowLeft') { e.preventDefault(); adjust(1, -1); }
+    });
+
+    render();
+
+    /* Observe prop changes */
+    new MutationObserver(function(m) {
+      for (var i = 0; i < m.length; i++) {
+        if (m[i].attributeName === 'data-props') {
+          try {
+            var o = JSON.parse(root.getAttribute('data-props') || '{}');
+            if (o.value !== undefined) {
+              var nv = Math.max(0, Math.min(2.99, Number(o.value)));
+              ones = Math.floor(nv);
+              tenths = Math.floor((nv - ones) * 10 + 0.001);
+              hundredths = Math.round((nv - ones - tenths * 0.1) * 100);
+              if (hundredths > 9) hundredths = 9;
+              render();
+            }
+          } catch(e) {}
+        }
+      }
+    }).observe(root, { attributes: true, attributeFilter: ['data-props', 'style'] });
+  })();
+  </script>
+</div>

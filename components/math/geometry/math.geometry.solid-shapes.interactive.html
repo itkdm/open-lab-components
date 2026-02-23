@@ -1,0 +1,267 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.geometry.solid-shapes.interactive",
+  "name": "立体图形",
+  "nameEn": "Solid Shapes",
+  "category": "math/geometry",
+  "version": "1.0.0",
+  "viewport": { "w": 360, "h": 300 },
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
+    { "key": "shape", "type": "enum(cuboid,cube,cylinder,cone,sphere)", "default": "cuboid", "desc": "当前图形" }
+  ],
+  "cssVars": { "size": "--cmp-size" },
+  "tags": ["solid", "3d", "cuboid", "cube", "cylinder", "cone", "sphere", "geometry", "math", "primary", "interactive"],
+  "events": [
+    { "name": "cmp:change", "type": "toggle", "values": { "shape": "string", "shapeName": "string", "faces": "number", "edges": "number", "vertices": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.geometry.solid-shapes.interactive" role="img" aria-label="立体图形">
+  <style>
+    .cmp[data-cmp-id="math.geometry.solid-shapes.interactive"] {
+      --sz: var(--cmp-size, 360px);
+      display: inline-block; width: var(--sz); height: calc(var(--sz) * 300 / 360);
+      user-select: none; touch-action: none;
+    }
+    .cmp[data-cmp-id="math.geometry.solid-shapes.interactive"] svg {
+      display: block; width: 100%; height: 100%;
+    }
+  </style>
+
+  <svg viewBox="0 0 360 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"></svg>
+
+  <script>
+  (function(){
+    var sc = document.currentScript; if (!sc) return;
+    var root = sc.parentElement;
+    if (!root || root.getAttribute('data-cmp-id') !== 'math.geometry.solid-shapes.interactive') return;
+    var svg = root.querySelector('svg'); if (!svg) return;
+    var uid = 'ss3d_' + Math.random().toString(36).slice(2, 8);
+
+    var SHAPES = [
+      { key: 'cuboid',   name: '长方体', faces: 6, edges: 12, vertices: 8 },
+      { key: 'cube',     name: '正方体', faces: 6, edges: 12, vertices: 8 },
+      { key: 'cylinder', name: '圆柱',   faces: 3, edges: 2,  vertices: 0 },
+      { key: 'cone',     name: '圆锥',   faces: 2, edges: 1,  vertices: 1 },
+      { key: 'sphere',   name: '球',     faces: 1, edges: 0,  vertices: 0 }
+    ];
+
+    var current = 0;
+
+    function parseProps() {
+      try { var r = root.getAttribute('data-props'); return r ? JSON.parse(r) || {} : {}; } catch(e) { return {}; }
+    }
+
+    function initFromProps() {
+      var p = parseProps();
+      if (p.shape) {
+        for (var i = 0; i < SHAPES.length; i++) {
+          if (SHAPES[i].key === p.shape) { current = i; break; }
+        }
+      }
+    }
+
+    function emit() {
+      var s = SHAPES[current];
+      root.dispatchEvent(new CustomEvent('cmp:change', {
+        bubbles: true, composed: true,
+        detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle',
+          values: { shape: s.key, shapeName: s.name, faces: s.faces, edges: s.edges, vertices: s.vertices } }
+      }));
+    }
+
+    function defs() {
+      var h = '<defs>';
+      /* cuboid faces */
+      h += '<linearGradient id="' + uid + '_cf" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#64B5F6"/><stop offset="100%" stop-color="#42A5F5"/></linearGradient>';
+      h += '<linearGradient id="' + uid + '_ct" x1="0" y1="1" x2="0" y2="0"><stop offset="0%" stop-color="#90CAF9"/><stop offset="100%" stop-color="#BBDEFB"/></linearGradient>';
+      h += '<linearGradient id="' + uid + '_cr" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#1E88E5"/><stop offset="100%" stop-color="#1565C0"/></linearGradient>';
+      /* cylinder */
+      h += '<linearGradient id="' + uid + '_cy" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#66BB6A"/><stop offset="30%" stop-color="#81C784"/><stop offset="70%" stop-color="#43A047"/><stop offset="100%" stop-color="#2E7D32"/></linearGradient>';
+      /* cone */
+      h += '<linearGradient id="' + uid + '_co" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FFB74D"/><stop offset="100%" stop-color="#F57C00"/></linearGradient>';
+      /* sphere */
+      h += '<radialGradient id="' + uid + '_sp" cx="0.35" cy="0.3" r="0.65"><stop offset="0%" stop-color="#EF9A9A"/><stop offset="50%" stop-color="#EF5350"/><stop offset="100%" stop-color="#C62828"/></radialGradient>';
+      /* shadow */
+      h += '<filter id="' + uid + '_sh"><feDropShadow dx="1" dy="2" stdDeviation="3" flood-opacity="0.15"/></filter>';
+      h += '<ellipse id="' + uid + '_shadow" cx="180" cy="195" rx="55" ry="8" fill="rgba(0,0,0,0.08)"/>';
+      h += '</defs>';
+      return h;
+    }
+
+    function drawCuboid(main) {
+      var w = main ? 100 : 22, h = main ? 80 : 18, d = main ? 40 : 9;
+      var cx = main ? 180 : 0, cy = main ? 130 : 0;
+      var x0 = cx - w/2, y0 = cy - h/2, x1 = x0 + w, y1 = y0 + h;
+      var dx = d * 0.7, dy = d * 0.5;
+      var s = '';
+      if (main) s += '<use href="#' + uid + '_shadow"/>';
+      /* front face */
+      s += '<polygon points="' + x0+','+y0+' '+x1+','+y0+' '+x1+','+y1+' '+x0+','+y1 + '" fill="url(#' + uid + '_cf)" stroke="#1565C0" stroke-width="' + (main?1.2:0.6) + '"/>';
+      /* top face */
+      s += '<polygon points="' + x0+','+y0+' '+(x0+dx)+','+(y0-dy)+' '+(x1+dx)+','+(y0-dy)+' '+x1+','+y0 + '" fill="url(#' + uid + '_ct)" stroke="#1565C0" stroke-width="' + (main?1.2:0.6) + '"/>';
+      /* right face */
+      s += '<polygon points="' + x1+','+y0+' '+(x1+dx)+','+(y0-dy)+' '+(x1+dx)+','+(y1-dy)+' '+x1+','+y1 + '" fill="url(#' + uid + '_cr)" stroke="#1565C0" stroke-width="' + (main?1.2:0.6) + '"/>';
+      /* hidden edges */
+      if (main) {
+        var dash = 'stroke="#90CAF9" stroke-width="0.8" stroke-dasharray="4,3" fill="none"';
+        s += '<line x1="'+x0+'" y1="'+y1+'" x2="'+(x0+dx)+'" y2="'+(y1-dy)+'" '+dash+'/>';
+        s += '<line x1="'+(x0+dx)+'" y1="'+(y1-dy)+'" x2="'+(x1+dx)+'" y2="'+(y1-dy)+'" '+dash+'/>';
+        s += '<line x1="'+(x0+dx)+'" y1="'+(y1-dy)+'" x2="'+(x0+dx)+'" y2="'+(y0-dy)+'" '+dash+'/>';
+        /* dimension labels */
+        s += '<text x="'+cx+'" y="'+(y1+16)+'" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1565C0">长</text>';
+        s += '<text x="'+(x1+dx+14)+'" y="'+cy+'" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1565C0">高</text>';
+        s += '<text x="'+(x1+dx/2+10)+'" y="'+(y0-dy/2-6)+'" text-anchor="middle" font-family="Arial,sans-serif" font-size="11" fill="#1565C0">宽</text>';
+      }
+      return s;
+    }
+
+    function drawCube(main) {
+      var a = main ? 75 : 18, d = main ? 35 : 8;
+      var cx = main ? 175 : 0, cy = main ? 130 : 0;
+      var x0 = cx - a/2, y0 = cy - a/2, x1 = x0 + a, y1 = y0 + a;
+      var dx = d * 0.7, dy = d * 0.5;
+      var s = '';
+      if (main) s += '<use href="#' + uid + '_shadow"/>';
+      s += '<polygon points="' + x0+','+y0+' '+x1+','+y0+' '+x1+','+y1+' '+x0+','+y1 + '" fill="url(#' + uid + '_cf)" stroke="#1565C0" stroke-width="' + (main?1.2:0.6) + '"/>';
+      s += '<polygon points="' + x0+','+y0+' '+(x0+dx)+','+(y0-dy)+' '+(x1+dx)+','+(y0-dy)+' '+x1+','+y0 + '" fill="url(#' + uid + '_ct)" stroke="#1565C0" stroke-width="' + (main?1.2:0.6) + '"/>';
+      s += '<polygon points="' + x1+','+y0+' '+(x1+dx)+','+(y0-dy)+' '+(x1+dx)+','+(y1-dy)+' '+x1+','+y1 + '" fill="url(#' + uid + '_cr)" stroke="#1565C0" stroke-width="' + (main?1.2:0.6) + '"/>';
+      if (main) {
+        var dash = 'stroke="#90CAF9" stroke-width="0.8" stroke-dasharray="4,3" fill="none"';
+        s += '<line x1="'+x0+'" y1="'+y1+'" x2="'+(x0+dx)+'" y2="'+(y1-dy)+'" '+dash+'/>';
+        s += '<line x1="'+(x0+dx)+'" y1="'+(y1-dy)+'" x2="'+(x1+dx)+'" y2="'+(y1-dy)+'" '+dash+'/>';
+        s += '<line x1="'+(x0+dx)+'" y1="'+(y1-dy)+'" x2="'+(x0+dx)+'" y2="'+(y0-dy)+'" '+dash+'/>';
+      }
+      return s;
+    }
+
+    function ellipse(cx, cy, rx, ry) { return 'M'+(cx-rx)+','+cy+' A'+rx+','+ry+' 0 1,0 '+(cx+rx)+','+cy+' A'+rx+','+ry+' 0 1,0 '+(cx-rx)+','+cy+'Z'; }
+
+    function drawCylinder(main) {
+      var rx = main ? 50 : 12, ry = main ? 16 : 5, h = main ? 90 : 20;
+      var cx = main ? 180 : 0, cy = main ? 90 : 0;
+      var sw = main ? 1.2 : 0.6;
+      var s = '';
+      if (main) s += '<use href="#' + uid + '_shadow"/>';
+      /* body */
+      s += '<path d="M'+(cx-rx)+','+cy+' L'+(cx-rx)+','+(cy+h)+' A'+rx+','+ry+' 0 0,0 '+(cx+rx)+','+(cy+h)+' L'+(cx+rx)+','+cy+'" fill="url(#' + uid + '_cy)" stroke="#2E7D32" stroke-width="'+sw+'"/>';
+      /* bottom ellipse */
+      s += '<path d="' + ellipse(cx, cy+h, rx, ry) + '" fill="#388E3C" stroke="#2E7D32" stroke-width="'+sw+'"/>';
+      /* top ellipse */
+      s += '<path d="' + ellipse(cx, cy, rx, ry) + '" fill="#A5D6A7" stroke="#2E7D32" stroke-width="'+sw+'"/>';
+      if (main) {
+        s += '<line x1="'+(cx+rx+8)+'" y1="'+cy+'" x2="'+(cx+rx+8)+'" y2="'+(cy+h)+'" stroke="#43A047" stroke-width="0.8" stroke-dasharray="3,2"/>';
+        s += '<text x="'+(cx+rx+18)+'" y="'+(cy+h/2+4)+'" font-family="Arial,sans-serif" font-size="11" fill="#2E7D32">高</text>';
+      }
+      return s;
+    }
+
+    function drawCone(main) {
+      var rx = main ? 50 : 12, ry = main ? 16 : 5, h = main ? 100 : 22;
+      var cx = main ? 180 : 0, baseY = main ? 180 : 0;
+      var apexY = baseY - h;
+      var sw = main ? 1.2 : 0.6;
+      var s = '';
+      if (main) s += '<use href="#' + uid + '_shadow"/>';
+      /* sides */
+      s += '<path d="M'+cx+','+apexY+' L'+(cx-rx)+','+baseY+' A'+rx+','+ry+' 0 0,0 '+(cx+rx)+','+baseY+' Z" fill="url(#' + uid + '_co)" stroke="#E65100" stroke-width="'+sw+'"/>';
+      /* base ellipse */
+      s += '<path d="' + ellipse(cx, baseY, rx, ry) + '" fill="#FB8C00" stroke="#E65100" stroke-width="'+sw+'"/>';
+      /* apex dot */
+      if (main) {
+        s += '<circle cx="'+cx+'" cy="'+apexY+'" r="2.5" fill="#E65100"/>';
+        s += '<line x1="'+cx+'" y1="'+apexY+'" x2="'+cx+'" y2="'+baseY+'" stroke="#F57C00" stroke-width="0.8" stroke-dasharray="3,2"/>';
+        s += '<text x="'+(cx+10)+'" y="'+(apexY+h/2+4)+'" font-family="Arial,sans-serif" font-size="11" fill="#E65100">高</text>';
+      }
+      return s;
+    }
+
+    function drawSphere(main) {
+      var r = main ? 55 : 13;
+      var cx = main ? 180 : 0, cy = main ? 120 : 0;
+      var sw = main ? 1.2 : 0.6;
+      var s = '';
+      if (main) s += '<use href="#' + uid + '_shadow"/>';
+      s += '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="url(#' + uid + '_sp)" stroke="#B71C1C" stroke-width="'+sw+'"/>';
+      /* highlight */
+      if (main) {
+        s += '<ellipse cx="'+(cx-18)+'" cy="'+(cy-18)+'" rx="14" ry="10" fill="rgba(255,255,255,0.35)" transform="rotate(-30,'+(cx-18)+','+(cy-18)+')"/>';
+        /* equator hint */
+        s += '<ellipse cx="'+cx+'" cy="'+cy+'" rx="'+r+'" ry="'+(r*0.3)+'" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="0.8"/>';
+      }
+      return s;
+    }
+
+    var drawFns = [drawCuboid, drawCube, drawCylinder, drawCone, drawSphere];
+
+    /* vertical offsets to center each thumbnail shape in its 44x44 box */
+    var thumbOff = [[-3, 2], [-2, 2], [0, -8], [0, 6], [0, 0]];
+
+    function drawThumb(idx, x, y, active) {
+      var s = '<g transform="translate('+x+','+y+')" style="cursor:pointer" data-idx="'+idx+'">';
+      s += '<rect x="-22" y="-22" width="44" height="44" rx="6" fill="' + (active ? '#E3F2FD' : '#F5F5F5') + '" stroke="' + (active ? '#1E88E5' : '#BDBDBD') + '" stroke-width="' + (active ? '2' : '0.8') + '"/>';
+      var off = thumbOff[idx];
+      s += '<g transform="translate('+off[0]+','+off[1]+')">' + drawFns[idx](false) + '</g>';
+      s += '</g>';
+      return s;
+    }
+
+    function render() {
+      var h = defs();
+      h += '<rect width="360" height="300" fill="#FAFAFA" rx="5"/>';
+
+      /* main shape area */
+      h += '<g filter="url(#' + uid + '_sh)">';
+      h += drawFns[current](true);
+      h += '</g>';
+
+      /* shape name above */
+      h += '<text x="180" y="22" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="14" font-weight="700" fill="#424242">' + SHAPES[current].name + '</text>';
+
+      /* selector thumbnails */
+      var thumbY = 230;
+      var startX = 180 - 2 * 56;
+      for (var i = 0; i < 5; i++) {
+        var tx = startX + i * 56;
+        h += drawThumb(i, tx, thumbY, i === current);
+        h += '<text x="'+tx+'" y="'+(thumbY+34)+'" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="9" fill="' + (i === current ? '#1E88E5' : '#757575') + '">' + SHAPES[i].name + '</text>';
+      }
+
+      /* info panel */
+      var info = SHAPES[current];
+      h += '<text x="180" y="286" text-anchor="middle" font-family="Arial,\'Microsoft YaHei\',sans-serif" font-size="11" fill="#616161">';
+      h += '面: ' + info.faces + '  棱: ' + info.edges + '  顶点: ' + info.vertices;
+      h += '</text>';
+
+      svg.innerHTML = h;
+    }
+
+    /* click handler for thumbnails */
+    svg.addEventListener('click', function(e) {
+      var el = e.target;
+      while (el && el !== svg) {
+        var idx = el.getAttribute && el.getAttribute('data-idx');
+        if (idx !== null && idx !== undefined) {
+          var i = parseInt(idx, 10);
+          if (i >= 0 && i < SHAPES.length && i !== current) {
+            current = i;
+            render();
+            emit();
+          }
+          return;
+        }
+        el = el.parentElement;
+      }
+    });
+
+    /* observe data-props changes */
+    var obs = new MutationObserver(function() { initFromProps(); render(); });
+    obs.observe(root, { attributes: true, attributeFilter: ['data-props'] });
+
+    initFromProps();
+    render();
+  })();
+  </script>
+</div>

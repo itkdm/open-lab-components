@@ -1,0 +1,371 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "math.calculus.integral.interactive",
+  "name": "定积分可视化（交互式）",
+  "nameEn": "Definite Integral Visualization (Interactive)",
+  "category": "math/calculus",
+  "version": "1.0.0",
+  "viewport": { "w": 500, "h": 420 },
+  "tags": ["math","calculus","integral","area","Riemann","sum","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "funcColor",      "type": "color",  "default": "#5c6bc0", "desc": "函数曲线颜色" },
+    { "key": "areaColor",      "type": "color",  "default": "#66bb6a", "desc": "面积颜色" },
+    { "key": "rectColor",      "type": "color",  "default": "#42a5f5", "desc": "矩形颜色" },
+    { "key": "func",           "type": "enum",   "default": "x2", "enum": ["x2","sinx","x3-x","ex"], "desc": "函数类型" },
+    { "key": "a",              "type": "number", "default": 0, "min": -3, "max": 3, "desc": "下限a" },
+    { "key": "b",              "type": "number", "default": 2, "min": -3, "max": 3, "desc": "上限b" },
+    { "key": "n",              "type": "number", "default": 8, "min": 2, "max": 50, "desc": "矩形数" },
+    { "key": "method",         "type": "enum",   "default": "left", "enum": ["left","right","mid","trapezoid"], "desc": "近似方法" },
+    { "key": "showExact",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示精确值" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke",
+    "funcColor": "--cmp-func", "areaColor": "--cmp-area", "rectColor": "--cmp-rect", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "bounds", "values": { "a": "number", "b": "number", "n": "number", "approx": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="math.calculus.integral.interactive" role="img" aria-label="定积分可视化（交互式）">
+  <style>
+    .cmp[data-cmp-id="math.calculus.integral.interactive"]{
+      --h:var(--cmp-size,420px);display:inline-block;
+      width:calc(var(--h)*500/420);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(102,187,106,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="math.calculus.integral.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="math.calculus.integral.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+  </style>
+
+  <svg viewBox="0 0 500 420" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <marker id="intg__arX" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-stroke,#37474f)"/></marker>
+      <marker id="intg__arY" markerWidth="6" markerHeight="4" refX="5" refY="2" orient="auto"><polygon points="0,0 6,2 0,4" fill="var(--cmp-stroke,#37474f)"/></marker>
+      <clipPath id="intg__plotClip"><rect x="50" y="20" width="420" height="300"/></clipPath>
+    </defs>
+
+    <!-- 网格 -->
+    <g class="intg__grid" opacity="0.06"></g>
+
+    <!-- 坐标轴 -->
+    <line x1="50" y1="200" x2="475" y2="200" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2" marker-end="url(#intg__arX)"/>
+    <line x1="170" y1="315" x2="170" y2="18" stroke="var(--cmp-stroke,#37474f)" stroke-width="1.2" marker-end="url(#intg__arY)"/>
+    <text x="478" y="205" font-size="10" fill="var(--cmp-stroke,#37474f)">x</text>
+    <text x="174" y="16" font-size="10" fill="var(--cmp-stroke,#37474f)">y</text>
+
+    <!-- 刻度 -->
+    <g class="intg__ticks" font-size="8" fill="#bbb"></g>
+
+    <!-- 绘图区 -->
+    <g clip-path="url(#intg__plotClip)">
+      <!-- 精确面积 -->
+      <path class="intg__exactArea" d="" fill="var(--cmp-area,#66bb6a)" opacity="0.15"/>
+      <!-- 矩形近似 -->
+      <g class="intg__rects"></g>
+      <!-- 函数曲线 -->
+      <path class="intg__funcPath" d="" fill="none" stroke="var(--cmp-func,#5c6bc0)" stroke-width="2.5"/>
+    </g>
+
+    <!-- 积分限拖拽 -->
+    <line class="intg__limA" x1="170" y1="20" x2="170" y2="310" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <line class="intg__limB" x1="310" y1="20" x2="310" y2="310" stroke="#e53935" stroke-width="1.5" stroke-dasharray="4,3"/>
+    <circle class="intg__handleA" cx="170" cy="310" r="7" fill="#e53935" stroke="#fff" stroke-width="2" style="cursor:ew-resize"/>
+    <circle class="intg__handleB" cx="310" cy="310" r="7" fill="#e53935" stroke="#fff" stroke-width="2" style="cursor:ew-resize"/>
+    <text class="intg__labelA" x="170" y="328" text-anchor="middle" font-size="10" font-weight="600" fill="#e53935">a=0</text>
+    <text class="intg__labelB" x="310" y="328" text-anchor="middle" font-size="10" font-weight="600" fill="#e53935">b=2</text>
+
+    <!-- 信息面板 -->
+    <g class="intg__info" transform="translate(300,30)">
+      <rect x="0" y="0" width="170" height="95" rx="6" fill="rgba(255,255,255,0.92)" stroke="#e0e0e0" stroke-width="0.5"/>
+      <text class="intg__funcName" x="10" y="18" font-size="11" font-weight="700" fill="var(--cmp-func,#5c6bc0)">f(x) = x²</text>
+      <text class="intg__approxVal" x="10" y="38" font-size="10" fill="var(--cmp-rect,#42a5f5)">近似值: 2.625</text>
+      <text class="intg__exactVal" x="10" y="55" font-size="10" fill="var(--cmp-area,#66bb6a)">精确值: 2.667</text>
+      <text class="intg__errorVal" x="10" y="72" font-size="9" fill="#ff9800">误差: 1.56%</text>
+      <text class="intg__nVal" x="10" y="88" font-size="9" fill="#999">n = 8 (左端点)</text>
+    </g>
+
+    <!-- n滑块 -->
+    <g transform="translate(50,350)">
+      <text x="0" y="-5" font-size="9" fill="var(--cmp-stroke,#37474f)" font-weight="600">矩形数 n</text>
+      <rect x="0" y="0" width="200" height="5" rx="2.5" fill="#e0e0e0"/>
+      <rect class="intg__nFill" x="0" y="0" width="25" height="5" rx="2.5" fill="#42a5f5"/>
+      <circle class="intg__nThumb" cx="25" cy="2.5" r="8" fill="#42a5f5" stroke="#fff" stroke-width="2" style="cursor:grab"/>
+      <text class="intg__nText" x="210" y="8" font-size="10" fill="#42a5f5" font-weight="600">8</text>
+    </g>
+
+    <!-- 方法按钮 -->
+    <g class="intg__methods" transform="translate(50,385)">
+      <g class="intg__methBtn" data-m="left" style="cursor:pointer"><rect x="0" y="0" width="55" height="22" rx="4" fill="#5c6bc0" opacity="0.85"/><text x="27" y="15" text-anchor="middle" font-size="8" fill="#fff" font-weight="600">左端点</text></g>
+      <g class="intg__methBtn" data-m="right" style="cursor:pointer"><rect x="62" y="0" width="55" height="22" rx="4" fill="#78909c" opacity="0.6"/><text x="89" y="15" text-anchor="middle" font-size="8" fill="#fff" font-weight="600">右端点</text></g>
+      <g class="intg__methBtn" data-m="mid" style="cursor:pointer"><rect x="124" y="0" width="55" height="22" rx="4" fill="#78909c" opacity="0.6"/><text x="151" y="15" text-anchor="middle" font-size="8" fill="#fff" font-weight="600">中点</text></g>
+      <g class="intg__methBtn" data-m="trapezoid" style="cursor:pointer"><rect x="186" y="0" width="55" height="22" rx="4" fill="#78909c" opacity="0.6"/><text x="213" y="15" text-anchor="middle" font-size="8" fill="#fff" font-weight="600">梯形</text></g>
+    </g>
+
+    <!-- 函数选择 -->
+    <g class="intg__funcBtns" transform="translate(310,385)">
+      <g class="intg__fBtn" data-fn="x2" style="cursor:pointer"><rect x="0" y="0" width="42" height="22" rx="4" fill="#5c6bc0" opacity="0.85"/><text x="21" y="15" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">x²</text></g>
+      <g class="intg__fBtn" data-fn="sinx" style="cursor:pointer"><rect x="48" y="0" width="42" height="22" rx="4" fill="#78909c" opacity="0.6"/><text x="69" y="15" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">sin</text></g>
+      <g class="intg__fBtn" data-fn="x3-x" style="cursor:pointer"><rect x="96" y="0" width="42" height="22" rx="4" fill="#78909c" opacity="0.6"/><text x="117" y="15" text-anchor="middle" font-size="8" fill="#fff" font-weight="600">x³-x</text></g>
+      <g class="intg__fBtn" data-fn="ex" style="cursor:pointer"><rect x="144" y="0" width="42" height="22" rx="4" fill="#78909c" opacity="0.6"/><text x="165" y="15" text-anchor="middle" font-size="9" fill="#fff" font-weight="600">eˣ</text></g>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='math.calculus.integral.interactive')return;
+    var svg=root.querySelector('svg');if(!svg)return;
+    var NS='http://www.w3.org/2000/svg';
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var funcType=P.func||'x2';
+    var a=Number(P.a)||0,b=Number(P.b)||2;
+    var n=Math.max(2,Math.min(50,Number(P.n)||8));
+    var method=P.method||'left';
+    var showExact=(P.showExact!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    var OX=170,OY=200,SCALE=70;
+
+    var funcPath=root.querySelector('.intg__funcPath');
+    var exactArea=root.querySelector('.intg__exactArea');
+    var rectsG=root.querySelector('.intg__rects');
+    var gridG=root.querySelector('.intg__grid');
+    var ticksG=root.querySelector('.intg__ticks');
+    var limA=root.querySelector('.intg__limA');
+    var limB=root.querySelector('.intg__limB');
+    var handleA=root.querySelector('.intg__handleA');
+    var handleB=root.querySelector('.intg__handleB');
+    var labelA=root.querySelector('.intg__labelA');
+    var labelB=root.querySelector('.intg__labelB');
+    var funcName=root.querySelector('.intg__funcName');
+    var approxVal=root.querySelector('.intg__approxVal');
+    var exactVal=root.querySelector('.intg__exactVal');
+    var errorVal=root.querySelector('.intg__errorVal');
+    var nValText=root.querySelector('.intg__nVal');
+    var nFill=root.querySelector('.intg__nFill');
+    var nThumb=root.querySelector('.intg__nThumb');
+    var nText=root.querySelector('.intg__nText');
+    var methodsG=root.querySelector('.intg__methods');
+    var funcBtnsG=root.querySelector('.intg__funcBtns');
+
+    function toSvgX(x){return OX+x*SCALE;}
+    function toSvgY(y){return OY-y*SCALE;}
+    function toMathX(sx){return(sx-OX)/SCALE;}
+
+    var FUNCS={
+      x2:{f:function(x){return x*x;},F:function(x){return x*x*x/3;},name:'f(x) = x²'},
+      sinx:{f:function(x){return Math.sin(x);},F:function(x){return-Math.cos(x);},name:'f(x) = sin x'},
+      'x3-x':{f:function(x){return x*x*x-x;},F:function(x){return x*x*x*x/4-x*x/2;},name:'f(x) = x³ − x'},
+      ex:{f:function(x){return Math.exp(x);},F:function(x){return Math.exp(x);},name:'f(x) = eˣ'}
+    };
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function drawGrid(){
+      clear(gridG);clear(ticksG);
+      for(var i=-2;i<=4;i++){
+        var x=toSvgX(i);
+        if(x>50&&x<470)gridG.appendChild(elSvg('line',{x1:x,y1:20,x2:x,y2:310,stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.5'}));
+        if(i!==0)ticksG.appendChild(elSvg('text',{x:x,y:OY+14,'text-anchor':'middle','font-size':'8',fill:'#bbb'})).textContent=i;
+      }
+      for(var j=-1;j<=4;j++){
+        var y=toSvgY(j);
+        if(y>20&&y<310)gridG.appendChild(elSvg('line',{x1:50,y1:y,x2:470,y2:y,stroke:'var(--cmp-stroke,#37474f)','stroke-width':'0.5'}));
+        if(j!==0)ticksG.appendChild(elSvg('text',{x:OX-8,y:y+3,'text-anchor':'end','font-size':'8',fill:'#bbb'})).textContent=j;
+      }
+    }
+
+    function render(){
+      var fn=FUNCS[funcType]||FUNCS.x2;
+
+      /* 函数曲线 */
+      var d='';
+      for(var sx=50;sx<=470;sx+=2){
+        var x=toMathX(sx),y=fn.f(x),sy=toSvgY(y);
+        if(sy<-50||sy>350){if(d)d+=' ';continue;}
+        d+=(d===''||d.endsWith(' ')?'M':'L')+sx.toFixed(1)+','+sy.toFixed(1);
+      }
+      funcPath.setAttribute('d',d);
+
+      /* 精确面积 */
+      if(showExact&&a<b){
+        var ad='M'+toSvgX(a)+','+OY;
+        for(var sx2=toSvgX(a);sx2<=toSvgX(b);sx2+=2){
+          var x2=toMathX(sx2),y2=fn.f(x2),sy2=toSvgY(y2);
+          sy2=Math.max(20,Math.min(310,sy2));
+          ad+=' L'+sx2.toFixed(1)+','+sy2.toFixed(1);
+        }
+        ad+=' L'+toSvgX(b)+','+OY+' Z';
+        exactArea.setAttribute('d',ad);
+      }else{exactArea.setAttribute('d','');}
+
+      /* 矩形近似 */
+      clear(rectsG);
+      var lo=Math.min(a,b),hi=Math.max(a,b);
+      var dx=(hi-lo)/n;
+      var approx=0;
+      for(var i=0;i<n;i++){
+        var xl=lo+i*dx;
+        var xr=xl+dx;
+        var h;
+        if(method==='left')h=fn.f(xl);
+        else if(method==='right')h=fn.f(xr);
+        else if(method==='mid')h=fn.f((xl+xr)/2);
+        else h=(fn.f(xl)+fn.f(xr))/2;
+
+        approx+=h*dx;
+
+        var sxl=toSvgX(xl),sxr=toSvgX(xr);
+        if(method==='trapezoid'){
+          var syl=toSvgY(fn.f(xl)),syr=toSvgY(fn.f(xr));
+          rectsG.appendChild(elSvg('polygon',{
+            points:sxl+','+OY+' '+sxl+','+syl+' '+sxr+','+syr+' '+sxr+','+OY,
+            fill:'var(--cmp-rect,#42a5f5)',opacity:'0.3',stroke:'var(--cmp-rect,#42a5f5)','stroke-width':'0.5'}));
+        }else{
+          var syh=toSvgY(h);
+          var rh=Math.abs(OY-syh);
+          var ry=Math.min(OY,syh);
+          rectsG.appendChild(elSvg('rect',{
+            x:sxl,y:ry,width:sxr-sxl,height:rh,
+            fill:'var(--cmp-rect,#42a5f5)',opacity:'0.3',stroke:'var(--cmp-rect,#42a5f5)','stroke-width':'0.5'}));
+        }
+      }
+
+      /* 积分限 */
+      var sxa=toSvgX(a),sxb=toSvgX(b);
+      limA.setAttribute('x1',sxa);limA.setAttribute('x2',sxa);
+      limB.setAttribute('x1',sxb);limB.setAttribute('x2',sxb);
+      handleA.setAttribute('cx',sxa);handleB.setAttribute('cx',sxb);
+      labelA.setAttribute('x',sxa);labelA.textContent='a='+a.toFixed(1);
+      labelB.setAttribute('x',sxb);labelB.textContent='b='+b.toFixed(1);
+
+      /* 精确值 */
+      var exact=fn.F(b)-fn.F(a);
+      var error=exact!==0?Math.abs((approx-exact)/exact)*100:0;
+
+      funcName.textContent=fn.name;
+      approxVal.textContent='近似值: '+approx.toFixed(4);
+      exactVal.textContent='精确值: '+exact.toFixed(4);
+      errorVal.textContent='误差: '+error.toFixed(2)+'%';
+      var methNames={left:'左端点',right:'右端点',mid:'中点',trapezoid:'梯形'};
+      nValText.textContent='n = '+n+' ('+methNames[method]+')';
+
+      /* n滑块 */
+      var np=(n-2)/48*200;
+      nFill.setAttribute('width',np);nThumb.setAttribute('cx',np);nText.textContent=n;
+    }
+
+    function updateMethodTabs(){
+      var btns=methodsG.querySelectorAll('.intg__methBtn');
+      for(var i=0;i<btns.length;i++){
+        var m=btns[i].getAttribute('data-m');
+        btns[i].querySelector('rect').setAttribute('fill',m===method?'#5c6bc0':'#78909c');
+        btns[i].querySelector('rect').setAttribute('opacity',m===method?'0.85':'0.6');
+      }
+    }
+    function updateFuncTabs(){
+      var btns=funcBtnsG.querySelectorAll('.intg__fBtn');
+      for(var i=0;i<btns.length;i++){
+        var f=btns[i].getAttribute('data-fn');
+        btns[i].querySelector('rect').setAttribute('fill',f===funcType?'#5c6bc0':'#78909c');
+        btns[i].querySelector('rect').setAttribute('opacity',f===funcType?'0.85':'0.6');
+      }
+    }
+
+    drawGrid();render();updateMethodTabs();updateFuncTabs();
+
+    /* 拖拽积分限 */
+    var dragLim=null;
+    function onDown(e){
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var da=Math.abs(sx-toSvgX(a)),db=Math.abs(sx-toSvgX(b));
+      if(da<15){e.preventDefault();dragLim='a';bindLim();}
+      else if(db<15){e.preventDefault();dragLim='b';bindLim();}
+    }
+    function bindLim(){
+      document.addEventListener('mousemove',onMoveLim,{passive:false});
+      document.addEventListener('mouseup',onUpLim);
+      document.addEventListener('touchmove',onMoveLim,{passive:false});
+      document.addEventListener('touchend',onUpLim);
+    }
+    function onMoveLim(e){
+      if(!dragLim)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var mx=Math.round(toMathX(sx)*4)/4;
+      mx=Math.max(-2,Math.min(4,mx));
+      if(dragLim==='a')a=mx;else b=mx;
+      render();
+    }
+    function onUpLim(){dragLim=null;
+      document.removeEventListener('mousemove',onMoveLim);document.removeEventListener('mouseup',onUpLim);
+      document.removeEventListener('touchmove',onMoveLim);document.removeEventListener('touchend',onUpLim);
+    }
+    svg.addEventListener('mousedown',onDown,{passive:false});
+    svg.addEventListener('touchstart',onDown,{passive:false});
+
+    /* n滑块 */
+    var dragN=false;
+    nThumb.addEventListener('mousedown',function(e){e.preventDefault();dragN=true;
+      document.addEventListener('mousemove',onMoveN,{passive:false});document.addEventListener('mouseup',onUpN);
+      document.addEventListener('touchmove',onMoveN,{passive:false});document.addEventListener('touchend',onUpN);
+    });
+    nThumb.addEventListener('touchstart',function(e){e.preventDefault();dragN=true;
+      document.addEventListener('touchmove',onMoveN,{passive:false});document.addEventListener('touchend',onUpN);
+    });
+    function onMoveN(e){
+      if(!dragN)return;e.preventDefault();
+      var pt=e.touches?e.touches[0]:e;
+      var rect=svg.getBoundingClientRect();
+      var sx=(pt.clientX-rect.left)/rect.width*500;
+      var pos=Math.max(0,Math.min(200,sx-50));
+      n=Math.round(2+pos/200*48);
+      render();
+    }
+    function onUpN(){dragN=false;
+      document.removeEventListener('mousemove',onMoveN);document.removeEventListener('mouseup',onUpN);
+      document.removeEventListener('touchmove',onMoveN);document.removeEventListener('touchend',onUpN);
+    }
+
+    methodsG.addEventListener('click',function(e){
+      var btn=e.target.closest('.intg__methBtn');
+      if(!btn)return;method=btn.getAttribute('data-m');updateMethodTabs();render();
+    });
+    funcBtnsG.addEventListener('click',function(e){
+      var btn=e.target.closest('.intg__fBtn');
+      if(!btn)return;funcType=btn.getAttribute('data-fn');updateFuncTabs();render();
+    });
+
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      if(P2.func&&FUNCS[P2.func])funcType=P2.func;
+      if(P2.a!=null)a=Number(P2.a)||0;if(P2.b!=null)b=Number(P2.b)||2;
+      if(P2.n!=null)n=Math.max(2,Math.min(50,Number(P2.n)||8));
+      if(P2.method)method=P2.method;
+      showExact=(P2.showExact!=='off');showLabels=(P2.showLabels!=='off');
+      drawGrid();updateMethodTabs();updateFuncTabs();render();
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+  })();
+  </script>
+</div>

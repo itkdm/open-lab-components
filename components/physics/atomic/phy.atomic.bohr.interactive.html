@@ -1,0 +1,227 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "phy.atomic.bohr.interactive",
+  "name": "玻尔原子模型（交互式）",
+  "nameEn": "Bohr Atomic Model (Interactive)",
+  "category": "physics/atomic",
+  "version": "1.0.0",
+  "viewport": { "w": 400, "h": 400 },
+  "tags": ["physics","atomic","bohr","electron","orbit","energy-level","interactive"],
+  "props": [
+    { "key": "size",           "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件尺寸" },
+    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
+    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
+    { "key": "nucleusColor",   "type": "color",  "default": "#ef5350", "desc": "原子核颜色" },
+    { "key": "electronColor",  "type": "color",  "default": "#42a5f5", "desc": "电子颜色" },
+    { "key": "orbitColor",     "type": "color",  "default": "#90a4ae", "desc": "轨道颜色" },
+    { "key": "element",        "type": "enum",   "default": "carbon", "enum": ["hydrogen","helium","lithium","carbon","oxygen","neon"], "desc": "元素" },
+    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "电子速度" },
+    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
+    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
+    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "nucleusColor": "--cmp-nucleus", "electronColor": "--cmp-electron", "orbitColor": "--cmp-orbit", "glow": "--cmp-glow"
+  },
+  "events": [
+    { "name": "cmp:change", "type": "element", "values": { "element": "string", "electrons": "number" } }
+  ]
+}
+-->
+<div class="cmp" data-cmp-id="phy.atomic.bohr.interactive" role="img" aria-label="玻尔原子模型（交互式）">
+  <style>
+    .cmp[data-cmp-id="phy.atomic.bohr.interactive"]{
+      --h:var(--cmp-size,400px);display:inline-block;width:var(--h);height:var(--h);
+      filter:drop-shadow(0 0 calc(8px*var(--cmp-glow,0)) rgba(66,165,245,calc(.7*var(--cmp-glow,0))));
+      user-select:none;
+    }
+    .cmp[data-cmp-id="phy.atomic.bohr.interactive"] svg{width:100%;height:100%;display:block;overflow:visible}
+    .cmp[data-cmp-id="phy.atomic.bohr.interactive"] text{font-family:Arial,'Microsoft YaHei',sans-serif}
+    .cmp[data-cmp-id="phy.atomic.bohr.interactive"] .bohr__elem{cursor:pointer}
+    .cmp[data-cmp-id="phy.atomic.bohr.interactive"] .bohr__elem:hover rect{opacity:0.9}
+  </style>
+
+  <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <radialGradient id="bohr__nucG" cx="35%" cy="35%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.5"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.15"/>
+      </radialGradient>
+      <radialGradient id="bohr__eG" cx="35%" cy="35%">
+        <stop offset="0%" stop-color="#fff" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#000" stop-opacity="0.1"/>
+      </radialGradient>
+    </defs>
+    <g class="bohr__scene"></g>
+    <g class="bohr__labels"></g>
+    <!-- 元素选择按钮 -->
+    <g class="bohr__elems" transform="translate(200,385)">
+      <g class="bohr__elem" data-el="hydrogen" transform="translate(-150,0)"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">H</text></g>
+      <g class="bohr__elem" data-el="helium" transform="translate(-90,0)"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">He</text></g>
+      <g class="bohr__elem" data-el="lithium" transform="translate(-30,0)"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">Li</text></g>
+      <g class="bohr__elem" data-el="carbon" transform="translate(30,0)"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#42a5f5" opacity="0.85"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">C</text></g>
+      <g class="bohr__elem" data-el="oxygen" transform="translate(90,0)"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">O</text></g>
+      <g class="bohr__elem" data-el="neon" transform="translate(150,0)"><rect x="-22" y="-11" width="44" height="22" rx="5" fill="#78909c" opacity="0.6"/><text x="0" y="5" text-anchor="middle" font-size="10" fill="#fff" font-weight="600">Ne</text></g>
+    </g>
+  </svg>
+
+  <script>
+  (function(){
+    var sc=document.currentScript;if(!sc)return;
+    var root=sc.parentElement;
+    if(!root||root.getAttribute('data-cmp-id')!=='phy.atomic.bohr.interactive')return;
+    var NS='http://www.w3.org/2000/svg';
+    var sceneG=root.querySelector('.bohr__scene');
+    var labelsG=root.querySelector('.bohr__labels');
+    var elemsG=root.querySelector('.bohr__elems');
+
+    var P={};
+    try{var r=root.getAttribute('data-props');if(r){var o=JSON.parse(r);if(o&&typeof o==='object')P=o;}}catch(e){}
+
+    var element=P.element||'carbon';
+    var speed=Math.max(0.2,Math.min(3,Number(P.speed)||1));
+    var running=(P.running!=='off');
+    var showLabels=(P.showLabels!=='off');
+
+    /* 元素数据: {symbol, name, protons, neutrons, shells:[电子数]} */
+    var ELEMENTS={
+      hydrogen:{sym:'H',name:'氢',p:1,n:0,shells:[1]},
+      helium:{sym:'He',name:'氦',p:2,n:2,shells:[2]},
+      lithium:{sym:'Li',name:'锂',p:3,n:4,shells:[2,1]},
+      carbon:{sym:'C',name:'碳',p:6,n:6,shells:[2,4]},
+      oxygen:{sym:'O',name:'氧',p:8,n:8,shells:[2,6]},
+      neon:{sym:'Ne',name:'氖',p:10,n:10,shells:[2,8]}
+    };
+
+    var CX=200,CY=185;
+    var ORBIT_R=[60,110,155];
+
+    function elSvg(tag,attrs){
+      var e=document.createElementNS(NS,tag);
+      if(attrs)for(var k in attrs)e.setAttribute(k,attrs[k]);
+      return e;
+    }
+    function clear(g){while(g.firstChild)g.removeChild(g.firstChild);}
+
+    function updateTabs(){
+      var btns=elemsG.querySelectorAll('.bohr__elem');
+      for(var i=0;i<btns.length;i++){
+        var el2=btns[i].getAttribute('data-el');
+        var rect=btns[i].querySelector('rect');
+        rect.setAttribute('fill',el2===element?'#42a5f5':'#78909c');
+        rect.setAttribute('opacity',el2===element?'0.85':'0.6');
+      }
+    }
+
+    var time=0;
+    function render(dt){
+      clear(sceneG);clear(labelsG);
+      time+=dt*speed;
+      var data=ELEMENTS[element]||ELEMENTS.carbon;
+
+      /* 轨道 */
+      for(var s=0;s<data.shells.length;s++){
+        var r2=ORBIT_R[s];
+        sceneG.appendChild(elSvg('circle',{cx:CX,cy:CY,r:r2,fill:'none',
+          stroke:'var(--cmp-orbit,#90a4ae)','stroke-width':'1','stroke-dasharray':'4,4',opacity:'0.5'}));
+        /* 能级标注 */
+        if(showLabels){
+          var lbl=elSvg('text',{x:CX+r2+5,y:CY-5,'font-size':'8',fill:'#78909c'});
+          lbl.textContent='n='+(s+1);labelsG.appendChild(lbl);
+        }
+      }
+
+      /* 原子核 */
+      var nucR=12+data.p*1.2;
+      sceneG.appendChild(elSvg('circle',{cx:CX,cy:CY,r:nucR,fill:'var(--cmp-nucleus,#ef5350)'}));
+      sceneG.appendChild(elSvg('circle',{cx:CX,cy:CY,r:nucR,fill:'url(#bohr__nucG)'}));
+      /* 质子和中子 */
+      for(var pi=0;pi<Math.min(data.p,6);pi++){
+        var pa=pi*Math.PI*2/Math.min(data.p,6);
+        var pr=nucR*0.4;
+        sceneG.appendChild(elSvg('circle',{cx:CX+pr*Math.cos(pa),cy:CY+pr*Math.sin(pa),r:3,fill:'#c62828',opacity:'0.6'}));
+      }
+      /* 核标注 */
+      var nucTxt=elSvg('text',{x:CX,y:CY+4,'text-anchor':'middle','font-size':'11','font-weight':'700',fill:'#fff'});
+      nucTxt.textContent=data.p+'p '+data.n+'n';
+      sceneG.appendChild(nucTxt);
+
+      /* 电子 */
+      for(var s2=0;s2<data.shells.length;s2++){
+        var numE=data.shells[s2];
+        var orbitR=ORBIT_R[s2];
+        var shellSpeed=(3-s2)*0.8; /* 内层快 */
+        for(var e=0;e<numE;e++){
+          var angle=time*shellSpeed+e*Math.PI*2/numE;
+          var ex=CX+orbitR*Math.cos(angle);
+          var ey=CY+orbitR*Math.sin(angle);
+          /* 电子拖尾 */
+          for(var trail=1;trail<=3;trail++){
+            var ta=angle-trail*0.15;
+            var tx=CX+orbitR*Math.cos(ta);
+            var ty=CY+orbitR*Math.sin(ta);
+            sceneG.appendChild(elSvg('circle',{cx:tx,cy:ty,r:4-trail,
+              fill:'var(--cmp-electron,#42a5f5)',opacity:0.15-trail*0.04}));
+          }
+          /* 电子本体 */
+          sceneG.appendChild(elSvg('circle',{cx:ex,cy:ey,r:5,fill:'var(--cmp-electron,#42a5f5)'}));
+          sceneG.appendChild(elSvg('circle',{cx:ex,cy:ey,r:5,fill:'url(#bohr__eG)'}));
+          sceneG.appendChild(elSvg('circle',{cx:ex-1.5,cy:ey-1.5,r:1.5,fill:'#fff',opacity:'0.5'}));
+        }
+      }
+
+      /* 标注 */
+      if(showLabels){
+        var totalE=0;data.shells.forEach(function(n){totalE+=n;});
+        labelsG.appendChild(elSvg('text',{x:CX,y:30,'text-anchor':'middle','font-size':'14','font-weight':'700',
+          fill:'var(--cmp-stroke,#37474f)'})).textContent=data.name+'原子 ('+data.sym+')';
+        labelsG.appendChild(elSvg('text',{x:CX,y:48,'text-anchor':'middle','font-size':'10',
+          fill:'#78909c'})).textContent='质子:'+data.p+' 中子:'+data.n+' 电子:'+totalE;
+        /* 电子排布 */
+        var config=data.shells.join(',');
+        labelsG.appendChild(elSvg('text',{x:CX,y:350,'text-anchor':'middle','font-size':'10',
+          fill:'#546e7a'})).textContent='电子排布: '+config;
+      }
+    }
+
+    var animId=0,lastT=0;
+    function tick(t){
+      if(!lastT)lastT=t;
+      var dt=Math.min((t-lastT)/1000,0.05);
+      lastT=t;
+      render(dt);
+      if(running)animId=requestAnimationFrame(tick);
+    }
+    render(0);
+    if(running)animId=requestAnimationFrame(tick);
+
+    /* 元素切换 */
+    elemsG.addEventListener('click',function(e){
+      var btn=e.target.closest('.bohr__elem');
+      if(!btn)return;
+      element=btn.getAttribute('data-el');
+      updateTabs();
+      root.dispatchEvent(new CustomEvent('cmp:change',{bubbles:true,composed:true,
+        detail:{id:'phy.atomic.bohr.interactive',type:'element',
+          values:{element:element,electrons:ELEMENTS[element].shells.reduce(function(a,b){return a+b;},0)}}}));
+    });
+    updateTabs();
+
+    /* Props */
+    var obs=new MutationObserver(function(){
+      var P2={};
+      try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
+      speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
+      showLabels=(P2.showLabels!=='off');
+      if(P2.element&&ELEMENTS[P2.element]){element=P2.element;updateTabs();}
+      var newRun=(P2.running!=='off');
+      if(newRun&&!running){running=true;lastT=0;animId=requestAnimationFrame(tick);}
+      if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
+    });
+    obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
+    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+  })();
+  </script>
+</div>
