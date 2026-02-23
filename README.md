@@ -1,324 +1,104 @@
 # Open Lab Components
 
-一个面向"宿主系统/编辑器/画布"的 **HTML fragment 单组件库**：组件只负责"器材长什么样 + 哪些参数可调 + 参数如何映射到视觉"，不负责页面布局/背景/说明文案等。
+**210+ 零依赖、即插即用的 STEM 教育交互组件库**，覆盖物理、化学、生物、数学、科学五大学科。
+
+[![npm](https://img.shields.io/npm/v/@itkdm/open-lab-components)](https://www.npmjs.com/package/@itkdm/open-lab-components)
+[![license](https://img.shields.io/github/license/itkdm/open-lab-components)](./LICENSE)
 
 [English](./README.en.md) | 中文
 
-## ✨ 核心特性
+## ✨ 特性
 
-- 🎯 **纯 HTML Fragment**：每个组件都是独立的 HTML 片段，不依赖外部框架
-- 🎨 **CSS 变量驱动**：所有可配置参数通过 CSS 变量暴露，灵活易用
-- 🚫 **零外部依赖**：组件完全自包含，无外部资源引用
-- 🔒 **样式隔离**：CSS 作用域完全隔离，不会污染宿主环境
-- 📦 **即插即用**：可直接复制粘贴到任何 HTML 环境中使用
-- 🛠️ **类型安全**：通过 Manifest 声明参数类型和默认值
-- ♿ **可访问性支持**：内置 ARIA 标签，支持屏幕阅读器
+- 🎯 **纯 HTML Fragment** — 不依赖任何框架，复制即用
+- 🎨 **CSS 变量驱动** — 所有参数通过 CSS 变量配置
+- 🔒 **样式隔离** — 不污染宿主环境
+- 🛠️ **TypeScript 支持** — 完整类型定义
+- ♿ **无障碍** — 内置 ARIA 标签
 
-## 📦 组件列表
+## 📦 组件概览
 
-当前仓库已收录 **28 个组件**（以 `registry/registry.json` 为准），下方列出部分示例：
+**210 个组件**，**44 个分类**：
 
-### 物理器材 (Physics Apparatus)
-- 💡 **灯泡** (`phy.apparatus.bulb.basic`) - 基础灯泡组件
-- 📏 **刻度尺** (`phy.ruler.vertical.metric`) - 垂直米制刻度尺
-- ⚖️ **砝码（基础）** (`phy.weight.mass.basic`) - 基础砝码组件
-- ⚖️ **砝码（写实）** (`phy.weight.hook.realistic`) - 写实风格带钩砝码
-- ⏱️ **计时器（交互式）** (`phy.apparatus.timer.interactive`) - 带开始/暂停/重置的交互式计时器
+| 学科 | 分类 | 示例 |
+|------|------|------|
+| 物理 | 电路、力学、光学、热学、波动、电磁、流体 | 抛体运动、透镜成像、示波器、卡诺循环 |
+| 化学 | 器皿、反应、气体、溶液、分子模型 | 酸碱中和、理想气体定律、元素周期表 |
+| 生物 | 细胞、器官、遗传、生态 | 有丝分裂、DNA 结构、循环系统 |
+| 数学 | 几何、函数、微积分、统计、向量 | 函数图像、单位圆、算盘、分数圆 |
+| 科学 | 地球科学、生命科学、科学工具 | 太阳系、水循环、显微镜 |
 
-### 电路元件 (Circuit Components)
-- 🔌 **电阻** (`phy.resistor.axial.basic`) - 轴向电阻，支持色环自定义
-- 🔋 **电压表** (`phy.meter.voltage.draggable`) - 可拖拽电压表组件
-- 📊 **电流表** (`phy.meter.current.basic`) - 基础电流表组件
-- 🔀 **开关（刀闸）** (`phy.switch.knife.basic`) - 刀闸开关组件
-
-> 查看更多组件详情，请访问 [组件展示站](./site/index.html) 或运行 `npm run dev:site`
+> [在线展示站](https://itkdm.github.io/open-lab-components/) — 浏览全部组件、实时调参、复制代码
 
 ## 🚀 快速开始
 
-### 安装
+### npm 安装
 
 ```bash
-# 克隆仓库
-git clone https://github.com/itkdm/open-lab-components.git
-cd open-lab-components
-
-# 安装依赖
-npm install
+npm install @itkdm/open-lab-components
 ```
 
-### 使用组件
+```js
+const lab = require('@itkdm/open-lab-components');
 
-#### 方式一：直接复制 HTML 片段
-
-1. 从 `components/` 目录中找到需要的组件文件
-2. 复制整个文件内容
-3. 粘贴到你的 HTML 页面中
-4. 通过 CSS 变量配置参数（`data-props` 需由宿主脚本解析后再映射）
-
-```html
-<!DOCTYPE html>
-<html>
-<head>
-    <style>
-        body {
-            padding: 40px;
-            background: #f5f5f5;
-        }
-    </style>
-</head>
-<body>
-    <!-- 直接粘贴组件 HTML -->
-    <div class="cmp" data-cmp-id="phy.resistor.axial.basic" 
-         style="--cmp-size: 80px; --cmp-body: #caa070;">
-        <!-- ... 组件内容 ... -->
-    </div>
-</body>
-</html>
+const all = lab.list();                                    // 全部 210 个组件
+const physics = lab.list({ category: 'physics/mechanics' }); // 按分类筛选
+const html = lab.readSync('phy.mechanics.projectile.interactive'); // 读取 HTML
 ```
 
-#### 方式二：使用 data-props 属性
+### 直接使用 HTML
+
+从 `components/` 目录复制组件文件，粘贴到你的页面中，通过 CSS 变量配置参数：
 
 ```html
-<div class="cmp" 
-     data-cmp-id="phy.resistor.axial.basic"
-     data-props='{"size": 100, "body": "#caa070", "stroke": "#111827"}'>
-    <!-- 组件片段默认不会自动解析 data-props；需宿主脚本将其映射到 CSS 变量 -->
+<div class="cmp" data-cmp-id="phy.resistor.axial.basic"
+     style="--cmp-size: 80px; --cmp-body: #caa070;">
+    <!-- 组件内容 -->
 </div>
-```
-
-#### 方式三：动态加载（JavaScript）
-
-```javascript
-async function loadComponent(componentId) {
-    const response = await fetch(`components/physics/circuit/${componentId}.html`);
-    const html = await response.text();
-    return html;
-}
-
-// 使用示例
-const resistorHtml = await loadComponent('phy.resistor.axial.basic');
-document.getElementById('container').innerHTML = resistorHtml;
 ```
 
 ### 本地开发
 
 ```bash
-# 验证所有组件
-npm run validate
-
-# 构建注册表和展示站
-npm run build
-
-# 启动本地开发服务器（查看组件展示站）
-npm run dev:site
+git clone https://github.com/itkdm/open-lab-components.git
+cd open-lab-components && npm install
+npm run dev:site      # 启动开发服务器
+npm run validate      # 验证组件规范
+npm run build         # 构建全部
 ```
 
-访问 `http://localhost:3000` 查看组件展示站，可以：
-- 浏览所有组件
-- 实时预览和调整参数
-- 复制组件代码
-- 查看组件文档
+## 🤝 参与贡献
 
-### 部署到 GitHub Pages
+欢迎提交 PR！流程：Fork → 创建分支 → 提交 → PR
 
-项目已配置 GitHub Actions 自动部署到 GitHub Pages。配置步骤：
-
-1. **启用 GitHub Pages**
-   - 进入仓库的 Settings → Pages
-   - Source 选择 "GitHub Actions"
-   - 保存设置
-
-2. **自动部署**
-   - 每次推送到 `main` 或 `master` 分支时，CI 会自动构建并部署网站
-   - 部署完成后，网站将可通过 `https://itkdm.github.io/open-lab-components` 访问
-
-3. **查看部署状态**
-   - 在仓库的 Actions 标签页查看部署进度
-   - 部署成功后，在仓库设置中可以看到网站 URL
-
-## 📁 项目结构
-
-```
-open-lab-components/
-├── components/          # 组件源文件（1 文件 = 1 组件）
-│   └── physics/
-│       ├── apparatus/   # 物理器材组件
-│       └── circuit/     # 电路元件组件
-├── registry/           # 机器可读索引（自动生成）
-│   ├── registry.json   # 组件注册表
-│   ├── categories.json # 分类信息
-│   └── tags.json       # 标签统计
-├── site/               # 展示站（组件广场）
-│   ├── index.html      # 首页
-│   ├── components.html # 组件列表页
-│   ├── playground.html # 组件调试工具
-│   └── docs.html       # 文档页
-├── tools/              # 构建和验证工具
-│   ├── validate/       # 组件验证脚本
-│   ├── build-registry/ # 注册表构建
-│   ├── build-site/     # 展示站构建
-│   └── dev-site/       # 开发服务器
-├── docs/               # 文档和规范
-│   ├── SPEC.md         # 组件规范协议
-│   ├── CATEGORY.md     # 分类和命名规则
-│   └── CONTRIBUTING.md # 贡献指南
-└── .github/
-    └── workflows/
-        └── ci.yml      # CI/CD 配置
-```
-
-## 🔧 组件规范
-
-每个组件必须遵循以下规范（详见 [SPEC.md](./docs/SPEC.md)）：
-
-### 1. 文件格式
-- ✅ 必须是 HTML fragment（不包含 `<!doctype>`, `<html>`, `<head>`, `<body>`）
-- ✅ 只包含一个根节点，带有 `class="cmp"` 和 `data-cmp-id`
-- ✅ 必须包含 `role="img"` 和 `aria-label` 属性
-
-### 2. Manifest 元数据
-组件文件顶部必须包含 `@cmp-manifest` 注释块：
-
-```html
-<!-- @cmp-manifest
-{
-  "schema": "cmp-manifest/v1",
-  "id": "phy.resistor.axial.basic",
-  "name": "电阻",
-  "nameEn": "Resistor",
-  "category": "physics/circuit",
-  "version": "1.0.0",
-  "viewport": { "w": 108, "h": 40 },
-  "props": [...],
-  "cssVars": {...},
-  "tags": ["resistor", "circuit"]
-}
--->
-```
-
-### 3. 样式要求
-- ✅ 样式必须内联（`<style>` 标签）
-- ✅ CSS 选择器必须作用域隔离（以 `.cmp[data-cmp-id="..."]` 为前缀）
-- ✅ 禁止全局选择器（`html`, `body`, `:root`, `*`）
-- ✅ 禁止外部资源引用（无 `http://`, `https://`, `@import`）
-
-### 4. JavaScript（可选）
-- ✅ 必须使用 IIFE 自包含
-- ✅ 不向全局作用域暴露变量
-- ✅ 仅操作组件自身 DOM
-
-## 🛠️ 开发指南
-
-### 添加新组件
-
-1. **选择分类和位置**
-   - 查看 [CATEGORY.md](./docs/CATEGORY.md) 了解分类规则
-   - 在 `components/` 下创建对应的目录结构
-
-2. **创建组件文件**
-   - 复制现有组件作为模板
-   - 填写 Manifest 元数据
-   - 实现组件 HTML/CSS/JS
-
-3. **本地验证和注册**
-   ```bash
-   # 验证组件是否符合规范
-   npm run validate
-   
-   # 构建注册表（将新组件注册到 registry/）
-   npm run build:registry
-   ```
-
-4. **提交 PR**
-   - 查看 [CONTRIBUTING.md](./docs/CONTRIBUTING.md) 了解详细流程
-   - 确保通过 CI 验证
-
-### 可用脚本
-
-```bash
-# 验证所有组件是否符合规范
-npm run validate
-
-# 构建组件注册表
-npm run build:registry
-
-# 构建展示站
-npm run build:site
-
-# 构建所有内容
-npm run build
-
-# 启动开发服务器（展示站）
-npm run dev:site
-```
-
-## 🤝 贡献指南
-
-我们欢迎所有形式的贡献！
-
-### 贡献类型
-- 🆕 新增组件
-- 🐛 修复 Bug
-- 📝 改进文档
-- 🎨 UI/UX 优化
-- ⚡ 性能优化
-
-### 贡献流程
-
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/amazing-component`)
-3. 提交更改 (`git commit -m 'Add amazing component'`)
-4. 推送到分支 (`git push origin feature/amazing-component`)
-5. 开启 Pull Request
-
-### 提交前检查清单
-
-- [ ] 组件是 HTML fragment（无 doctype/html/head/body）
-- [ ] 文件内只有一个根节点（组件根容器）
-- [ ] 根节点包含：`class="cmp"`、`data-cmp-id`、`role="img"`、`aria-label`
-- [ ] 文件顶部存在 `@cmp-manifest`，且 JSON 可解析
-- [ ] Manifest.id 与 data-cmp-id 完全一致，且 id 全局唯一
-- [ ] 无外链资源（无 http/https/@import 等）
-- [ ] CSS 已作用域隔离（无 html/body/:root/* 全局污染）
-- [ ] 关键可配置项通过 CSS 变量暴露，且提供 fallback
-- [ ] 若包含 JS：IIFE 自包含、无全局污染、无网络请求、仅操作自身 DOM
-- [ ] 运行 `npm run validate` 通过验证
-
-详细规范请查看：
-- [组件规范](./docs/SPEC.md)
-- [分类规则](./docs/CATEGORY.md)
-- [贡献指南](./docs/CONTRIBUTING.md)
+详见 [贡献指南](./docs/CONTRIBUTING.md) · [组件规范](./docs/SPEC.md) · [分类规则](./docs/CATEGORY.md) · [事件协议](./docs/EVENT.md)
 
 ## 📄 许可证
 
-本项目采用 [MIT 许可证](./LICENSE)。
+[MIT](./LICENSE)
 
-## 🔗 相关链接
+## ☕ 赞助 & 联系
 
-- [组件展示站](./site/index.html) - 在线浏览和测试组件
-- [组件规范文档](./docs/SPEC.md) - 详细的组件开发规范
-- [分类规则文档](./docs/CATEGORY.md) - 组件分类和命名规则
-- [贡献指南](./docs/CONTRIBUTING.md) - 如何参与贡献
+这个项目由一名大三学生独立开发维护。如果对你有帮助，欢迎请我喝杯咖啡 :)
 
-## 📝 更新日志
+<table>
+  <tr>
+    <td align="center">
+      <img src="./assets/wechat-pay.png" width="200" alt="微信赞赏码"><br>
+      <b>微信</b>
+    </td>
+    <td align="center">
+      <img src="./assets/alipay.png" width="200" alt="支付宝收款码"><br>
+      <b>支付宝</b>
+    </td>
+  </tr>
+</table>
 
-### v0.1.0 (Initial release)
-- Initial release
-- Complete build and validation toolchain
-- Component showcase and documentation system
-
-### Documentation status (as of 2026-02-14)
-- Registry currently includes 28 components:
-  - `math/clock`: 1
-  - `physics/apparatus`: 14
-  - `physics/circuit`: 9
-  - `physics/mechanics`: 1
-  - `physics/optics`: 3
+微信：`17884902310`（备注 OLC） · GitHub：[@itkdm](https://github.com/itkdm)
 
 ## 🙏 致谢
 
-感谢所有为这个项目做出贡献的开发者！
+- [@PastW1nd](https://github.com/PastW1nd)
 
 ---
 
-⭐ 如果这个项目对你有帮助，请给我们一个 Star！
+Made by **布吉岛** · ⭐ 觉得有用就给个 Star
