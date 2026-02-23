@@ -7,6 +7,8 @@
 
 [English](./README.en.md) | 中文
 
+![Open Lab Components 首页](./assets/home.png)
+
 ## ✨ 特性
 
 - 🎯 **纯 HTML Fragment** — 不依赖任何框架，复制即用
