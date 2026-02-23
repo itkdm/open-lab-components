@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Open Lab Components 文档中心：查看组件规范协议、分类与命名规则、贡献指南等完整文档，帮助您按统一标准编写和维护实验器材组件。">
-  <meta name="keywords" content="Open Lab Components,文档,组件规范,SPEC,贡献指南,组件开发,组件协议,分类规则">
-  <meta name="author" content="Open Lab Components Team">
+  <meta name="description" content="Open Lab Components 文档中心：组件规范协议、分类与命名规则、事件协议、集成指南、贡献指南、部署指南，帮助您开发和集成 STEM 教育组件。">
+  <meta name="keywords" content="Open Lab Components,文档,组件规范,SPEC,事件协议,集成指南,贡献指南,部署,组件开发,npm">
+  <meta name="author" content="布吉岛 (itkdm)">
   <meta name="robots" content="index, follow">
   <meta name="language" content="zh-CN">
   <link rel="canonical" href="https://itkdm.github.io/open-lab-components/docs.html">
@@ -409,13 +409,22 @@
         <div class="sidebar-title" data-i18n="sidebar-title">文档导航</div>
         <ul class="sidebar-nav">
           <li class="sidebar-item">
-            <a href="#" class="sidebar-link active" data-doc="spec" data-i18n="spec-title">组件协议（SPEC）</a>
+            <a href="#" class="sidebar-link active" data-doc="spec" data-i18n="spec-title">组件协议</a>
           </li>
           <li class="sidebar-item">
-            <a href="#" class="sidebar-link" data-doc="category" data-i18n="category-title">分类与命名（CATEGORY）</a>
+            <a href="#" class="sidebar-link" data-doc="category" data-i18n="category-title">分类与命名</a>
           </li>
           <li class="sidebar-item">
-            <a href="#" class="sidebar-link" data-doc="contrib" data-i18n="contrib-title">贡献指南（CONTRIBUTING）</a>
+            <a href="#" class="sidebar-link" data-doc="event" data-i18n="event-title">事件协议</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link" data-doc="integration" data-i18n="integration-title">集成指南</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link" data-doc="contrib" data-i18n="contrib-title">贡献指南</a>
+          </li>
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link" data-doc="deployment" data-i18n="deployment-title">部署指南</a>
           </li>
         </ul>
       </aside>
@@ -448,7 +457,10 @@
     const DOCS = {
       spec: { path: './docs/SPEC.md' },
       category: { path: './docs/CATEGORY.md' },
-      contrib: { path: './docs/CONTRIBUTING.md' }
+      event: { path: './docs/EVENT.md' },
+      integration: { path: './docs/INTEGRATION.md' },
+      contrib: { path: './docs/CONTRIBUTING.md' },
+      deployment: { path: './docs/DEPLOYMENT.md' }
     };
 
     const i18n = {
@@ -462,18 +474,11 @@
         'sidebar-title': '文档导航',
         'toc-title': '目录',
         'spec-title': '组件协议',
-        'spec-meta': 'docs/SPEC.md',
-        'spec-desc': '定义单个 HTML Fragment 组件的结构、Manifest、DOM 契约、样式与 JS 约束，是本仓库的“硬规范”。',
-        'spec-tagline': '新增或修改组件前，建议完整阅读一遍。',
         'category-title': '分类与命名',
-        'category-meta': 'docs/CATEGORY.md',
-        'category-desc': '约定组件的 category、id、tags 命名规范，以及与目录结构的映射，保证组件在规模增大后依然可管理。',
-        'category-tagline': '为你的新组件选一个合理的“地址”和标签。',
+        'event-title': '事件协议',
+        'integration-title': '集成指南',
         'contrib-title': '贡献指南',
-        'contrib-meta': 'docs/CONTRIBUTING.md',
-        'contrib-desc': '说明如何提交新组件、修改现有组件，以及版本号、评审关注点等流程性约定。',
-        'contrib-tagline': '在提交 Pull Request 前快速过一遍这份清单。',
-        'btn-open-raw': '查看原文',
+        'deployment-title': '部署指南',
         'lang-label': 'English'
       },
       en: {
@@ -485,19 +490,12 @@
         'docs-desc': 'Centralized specs and contribution guides for Open Lab Components, so everyone builds HTML fragments in a consistent way.',
         'sidebar-title': 'Docs',
         'toc-title': 'Outline',
-        'spec-title': 'Component Spec (SPEC)',
-        'spec-meta': 'docs/SPEC.md',
-        'spec-desc': 'Hard rules for a single HTML fragment component: structure, manifest, DOM contract, styling and JS constraints.',
-        'spec-tagline': 'Read this before adding or refactoring any component.',
-        'category-title': 'Categories & Naming (CATEGORY)',
-        'category-meta': 'docs/CATEGORY.md',
-        'category-desc': 'Defines category, id and tags conventions, and how they map to folder structure, so the library scales cleanly.',
-        'category-tagline': 'Use this to pick the right “address” and tags for your components.',
-        'contrib-title': 'Contribution Guide (CONTRIBUTING)',
-        'contrib-meta': 'docs/CONTRIBUTING.md',
-        'contrib-desc': 'How to add new components, change existing ones, versioning rules, and what reviewers will look at.',
-        'contrib-tagline': 'Skim this before you open a pull request.',
-        'btn-open-raw': 'Open source file',
+        'spec-title': 'Component Spec',
+        'category-title': 'Categories & Naming',
+        'event-title': 'Event Protocol',
+        'integration-title': 'Integration Guide',
+        'contrib-title': 'Contribution Guide',
+        'deployment-title': 'Deployment Guide',
         'lang-label': '中文'
       }
     };
