@@ -275,21 +275,146 @@
     }
     
     .control-label {
-      display: block;
-      font-size: 0.8125rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      font-size: 0.875rem;
       font-weight: 500;
       margin-bottom: 0.625rem;
       color: var(--text-primary);
       line-height: 1.4;
     }
-    
-    .control-label small {
+
+    .control-label .prop-name {
+      flex-shrink: 0;
+    }
+
+    .control-label .prop-key {
+      font-size: 0.6875rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      color: var(--text-tertiary);
+      background: var(--bg);
+      padding: 0.125rem 0.375rem;
+      border-radius: 3px;
+      font-weight: 400;
+    }
+
+    .control-label-desc {
       display: block;
       font-size: 0.75rem;
       color: var(--text-secondary);
-      margin-top: 0.375rem;
+      margin-top: -0.25rem;
+      margin-bottom: 0.625rem;
       font-weight: 400;
       line-height: 1.4;
+    }
+
+    .control-value-display {
+      font-size: 0.75rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      color: var(--primary);
+      font-weight: 600;
+      min-width: 48px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .color-input-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .color-input-group input[type="color"] {
+      width: 42px;
+      flex-shrink: 0;
+    }
+
+    .color-input-group input[type="text"] {
+      flex: 1;
+      font-family: 'Monaco', 'Menlo', monospace;
+      font-size: 0.8125rem;
+    }
+
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--border);
+      border-radius: 11px;
+      transition: 0.2s;
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--primary);
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(18px);
+    }
+
+    .toggle-label {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+    }
+
+    .enum-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.375rem;
+    }
+
+    .enum-btn {
+      padding: 0.375rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--text-secondary);
+      font-size: 0.8125rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .enum-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .enum-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
     }
     
     input[type="range"],
@@ -880,7 +1005,7 @@
       // 按分类组织参数
       const groupedProps = {};
       component.props.forEach(prop => {
-        const category = prop.category || '通用';
+        const category = prop.category || (currentLang === 'en' ? 'General' : '通用');
         if (!groupedProps[category]) {
           groupedProps[category] = [];
         }
@@ -890,55 +1015,72 @@
       container.innerHTML = Object.entries(groupedProps).map(([category, categoryProps]) => {
         const propsHtml = categoryProps.map(prop => {
         const value = props[prop.key] ?? prop.default;
+        const displayName = prop.desc || prop.key;
         let inputHtml = '';
 
         if (prop.type === 'color') {
-          inputHtml = `<input type="color" value="${value}" onchange="updateProp('${prop.key}', this.value)">`;
+          inputHtml = `
+            <div class="color-input-group">
+              <input type="color" value="${value}" onchange="updateProp('${prop.key}', this.value); this.nextElementSibling.value = this.value">
+              <input type="text" value="${value}" onchange="updateProp('${prop.key}', this.value); this.previousElementSibling.value = this.value" spellcheck="false">
+            </div>`;
+        } else if (prop.type === 'enum') {
+          const options = prop.enum || [];
+          if (options.length <= 5) {
+            inputHtml = `<div class="enum-group">${options.map(opt =>
+              `<button class="enum-btn${opt === String(value) ? ' active' : ''}" onclick="updateProp('${prop.key}', '${opt}'); this.parentElement.querySelectorAll('.enum-btn').forEach(b=>b.classList.remove('active')); this.classList.add('active')">${opt}</button>`
+            ).join('')}</div>`;
+          } else {
+            const optionsHtml = options.map(opt => `<option value="${opt}" ${opt === String(value) ? 'selected' : ''}>${opt}</option>`).join('');
+            inputHtml = `<select onchange="updateProp('${prop.key}', this.value)">${optionsHtml}</select>`;
+          }
         } else if (prop.type.startsWith('number')) {
-          // 智能计算 step 值
-          let step = prop.step;
-          if (step == null) {
-            // 根据类型和范围自动判断
-            if (prop.type.includes('(0-1)')) {
-              // 0-1 范围的参数，使用 0.01 步进
-              step = 0.01;
-            } else if (prop.type === 'number(px)' || prop.type === 'number(deg)') {
-              // 像素和角度，使用整数步进
-              step = 1;
-            } else if (prop.min != null && prop.max != null) {
-              const range = prop.max - prop.min;
-              if (range <= 1) {
-                // 范围很小（如 0-1），使用 0.01
+          // 检测是否为布尔型数字（0/1 开关）
+          const isBooleanToggle = prop.min === 0 && prop.max === 1 && (prop.step === 1 || (!prop.step && !prop.type.includes('0-1')));
+
+          if (isBooleanToggle) {
+            const checked = Number(value) === 1 ? 'checked' : '';
+            inputHtml = `
+              <div class="toggle-group">
+                <label class="toggle-switch">
+                  <input type="checkbox" ${checked} onchange="updateProp('${prop.key}', this.checked ? 1 : 0)">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label">${Number(value) === 1 ? (currentLang === 'en' ? 'On' : '开') : (currentLang === 'en' ? 'Off' : '关')}</span>
+              </div>`;
+          } else {
+            // 智能计算 step 值
+            let step = prop.step;
+            if (step == null) {
+              if (prop.type.includes('(0-1)')) {
                 step = 0.01;
-              } else if (range <= 10) {
-                // 范围较小（如 0.2-4），使用 0.1
-                step = 0.1;
-              } else {
-                // 范围较大，使用 1
+              } else if (prop.type === 'number(px)' || prop.type === 'number(deg)') {
                 step = 1;
+              } else if (prop.min != null && prop.max != null) {
+                const range = prop.max - prop.min;
+                if (range <= 1) step = 0.01;
+                else if (range <= 10) step = 0.1;
+                else step = 1;
+              } else {
+                step = 0.1;
               }
+            }
+
+            const unit = prop.type === 'number(px)' ? 'px' : prop.type === 'number(deg)' ? '°' : '';
+            const hasRange = prop.min != null && prop.max != null;
+            if (hasRange) {
+              inputHtml = `
+                <div class="range-input-group">
+                  <input type="range" min="${prop.min}" max="${prop.max}" step="${step}" value="${value}"
+                         oninput="updateProp('${prop.key}', parseFloat(this.value)); this.parentElement.querySelector('input[type=number]').value = this.value; this.parentElement.querySelector('.control-value-display').textContent = this.value + '${unit}'">
+                  <span class="control-value-display">${value}${unit}</span>
+                  <input type="number" min="${prop.min}" max="${prop.max}" step="${step}" value="${value}" style="display:none"
+                         onchange="updateProp('${prop.key}', parseFloat(this.value)); this.parentElement.querySelector('input[type=range]').value = this.value">
+                </div>`;
             } else {
-              // 没有范围限制，默认使用 0.1
-              step = 0.1;
+              inputHtml = `<input type="number" step="${step}" value="${value}" onchange="updateProp('${prop.key}', parseFloat(this.value))">`;
             }
           }
-          
-          const hasRange = prop.min != null && prop.max != null;
-          if (hasRange) {
-            inputHtml = `
-                <div class="range-input-group">
-              <input type="range" min="${prop.min}" max="${prop.max}" step="${step}" value="${value}" 
-                     oninput="updateProp('${prop.key}', parseFloat(this.value)); this.nextElementSibling.value = this.value">
-                  <input type="number" min="${prop.min}" max="${prop.max}" step="${step}" value="${value}" 
-                         onchange="updateProp('${prop.key}', parseFloat(this.value)); this.previousElementSibling.value = this.value">
-                </div>
-            `;
-          } else {
-            inputHtml = `<input type="number" step="${step}" value="${value}" onchange="updateProp('${prop.key}', parseFloat(this.value))">`;
-          }
-        } else if (prop.type === 'enum') {
-            const options = (prop.enum || []).map(opt => `<option value="${opt}" ${opt === value ? 'selected' : ''}>${opt}</option>`).join('');
-          inputHtml = `<select onchange="updateProp('${prop.key}', this.value)">${options}</select>`;
         } else {
           inputHtml = `<input type="text" value="${value}" onchange="updateProp('${prop.key}', this.value)">`;
         }
@@ -946,12 +1088,12 @@
         return `
           <div class="control-item">
             <label class="control-label">
-              ${prop.key}
-              ${prop.desc ? `<small>${prop.desc}</small>` : ''}
+              <span class="prop-name">${displayName}</span>
+              ${prop.desc && prop.desc !== prop.key ? `<span class="prop-key">${prop.key}</span>` : ''}
             </label>
             ${inputHtml}
-            </div>
-          `;
+          </div>
+        `;
         }).join('');
 
         return `

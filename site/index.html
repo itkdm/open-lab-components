@@ -582,10 +582,76 @@
       .hero h1 {
         font-size: 1.75rem;
       }
-      
+
       .btn {
         padding: 0.5rem 1rem;
         font-size: 0.8125rem;
+      }
+    }
+
+    /* 页脚联系区 */
+    .site-footer {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 48px 24px 32px;
+      text-align: center;
+    }
+
+    .footer-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 2rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .footer-qr {
+      width: 96px;
+      height: 96px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-light);
+      object-fit: cover;
+    }
+
+    .footer-text {
+      text-align: left;
+    }
+
+    .footer-text-title {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .footer-text-desc {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    .footer-bottom {
+      margin-top: 1.5rem;
+      font-size: 0.8125rem;
+      color: var(--text-tertiary);
+    }
+
+    .footer-bottom a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    @media (max-width: 480px) {
+      .footer-contact {
+        flex-direction: column;
+        padding: 1.25rem;
+      }
+
+      .footer-text {
+        text-align: center;
       }
     }
   </style>
@@ -643,6 +709,20 @@
     </div>
   </main>
 
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <div class="footer-contact">
+      <img src="./assets/wechat-pay.png" alt="微信二维码" class="footer-qr">
+      <div class="footer-text">
+        <div class="footer-text-title" data-i18n="footer-wechat-title">微信联系作者</div>
+        <div class="footer-text-desc" data-i18n="footer-wechat-desc">组件定制、Bug 反馈、合作交流<br>添加时请备注 OLC</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      Made by <a href="https://github.com/itkdm" target="_blank" rel="noopener">布吉岛</a> · <a href="https://github.com/itkdm/open-lab-components" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </footer>
+
   <script>
     let registry = [];
     const LANG_KEY = 'olc-lang';
@@ -665,6 +745,8 @@
         'btn-preview': '预览',
         'btn-copy': '复制',
         'copy-success': '组件代码已复制到剪贴板',
+        'footer-wechat-title': '微信联系作者',
+        'footer-wechat-desc': '组件定制、Bug 反馈、合作交流\n添加时请备注 OLC',
         'lang-label': 'English'
       },
       en: {
@@ -685,6 +767,8 @@
         'btn-preview': 'Preview',
         'btn-copy': 'Copy',
         'copy-success': 'Component code copied to clipboard',
+        'footer-wechat-title': 'Contact the Author',
+        'footer-wechat-desc': 'Custom components, bug reports, collaboration\nPlease note OLC when adding',
         'lang-label': '中文'
       }
     };
@@ -717,7 +801,12 @@
         const key = el.getAttribute('data-i18n');
         // hero-desc 使用打字机效果，单独处理
         if (key === 'hero-desc') return;
-        el.textContent = t(key);
+        const text = t(key);
+        if (text.includes('\n')) {
+          el.innerHTML = text.replace(/\n/g, '<br>');
+        } else {
+          el.textContent = text;
+        }
       });
       const langBtn = document.getElementById('langToggle');
       if (langBtn) langBtn.textContent = t('lang-label');
