@@ -601,11 +601,11 @@
       display: inline-flex;
       align-items: center;
       gap: 1.5rem;
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-lg);
+      background: transparent;
+      border: none;
+      border-radius: 0;
       padding: 1.25rem 2rem;
-      box-shadow: var(--shadow-sm);
+      box-shadow: none;
     }
 
     .footer-qr {
@@ -654,6 +654,7 @@
         text-align: center;
       }
     }
+
   </style>
 </head>
 <body>
@@ -690,6 +691,14 @@
       <a href="https://www.npmjs.com/package/@itkdm/open-lab-components" class="btn btn-secondary" target="_blank" rel="noopener">npm install @itkdm/open-lab-components</a>
       <a href="#contribute" class="btn btn-secondary" data-i18n="hero-btn-secondary">参与贡献</a>
     </div>
+    <!-- 首页首屏按钮下方的微信联系作者卡片 -->
+    <div class="footer-contact" style="margin-top: 2rem;">
+      <img src="./assets/wechat-pay.png" alt="微信二维码" class="footer-qr">
+      <div class="footer-text">
+        <div class="footer-text-title" data-i18n="footer-wechat-title">微信联系作者</div>
+        <div class="footer-text-desc" data-i18n="footer-wechat-desc">组件定制、Bug 反馈、合作交流<br>添加时请备注 OLC</div>
+      </div>
+    </div>
   </section>
   
   <!-- 主内容区 -->
@@ -711,13 +720,6 @@
 
   <!-- 页脚 -->
   <footer class="site-footer">
-    <div class="footer-contact">
-      <img src="./assets/wechat-pay.png" alt="微信二维码" class="footer-qr">
-      <div class="footer-text">
-        <div class="footer-text-title" data-i18n="footer-wechat-title">微信联系作者</div>
-        <div class="footer-text-desc" data-i18n="footer-wechat-desc">组件定制、Bug 反馈、合作交流<br>添加时请备注 OLC</div>
-      </div>
-    </div>
     <div class="footer-bottom">
       Made by <a href="https://github.com/itkdm" target="_blank" rel="noopener">布吉岛</a> · <a href="https://github.com/itkdm/open-lab-components" target="_blank" rel="noopener">GitHub</a>
     </div>
@@ -746,7 +748,7 @@
         'btn-copy': '复制',
         'copy-success': '组件代码已复制到剪贴板',
         'footer-wechat-title': '微信联系作者',
-        'footer-wechat-desc': '组件定制、Bug 反馈、合作交流\n添加时请备注 OLC',
+        'footer-wechat-desc': '组件定制、Bug 反馈、合作交流\n添加时请备注 OLC\n组件中仍然有不少 Bug，欢迎反馈一起改进',
         'lang-label': 'English'
       },
       en: {
@@ -768,7 +770,7 @@
         'btn-copy': 'Copy',
         'copy-success': 'Component code copied to clipboard',
         'footer-wechat-title': 'Contact the Author',
-        'footer-wechat-desc': 'Custom components, bug reports, collaboration\nPlease note OLC when adding',
+        'footer-wechat-desc': 'Custom components, bug reports, collaboration\nPlease note OLC when adding\nComponents still contain many bugs, feel free to report and help improve',
         'lang-label': '中文'
       }
     };
