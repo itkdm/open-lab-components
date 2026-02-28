@@ -132,6 +132,7 @@
     function renderIonic(dt){
       clear(sceneG);clear(labelsG);
       ionicT+=dt*speed*0.5;
+      if(ionicT>=7) ionicT=0;
 
       var naX=160,clX=320,cy=170;
       var naR,clR,eVisible=false,eX,eY;
@@ -151,15 +152,20 @@
         eVisible=true;
         eX=naX+(clX-naX)*p;
         eY=cy-30*Math.sin(p*Math.PI);
-      }else if(ionicT<7){
+      }else{
         /* 阶段3: 离子吸引 */
         var p2=Math.min(1,(ionicT-4)/2);
         naR=32;clR=53;
         naX=160+30*p2;clX=320-30*p2;
         eVisible=false;
-      }else{
-        ionicT=0;
       }
+
+      /* 防御性处理，避免 NaN/undefined 导致 SVG 报错 */
+      if(!isFinite(naR)) naR=40;
+      if(!isFinite(clR)) clR=45;
+      if(!isFinite(naX)) naX=160;
+      if(!isFinite(clX)) clX=320;
+      if(!isFinite(eX) || !isFinite(eY)) eVisible=false;
 
       /* Na原子/离子 */
       sceneG.appendChild(el('circle',{cx:naX,cy:cy,r:naR,fill:'var(--cmp-cation,#5c6bc0)',opacity:'0.3'}));

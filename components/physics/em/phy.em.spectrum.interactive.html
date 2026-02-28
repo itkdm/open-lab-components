@@ -208,9 +208,10 @@
       var pts='';
       for(var i=0;i<=500;i+=2){
         var y=50+30*Math.sin(2*Math.PI*wN*i/500-time*5);
-        pts+=(i?'L':'M')+i+','+y.toFixed(1);
+        var pair=i+','+y.toFixed(1);
+        pts+=(i?' ':'')+pair;
       }
-      waveLine.setAttribute('points',pts.replace(/^M/,''));
+      waveLine.setAttribute('points',pts);
 
       if(running)animId=requestAnimationFrame(tick);
     }

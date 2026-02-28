@@ -236,9 +236,10 @@
         for(var i=0;i<history.length;i++){
           var gx=(history[i].t-history[0].t)/(tWindow)*graphW;
           var gy=graphMid-history[i].x/amp*graphMid*0.85;
-          pts+=(i?'L':'M')+gx.toFixed(1)+','+gy.toFixed(1);
+          var pair=gx.toFixed(1)+','+gy.toFixed(1);
+          pts+=(i?' ':'')+pair;
         }
-        sineEl.setAttribute('points',pts.replace(/^M/,''));
+        sineEl.setAttribute('points',pts);
 
         var lastGx=graphW;
         var lastGy=graphMid-x/amp*graphMid*0.85;

@@ -49,16 +49,20 @@
 
 <script>
 (() => {
-  const root = document.currentScript?.previousElementSibling;
+  var root = document.currentScript ? document.currentScript.previousElementSibling : null;
   if (!root || root.getAttribute("data-cmp-id") !== "phy.mechanics.cart.basic") return;
 
-  const hooks = root.querySelectorAll(".cart__hook");
-  let raw = root.getAttribute("data-props");
-  let props = {};
-  try { if (raw) props = JSON.parse(raw) || {}; } catch (e)
+  var hooks = root.querySelectorAll(".cart__hook");
+  var raw = root.getAttribute("data-props");
+  var props = {};
+  try {
+    if (raw) props = JSON.parse(raw) || {};
+  } catch (e) {
+    props = {};
+  }
 
-  const hookVisible = props.hookVisible !== "off";
-  hooks.forEach(h => h.style.display = hookVisible ? "" : "none");
+  var hookVisible = props.hookVisible !== "off";
+  hooks.forEach(function(h){ h.style.display = hookVisible ? "" : "none"; });
 })();
 </script>
 
