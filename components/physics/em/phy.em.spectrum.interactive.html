@@ -205,13 +205,12 @@
 
       var b=BANDS[selected];
       var wN=b?b.waveN:25;
-      var pts='';
+      var pts=[];
       for(var i=0;i<=500;i+=2){
         var y=50+30*Math.sin(2*Math.PI*wN*i/500-time*5);
-        var pair=i+','+y.toFixed(1);
-        pts+=(i?' ':'')+pair;
+        pts.push(i+','+y.toFixed(1));
       }
-      waveLine.setAttribute('points',pts);
+      waveLine.setAttribute('points',pts.join(' '));
 
       if(running)animId=requestAnimationFrame(tick);
     }
