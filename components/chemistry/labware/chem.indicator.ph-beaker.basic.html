@@ -1,0 +1,140 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "chem.indicator.ph-beaker.basic",
+  "name": "动态 pH 指示剂烧杯",
+  "nameEn": "Dynamic pH Indicator Beaker",
+  "category": "chemistry/labware",
+  "version": "1.0.0",
+  "viewport": { "w": 100, "h": 140 },
+  "tags": ["chemistry", "ph", "beaker", "indicator", "color", "labware"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 120, "min": 60, "max": 400, "desc": "组件宽度" },
+    { "key": "ph", "type": "number(0-14)", "default": 7, "desc": "溶液 pH 值，0-14 映射到红-绿-紫" },
+    { "key": "stroke", "type": "color", "default": "#2f4f5f", "desc": "器皿描边色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "ph": "--cmp-ph",
+    "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="chem.indicator.ph-beaker.basic" role="img" aria-label="动态 pH 指示剂烧杯">
+  <style>
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] {
+      --_size: var(--cmp-size, 120px);
+      --_ph: var(--cmp-ph, 7);
+      --_stroke: var(--cmp-stroke, #2f4f5f);
+      --_hue: calc(var(--_ph) * 20);
+      --_liquid-color: hsla(var(--_hue), 85%, 55%, 0.6);
+      --_strip-wet-color: hsl(var(--_hue), 85%, 50%);
+      --_mark-color: rgba(47, 79, 95, 0.45);
+
+      display: inline-block;
+      width: var(--_size);
+      font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .glass-bg {
+      fill: url(#ph-beaker-glass);
+      stroke: none;
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .liquid {
+      fill: var(--_liquid-color);
+      transition: fill 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .strip-dry {
+      fill: hsl(45, 90%, 85%);
+      stroke: rgba(0, 0, 0, 0.1);
+      stroke-width: 0.5;
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .strip-wet {
+      fill: var(--_strip-wet-color);
+      stroke: rgba(0, 0, 0, 0.1);
+      stroke-width: 0.5;
+      transition: fill 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .glass-outline {
+      fill: none;
+      stroke: var(--_stroke);
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .marker {
+      fill: none;
+      stroke: var(--_mark-color);
+      stroke-width: 1.35;
+      stroke-linecap: round;
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .shine {
+      fill: url(#ph-beaker-shine);
+      pointer-events: none;
+    }
+
+    .cmp[data-cmp-id="chem.indicator.ph-beaker.basic"] .lip-fill {
+      fill: url(#ph-beaker-lip);
+    }
+  </style>
+
+  <svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="ph-beaker-glass" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.45" />
+        <stop offset="20%" stop-color="#e2f2ff" stop-opacity="0.55" />
+        <stop offset="80%" stop-color="#e2f2ff" stop-opacity="0.55" />
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0.2" />
+      </linearGradient>
+      <linearGradient id="ph-beaker-lip" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.75" />
+        <stop offset="100%" stop-color="#e2f2ff" stop-opacity="0.55" />
+      </linearGradient>
+      <linearGradient id="ph-beaker-shine" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="0.32" />
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+      </linearGradient>
+      <clipPath id="ph-beaker-clip">
+        <path d="M 27 33 L 27 119 A 8 8 0 0 0 35 127 L 65 127 A 8 8 0 0 0 73 119 L 73 33 Z" />
+      </clipPath>
+    </defs>
+
+    <path class="glass-bg" d="M 27 33 L 27 119 A 8 8 0 0 0 35 127 L 65 127 A 8 8 0 0 0 73 119 L 73 33 Z" />
+
+    <g transform="rotate(-5, 51, 60)">
+      <rect x="46" y="13" width="10" height="61" class="strip-dry" />
+    </g>
+
+    <g clip-path="url(#ph-beaker-clip)">
+      <path class="liquid" d="M 27 72 L 73 72 L 73 119 A 8 8 0 0 1 65 127 L 35 127 A 8 8 0 0 1 27 119 Z" />
+      <ellipse cx="50" cy="72" rx="23" ry="2.7" class="liquid" style="opacity: 0.82; stroke: rgba(255,255,255,0.3); stroke-width: 0.9;" />
+      <rect x="31" y="36" width="7" height="80" rx="3.5" class="shine" />
+    </g>
+
+    <g transform="rotate(-5, 51, 60)">
+      <rect x="46" y="72" width="10" height="34" rx="1" class="strip-wet" />
+    </g>
+
+    <ellipse cx="50" cy="30.5" rx="23" ry="4.1" class="lip-fill" />
+    <ellipse cx="50" cy="30.5" rx="23" ry="4.1" class="glass-outline" />
+    <path class="glass-outline" d="M 27 33 L 27 119 A 8 8 0 0 0 35 127 L 65 127 A 8 8 0 0 0 73 119 L 73 33" />
+
+    <path class="marker" d="M 27 50 L 33 50" />
+    <path class="marker" d="M 27 72 L 37 72" />
+    <path class="marker" d="M 27 88 L 33 88" />
+    <path class="marker" d="M 27 104 L 37 104" />
+  </svg>
+</div>
