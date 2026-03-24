@@ -265,6 +265,43 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
+
+    .event-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .event-card {
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      padding: 0.75rem;
+    }
+
+    .event-name {
+      font-size: 0.8125rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      color: var(--primary);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .event-type {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .event-values {
+      display: grid;
+      gap: 0.25rem;
+    }
+
+    .event-value {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
     
     .control-item {
       margin-bottom: 1.5rem;
@@ -990,6 +1027,7 @@
 
     function renderControls() {
       const container = document.getElementById('controls');
+      const eventGroupHtml = renderEventsGroup();
       if (!component.props || component.props.length === 0) {
         container.innerHTML = `
           <div class="control-group">
@@ -998,6 +1036,7 @@
               ${t('no-config-desc')}
             </p>
           </div>
+          ${eventGroupHtml}
         `;
         return;
       }
@@ -1102,7 +1141,35 @@
             ${propsHtml}
           </div>
         `;
+      }).join('') + eventGroupHtml;
+    }
+
+    function renderEventsGroup() {
+      if (!Array.isArray(component?.events) || component.events.length === 0) return '';
+      const title = currentLang === 'en' ? 'Events' : '事件';
+      const typeLabel = currentLang === 'en' ? 'Type' : '类型';
+      const valuesTitle = currentLang === 'en' ? 'Values' : '字段';
+      const cards = component.events.map(evt => {
+        const values = evt.values && typeof evt.values === 'object'
+          ? Object.entries(evt.values).map(([key, val]) => `<div class="event-value"><strong>${key}</strong>: ${val}</div>`).join('')
+          : `<div class="event-value">${currentLang === 'en' ? 'No values declared' : '未声明字段'}</div>`;
+        return `
+          <div class="event-card">
+            <div class="event-name">${evt.name || '-'}</div>
+            <div class="event-type">${typeLabel}: ${evt.type || '-'}</div>
+            <div class="event-values">
+              <div class="event-value"><strong>${valuesTitle}</strong></div>
+              ${values}
+            </div>
+          </div>
+        `;
       }).join('');
+      return `
+        <div class="control-group">
+          <h3>${title}</h3>
+          <div class="event-list">${cards}</div>
+        </div>
+      `;
     }
 
     async function updateProp(key, value) {

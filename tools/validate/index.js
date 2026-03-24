@@ -85,6 +85,32 @@ function isValidCategory(value) {
   return /^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/.test(value);
 }
 
+function validateEvents(events) {
+  const errs = [];
+  if (events === undefined) return errs;
+  if (!Array.isArray(events)) {
+    errs.push("manifest.events must be an array when provided");
+    return errs;
+  }
+  for (let i = 0; i < events.length; i++) {
+    const evt = events[i];
+    if (!evt || typeof evt !== "object" || Array.isArray(evt)) {
+      errs.push(`manifest.events[${i}] must be an object`);
+      continue;
+    }
+    if (!isNonEmptyString(evt.name)) {
+      errs.push(`manifest.events[${i}].name missing or not non-empty string`);
+    }
+    if (!isNonEmptyString(evt.type)) {
+      errs.push(`manifest.events[${i}].type missing or not non-empty string`);
+    }
+    if (!evt.values || typeof evt.values !== "object" || Array.isArray(evt.values)) {
+      errs.push(`manifest.events[${i}].values must be an object`);
+    }
+  }
+  return errs;
+}
+
 function main() {
   const root = projectRootFrom(__dirname);
   const componentsDir = path.join(root, "components");
@@ -142,6 +168,9 @@ function main() {
       errors.push({ filePath, message: "manifest.version missing or not non-empty string" });
     } else if (!SEMVER_RE.test(manifest.version)) {
       errors.push({ filePath, message: `manifest.version must be valid SemVer (got "${manifest.version}")` });
+    }
+    for (const msg of validateEvents(manifest.events)) {
+      errors.push({ filePath, message: msg });
     }
 
     // basic forbidden checks

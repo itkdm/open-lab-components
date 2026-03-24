@@ -645,6 +645,7 @@
         'subject-math': '数学',
         'subject-biology': '生物',
         'subject-science': '科学',
+        'subject-cs': '计算机',
         'sort-by-name': '按名称',
         'sort-by-version': '按版本',
         'sort-by-category': '按分类',
@@ -679,6 +680,7 @@
         'subject-math': 'Math',
         'subject-biology': 'Biology',
         'subject-science': 'Science',
+        'subject-cs': 'CS',
         'sort-by-name': 'By Name',
         'sort-by-version': 'By Version',
         'sort-by-category': 'By Category',
@@ -709,6 +711,14 @@
         return component.categoryNameEn;
       }
       return component.categoryName || component.category;
+    }
+
+    function getEventsTag(component) {
+      if (!Array.isArray(component.events) || component.events.length === 0) return '';
+      const label = currentLang === 'en'
+        ? `${component.events.length} event${component.events.length > 1 ? 's' : ''}`
+        : `${component.events.length} 个事件`;
+      return `<span class="tag">${label}</span>`;
     }
 
     function applyStaticTexts() {
@@ -962,6 +972,7 @@
         const componentPath = `./components/${categoryPath}/${c.id}.html`;
         const tags = c.tags || [];
         const tagsHtml = tags.slice(0, 3).map(t => `<span class="tag">${t}</span>`).join('');
+        const eventsTag = getEventsTag(c);
         const moreTags = tags.length > 3 ? `<span class="tag tag-more">+${tags.length - 3}</span>` : '';
         
         return `
@@ -980,7 +991,7 @@
                 <span> · </span>
                 <span class="version">v${c.version}</span>
               </div>
-              <div class="card-tags">${tagsHtml}${moreTags}</div>
+              <div class="card-tags">${eventsTag}${tagsHtml}${moreTags}</div>
             </div>
           </div>
         `;

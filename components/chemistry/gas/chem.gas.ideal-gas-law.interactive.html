@@ -156,6 +156,7 @@
     var sc=document.currentScript;if(!sc)return;
     var root=sc.parentElement;
     if(!root||root.getAttribute('data-cmp-id')!=='chem.gas.ideal-gas-law.interactive')return;
+    var registerCleanup=typeof root.__olcRegisterCleanup==='function'?root.__olcRegisterCleanup.bind(root):null;
     var svg=root.querySelector('svg');if(!svg)return;
     var NS='http://www.w3.org/2000/svg';
 
@@ -315,8 +316,9 @@
     }
     initParticleEls();
 
-    var animId=0,lastT=0,time=0;
+    var animId=0,lastT=0,time=0,destroyed=false;
     function tick(t){
+      if(destroyed)return;
       if(!lastT)lastT=t;
       var dt=Math.min((t-lastT)/1000,0.04);
       lastT=t;
@@ -359,6 +361,8 @@
 
     /* 滑块拖拽 */
     var dragType=null;
+    var onTempDragStart=startDrag('temp');
+    var onVolDragStart=startDrag('vol');
     function startDrag(type){return function(e){e.preventDefault();dragType=type;
       document.addEventListener('mousemove',onDrag,{passive:false});
       document.addEventListener('mouseup',endDrag);
@@ -385,13 +389,14 @@
       document.removeEventListener('mousemove',onDrag);document.removeEventListener('mouseup',endDrag);
       document.removeEventListener('touchmove',onDrag);document.removeEventListener('touchend',endDrag);
     }
-    tempThumb.addEventListener('mousedown',startDrag('temp'),{passive:false});
-    tempThumb.addEventListener('touchstart',startDrag('temp'),{passive:false});
-    volThumb.addEventListener('mousedown',startDrag('vol'),{passive:false});
-    volThumb.addEventListener('touchstart',startDrag('vol'),{passive:false});
+    tempThumb.addEventListener('mousedown',onTempDragStart,{passive:false});
+    tempThumb.addEventListener('touchstart',onTempDragStart,{passive:false});
+    volThumb.addEventListener('mousedown',onVolDragStart,{passive:false});
+    volThumb.addEventListener('touchstart',onVolDragStart,{passive:false});
 
     /* Props */
     var obs=new MutationObserver(function(){
+      if(destroyed)return;
       var P2={};
       try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
       if(P2.temperature!=null)temperature=Math.max(100,Math.min(600,Number(P2.temperature)||300));
@@ -404,7 +409,20 @@
       if(!newRun&&running){running=false;cancelAnimationFrame(animId);animId=0;}
     });
     obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
-    window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
+    function cleanup(){
+      if(destroyed)return;
+      destroyed=true;
+      cancelAnimationFrame(animId);
+      animId=0;
+      obs.disconnect();
+      endDrag();
+      tempThumb.removeEventListener('mousedown',onTempDragStart);
+      tempThumb.removeEventListener('touchstart',onTempDragStart);
+      volThumb.removeEventListener('mousedown',onVolDragStart);
+      volThumb.removeEventListener('touchstart',onVolDragStart);
+    }
+    if(registerCleanup)registerCleanup(cleanup);
+    else window.addEventListener('beforeunload',function(){cancelAnimationFrame(animId);obs.disconnect();});
   })();
   </script>
 </div>

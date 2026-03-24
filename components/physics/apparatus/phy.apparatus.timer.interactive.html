@@ -21,8 +21,8 @@
       "name": "cmp:change",
       "type": "toggle",
       "values": {
-        "running": "boolean — 是否正在计时",
-        "elapsed": "number(ms) — 已计时间（毫秒）"
+        "running": "boolean - whether the timer is running",
+        "elapsed": "number(ms) - elapsed time in milliseconds"
       }
     }
   ]
@@ -33,7 +33,7 @@
       .cmp[data-cmp-id="phy.apparatus.timer.interactive"] {
         --inner-size: var(--cmp-size, 180px);
         --inner-accent: var(--cmp-accent, #4a86e8);
-        
+
         display: inline-flex;
         flex-direction: column;
         align-items: center;
@@ -48,8 +48,7 @@
         user-select: none;
         box-sizing: border-box;
       }
-  
-      /* 电子显示屏 */
+
       .cmp[data-cmp-id="phy.apparatus.timer.interactive"] .display {
         background-color: #fff;
         width: 90%;
@@ -64,21 +63,19 @@
         margin-bottom: 12px;
         box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2);
       }
-  
+
       .cmp[data-cmp-id="phy.apparatus.timer.interactive"] .ms {
         font-size: 0.7em;
         margin-left: 2px;
       }
-  
-      /* 按钮容器 */
+
       .cmp[data-cmp-id="phy.apparatus.timer.interactive"] .controls {
         display: flex;
         gap: 15px;
         width: 90%;
         justify-content: center;
       }
-  
-      /* 通用按钮样式 */
+
       .cmp[data-cmp-id="phy.apparatus.timer.interactive"] button {
         flex: 1;
         height: calc(var(--inner-size) * 0.18);
@@ -92,23 +89,23 @@
         box-shadow: 0 3px 0 #999, 0 4px 5px rgba(0,0,0,0.2);
         transition: all 0.1s;
       }
-  
+
       .cmp[data-cmp-id="phy.apparatus.timer.interactive"] button:active {
         transform: translateY(2px);
         box-shadow: 0 1px 0 #999, 0 2px 3px rgba(0,0,0,0.2);
       }
-  
+
       .cmp[data-cmp-id="phy.apparatus.timer.interactive"] svg {
         width: 60%;
         height: 60%;
         fill: #444;
       }
     </style>
-  
+
     <div class="display">
       <span class="time-text">00:00</span><span class="ms">.00</span>
     </div>
-  
+
     <div class="controls">
       <button class="btn-reset" title="重置" aria-label="重置计时器" type="button">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
@@ -118,13 +115,16 @@
         <svg class="icon-pause" viewBox="0 0 24 24" style="display:none;" aria-hidden="true"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
       </button>
     </div>
-  
+
     <script>
       (() => {
         const script = document.currentScript;
         if (!script) return;
         const root = script.parentElement;
         if (!root || root.getAttribute('data-cmp-id') !== 'phy.apparatus.timer.interactive') return;
+        const registerCleanup = typeof root.__olcRegisterCleanup === 'function'
+          ? root.__olcRegisterCleanup.bind(root)
+          : null;
 
         const displayMain = root.querySelector('.time-text');
         const displayMs = root.querySelector('.ms');
@@ -147,20 +147,23 @@
           const secs = Math.floor((totalMs % 60000) / 1000);
           const cents = Math.floor((totalMs % 1000) / 10);
 
-          if (displayMain) {
-            displayMain.textContent = 
-              `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-          }
-          if (displayMs) {
-            displayMs.textContent = `.${cents.toString().padStart(2, '0')}`;
-          }
+          displayMain.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+          displayMs.textContent = `.${cents.toString().padStart(2, '0')}`;
         }
 
         function emitTimer() {
-            root.dispatchEvent(new CustomEvent('cmp:change', {
-                bubbles: true, composed: true,
-                detail: { id: root.getAttribute('data-cmp-id'), type: 'toggle', values: { running: !!timerInterval, elapsed: elapsedTime } }
-            }));
+          root.dispatchEvent(new CustomEvent('cmp:change', {
+            bubbles: true,
+            composed: true,
+            detail: {
+              id: root.getAttribute('data-cmp-id'),
+              type: 'toggle',
+              values: {
+                running: !!timerInterval,
+                elapsed: elapsedTime
+              }
+            }
+          }));
         }
 
         function start() {
@@ -170,9 +173,9 @@
             elapsedTime = Date.now() - startTime;
             updateDisplay();
           }, 30);
-          if (iconPlay) iconPlay.style.display = 'none';
-          if (iconPause) iconPause.style.display = 'block';
-          if (btnToggle) btnToggle.setAttribute('aria-label', '暂停计时');
+          iconPlay.style.display = 'none';
+          iconPause.style.display = 'block';
+          btnToggle.setAttribute('aria-label', '暂停计时');
           emitTimer();
         }
 
@@ -181,56 +184,38 @@
             clearInterval(timerInterval);
             timerInterval = null;
           }
-          if (iconPlay) iconPlay.style.display = 'block';
-          if (iconPause) iconPause.style.display = 'none';
-          if (btnToggle) btnToggle.setAttribute('aria-label', '开始计时');
+          iconPlay.style.display = 'block';
+          iconPause.style.display = 'none';
+          btnToggle.setAttribute('aria-label', '开始计时');
           emitTimer();
         }
 
-        if (btnToggle) {
-          btnToggle.addEventListener('click', () => {
-            if (timerInterval) stop();
-            else start();
-          });
-        }
+        const onToggleClick = () => {
+          if (timerInterval) stop();
+          else start();
+        };
 
-        if (btnReset) {
-          btnReset.addEventListener('click', () => {
-            stop();
-            elapsedTime = 0;
-            updateDisplay();
-            emitTimer();
-          });
-        }
+        const onResetClick = () => {
+          stop();
+          elapsedTime = 0;
+          updateDisplay();
+          emitTimer();
+        };
 
-        // 初始化显示
+        btnToggle.addEventListener('click', onToggleClick);
+        btnReset.addEventListener('click', onResetClick);
         updateDisplay();
 
-        // 清理函数：在组件被移除时清理定时器（防止内存泄漏）
         const cleanup = () => {
           if (timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
           }
+          btnToggle.removeEventListener('click', onToggleClick);
+          btnReset.removeEventListener('click', onResetClick);
         };
 
-        // 监听组件移除事件（如果支持）
-        if (root.parentNode) {
-          const observer = new MutationObserver((mutations) => {
-            mutations.forEach((mutation) => {
-              mutation.removedNodes.forEach((node) => {
-                if (node === root || (node.nodeType === 1 && node.contains && node.contains(root))) {
-                  cleanup();
-                  observer.disconnect();
-                }
-              });
-            });
-          });
-          observer.observe(root.parentNode || document.body, { childList: true, subtree: true });
-        }
-
-        // 页面卸载时清理
-        window.addEventListener('beforeunload', cleanup);
+        if (registerCleanup) registerCleanup(cleanup);
       })();
     </script>
   </div>

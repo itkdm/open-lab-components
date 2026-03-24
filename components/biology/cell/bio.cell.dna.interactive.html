@@ -67,6 +67,7 @@
     var sc=document.currentScript;if(!sc)return;
     var root=sc.parentElement;
     if(!root||root.getAttribute('data-cmp-id')!=='bio.cell.dna.interactive')return;
+    var registerCleanup=typeof root.__olcRegisterCleanup==='function'?root.__olcRegisterCleanup.bind(root):null;
     var svg=root.querySelector('svg');if(!svg)return;
     var NS='http://www.w3.org/2000/svg';
     var sceneG=root.querySelector('.dna__scene');
@@ -257,8 +258,9 @@
     render();
 
     /* 动画 */
-    var animId=0,lastT=0;
+    var animId=0,lastT=0,destroyed=false;
     function tick(t){
+      if(destroyed)return;
       if(!lastT)lastT=t;
       var dt=(t-lastT)/1000;
       lastT=t;
@@ -303,11 +305,12 @@
     root.addEventListener('touchstart',onDown,{passive:false});
 
     /* 点击暂停/恢复 */
-    root.addEventListener('dblclick',function(){
+    function onDblClick(){
       running=!running;
       if(running){lastT=0;animId=requestAnimationFrame(tick);}
       else{cancelAnimationFrame(animId);animId=0;}
-    });
+    }
+    root.addEventListener('dblclick',onDblClick);
 
     /* 事件 */
     function emit(){
@@ -318,6 +321,7 @@
 
     /* Props变化 */
     var obs=new MutationObserver(function(){
+      if(destroyed)return;
       var P2={};
       try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
       speed=Math.max(0.2,Math.min(3,Number(P2.speed)||1));
@@ -329,7 +333,19 @@
     });
     obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
 
-    window.addEventListener('beforeunload',function(){
+    function cleanup(){
+      if(destroyed)return;
+      destroyed=true;
+      cancelAnimationFrame(animId);
+      animId=0;
+      obs.disconnect();
+      onUp();
+      root.removeEventListener('mousedown',onDown);
+      root.removeEventListener('touchstart',onDown);
+      root.removeEventListener('dblclick',onDblClick);
+    }
+    if(registerCleanup)registerCleanup(cleanup);
+    else window.addEventListener('beforeunload',function(){
       cancelAnimationFrame(animId);obs.disconnect();
     });
   })();

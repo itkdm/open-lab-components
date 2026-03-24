@@ -146,6 +146,7 @@
     var sc=document.currentScript;if(!sc)return;
     var root=sc.parentElement;
     if(!root||root.getAttribute('data-cmp-id')!=='phy.mechanics.projectile.interactive')return;
+    var registerCleanup=typeof root.__olcRegisterCleanup==='function'?root.__olcRegisterCleanup.bind(root):null;
 
     /* ---- constants ---- */
     var LAUNCH_X=45, LAUNCH_Y=318;  /* launch point in SVG coords */
@@ -212,6 +213,8 @@
     var animId=0;
     var lastT=0;
     var trailPoints=[];
+    var resetTimer=0;
+    var destroyed=false;
 
     /* ---- physics position at time t ---- */
     function posAt(t){
@@ -344,6 +347,7 @@
 
     /* ---- animation loop ---- */
     function tick(t){
+      if(destroyed)return;
       if(!lastT)lastT=t;
       var dt=Math.min((t-lastT)/1000,0.05);
       lastT=t;
@@ -357,7 +361,9 @@
         render();
         emit();
         /* pause briefly then reset */
-        setTimeout(function(){
+        resetTimer=window.setTimeout(function(){
+          resetTimer=0;
+          if(destroyed)return;
           if(running){
             resetSim();
             animId=requestAnimationFrame(tick);
@@ -388,6 +394,7 @@
 
     /* ---- MutationObserver for prop changes ---- */
     var obs=new MutationObserver(function(){
+      if(destroyed)return;
       var P2={};
       try{var r2=root.getAttribute('data-props');if(r2){var o2=JSON.parse(r2);if(o2&&typeof o2==='object')P2=o2;}}catch(e){}
 
@@ -418,9 +425,12 @@
     });
     obs.observe(root,{attributes:true,attributeFilter:['data-props','style']});
 
-    window.addEventListener('beforeunload',function(){
+    function cleanup(){
+      destroyed=true;
+      if(resetTimer){clearTimeout(resetTimer);resetTimer=0;}
       cancelAnimationFrame(animId);obs.disconnect();
-    });
+    }
+    if(registerCleanup)registerCleanup(cleanup);
   })();
   </script>
 </div>

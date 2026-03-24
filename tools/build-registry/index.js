@@ -60,6 +60,7 @@ function main() {
       tags: Array.isArray(manifest.tags) ? manifest.tags : [],
       props: Array.isArray(manifest.props) ? manifest.props : [],
       cssVars: manifest.cssVars || {},
+      events: Array.isArray(manifest.events) ? manifest.events : undefined,
       sourcePath: toPosixRel(root, filePath)
     });
   }

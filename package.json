@@ -51,9 +51,10 @@
     "validate": "node tools/validate/index.js",
     "build:registry": "node tools/build-registry/index.js",
     "build:site": "node tools/build-site/index.js",
+    "check:registry": "node tools/check-registry/index.js",
     "build": "npm run build:registry && npm run build:site",
     "dev:site": "node tools/dev-site/index.js",
-    "prepublishOnly": "npm run build:registry"
+    "prepublishOnly": "npm run build:registry && npm run check:registry"
   },
   "devDependencies": {
     "parse5": "^7.3.0"

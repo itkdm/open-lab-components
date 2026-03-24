@@ -25,6 +25,8 @@ export interface ComponentManifest {
   name: string;
   nameEn: string;
   category: string;
+  categoryName?: string;
+  categoryNameEn?: string;
   version: string;
   viewport: { w: number; h: number };
   tags: string[];
@@ -66,6 +68,12 @@ export function resolve(id: string): string;
 
 /** Mount component HTML into a DOM container (browser). Handles script re-activation. */
 export function mount(html: string, container: HTMLElement, props?: Record<string, unknown>): void;
+
+/** Unmount a previously mounted component and run any registered cleanup callbacks. */
+export function unmount(container: HTMLElement): void;
+
+/** Update data-props on the mounted component root. */
+export function updateProps(container: HTMLElement, props?: Record<string, unknown>): void;
 
 /** The full component registry object. */
 export const registry: Registry;
