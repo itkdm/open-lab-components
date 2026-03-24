@@ -1,0 +1,143 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "cs.logic.gate.and",
+  "name": "与门 (AND Gate)",
+  "nameEn": "AND Gate",
+  "category": "cs/logic",
+  "version": "1.0.0",
+  "viewport": { "w": 180, "h": 100 },
+  "tags": ["logic", "gate", "and", "digital", "circuit", "cs"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 180, "min": 100, "max": 600, "desc": "组件尺寸宽度" },
+    { "key": "inA", "type": "number(0-1)", "default": 1, "desc": "输入引脚 A (1=通电, 0=断电)" },
+    { "key": "inB", "type": "number(0-1)", "default": 0, "desc": "输入引脚 B (1=通电, 0=断电)" },
+    { "key": "accent", "type": "color", "default": "#ef4444", "desc": "通电高亮色" },
+    { "key": "stroke", "type": "color", "default": "#4b5563", "desc": "常规/断电色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "inA": "--cmp-in-a",
+    "inB": "--cmp-in-b",
+    "accent": "--cmp-accent",
+    "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="cs.logic.gate.and" role="img" aria-label="与门">
+  <style>
+    .cmp[data-cmp-id="cs.logic.gate.and"] {
+      --_size: var(--cmp-size, 180px);
+      --_in-a: var(--cmp-in-a, 1);
+      --_in-b: var(--cmp-in-b, 0);
+
+      /* 通过数学乘法模拟 AND 门的布尔逻辑：out = A * B */
+      --_out: calc(var(--_in-a) * var(--_in-b));
+
+      --_accent: var(--cmp-accent, #ef4444);
+      --_stroke: var(--cmp-stroke, #4b5563);
+
+      display: inline-block;
+      width: var(--_size);
+      font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", monospace;
+    }
+
+    .cmp[data-cmp-id="cs.logic.gate.and"] svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    /* 底层断电导线 */
+    .cmp[data-cmp-id="cs.logic.gate.and"] .wire-bg {
+      fill: none;
+      stroke: var(--_stroke);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+    }
+
+    /* 通电导线（叠加在断电导线上，通过透明度控制显隐） */
+    .cmp[data-cmp-id="cs.logic.gate.and"] .wire-active {
+      fill: none;
+      stroke: var(--_accent);
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      filter: drop-shadow(0 0 3px var(--_accent));
+      transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* 绑定各个引脚的透明度到对应的输入/输出变量 */
+    .cmp[data-cmp-id="cs.logic.gate.and"] .wire-a { opacity: var(--_in-a); }
+    .cmp[data-cmp-id="cs.logic.gate.and"] .wire-b { opacity: var(--_in-b); }
+    .cmp[data-cmp-id="cs.logic.gate.and"] .wire-y { opacity: var(--_out); }
+
+    /* 逻辑门本体 */
+    .cmp[data-cmp-id="cs.logic.gate.and"] .gate-body {
+      fill: transparent;
+      stroke: var(--_stroke);
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+    }
+
+    /* 逻辑门通电时的背景微亮效果 */
+    .cmp[data-cmp-id="cs.logic.gate.and"] .gate-glow {
+      fill: var(--_accent);
+      opacity: calc(var(--_out) * 0.15);
+      transition: opacity 0.3s ease;
+    }
+
+    /* 文本标签样式 */
+    .cmp[data-cmp-id="cs.logic.gate.and"] .label {
+      fill: var(--_stroke);
+      font-size: 14px;
+      font-weight: 600;
+      user-select: none;
+    }
+    .cmp[data-cmp-id="cs.logic.gate.and"] .label-symbol {
+      fill: var(--_stroke);
+      font-size: 24px;
+      font-weight: 700;
+      user-select: none;
+    }
+
+    /* 输出端的动态变色文本 */
+    .cmp[data-cmp-id="cs.logic.gate.and"] .label-out {
+      fill: var(--_accent);
+      opacity: calc(0.3 + var(--_out) * 0.7);
+      transition: opacity 0.3s;
+    }
+
+    .cmp[data-cmp-id="cs.logic.gate.and"] .node {
+      fill: var(--_stroke);
+    }
+  </style>
+
+  <svg viewBox="0 0 140 80" xmlns="http://www.w3.org/2000/svg">
+    <!-- 背景断电线 -->
+    <path d="M 15 25 L 45 25" class="wire-bg" />
+    <path d="M 15 55 L 45 55" class="wire-bg" />
+    <path d="M 85 40 L 115 40" class="wire-bg" />
+
+    <!-- 通电高亮线 -->
+    <path d="M 15 25 L 45 25" class="wire-active wire-a" />
+    <path d="M 15 55 L 45 55" class="wire-active wire-b" />
+    <path d="M 85 40 L 115 40" class="wire-active wire-y" />
+
+    <!-- AND 门符号 (标准 D 形) -->
+    <path d="M 45 10 L 60 10 A 30 30 0 0 1 60 70 L 45 70 Z" class="gate-glow" />
+    <path d="M 45 10 L 60 10 A 30 30 0 0 1 60 70 L 45 70 Z" class="gate-body" />
+    <text x="54" y="48" text-anchor="middle" class="label-symbol">&amp;</text>
+
+    <!-- 接线端子 -->
+    <circle cx="15" cy="25" r="2.5" class="node" />
+    <circle cx="15" cy="55" r="2.5" class="node" />
+    <circle cx="115" cy="40" r="2.5" class="node" />
+
+    <!-- 标签 A / B / Y -->
+    <text x="0" y="30" class="label">A</text>
+    <text x="0" y="60" class="label">B</text>
+    <text x="123" y="45" class="label label-out">Y</text>
+  </svg>
+</div>
+

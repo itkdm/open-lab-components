@@ -1,0 +1,183 @@
+<!-- @cmp-manifest
+{
+  "schema": "cmp-manifest/v1",
+  "id": "cs.ai.perceptron.basic",
+  "name": "感知机模型",
+  "nameEn": "Perceptron Node",
+  "category": "cs/ai",
+  "version": "1.0.0",
+  "viewport": { "w": 240, "h": 150 },
+  "tags": ["ai", "neural-network", "perceptron", "node", "cs"],
+  "props": [
+    { "key": "size", "type": "number(px)", "default": 240, "min": 120, "max": 800, "desc": "组件尺寸宽度" },
+    { "key": "w1", "type": "number(0-1)", "default": 1, "desc": "输入 x1 权重" },
+    { "key": "w2", "type": "number(0-1)", "default": 0.3, "desc": "输入 x2 权重" },
+    { "key": "w3", "type": "number(0-1)", "default": 0.8, "desc": "输入 x3 权重" },
+    { "key": "activation", "type": "number(0-1)", "default": 1, "desc": "激活值（控制输出亮度）" },
+    { "key": "accent", "type": "color", "default": "#10b981", "desc": "激活高亮色" },
+    { "key": "stroke", "type": "color", "default": "#374151", "desc": "常规描边色" }
+  ],
+  "cssVars": {
+    "size": "--cmp-size",
+    "w1": "--cmp-w1",
+    "w2": "--cmp-w2",
+    "w3": "--cmp-w3",
+    "activation": "--cmp-activation",
+    "accent": "--cmp-accent",
+    "stroke": "--cmp-stroke"
+  }
+}
+-->
+<div class="cmp" data-cmp-id="cs.ai.perceptron.basic" role="img" aria-label="感知机模型">
+  <style>
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] {
+      /* 变量解构与 Fallback 保护机制 */
+      --_size: var(--cmp-size, 240px);
+      --_w1: var(--cmp-w1, 1);
+      --_w2: var(--cmp-w2, 0.3);
+      --_w3: var(--cmp-w3, 0.8);
+      --_act: var(--cmp-activation, 1);
+      --_accent: var(--cmp-accent, #10b981);
+      --_stroke: var(--cmp-stroke, #374151);
+
+      display: inline-block;
+      width: var(--_size);
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] text {
+      fill: var(--_stroke);
+      font-size: 8px;
+      user-select: none;
+    }
+
+    /* 数学符号与斜体变量 */
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .math-font {
+      font-family: "Times New Roman", Times, serif;
+      font-style: italic;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .node-body {
+      fill: transparent;
+      stroke: var(--_stroke);
+      stroke-width: 1.5;
+    }
+
+    /* 节点激活背景色：透明度由激活值决定 */
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .node-bg {
+      fill: var(--_accent);
+      opacity: calc(var(--_act) * 0.15);
+      transition: opacity 0.3s ease;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .link-base {
+      stroke: var(--_stroke);
+      stroke-linecap: round;
+      transition: all 0.3s ease;
+    }
+
+    /* 根据权重变量动态计算输入连线的粗细和透明度 */
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .link-w1 {
+      stroke-opacity: calc(0.2 + var(--_w1) * 0.8);
+      stroke-width: calc(0.5 + var(--_w1) * 1.5);
+    }
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .term-w1 {
+      fill-opacity: calc(0.2 + var(--_w1) * 0.8);
+      transition: fill-opacity 0.3s;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .link-w2 {
+      stroke-opacity: calc(0.2 + var(--_w2) * 0.8);
+      stroke-width: calc(0.5 + var(--_w2) * 1.5);
+    }
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .term-w2 {
+      fill-opacity: calc(0.2 + var(--_w2) * 0.8);
+      transition: fill-opacity 0.3s;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .link-w3 {
+      stroke-opacity: calc(0.2 + var(--_w3) * 0.8);
+      stroke-width: calc(0.5 + var(--_w3) * 1.5);
+    }
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .term-w3 {
+      fill-opacity: calc(0.2 + var(--_w3) * 0.8);
+      transition: fill-opacity 0.3s;
+    }
+
+    /* 输出连线与箭头的激活动画特效 */
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .link-out {
+      stroke: var(--_accent);
+      stroke-width: calc(1 + var(--_act) * 1.5);
+      stroke-opacity: calc(0.2 + var(--_act) * 0.8);
+      filter: drop-shadow(0 0 calc(3px * var(--_act)) var(--_accent));
+      transition: all 0.3s ease;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .arrow-out {
+      fill: var(--_accent);
+      fill-opacity: calc(0.2 + var(--_act) * 0.8);
+      filter: drop-shadow(0 0 calc(3px * var(--_act)) var(--_accent));
+      transition: all 0.3s ease;
+    }
+
+    .cmp[data-cmp-id="cs.ai.perceptron.basic"] .out-text {
+      fill: var(--_accent);
+      font-weight: bold;
+      opacity: calc(0.4 + var(--_act) * 0.6);
+      transition: opacity 0.3s ease;
+    }
+  </style>
+
+  <svg viewBox="0 0 160 100" xmlns="http://www.w3.org/2000/svg">
+    <!-- Input x1 -->
+    <text x="5" y="23" class="math-font">x₁</text>
+    <line x1="15" y1="20" x2="52" y2="40" class="link-base link-w1" />
+    <circle cx="53" cy="40.7" r="1.5" fill="var(--_stroke)" class="term-w1" />
+    <text x="30" y="24" class="math-font">w₁</text>
+
+    <!-- Input x2 -->
+    <text x="5" y="53" class="math-font">x₂</text>
+    <line x1="15" y1="50" x2="52" y2="50" class="link-base link-w2" />
+    <circle cx="53" cy="50" r="1.5" fill="var(--_stroke)" class="term-w2" />
+    <text x="30" y="47" class="math-font">w₂</text>
+
+    <!-- Input x3 -->
+    <text x="5" y="83" class="math-font">x₃</text>
+    <line x1="15" y1="80" x2="52" y2="60" class="link-base link-w3" />
+    <circle cx="53" cy="59.3" r="1.5" fill="var(--_stroke)" class="term-w3" />
+    <text x="30" y="78" class="math-font">w₃</text>
+
+    <!-- Central Neuron Node -->
+    <circle cx="80" cy="50" r="25" class="node-bg" />
+    <circle cx="80" cy="50" r="25" class="node-body" />
+    <line x1="80" y1="25" x2="80" y2="75" stroke="var(--_stroke)" stroke-width="1" stroke-dasharray="2,2" opacity="0.5"/>
+
+    <!-- Left side: Summation (Σ) -->
+    <text x="64" y="54" font-size="12px" class="math-font">Σ</text>
+
+    <!-- Right side: Step Activation Function Icon -->
+    <g transform="translate(86, 42)">
+      <line x1="0" y1="8" x2="12" y2="8" stroke="var(--_stroke)" stroke-width="0.5" opacity="0.4"/>
+      <line x1="6" y1="0" x2="6" y2="16" stroke="var(--_stroke)" stroke-width="0.5" opacity="0.4"/>
+      <polyline points="0,12 6,12 6,4 12,4" fill="none" stroke="var(--_stroke)" stroke-width="1.2" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Bias (b) -->
+    <text x="78" y="15" class="math-font" font-size="7px">b</text>
+    <line x1="80" y1="18" x2="80" y2="25" class="link-base" stroke-width="1" opacity="0.5"/>
+    <polygon points="80,25 78.5,22 81.5,22" fill="var(--_stroke)" opacity="0.5" />
+
+    <!-- Output y -->
+    <line x1="105" y1="50" x2="140" y2="50" class="link-out" />
+    <polygon points="144,50 138,47 138,53" class="arrow-out" />
+    <text x="148" y="53" class="math-font out-text">y</text>
+  </svg>
+</div>
+

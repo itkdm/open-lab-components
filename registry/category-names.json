@@ -1,6 +1,14 @@
 {
   "schema": "cmp-category-names/v1",
   "categories": {
+    "cs/ai": {
+      "name": "计算机·人工智能",
+      "nameEn": "Computer Science · AI"
+    },
+    "cs/logic": {
+      "name": "计算机·数字逻辑",
+      "nameEn": "Computer Science · Digital Logic"
+    },
     "physics/apparatus": {
       "name": "物理器材",
       "nameEn": "Physics Apparatus"
