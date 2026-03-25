@@ -1,0 +1,31 @@
+{
+  "name": "@itkdm/open-lab-components-mcp",
+  "version": "0.1.0",
+  "description": "Read-only MCP server for discovering and retrieving Open Lab Components.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "open-lab-components-mcp": "./src/cli.js",
+    "open-lab-components-mcp-http": "./src/http-cli.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "src/**/*",
+    "config/**/*.json",
+    ".env.example",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node ./src/cli.js",
+    "start:http": "node ./src/http-cli.js",
+    "token:generate": "node ./src/token-cli.js",
+    "test": "node --test ./tests/**/*.test.js",
+    "test:remote": "node --test ./tests/remote.test.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.1",
+    "zod": "^3.25.76"
+  }
+}

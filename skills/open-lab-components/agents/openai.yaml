@@ -1,0 +1,4 @@
+interface:
+  display_name: "Open Lab Components"
+  short_description: "Maintain the HTML fragment STEM component library."
+  default_prompt: "Use $open-lab-components to add or update this library while preserving its manifest, runtime, registry, validator, and site conventions."

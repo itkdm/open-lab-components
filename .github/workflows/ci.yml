@@ -25,6 +25,9 @@ jobs:
     
     - name: Install dependencies
       run: npm ci
+
+    - name: Install MCP dependencies
+      run: npm --prefix mcp-server ci
     
     - name: Validate components
       run: npm run validate
@@ -37,6 +40,12 @@ jobs:
     
     - name: Build site
       run: npm run build:site
+
+    - name: Test MCP server
+      run: npm run mcp:test
+
+    - name: Test remote MCP server
+      run: npm run mcp:test:remote
 
   deploy:
     needs: validate
@@ -58,6 +67,9 @@ jobs:
     
     - name: Install dependencies
       run: npm ci
+
+    - name: Install MCP dependencies
+      run: npm --prefix mcp-server ci
     
     - name: Build registry
       run: npm run build:registry
@@ -67,6 +79,12 @@ jobs:
     
     - name: Build site
       run: npm run build:site
+
+    - name: Test MCP server
+      run: npm run mcp:test
+
+    - name: Test remote MCP server
+      run: npm run mcp:test:remote
     
     - name: Setup Pages
       uses: actions/configure-pages@v4

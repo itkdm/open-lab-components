@@ -1,5 +1,11 @@
 # Open Lab Components
 
+## MCP
+
+Read-only MCP server support is available in [`mcp-server/`](./mcp-server) for AI clients that need to search and fetch components from this library over `stdio`.
+
+See [docs/MCP.md](./docs/MCP.md) for the exposed tools, local startup, and client configuration.
+
 **210+ 零依赖、即插即用的 STEM 教育交互组件库**，覆盖物理、化学、生物、数学、科学五大学科。
 
 [![npm](https://img.shields.io/npm/v/@itkdm/open-lab-components)](https://www.npmjs.com/package/@itkdm/open-lab-components)

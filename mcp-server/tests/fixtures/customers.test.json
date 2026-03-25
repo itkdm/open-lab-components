@@ -1,0 +1,50 @@
+[
+  {
+    "customerId": "vip-test",
+    "label": "VIP Test Customer",
+    "tokenHash": "4c5dc9b7708905f77f5e5d16316b5dfb425e68cb326dcd55a860e90a7707031e",
+    "status": "active",
+    "rateLimit": {
+      "requestsPerMinute": 2,
+      "burst": 0
+    },
+    "allowedTools": ["get_categories", "list_components", "search_components", "get_component"],
+    "expiresAt": "2099-12-31T23:59:59.000Z"
+  },
+  {
+    "customerId": "vip-disabled",
+    "label": "Disabled Test Customer",
+    "tokenHash": "4b94105efa2ae52280546313bf3d87b7bccd74c27a4ab2c799bd9cfe672e9a9f",
+    "status": "disabled",
+    "rateLimit": {
+      "requestsPerMinute": 2,
+      "burst": 0
+    },
+    "allowedTools": ["*"],
+    "expiresAt": "2099-12-31T23:59:59.000Z"
+  },
+  {
+    "customerId": "vip-restricted",
+    "label": "Restricted Test Customer",
+    "tokenHash": "0f27d1cf84b10bf9181cf82dde4112ece87a7d7c13c9d565c97124921ae9ea84",
+    "status": "active",
+    "rateLimit": {
+      "requestsPerMinute": 5,
+      "burst": 0
+    },
+    "allowedTools": ["get_categories"],
+    "expiresAt": "2099-12-31T23:59:59.000Z"
+  },
+  {
+    "customerId": "vip-expired",
+    "label": "Expired Test Customer",
+    "tokenHash": "b52b3ef2233858ce1156d85f235cf2c41eddfa8ca1eedc924398b9af1db303cb",
+    "status": "active",
+    "rateLimit": {
+      "requestsPerMinute": 5,
+      "burst": 0
+    },
+    "allowedTools": ["*"],
+    "expiresAt": "2000-01-01T00:00:00.000Z"
+  }
+]

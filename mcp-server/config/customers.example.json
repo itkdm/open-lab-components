@@ -1,0 +1,14 @@
+[
+  {
+    "customerId": "vip-demo",
+    "label": "Demo VIP",
+    "tokenHash": "replace-with-sha256-hash",
+    "status": "active",
+    "rateLimit": {
+      "requestsPerMinute": 60,
+      "burst": 10
+    },
+    "allowedTools": ["*"],
+    "expiresAt": "2099-12-31T23:59:59.000Z"
+  }
+]

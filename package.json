@@ -45,13 +45,17 @@
     "simulation"
   ],
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "validate": "node tools/validate/index.js",
     "build:registry": "node tools/build-registry/index.js",
     "build:site": "node tools/build-site/index.js",
     "check:registry": "node tools/check-registry/index.js",
+    "mcp:start": "npm --prefix mcp-server start",
+    "mcp:start:http": "npm --prefix mcp-server run start:http",
+    "mcp:test": "npm --prefix mcp-server test",
+    "mcp:test:remote": "npm --prefix mcp-server run test:remote",
     "build": "npm run build:registry && npm run build:site",
     "dev:site": "node tools/dev-site/index.js",
     "prepublishOnly": "npm run build:registry && npm run check:registry"
