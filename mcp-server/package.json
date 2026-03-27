@@ -1,7 +1,7 @@
 {
   "name": "@itkdm/open-lab-components-mcp",
-  "version": "0.1.0",
-  "description": "Read-only MCP server for discovering and retrieving Open Lab Components.",
+  "version": "0.2.0",
+  "description": "Locale-aware MCP server for discovering and retrieving Open Lab Components.",
   "license": "MIT",
   "type": "module",
   "bin": {

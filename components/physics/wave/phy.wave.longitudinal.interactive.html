@@ -1,26 +1,186 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.wave.longitudinal.interactive",
   "name": "纵波演示（交互式）",
-  "nameEn": "Longitudinal Wave (Interactive)",
+  "nameEn": "Longitudinal Wave Explorer",
   "category": "physics/wave",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 120 },
-  "tags": ["wave", "longitudinal", "sound", "compression", "rarefaction", "interactive"],
+  "viewport": {
+    "w": 480,
+    "h": 120
+  },
+  "tags": [
+    "wave",
+    "longitudinal",
+    "sound",
+    "compression",
+    "rarefaction",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 120, "min": 80, "max": 240, "desc": "组件高度" },
-    { "key": "amplitude",   "type": "number",     "default": 8,   "min": 2, "max": 20, "desc": "振幅(px)" },
-    { "key": "wavelength",  "type": "number",     "default": 120, "min": 60, "max": 240, "desc": "波长(px)" },
-    { "key": "speed",       "type": "number",     "default": 1,   "min": 0, "max": 3, "desc": "传播速度倍率" },
-    { "key": "particles",   "type": "number",     "default": 40,  "min": 20, "max": 80, "desc": "质点数量" },
-    { "key": "particleColor","type": "color", "default": "#1e88e5", "desc": "质点颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 80,
+      "max": 240,
+      "desc": "组件高度"
+    },
+    {
+      "key": "amplitude",
+      "type": "number",
+      "default": 8,
+      "min": 2,
+      "max": 20,
+      "desc": "振幅(px)"
+    },
+    {
+      "key": "wavelength",
+      "type": "number",
+      "default": 120,
+      "min": 60,
+      "max": 240,
+      "desc": "波长(px)"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "desc": "传播速度倍率"
+    },
+    {
+      "key": "particles",
+      "type": "number",
+      "default": 40,
+      "min": 20,
+      "max": 80,
+      "desc": "质点数量"
+    },
+    {
+      "key": "particleColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "质点颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调亮度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "particleColor": "--cmp-particle",
-    "stroke": "--cmp-stroke", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "particleColor": "--cmp-particle",
+    "stroke": "--cmp-stroke",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "纵波演示（交互式）",
+      "tags": [
+        "wave",
+        "longitudinal",
+        "sound",
+        "compression",
+        "rarefaction",
+        "interactive"
+      ],
+      "ariaLabel": "纵波演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "amplitude": {
+          "label": "amplitude",
+          "desc": "振幅(px)"
+        },
+        "wavelength": {
+          "label": "wavelength",
+          "desc": "波长(px)"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "传播速度倍率"
+        },
+        "particles": {
+          "label": "particles",
+          "desc": "质点数量"
+        },
+        "particleColor": {
+          "label": "particleColor",
+          "desc": "质点颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Longitudinal Wave Explorer",
+      "tags": [
+        "wave",
+        "longitudinal",
+        "sound",
+        "compression",
+        "rarefaction",
+        "interactive"
+      ],
+      "ariaLabel": "Longitudinal Wave Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "amplitude": {
+          "label": "Amplitude",
+          "desc": "Numeric control for amplitude."
+        },
+        "wavelength": {
+          "label": "Wavelength",
+          "desc": "Numeric control for wavelength."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "particles": {
+          "label": "Particles",
+          "desc": "Numeric control for particles."
+        },
+        "particleColor": {
+          "label": "Particle Color",
+          "desc": "Color setting for particle color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

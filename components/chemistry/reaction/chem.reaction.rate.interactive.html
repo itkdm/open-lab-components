@@ -1,34 +1,287 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.reaction.rate.interactive",
   "name": "化学反应速率（交互式）",
-  "nameEn": "Reaction Rate (Interactive)",
+  "nameEn": "Reaction Rate Explorer",
   "category": "chemistry/reaction",
   "version": "1.0.1",
-  "viewport": { "w": 520, "h": 440 },
-  "tags": ["chemistry","reaction-rate","concentration","temperature","catalyst","interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 440
+  },
+  "tags": [
+    "chemistry",
+    "reaction-rate",
+    "concentration",
+    "temperature",
+    "catalyst",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",       "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "reactantColor","type": "color",  "default": "#e53935", "desc": "反应物颜色" },
-    { "key": "productColor", "type": "color",  "default": "#1e88e5", "desc": "生成物颜色" },
-    { "key": "flaskColor",   "type": "color",  "default": "#e3f2fd", "desc": "烧瓶颜色" },
-    { "key": "temperature",  "type": "number", "default": 25, "min": 0, "max": 100, "desc": "温度(°C)" },
-    { "key": "concentration","type": "number", "default": 1.0, "min": 0.1, "max": 3.0, "desc": "初始浓度(mol/L)" },
-    { "key": "catalyst",     "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "催化剂" },
-    { "key": "running",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "speed",        "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "showGraph",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示浓度-时间图" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 440,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "reactantColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "反应物颜色"
+    },
+    {
+      "key": "productColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "生成物颜色"
+    },
+    {
+      "key": "flaskColor",
+      "type": "color",
+      "default": "#e3f2fd",
+      "desc": "烧瓶颜色"
+    },
+    {
+      "key": "temperature",
+      "type": "number",
+      "default": 25,
+      "min": 0,
+      "max": 100,
+      "desc": "温度(°C)"
+    },
+    {
+      "key": "concentration",
+      "type": "number",
+      "default": 1,
+      "min": 0.1,
+      "max": 3,
+      "desc": "初始浓度(mol/L)"
+    },
+    {
+      "key": "catalyst",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "催化剂"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "showGraph",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示浓度-时间图"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "reactantColor": "--cmp-reactant", "productColor": "--cmp-product", "flaskColor": "--cmp-flask", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "reactantColor": "--cmp-reactant",
+    "productColor": "--cmp-product",
+    "flaskColor": "--cmp-flask",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "tick", "values": { "cReactant": "number", "cProduct": "number", "rate": "number", "t": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "tick",
+      "values": {
+        "cReactant": "number",
+        "cProduct": "number",
+        "rate": "number",
+        "t": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "化学反应速率（交互式）",
+      "tags": [
+        "chemistry",
+        "reaction-rate",
+        "concentration",
+        "temperature",
+        "catalyst",
+        "interactive"
+      ],
+      "ariaLabel": "化学反应速率（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "reactantColor": {
+          "label": "reactantColor",
+          "desc": "反应物颜色"
+        },
+        "productColor": {
+          "label": "productColor",
+          "desc": "生成物颜色"
+        },
+        "flaskColor": {
+          "label": "flaskColor",
+          "desc": "烧瓶颜色"
+        },
+        "temperature": {
+          "label": "temperature",
+          "desc": "温度(°C)"
+        },
+        "concentration": {
+          "label": "concentration",
+          "desc": "初始浓度(mol/L)"
+        },
+        "catalyst": {
+          "label": "catalyst",
+          "desc": "催化剂"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "showGraph": {
+          "label": "showGraph",
+          "desc": "显示浓度-时间图"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "cReactant": "number",
+            "cProduct": "number",
+            "rate": "number",
+            "t": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Reaction Rate Explorer",
+      "tags": [
+        "chemistry",
+        "reaction-rate",
+        "concentration",
+        "temperature",
+        "catalyst",
+        "interactive"
+      ],
+      "ariaLabel": "Reaction Rate Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "reactantColor": {
+          "label": "Reactant Color",
+          "desc": "Sets the color used for reactants."
+        },
+        "productColor": {
+          "label": "Product Color",
+          "desc": "Sets the color used for products."
+        },
+        "flaskColor": {
+          "label": "Flask Color",
+          "desc": "Sets the color of the reaction flask."
+        },
+        "temperature": {
+          "label": "Temperature",
+          "desc": "Sets the temperature used in the simulation."
+        },
+        "concentration": {
+          "label": "Concentration",
+          "desc": "Sets the concentration value."
+        },
+        "catalyst": {
+          "label": "Catalyst",
+          "desc": "Selects the catalyst condition."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "showGraph": {
+          "label": "Show Graph",
+          "desc": "Shows or hides the graph panel."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "cReactant": "Current c reactant.",
+            "cProduct": "Current c product.",
+            "rate": "Current reaction rate.",
+            "t": "Current t."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.reaction.rate.interactive" role="img" aria-label="化学反应速率（交互式）">

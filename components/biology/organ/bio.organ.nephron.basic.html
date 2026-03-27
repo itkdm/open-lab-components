@@ -1,25 +1,173 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.organ.nephron.basic",
   "name": "肾单位结构",
-  "nameEn": "Nephron Structure",
+  "nameEn": "Nephron Anatomy",
   "category": "biology/organ",
   "version": "1.0.0",
-  "viewport": { "w": 240, "h": 300 },
-  "tags": ["biology", "organ", "nephron", "kidney", "anatomy", "urinary", "glomerulus"],
+  "viewport": {
+    "w": 240,
+    "h": 300
+  },
+  "tags": [
+    "biology",
+    "organ",
+    "nephron",
+    "kidney",
+    "anatomy",
+    "urinary",
+    "glomerulus"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 300, "min": 200, "max": 500, "desc": "组件高度" },
-    { "key": "capsuleColor",   "type": "color",  "default": "#a5d6a7", "desc": "肾小囊颜色" },
-    { "key": "tubuleColor",    "type": "color",  "default": "#fff176", "desc": "肾小管颜色" },
-    { "key": "capillaryColor", "type": "color",  "default": "#ef5350", "desc": "毛细血管颜色" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 200,
+      "max": 500,
+      "desc": "组件高度"
+    },
+    {
+      "key": "capsuleColor",
+      "type": "color",
+      "default": "#a5d6a7",
+      "desc": "肾小囊颜色"
+    },
+    {
+      "key": "tubuleColor",
+      "type": "color",
+      "default": "#fff176",
+      "desc": "肾小管颜色"
+    },
+    {
+      "key": "capillaryColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "毛细血管颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "capsuleColor": "--cmp-capsule", "tubuleColor": "--cmp-tubule",
-    "capillaryColor": "--cmp-capillary", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "capsuleColor": "--cmp-capsule",
+    "tubuleColor": "--cmp-tubule",
+    "capillaryColor": "--cmp-capillary",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "肾单位结构",
+      "tags": [
+        "biology",
+        "organ",
+        "nephron",
+        "kidney",
+        "anatomy",
+        "urinary",
+        "glomerulus"
+      ],
+      "ariaLabel": "肾单位结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "capsuleColor": {
+          "label": "capsuleColor",
+          "desc": "肾小囊颜色"
+        },
+        "tubuleColor": {
+          "label": "tubuleColor",
+          "desc": "肾小管颜色"
+        },
+        "capillaryColor": {
+          "label": "capillaryColor",
+          "desc": "毛细血管颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Nephron Anatomy",
+      "tags": [
+        "biology",
+        "organ",
+        "nephron",
+        "kidney",
+        "anatomy",
+        "urinary",
+        "glomerulus"
+      ],
+      "ariaLabel": "Nephron Anatomy",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "capsuleColor": {
+          "label": "Capsule Color",
+          "desc": "Sets the color of the cell or organ capsule."
+        },
+        "tubuleColor": {
+          "label": "Tubule Color",
+          "desc": "Sets the color of the renal tubules."
+        },
+        "capillaryColor": {
+          "label": "Capillary Color",
+          "desc": "Sets the color of the capillaries."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

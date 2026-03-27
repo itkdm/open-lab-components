@@ -1,24 +1,152 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.motor.basic",
   "name": "电动机",
   "nameEn": "DC Motor",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 80 },
-  "tags": ["circuit", "motor", "dc", "rotation", "electromagnetic"],
+  "viewport": {
+    "w": 100,
+    "h": 80
+  },
+  "tags": [
+    "circuit",
+    "motor",
+    "dc",
+    "rotation",
+    "electromagnetic"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 80, "min": 50, "max": 160, "desc": "组件高度" },
-    { "key": "running",    "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "运转状态" },
-    { "key": "bodyColor",  "type": "color",  "default": "#78909c", "desc": "外壳颜色" },
-    { "key": "shaftColor", "type": "color",  "default": "#b0bec5", "desc": "转轴颜色" },
-    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 80,
+      "min": 50,
+      "max": 160,
+      "desc": "组件高度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运转状态"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "外壳颜色"
+    },
+    {
+      "key": "shaftColor",
+      "type": "color",
+      "default": "#b0bec5",
+      "desc": "转轴颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bodyColor": "--cmp-body", "shaftColor": "--cmp-shaft",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "shaftColor": "--cmp-shaft",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "电动机",
+      "tags": [
+        "circuit",
+        "motor",
+        "dc",
+        "rotation",
+        "electromagnetic"
+      ],
+      "ariaLabel": "电动机",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运转状态"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "外壳颜色"
+        },
+        "shaftColor": {
+          "label": "shaftColor",
+          "desc": "转轴颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "DC Motor",
+      "tags": [
+        "circuit",
+        "motor",
+        "dc",
+        "rotation",
+        "electromagnetic"
+      ],
+      "ariaLabel": "DC Motor",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "shaftColor": {
+          "label": "Shaft Color",
+          "desc": "Color setting for shaft color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

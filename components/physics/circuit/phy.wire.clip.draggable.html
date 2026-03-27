@@ -1,48 +1,299 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.wire.clip.draggable",
   "name": "导线（鳄鱼夹）",
-  "nameEn": "Wire with Alligator Clips",
+  "nameEn": "Clip Lead",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 200 },
+  "viewport": {
+    "w": 320,
+    "h": 200
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 80,  "max": 500, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "aspect",      "type": "number",     "default": 1.6, "min": 1.0, "max": 3.0, "desc": "宽高比（width = size × aspect）" },
-
-    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 2,   "min": 0.5, "max": 5, "desc": "描边粗细" },
-
-    { "key": "wireColor",   "type": "color",  "default": "#222222", "desc": "导线颜色（绝缘皮）" },
-    { "key": "wireWidth",   "type": "number", "default": 5,   "min": 2,   "max": 14, "desc": "导线粗细" },
-    { "key": "coreColor",   "type": "color",  "default": "#b87333", "desc": "铜芯颜色（夹口处可见）" },
-
-    { "key": "clipColorA",  "type": "color",  "default": "#111827", "desc": "A 端夹子颜色" },
-    { "key": "clipColorB",  "type": "color",  "default": "#111827", "desc": "B 端夹子颜色" },
-
-    { "key": "ax",          "type": "number", "default": 40,  "min": 0, "max": 320, "desc": "A 端位置 X（viewBox 坐标）" },
-    { "key": "ay",          "type": "number", "default": 100, "min": 0, "max": 200, "desc": "A 端位置 Y（viewBox 坐标）" },
-    { "key": "bx",          "type": "number", "default": 280, "min": 0, "max": 320, "desc": "B 端位置 X（viewBox 坐标）" },
-    { "key": "by",          "type": "number", "default": 100, "min": 0, "max": 200, "desc": "B 端位置 Y（viewBox 坐标）" },
-
-    { "key": "sag",         "type": "number(0-1)", "default": 0.35, "min": 0, "max": 1, "desc": "导线下垂程度（0=直线，1=大弧度）" },
-
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 80,
+      "max": 500,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "aspect",
+      "type": "number",
+      "default": 1.6,
+      "min": 1,
+      "max": 3,
+      "desc": "宽高比（width = size × aspect）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "wireColor",
+      "type": "color",
+      "default": "#222222",
+      "desc": "导线颜色（绝缘皮）"
+    },
+    {
+      "key": "wireWidth",
+      "type": "number",
+      "default": 5,
+      "min": 2,
+      "max": 14,
+      "desc": "导线粗细"
+    },
+    {
+      "key": "coreColor",
+      "type": "color",
+      "default": "#b87333",
+      "desc": "铜芯颜色（夹口处可见）"
+    },
+    {
+      "key": "clipColorA",
+      "type": "color",
+      "default": "#111827",
+      "desc": "A 端夹子颜色"
+    },
+    {
+      "key": "clipColorB",
+      "type": "color",
+      "default": "#111827",
+      "desc": "B 端夹子颜色"
+    },
+    {
+      "key": "ax",
+      "type": "number",
+      "default": 40,
+      "min": 0,
+      "max": 320,
+      "desc": "A 端位置 X（viewBox 坐标）"
+    },
+    {
+      "key": "ay",
+      "type": "number",
+      "default": 100,
+      "min": 0,
+      "max": 200,
+      "desc": "A 端位置 Y（viewBox 坐标）"
+    },
+    {
+      "key": "bx",
+      "type": "number",
+      "default": 280,
+      "min": 0,
+      "max": 320,
+      "desc": "B 端位置 X（viewBox 坐标）"
+    },
+    {
+      "key": "by",
+      "type": "number",
+      "default": 100,
+      "min": 0,
+      "max": 200,
+      "desc": "B 端位置 Y（viewBox 坐标）"
+    },
+    {
+      "key": "sag",
+      "type": "number(0-1)",
+      "default": 0.35,
+      "min": 0,
+      "max": 1,
+      "desc": "导线下垂程度（0=直线，1=大弧度）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "aspect":      "--cmp-aspect",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "aspect": "--cmp-aspect",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "wireColor":   "--cmp-wire-color",
-    "wireWidth":   "--cmp-wire-width",
-    "coreColor":   "--cmp-core-color",
-    "clipColorA":  "--cmp-clip-a",
-    "clipColorB":  "--cmp-clip-b",
-    "glow":        "--cmp-glow"
+    "wireColor": "--cmp-wire-color",
+    "wireWidth": "--cmp-wire-width",
+    "coreColor": "--cmp-core-color",
+    "clipColorA": "--cmp-clip-a",
+    "clipColorB": "--cmp-clip-b",
+    "glow": "--cmp-glow"
   },
-  "tags": ["wire", "cable", "connector", "alligator-clip", "circuit", "draggable"]
+  "tags": [
+    "wire",
+    "cable",
+    "connector",
+    "alligator-clip",
+    "circuit",
+    "draggable"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "导线（鳄鱼夹）",
+      "tags": [
+        "wire",
+        "cable",
+        "connector",
+        "alligator-clip",
+        "circuit",
+        "draggable"
+      ],
+      "ariaLabel": "导线（鳄鱼夹）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "aspect": {
+          "label": "aspect",
+          "desc": "宽高比（width = size × aspect）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "wireColor": {
+          "label": "wireColor",
+          "desc": "导线颜色（绝缘皮）"
+        },
+        "wireWidth": {
+          "label": "wireWidth",
+          "desc": "导线粗细"
+        },
+        "coreColor": {
+          "label": "coreColor",
+          "desc": "铜芯颜色（夹口处可见）"
+        },
+        "clipColorA": {
+          "label": "clipColorA",
+          "desc": "A 端夹子颜色"
+        },
+        "clipColorB": {
+          "label": "clipColorB",
+          "desc": "B 端夹子颜色"
+        },
+        "ax": {
+          "label": "ax",
+          "desc": "A 端位置 X（viewBox 坐标）"
+        },
+        "ay": {
+          "label": "ay",
+          "desc": "A 端位置 Y（viewBox 坐标）"
+        },
+        "bx": {
+          "label": "bx",
+          "desc": "B 端位置 X（viewBox 坐标）"
+        },
+        "by": {
+          "label": "by",
+          "desc": "B 端位置 Y（viewBox 坐标）"
+        },
+        "sag": {
+          "label": "sag",
+          "desc": "导线下垂程度（0=直线，1=大弧度）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Clip Lead",
+      "tags": [
+        "wire",
+        "cable",
+        "connector",
+        "alligator-clip",
+        "circuit",
+        "draggable"
+      ],
+      "ariaLabel": "Clip lead",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "aspect": {
+          "label": "Aspect Ratio",
+          "desc": "Width-to-height ratio."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "wireColor": {
+          "label": "Wire Color",
+          "desc": "Color of the wire."
+        },
+        "wireWidth": {
+          "label": "Wire Width",
+          "desc": "Thickness of the wire."
+        },
+        "coreColor": {
+          "label": "Core Color",
+          "desc": "Color of the central core."
+        },
+        "clipColorA": {
+          "label": "Clip A Color",
+          "desc": "Color of clip A."
+        },
+        "clipColorB": {
+          "label": "Clip B Color",
+          "desc": "Color of clip B."
+        },
+        "ax": {
+          "label": "Endpoint A X",
+          "desc": "X position of endpoint A in viewBox coordinates."
+        },
+        "ay": {
+          "label": "Endpoint A Y",
+          "desc": "Y position of endpoint A in viewBox coordinates."
+        },
+        "bx": {
+          "label": "Endpoint B X",
+          "desc": "X position of endpoint B in viewBox coordinates."
+        },
+        "by": {
+          "label": "Endpoint B Y",
+          "desc": "Y position of endpoint B in viewBox coordinates."
+        },
+        "sag": {
+          "label": "Wire Sag",
+          "desc": "Amount of sag in the wire segment."
+        },
+        "glow": {
+          "label": "Highlight Intensity",
+          "desc": "Glow or highlight intensity from 0 to 1."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.wire.clip.draggable" role="img" aria-label="导线（鳄鱼夹）">

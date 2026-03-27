@@ -1,34 +1,231 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.model.molecule.ball-stick",
   "name": "分子模型（球棍）",
-  "nameEn": "Molecule Model (Ball-Stick)",
+  "nameEn": "Ball-and-Stick Molecule Model",
   "category": "chemistry/model",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 200 },
-  "tags": ["molecule", "ball-stick", "model", "chemistry", "interactive", "H2O", "CO2", "CH4"],
+  "viewport": {
+    "w": 200,
+    "h": 200
+  },
+  "tags": [
+    "molecule",
+    "ball-stick",
+    "model",
+    "chemistry",
+    "interactive",
+    "H2O",
+    "CO2",
+    "CH4"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 200, "min": 120, "max": 400, "desc": "组件尺寸（正方形）" },
-    { "key": "molecule",   "type": "enum",   "default": "H2O", "enum": ["H2O","CO2","CH4","O2","N2","NaCl"], "desc": "分子类型" },
-    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
-    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "bondColor",  "type": "color",  "default": "#666666", "desc": "化学键颜色" },
-    { "key": "accent",     "type": "color",  "default": "#1565c0", "desc": "标注文字颜色" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 400,
+      "desc": "组件尺寸（正方形）"
+    },
+    {
+      "key": "molecule",
+      "type": "enum",
+      "default": "H2O",
+      "enum": [
+        "H2O",
+        "CO2",
+        "CH4",
+        "O2",
+        "N2",
+        "NaCl"
+      ],
+      "desc": "分子类型"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#222222",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "bondColor",
+      "type": "color",
+      "default": "#666666",
+      "desc": "化学键颜色"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "标注文字颜色"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
-    "stroke":     "--cmp-stroke",
-    "strokeWidth":"--cmp-stroke-width",
-    "bondColor":  "--cmp-bond",
-    "accent":     "--cmp-accent",
-    "glow":       "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "bondColor": "--cmp-bond",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change",    "type": "rotate", "values": { "angleX": "number(deg)", "angleY": "number(deg)" } },
-    { "name": "cmp:changeend", "type": "rotate", "values": { "angleX": "number(deg)", "angleY": "number(deg)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "rotate",
+      "values": {
+        "angleX": "number(deg)",
+        "angleY": "number(deg)"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "rotate",
+      "values": {
+        "angleX": "number(deg)",
+        "angleY": "number(deg)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "分子模型（球棍）",
+      "tags": [
+        "molecule",
+        "ball-stick",
+        "model",
+        "chemistry",
+        "interactive",
+        "H2O",
+        "CO2",
+        "CH4"
+      ],
+      "ariaLabel": "分子模型（球棍）— H₂O",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸（正方形）"
+        },
+        "molecule": {
+          "label": "molecule",
+          "desc": "分子类型"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "bondColor": {
+          "label": "bondColor",
+          "desc": "化学键颜色"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "标注文字颜色"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angleX": "number(deg)",
+            "angleY": "number(deg)"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "angleX": "number(deg)",
+            "angleY": "number(deg)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Ball-and-Stick Molecule Model",
+      "tags": [
+        "molecule",
+        "ball-stick",
+        "model",
+        "chemistry",
+        "interactive",
+        "H2O",
+        "CO2",
+        "CH4"
+      ],
+      "ariaLabel": "Ball-and-Stick Molecule Model",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "molecule": {
+          "label": "Molecule",
+          "desc": "Selects which molecule is displayed."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "bondColor": {
+          "label": "Bond Color",
+          "desc": "Sets the color of the chemical bonds."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angleX": "Current rotation angle around the x-axis.",
+            "angleY": "Current rotation angle around the y-axis."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "angleX": "Current rotation angle around the x-axis.",
+            "angleY": "Current rotation angle around the y-axis."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.model.molecule.ball-stick" role="img" aria-label="分子模型（球棍）— H₂O">

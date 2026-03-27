@@ -1,30 +1,166 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.led.basic",
   "name": "发光二极管（LED）",
   "nameEn": "LED",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 80, "h": 110 },
-  "tags": ["led", "diode", "circuit", "semiconductor", "light"],
+  "viewport": {
+    "w": 80,
+    "h": 110
+  },
+  "tags": [
+    "led",
+    "diode",
+    "circuit",
+    "semiconductor",
+    "light"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)",  "default": 110,       "min": 48, "max": 256, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "color",       "type": "color",       "default": "#ef4444", "desc": "LED 颜色（红/绿/蓝/黄等）" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0,         "min": 0,  "max": 1,   "desc": "发光强度（0=灭，1=最亮）" },
-    { "key": "bodyColor",   "type": "color",       "default": "rgba(180,60,60,0.35)", "desc": "外壳颜色（透明环氧体）" },
-    { "key": "leadColor",   "type": "color",       "default": "#9e9e9e", "desc": "引脚颜色" },
-    { "key": "stroke",      "type": "color",       "default": "#374151", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number",      "default": 1.6,       "min": 0.5, "max": 4, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 110,
+      "min": 48,
+      "max": 256,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "color",
+      "type": "color",
+      "default": "#ef4444",
+      "desc": "LED 颜色（红/绿/蓝/黄等）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度（0=灭，1=最亮）"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "rgba(180,60,60,0.35)",
+      "desc": "外壳颜色（透明环氧体）"
+    },
+    {
+      "key": "leadColor",
+      "type": "color",
+      "default": "#9e9e9e",
+      "desc": "引脚颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#374151",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.6,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "color":       "--cmp-color",
-    "glow":        "--cmp-glow",
-    "bodyColor":   "--cmp-body",
-    "leadColor":   "--cmp-lead",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "color": "--cmp-color",
+    "glow": "--cmp-glow",
+    "bodyColor": "--cmp-body",
+    "leadColor": "--cmp-lead",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "发光二极管（LED）",
+      "tags": [
+        "led",
+        "diode",
+        "circuit",
+        "semiconductor",
+        "light"
+      ],
+      "ariaLabel": "发光二极管（LED）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "color": {
+          "label": "color",
+          "desc": "LED 颜色（红/绿/蓝/黄等）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度（0=灭，1=最亮）"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "外壳颜色（透明环氧体）"
+        },
+        "leadColor": {
+          "label": "leadColor",
+          "desc": "引脚颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "LED",
+      "tags": [
+        "led",
+        "diode",
+        "circuit",
+        "semiconductor",
+        "light"
+      ],
+      "ariaLabel": "LED",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "color": {
+          "label": "Color",
+          "desc": "Color setting for color."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "leadColor": {
+          "label": "Lead Color",
+          "desc": "Color setting for lead color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

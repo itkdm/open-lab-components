@@ -1,29 +1,165 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.stopwatch.basic",
   "name": "秒表",
   "nameEn": "Stopwatch",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 130 },
-  "tags": ["stopwatch", "timer", "time", "measurement", "apparatus"],
+  "viewport": {
+    "w": 100,
+    "h": 130
+  },
+  "tags": [
+    "stopwatch",
+    "timer",
+    "time",
+    "measurement",
+    "apparatus"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 130, "min": 80, "max": 240, "desc": "组件高度" },
-    { "key": "seconds",     "type": "number",     "default": 0,   "min": 0, "max": 3599, "desc": "显示秒数" },
-    { "key": "bodyColor",   "type": "color",  "default": "#e0e0e0", "desc": "表壳颜色" },
-    { "key": "faceColor",   "type": "color",  "default": "#fafafa", "desc": "表盘颜色" },
-    { "key": "handColor",   "type": "color",  "default": "#d32f2f", "desc": "指针颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 130,
+      "min": 80,
+      "max": 240,
+      "desc": "组件高度"
+    },
+    {
+      "key": "seconds",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 3599,
+      "desc": "显示秒数"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "表壳颜色"
+    },
+    {
+      "key": "faceColor",
+      "type": "color",
+      "default": "#fafafa",
+      "desc": "表盘颜色"
+    },
+    {
+      "key": "handColor",
+      "type": "color",
+      "default": "#d32f2f",
+      "desc": "指针颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "bodyColor":   "--cmp-body",
-    "faceColor":   "--cmp-face",
-    "handColor":   "--cmp-hand",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "faceColor": "--cmp-face",
+    "handColor": "--cmp-hand",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "秒表",
+      "tags": [
+        "stopwatch",
+        "timer",
+        "time",
+        "measurement",
+        "apparatus"
+      ],
+      "ariaLabel": "秒表",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "seconds": {
+          "label": "seconds",
+          "desc": "显示秒数"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "表壳颜色"
+        },
+        "faceColor": {
+          "label": "faceColor",
+          "desc": "表盘颜色"
+        },
+        "handColor": {
+          "label": "handColor",
+          "desc": "指针颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Stopwatch",
+      "tags": [
+        "stopwatch",
+        "timer",
+        "time",
+        "measurement",
+        "apparatus"
+      ],
+      "ariaLabel": "Stopwatch",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "seconds": {
+          "label": "Seconds",
+          "desc": "Numeric control for seconds."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "faceColor": {
+          "label": "Face Color",
+          "desc": "Color setting for face color."
+        },
+        "handColor": {
+          "label": "Hand Color",
+          "desc": "Color setting for hand color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

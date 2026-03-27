@@ -1,26 +1,153 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.solar-system.interactive",
   "name": "太阳系",
   "nameEn": "Solar System",
   "category": "science/earth",
   "version": "1.0.0",
-  "viewport": { "w": 400, "h": 400 },
+  "viewport": {
+    "w": 400,
+    "h": 400
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 400, "min": 200, "max": 800, "desc": "组件尺寸" },
-    { "key": "speed", "type": "number", "default": 1, "min": 0, "max": 10, "desc": "公转速度倍率（0=静止）" },
-    { "key": "showOrbits", "type": "boolean", "default": true, "desc": "显示轨道线" },
-    { "key": "showLabels", "type": "boolean", "default": true, "desc": "显示行星名称" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 200,
+      "max": 800,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0,
+      "max": 10,
+      "desc": "公转速度倍率（0=静止）"
+    },
+    {
+      "key": "showOrbits",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示轨道线"
+    },
+    {
+      "key": "showLabels",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示行星名称"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "speed": "--cmp-speed"
   },
-  "tags": ["solar-system", "planet", "orbit", "astronomy", "earth-science", "science", "primary", "interactive"],
+  "tags": [
+    "solar-system",
+    "planet",
+    "orbit",
+    "astronomy",
+    "earth-science",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "planet": "string", "planetName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "planet": "string",
+        "planetName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "太阳系",
+      "tags": [
+        "solar-system",
+        "planet",
+        "orbit",
+        "astronomy",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "太阳系",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "公转速度倍率（0=静止）"
+        },
+        "showOrbits": {
+          "label": "showOrbits",
+          "desc": "显示轨道线"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示行星名称"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "planet": "string",
+            "planetName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Solar System",
+      "tags": [
+        "solar-system",
+        "planet",
+        "orbit",
+        "astronomy",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Solar System",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "showOrbits": {
+          "label": "Show Orbits",
+          "desc": "Configuration for show orbits."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Configuration for show labels."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "planet": "Value for planet.",
+            "planetName": "Value for planet name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.solar-system.interactive" role="img" aria-label="太阳系">

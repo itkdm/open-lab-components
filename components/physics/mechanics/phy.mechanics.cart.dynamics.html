@@ -1,28 +1,174 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.cart.dynamics",
   "name": "力学实验小车",
   "nameEn": "Dynamics Cart",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 140, "h": 65 },
-  "tags": ["physics", "mechanics", "cart", "dynamics", "newton", "acceleration", "track"],
+  "viewport": {
+    "w": 140,
+    "h": 65
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "cart",
+    "dynamics",
+    "newton",
+    "acceleration",
+    "track"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 240, "desc": "组件宽度" },
-    { "key": "bodyColor",   "type": "color",  "default": "#1e88e5", "desc": "车身颜色" },
-    { "key": "wheelColor",  "type": "color",  "default": "#37474f", "desc": "车轮颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边宽度" },
-    { "key": "massSlots",   "type": "number", "default": 0, "min": 0, "max": 3, "desc": "砝码槽中砝码数量" },
-    { "key": "pulleyHook",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示滑轮绳钩" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 140,
+      "min": 80,
+      "max": 240,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "车身颜色"
+    },
+    {
+      "key": "wheelColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "车轮颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "massSlots",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 3,
+      "desc": "砝码槽中砝码数量"
+    },
+    {
+      "key": "pulleyHook",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示滑轮绳钩"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "bodyColor":   "--cmp-body",
-    "wheelColor":  "--cmp-wheel",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "wheelColor": "--cmp-wheel",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "力学实验小车",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "dynamics",
+        "newton",
+        "acceleration",
+        "track"
+      ],
+      "ariaLabel": "力学实验小车",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "车身颜色"
+        },
+        "wheelColor": {
+          "label": "wheelColor",
+          "desc": "车轮颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "massSlots": {
+          "label": "massSlots",
+          "desc": "砝码槽中砝码数量"
+        },
+        "pulleyHook": {
+          "label": "pulleyHook",
+          "desc": "显示滑轮绳钩"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Dynamics Cart",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "dynamics",
+        "newton",
+        "acceleration",
+        "track"
+      ],
+      "ariaLabel": "Dynamics Cart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the apparatus."
+        },
+        "wheelColor": {
+          "label": "Wheel Color",
+          "desc": "Sets the color of the wheels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "massSlots": {
+          "label": "Mass Slots",
+          "desc": "Sets the number of mass slots shown."
+        },
+        "pulleyHook": {
+          "label": "Pulley Hook",
+          "desc": "Sets the pulley hook style."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

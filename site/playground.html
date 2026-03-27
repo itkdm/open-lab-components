@@ -817,7 +817,19 @@
       }
     };
 
-    let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+    function resolveInitialLang() {
+      const params = new URLSearchParams(window.location.search);
+      const queryLang = (params.get('lang') || '').toLowerCase();
+      if (queryLang === 'en') return 'en';
+      if (queryLang === 'zh' || queryLang === 'zh-cn') return 'zh';
+      const stored = (localStorage.getItem(LANG_KEY) || '').toLowerCase();
+      if (stored === 'en') return 'en';
+      if (stored === 'zh' || stored === 'zh-cn') return 'zh';
+      const browserLang = (navigator.language || '').toLowerCase();
+      return browserLang.startsWith('en') ? 'en' : 'zh';
+    }
+
+    let currentLang = resolveInitialLang();
 
     function t(key) {
       return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
@@ -834,19 +846,11 @@
     }
 
     function getComponentName(component) {
-      // 优先使用 registry 中的 nameEn 字段
-      if (currentLang === 'en' && component.nameEn) {
-        return component.nameEn;
-      }
-      return component.name;
+      return component.name || component.nameEn || component.id;
     }
 
     function getCategoryName(component) {
-      // 优先使用 registry 中的 categoryNameEn 字段
-      if (currentLang === 'en' && component.categoryNameEn) {
-        return component.categoryNameEn;
-      }
-      return component.categoryName || component.category;
+      return component.categoryName || component.categoryNameEn || component.category;
     }
 
     function applyStaticTexts() {
@@ -978,7 +982,8 @@
 
     async function loadComponent() {
       try {
-        const res = await fetchWithTimeout('./registry/registry.json');
+        const locale = currentLang === 'en' ? 'en' : 'zh-CN';
+        const res = await fetchWithTimeout(`./registry/registry.${locale}.json`);
         if (!res.ok) {
           throw new Error(`Failed to fetch registry: HTTP ${res.status}`);
         }
@@ -1438,24 +1443,8 @@ ${componentHtml}
     function switchLang() {
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
       localStorage.setItem(LANG_KEY, currentLang);
-      // 只刷新静态 UI 文本；动态内容（组件名称等）来自 manifest，本身是语言无关的
-      if (component) {
-        // 更新组件名称和分类显示
-        document.getElementById('componentName').textContent = getComponentName(component);
-        document.getElementById('componentMeta').textContent = `${getCategoryName(component)} · v${component.version}`;
-        // 更新页面 TDK（根据新语言）
-        updatePageTDK(component);
-        // 重新渲染右侧文案和空状态等
-        renderControls();
-        updateCode();
-      }
-      // 顶部、预览区等静态文本
-      document.body.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        el.textContent = t(key);
-      });
-      const langBtn = document.getElementById('langToggle');
-      if (langBtn) langBtn.textContent = t('lang-label');
+      applyStaticTexts();
+      loadComponent();
     }
 
     const langToggle = document.getElementById('langToggle');

@@ -1,6 +1,8 @@
 # Open Lab Components
 
-**210+ zero-dependency, plug-and-play STEM education interactive component library**, covering Physics, Chemistry, Biology, Math, and Science.
+**An open protocol and component runtime base for composable STEM interactive objects**, with 210+ zero-dependency HTML components across Physics, Chemistry, Biology, Math, and Science.
+
+This repository now exposes a locale-aware manifest, registry, site, JS API, and MCP surface so hosts and AI clients can search, fetch, and render the same component catalog consistently.
 
 [![npm](https://img.shields.io/npm/v/@itkdm/open-lab-components)](https://www.npmjs.com/package/@itkdm/open-lab-components)
 [![license](https://img.shields.io/github/license/itkdm/open-lab-components)](./LICENSE)
@@ -104,3 +106,19 @@ WeChat: `17884902310` (note: OLC) · GitHub: [@itkdm](https://github.com/itkdm)
 ---
 
 Made by **布吉岛** · ⭐ Star if you find it useful
+
+
+## Localization
+
+Open Lab Components now exposes locale-aware metadata across the registry, site, MCP server, and JS API.
+
+- Default locale: `zh-CN`
+- Current locales: `zh-CN`, `en`
+- Localized registry views: `registry/registry.zh-CN.json`, `registry/registry.en.json`
+- JS API: `lab.list(filter, { locale })`, `lab.get(id, { locale })`
+- MCP: every public tool accepts an optional `locale` parameter
+
+See [release notes](./docs/RELEASE-2026-03-I18N.md) for the migration summary, output changes, and consumer guidance.
+
+For release preparation and publish steps, see [publishing guide](./docs/PUBLISHING.md), [release checklist](./docs/RELEASE-CHECKLIST-0.2.0.md), and [GitHub release draft](./docs/GITHUB-RELEASE-0.2.0.md).
+For maintainer-facing release commands, see [release commands](./docs/RELEASE-COMMANDS-0.2.0.md).

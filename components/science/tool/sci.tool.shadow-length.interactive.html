@@ -1,22 +1,149 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.tool.shadow-length.interactive",
   "name": "影子变化",
   "nameEn": "Shadow Length",
   "category": "science/tool",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 240 },
+  "viewport": {
+    "w": 360,
+    "h": 240
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "sunAngle", "type": "number", "default": 45, "min": 10, "max": 170, "desc": "太阳高度角(度)" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "sunAngle",
+      "type": "number",
+      "default": 45,
+      "min": 10,
+      "max": 170,
+      "desc": "太阳高度角(度)"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["shadow", "light", "sun", "angle", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "shadow",
+    "light",
+    "sun",
+    "angle",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "sunAngle": "number", "shadowLength": "number", "timeOfDay": "string" } },
-    { "name": "cmp:changeend", "type": "slide", "values": { "sunAngle": "number", "shadowLength": "number", "timeOfDay": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "sunAngle": "number",
+        "shadowLength": "number",
+        "timeOfDay": "string"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "sunAngle": "number",
+        "shadowLength": "number",
+        "timeOfDay": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "影子变化",
+      "tags": [
+        "shadow",
+        "light",
+        "sun",
+        "angle",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "影子变化",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "sunAngle": {
+          "label": "sunAngle",
+          "desc": "太阳高度角(度)"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "sunAngle": "number",
+            "shadowLength": "number",
+            "timeOfDay": "string"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "sunAngle": "number",
+            "shadowLength": "number",
+            "timeOfDay": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Shadow Length",
+      "tags": [
+        "shadow",
+        "light",
+        "sun",
+        "angle",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Shadow Length",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "sunAngle": {
+          "label": "Sun Angle",
+          "desc": "Numeric control for sun angle."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "sunAngle": "Value for sun angle.",
+            "shadowLength": "Value for shadow length.",
+            "timeOfDay": "Value for time of day."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "sunAngle": "Value for sun angle.",
+            "shadowLength": "Value for shadow length.",
+            "timeOfDay": "Value for time of day."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.tool.shadow-length.interactive" role="img" aria-label="影子变化">

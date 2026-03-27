@@ -1,35 +1,312 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.calculus.integral.interactive",
   "name": "定积分可视化（交互式）",
-  "nameEn": "Definite Integral Visualization (Interactive)",
+  "nameEn": "Definite Integral Explorer",
   "category": "math/calculus",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 420 },
-  "tags": ["math","calculus","integral","area","Riemann","sum","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 420
+  },
+  "tags": [
+    "math",
+    "calculus",
+    "integral",
+    "area",
+    "Riemann",
+    "sum",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "funcColor",      "type": "color",  "default": "#5c6bc0", "desc": "函数曲线颜色" },
-    { "key": "areaColor",      "type": "color",  "default": "#66bb6a", "desc": "面积颜色" },
-    { "key": "rectColor",      "type": "color",  "default": "#42a5f5", "desc": "矩形颜色" },
-    { "key": "func",           "type": "enum",   "default": "x2", "enum": ["x2","sinx","x3-x","ex"], "desc": "函数类型" },
-    { "key": "a",              "type": "number", "default": 0, "min": -3, "max": 3, "desc": "下限a" },
-    { "key": "b",              "type": "number", "default": 2, "min": -3, "max": 3, "desc": "上限b" },
-    { "key": "n",              "type": "number", "default": 8, "min": 2, "max": 50, "desc": "矩形数" },
-    { "key": "method",         "type": "enum",   "default": "left", "enum": ["left","right","mid","trapezoid"], "desc": "近似方法" },
-    { "key": "showExact",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示精确值" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 420,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "funcColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "函数曲线颜色"
+    },
+    {
+      "key": "areaColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "面积颜色"
+    },
+    {
+      "key": "rectColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "矩形颜色"
+    },
+    {
+      "key": "func",
+      "type": "enum",
+      "default": "x2",
+      "enum": [
+        "x2",
+        "sinx",
+        "x3-x",
+        "ex"
+      ],
+      "desc": "函数类型"
+    },
+    {
+      "key": "a",
+      "type": "number",
+      "default": 0,
+      "min": -3,
+      "max": 3,
+      "desc": "下限a"
+    },
+    {
+      "key": "b",
+      "type": "number",
+      "default": 2,
+      "min": -3,
+      "max": 3,
+      "desc": "上限b"
+    },
+    {
+      "key": "n",
+      "type": "number",
+      "default": 8,
+      "min": 2,
+      "max": 50,
+      "desc": "矩形数"
+    },
+    {
+      "key": "method",
+      "type": "enum",
+      "default": "left",
+      "enum": [
+        "left",
+        "right",
+        "mid",
+        "trapezoid"
+      ],
+      "desc": "近似方法"
+    },
+    {
+      "key": "showExact",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示精确值"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "funcColor": "--cmp-func", "areaColor": "--cmp-area", "rectColor": "--cmp-rect", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "funcColor": "--cmp-func",
+    "areaColor": "--cmp-area",
+    "rectColor": "--cmp-rect",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "bounds", "values": { "a": "number", "b": "number", "n": "number", "approx": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "bounds",
+      "values": {
+        "a": "number",
+        "b": "number",
+        "n": "number",
+        "approx": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "定积分可视化（交互式）",
+      "tags": [
+        "math",
+        "calculus",
+        "integral",
+        "area",
+        "Riemann",
+        "sum",
+        "interactive"
+      ],
+      "ariaLabel": "定积分可视化（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "funcColor": {
+          "label": "funcColor",
+          "desc": "函数曲线颜色"
+        },
+        "areaColor": {
+          "label": "areaColor",
+          "desc": "面积颜色"
+        },
+        "rectColor": {
+          "label": "rectColor",
+          "desc": "矩形颜色"
+        },
+        "func": {
+          "label": "func",
+          "desc": "函数类型"
+        },
+        "a": {
+          "label": "a",
+          "desc": "下限a"
+        },
+        "b": {
+          "label": "b",
+          "desc": "上限b"
+        },
+        "n": {
+          "label": "n",
+          "desc": "矩形数"
+        },
+        "method": {
+          "label": "method",
+          "desc": "近似方法"
+        },
+        "showExact": {
+          "label": "showExact",
+          "desc": "显示精确值"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "a": "number",
+            "b": "number",
+            "n": "number",
+            "approx": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Definite Integral Explorer",
+      "tags": [
+        "math",
+        "calculus",
+        "integral",
+        "area",
+        "Riemann",
+        "sum",
+        "interactive"
+      ],
+      "ariaLabel": "Definite Integral Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "funcColor": {
+          "label": "Function Color",
+          "desc": "Sets the color of the main function graph."
+        },
+        "areaColor": {
+          "label": "Area Color",
+          "desc": "Sets the color of the shaded area."
+        },
+        "rectColor": {
+          "label": "Rectangle Color",
+          "desc": "Sets the color of the rectangle."
+        },
+        "func": {
+          "label": "Function Family",
+          "desc": "Selects which function family is displayed."
+        },
+        "a": {
+          "label": "Parameter a",
+          "desc": "Sets parameter a."
+        },
+        "b": {
+          "label": "Parameter b",
+          "desc": "Sets parameter b."
+        },
+        "n": {
+          "label": "Sample Count",
+          "desc": "Sets the sample count."
+        },
+        "method": {
+          "label": "Method",
+          "desc": "Selects the calculation or construction method."
+        },
+        "showExact": {
+          "label": "Show Exact Value",
+          "desc": "Shows or hides the exact value."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "a": "Current a.",
+            "b": "Current b.",
+            "n": "Current n.",
+            "approx": "Current approx."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.calculus.integral.interactive" role="img" aria-label="定积分可视化（交互式）">

@@ -1,23 +1,135 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.bell.basic",
   "name": "电铃",
   "nameEn": "Electric Bell",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 100 },
-  "tags": ["circuit", "bell", "electromagnetic", "sound", "switch"],
+  "viewport": {
+    "w": 100,
+    "h": 100
+  },
+  "tags": [
+    "circuit",
+    "bell",
+    "electromagnetic",
+    "sound",
+    "switch"
+  ],
   "props": [
-    { "key": "size",      "type": "number(px)", "default": 100, "min": 60, "max": 200, "desc": "组件尺寸" },
-    { "key": "ringing",   "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "响铃状态" },
-    { "key": "bellColor", "type": "color",  "default": "#fdd835", "desc": "铃碗颜色" },
-    { "key": "bodyColor", "type": "color",  "default": "#78909c", "desc": "底座颜色" },
-    { "key": "stroke",    "type": "color",  "default": "#37474f", "desc": "描边颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 100,
+      "min": 60,
+      "max": 200,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "ringing",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "响铃状态"
+    },
+    {
+      "key": "bellColor",
+      "type": "color",
+      "default": "#fdd835",
+      "desc": "铃碗颜色"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "底座颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bellColor": "--cmp-bell", "bodyColor": "--cmp-body",
+    "size": "--cmp-size",
+    "bellColor": "--cmp-bell",
+    "bodyColor": "--cmp-body",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "电铃",
+      "tags": [
+        "circuit",
+        "bell",
+        "electromagnetic",
+        "sound",
+        "switch"
+      ],
+      "ariaLabel": "电铃",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "ringing": {
+          "label": "ringing",
+          "desc": "响铃状态"
+        },
+        "bellColor": {
+          "label": "bellColor",
+          "desc": "铃碗颜色"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "底座颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Electric Bell",
+      "tags": [
+        "circuit",
+        "bell",
+        "electromagnetic",
+        "sound",
+        "switch"
+      ],
+      "ariaLabel": "Electric Bell",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "ringing": {
+          "label": "Ringing",
+          "desc": "Select the ringing option."
+        },
+        "bellColor": {
+          "label": "Bell Color",
+          "desc": "Color setting for bell color."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

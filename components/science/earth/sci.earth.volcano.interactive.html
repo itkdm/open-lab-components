@@ -1,21 +1,119 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.volcano.interactive",
   "name": "火山",
   "nameEn": "Volcano",
   "category": "science/earth",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 300 },
+  "viewport": {
+    "w": 360,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "erupting", "type": "boolean", "default": false, "desc": "是否喷发中" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "erupting",
+      "type": "boolean",
+      "default": false,
+      "desc": "是否喷发中"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["volcano", "eruption", "magma", "lava", "earth-science", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "volcano",
+    "eruption",
+    "magma",
+    "lava",
+    "earth-science",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "erupting": "boolean" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "erupting": "boolean"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "火山",
+      "tags": [
+        "volcano",
+        "eruption",
+        "magma",
+        "lava",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "火山",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "erupting": {
+          "label": "erupting",
+          "desc": "是否喷发中"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "erupting": "boolean"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Volcano",
+      "tags": [
+        "volcano",
+        "eruption",
+        "magma",
+        "lava",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Volcano",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "erupting": {
+          "label": "Erupting",
+          "desc": "Configuration for erupting."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "erupting": "Value for erupting."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.volcano.interactive" role="img" aria-label="火山">

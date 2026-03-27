@@ -1,22 +1,137 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.ratio-model.interactive",
   "name": "比例模型",
   "nameEn": "Ratio Model",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 340, "h": 260 },
+  "viewport": {
+    "w": 340,
+    "h": 260
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 340, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "a", "type": "number", "default": 3, "min": 1, "max": 10, "desc": "比的前项" },
-    { "key": "b", "type": "number", "default": 5, "min": 1, "max": 10, "desc": "比的后项" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 340,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "a",
+      "type": "number",
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "desc": "比的前项"
+    },
+    {
+      "key": "b",
+      "type": "number",
+      "default": 5,
+      "min": 1,
+      "max": 10,
+      "desc": "比的后项"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["ratio", "proportion", "fraction", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "ratio",
+    "proportion",
+    "fraction",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "a": "number", "b": "number", "simplified": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "a": "number",
+        "b": "number",
+        "simplified": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "比例模型",
+      "tags": [
+        "ratio",
+        "proportion",
+        "fraction",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "比例模型",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "a": {
+          "label": "a",
+          "desc": "比的前项"
+        },
+        "b": {
+          "label": "b",
+          "desc": "比的后项"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "a": "number",
+            "b": "number",
+            "simplified": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Ratio Model",
+      "tags": [
+        "ratio",
+        "proportion",
+        "fraction",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Ratio Model",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "a": {
+          "label": "Parameter a",
+          "desc": "Sets parameter a."
+        },
+        "b": {
+          "label": "Parameter b",
+          "desc": "Sets parameter b."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "a": "Current a.",
+            "b": "Current b.",
+            "simplified": "Current simplified."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.ratio-model.interactive" role="img" aria-label="比例模型">

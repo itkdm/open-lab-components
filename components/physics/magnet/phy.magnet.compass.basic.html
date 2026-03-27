@@ -1,31 +1,182 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.magnet.compass.basic",
   "name": "小磁针",
   "nameEn": "Magnetic Compass Needle",
   "category": "physics/magnet",
   "version": "1.0.0",
-  "viewport": { "w": 120, "h": 160 },
-  "tags": ["magnet", "compass", "needle", "NS-pole", "magnetic-field"],
+  "viewport": {
+    "w": 120,
+    "h": 160
+  },
+  "tags": [
+    "magnet",
+    "compass",
+    "needle",
+    "NS-pole",
+    "magnetic-field"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 160, "min": 80, "max": 400, "desc": "组件高度" },
-    { "key": "northColor",  "type": "color",  "default": "#e53935", "desc": "N极颜色" },
-    { "key": "southColor",  "type": "color",  "default": "#1e88e5", "desc": "S极颜色" },
-    { "key": "baseColor",   "type": "color",  "default": "#f5f5f5", "desc": "底座颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "angle",       "type": "number", "default": 0, "min": -180, "max": 180, "desc": "磁针旋转角度(°)" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 80,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "northColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "N极颜色"
+    },
+    {
+      "key": "southColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "S极颜色"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#f5f5f5",
+      "desc": "底座颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "angle",
+      "type": "number",
+      "default": 0,
+      "min": -180,
+      "max": 180,
+      "desc": "磁针旋转角度(°)"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "northColor":  "--cmp-north",
-    "southColor":  "--cmp-south",
-    "baseColor":   "--cmp-base",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "northColor": "--cmp-north",
+    "southColor": "--cmp-south",
+    "baseColor": "--cmp-base",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "小磁针",
+      "tags": [
+        "magnet",
+        "compass",
+        "needle",
+        "NS-pole",
+        "magnetic-field"
+      ],
+      "ariaLabel": "小磁针",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "northColor": {
+          "label": "northColor",
+          "desc": "N极颜色"
+        },
+        "southColor": {
+          "label": "southColor",
+          "desc": "S极颜色"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "底座颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "磁针旋转角度(°)"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Magnetic Compass Needle",
+      "tags": [
+        "magnet",
+        "compass",
+        "needle",
+        "NS-pole",
+        "magnetic-field"
+      ],
+      "ariaLabel": "Magnetic Compass Needle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "northColor": {
+          "label": "North Color",
+          "desc": "Color setting for north color."
+        },
+        "southColor": {
+          "label": "South Color",
+          "desc": "Color setting for south color."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Color setting for base color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Numeric control for angle."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

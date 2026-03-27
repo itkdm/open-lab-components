@@ -1,30 +1,189 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.cart.collision",
   "name": "碰撞实验小车",
   "nameEn": "Collision Cart",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 130, "h": 60 },
-  "tags": ["physics", "mechanics", "cart", "collision", "momentum", "bumper"],
+  "viewport": {
+    "w": 130,
+    "h": 60
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "cart",
+    "collision",
+    "momentum",
+    "bumper"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 130, "min": 80, "max": 220, "desc": "组件宽度" },
-    { "key": "bodyColor",   "type": "color",  "default": "#e53935", "desc": "车身颜色" },
-    { "key": "bumperColor", "type": "color",  "default": "#fdd835", "desc": "缓冲器颜色" },
-    { "key": "wheelColor",  "type": "color",  "default": "#37474f", "desc": "车轮颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边宽度" },
-    { "key": "bumperType",  "type": "enum",   "default": "spring", "enum": ["spring","velcro","magnet"], "desc": "缓冲器类型" },
-    { "key": "flagVisible", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示遮光片" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 130,
+      "min": 80,
+      "max": 220,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "车身颜色"
+    },
+    {
+      "key": "bumperColor",
+      "type": "color",
+      "default": "#fdd835",
+      "desc": "缓冲器颜色"
+    },
+    {
+      "key": "wheelColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "车轮颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "bumperType",
+      "type": "enum",
+      "default": "spring",
+      "enum": [
+        "spring",
+        "velcro",
+        "magnet"
+      ],
+      "desc": "缓冲器类型"
+    },
+    {
+      "key": "flagVisible",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示遮光片"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "bodyColor":   "--cmp-body",
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
     "bumperColor": "--cmp-bumper",
-    "wheelColor":  "--cmp-wheel",
-    "stroke":      "--cmp-stroke",
+    "wheelColor": "--cmp-wheel",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "碰撞实验小车",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "collision",
+        "momentum",
+        "bumper"
+      ],
+      "ariaLabel": "碰撞实验小车",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "车身颜色"
+        },
+        "bumperColor": {
+          "label": "bumperColor",
+          "desc": "缓冲器颜色"
+        },
+        "wheelColor": {
+          "label": "wheelColor",
+          "desc": "车轮颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "bumperType": {
+          "label": "bumperType",
+          "desc": "缓冲器类型"
+        },
+        "flagVisible": {
+          "label": "flagVisible",
+          "desc": "显示遮光片"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Collision Cart",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "collision",
+        "momentum",
+        "bumper"
+      ],
+      "ariaLabel": "Collision Cart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the apparatus."
+        },
+        "bumperColor": {
+          "label": "Bumper Color",
+          "desc": "Sets the color of the bumper."
+        },
+        "wheelColor": {
+          "label": "Wheel Color",
+          "desc": "Sets the color of the wheels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "bumperType": {
+          "label": "Bumper Type",
+          "desc": "Selects the bumper style."
+        },
+        "flagVisible": {
+          "label": "Show Flag",
+          "desc": "Shows or hides the marker flag."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

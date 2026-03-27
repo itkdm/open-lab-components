@@ -1,32 +1,97 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.friction-demo.interactive",
   "name": "摩擦力演示台（交互式）",
-  "nameEn": "Friction Demo (Interactive)",
+  "nameEn": "Friction Demonstrator",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 280, "h": 120 },
-  "tags": ["friction", "mechanics", "force", "interactive", "draggable", "surface"],
+  "viewport": {
+    "w": 280,
+    "h": 120
+  },
+  "tags": [
+    "friction",
+    "mechanics",
+    "force",
+    "interactive",
+    "draggable",
+    "surface"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 120, "min": 60, "max": 360, "desc": "组件高度" },
-    { "key": "mass",         "type": "number",     "default": 1,   "min": 0.1, "max": 20, "desc": "物块质量(kg)" },
-    { "key": "mu",           "type": "number(0-1)", "default": 0.3, "min": 0, "max": 1, "desc": "摩擦系数" },
-    { "key": "surfaceColor", "type": "color",  "default": "#8d6e63", "desc": "粗糙面颜色" },
-    { "key": "blockColor",   "type": "color",  "default": "#ffb74d", "desc": "木块颜色" },
-    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "accent",       "type": "color",  "default": "#1565c0", "desc": "强调色（力值文字）" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 60,
+      "max": 360,
+      "desc": "组件高度"
+    },
+    {
+      "key": "mass",
+      "type": "number",
+      "default": 1,
+      "min": 0.1,
+      "max": 20,
+      "desc": "物块质量(kg)"
+    },
+    {
+      "key": "mu",
+      "type": "number(0-1)",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "desc": "摩擦系数"
+    },
+    {
+      "key": "surfaceColor",
+      "type": "color",
+      "default": "#8d6e63",
+      "desc": "粗糙面颜色"
+    },
+    {
+      "key": "blockColor",
+      "type": "color",
+      "default": "#ffb74d",
+      "desc": "木块颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色（力值文字）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":         "--cmp-size",
+    "size": "--cmp-size",
     "surfaceColor": "--cmp-surface",
-    "blockColor":   "--cmp-block",
-    "stroke":       "--cmp-stroke",
-    "strokeWidth":  "--cmp-stroke-width",
-    "accent":       "--cmp-accent",
-    "glow":         "--cmp-glow"
+    "blockColor": "--cmp-block",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
   "events": [
     {
@@ -45,7 +110,141 @@
         "friction": "number(N) — 摩擦力"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "摩擦力演示台（交互式）",
+      "tags": [
+        "friction",
+        "mechanics",
+        "force",
+        "interactive",
+        "draggable",
+        "surface"
+      ],
+      "ariaLabel": "摩擦力演示台（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "mass": {
+          "label": "mass",
+          "desc": "物块质量(kg)"
+        },
+        "mu": {
+          "label": "mu",
+          "desc": "摩擦系数"
+        },
+        "surfaceColor": {
+          "label": "surfaceColor",
+          "desc": "粗糙面颜色"
+        },
+        "blockColor": {
+          "label": "blockColor",
+          "desc": "木块颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（力值文字）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "displacement": "number — 位移量(viewBox单位)",
+            "friction": "number(N) — 摩擦力"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "displacement": "number — 位移量(viewBox单位)",
+            "friction": "number(N) — 摩擦力"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Friction Demonstrator",
+      "tags": [
+        "friction",
+        "mechanics",
+        "force",
+        "interactive",
+        "draggable",
+        "surface"
+      ],
+      "ariaLabel": "Friction Demonstrator",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "mass": {
+          "label": "Mass",
+          "desc": "Sets the mass value used in the demonstration."
+        },
+        "mu": {
+          "label": "Coefficient of Friction",
+          "desc": "Sets the coefficient of friction."
+        },
+        "surfaceColor": {
+          "label": "Surface Color",
+          "desc": "Sets the color of the contact surface."
+        },
+        "blockColor": {
+          "label": "Block Color",
+          "desc": "Sets the color of the block."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "displacement": "Current displacement.",
+            "friction": "Current friction force."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "displacement": "Current displacement.",
+            "friction": "Current friction force."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.friction-demo.interactive" role="img" aria-label="摩擦力演示台（交互式）">

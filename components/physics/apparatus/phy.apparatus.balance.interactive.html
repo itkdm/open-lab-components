@@ -1,45 +1,327 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.balance.interactive",
   "name": "托盘天平（交互式）",
-  "nameEn": "Balance Scale (Interactive)",
+  "nameEn": "Balance Scale Explorer",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 360 },
-  "tags": ["balance","scale","mass","weight","measurement","interactive","draggable"],
+  "viewport": {
+    "w": 480,
+    "h": 360
+  },
+  "tags": [
+    "balance",
+    "scale",
+    "mass",
+    "weight",
+    "measurement",
+    "interactive",
+    "draggable"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 360, "min": 240, "max": 600, "desc": "组件高度" },
-    { "key": "leftMass",     "type": "number",     "default": 0,   "min": 0, "max": 200, "desc": "左盘质量(g)" },
-    { "key": "rightMass",    "type": "number",     "default": 0,   "min": 0, "max": 200, "desc": "右盘质量(g)" },
-    { "key": "rider",        "type": "number",     "default": 0,   "min": 0, "max": 5, "desc": "游码读数(g)" },
-    { "key": "maxMass",      "type": "number",     "default": 200, "min": 50, "max": 500, "desc": "最大称量(g)" },
-    { "key": "beamColor",    "type": "color",  "default": "#8d6e63", "desc": "横梁颜色" },
-    { "key": "panColor",     "type": "color",  "default": "#b0bec5", "desc": "托盘颜色" },
-    { "key": "baseColor",    "type": "color",  "default": "#5d4037", "desc": "底座颜色" },
-    { "key": "pillarColor",  "type": "color",  "default": "#757575", "desc": "支柱颜色" },
-    { "key": "pointerColor", "type": "color",  "default": "#d32f2f", "desc": "指针颜色" },
-    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 240,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "leftMass",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "desc": "左盘质量(g)"
+    },
+    {
+      "key": "rightMass",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 200,
+      "desc": "右盘质量(g)"
+    },
+    {
+      "key": "rider",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "desc": "游码读数(g)"
+    },
+    {
+      "key": "maxMass",
+      "type": "number",
+      "default": 200,
+      "min": 50,
+      "max": 500,
+      "desc": "最大称量(g)"
+    },
+    {
+      "key": "beamColor",
+      "type": "color",
+      "default": "#8d6e63",
+      "desc": "横梁颜色"
+    },
+    {
+      "key": "panColor",
+      "type": "color",
+      "default": "#b0bec5",
+      "desc": "托盘颜色"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#5d4037",
+      "desc": "底座颜色"
+    },
+    {
+      "key": "pillarColor",
+      "type": "color",
+      "default": "#757575",
+      "desc": "支柱颜色"
+    },
+    {
+      "key": "pointerColor",
+      "type": "color",
+      "default": "#d32f2f",
+      "desc": "指针颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调亮度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "beamColor": "--cmp-beam", "panColor": "--cmp-pan",
-    "baseColor": "--cmp-base", "pillarColor": "--cmp-pillar", "pointerColor": "--cmp-pointer",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "beamColor": "--cmp-beam",
+    "panColor": "--cmp-pan",
+    "baseColor": "--cmp-base",
+    "pillarColor": "--cmp-pillar",
+    "pointerColor": "--cmp-pointer",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
   },
   "events": [
     {
       "name": "cmp:change",
       "type": "adjust",
-      "values": { "rider": "number(0-5) — 游码读数(g)", "leftMass": "number — 左盘质量(g)", "rightMass": "number — 右盘质量(g)", "balanced": "boolean — 是否平衡" }
+      "values": {
+        "rider": "number(0-5) — 游码读数(g)",
+        "leftMass": "number — 左盘质量(g)",
+        "rightMass": "number — 右盘质量(g)",
+        "balanced": "boolean — 是否平衡"
+      }
     },
     {
       "name": "cmp:changeend",
       "type": "adjust",
-      "values": { "rider": "number(0-5) — 游码读数(g)", "leftMass": "number — 左盘质量(g)", "rightMass": "number — 右盘质量(g)", "balanced": "boolean — 是否平衡" }
+      "values": {
+        "rider": "number(0-5) — 游码读数(g)",
+        "leftMass": "number — 左盘质量(g)",
+        "rightMass": "number — 右盘质量(g)",
+        "balanced": "boolean — 是否平衡"
+      }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "托盘天平（交互式）",
+      "tags": [
+        "balance",
+        "scale",
+        "mass",
+        "weight",
+        "measurement",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "托盘天平（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "leftMass": {
+          "label": "leftMass",
+          "desc": "左盘质量(g)"
+        },
+        "rightMass": {
+          "label": "rightMass",
+          "desc": "右盘质量(g)"
+        },
+        "rider": {
+          "label": "rider",
+          "desc": "游码读数(g)"
+        },
+        "maxMass": {
+          "label": "maxMass",
+          "desc": "最大称量(g)"
+        },
+        "beamColor": {
+          "label": "beamColor",
+          "desc": "横梁颜色"
+        },
+        "panColor": {
+          "label": "panColor",
+          "desc": "托盘颜色"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "底座颜色"
+        },
+        "pillarColor": {
+          "label": "pillarColor",
+          "desc": "支柱颜色"
+        },
+        "pointerColor": {
+          "label": "pointerColor",
+          "desc": "指针颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "rider": "number(0-5) — 游码读数(g)",
+            "leftMass": "number — 左盘质量(g)",
+            "rightMass": "number — 右盘质量(g)",
+            "balanced": "boolean — 是否平衡"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "rider": "number(0-5) — 游码读数(g)",
+            "leftMass": "number — 左盘质量(g)",
+            "rightMass": "number — 右盘质量(g)",
+            "balanced": "boolean — 是否平衡"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Balance Scale Explorer",
+      "tags": [
+        "balance",
+        "scale",
+        "mass",
+        "weight",
+        "measurement",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Balance Scale Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "leftMass": {
+          "label": "Left Mass",
+          "desc": "Numeric control for left mass."
+        },
+        "rightMass": {
+          "label": "Right Mass",
+          "desc": "Numeric control for right mass."
+        },
+        "rider": {
+          "label": "Rider",
+          "desc": "Numeric control for rider."
+        },
+        "maxMass": {
+          "label": "Max Mass",
+          "desc": "Numeric control for max mass."
+        },
+        "beamColor": {
+          "label": "Beam Color",
+          "desc": "Color setting for beam color."
+        },
+        "panColor": {
+          "label": "Pan Color",
+          "desc": "Color setting for pan color."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Color setting for base color."
+        },
+        "pillarColor": {
+          "label": "Pillar Color",
+          "desc": "Color setting for pillar color."
+        },
+        "pointerColor": {
+          "label": "Pointer Color",
+          "desc": "Color setting for pointer color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Adjust",
+          "desc": "Event emitted during adjust.",
+          "values": {
+            "rider": "Value for rider.",
+            "leftMass": "Value for left mass.",
+            "rightMass": "Value for right mass.",
+            "balanced": "Value for balanced."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Adjust",
+          "desc": "Event emitted during adjust.",
+          "values": {
+            "rider": "Value for rider.",
+            "leftMass": "Value for left mass.",
+            "rightMass": "Value for right mass.",
+            "balanced": "Value for balanced."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.balance.interactive" role="img" aria-label="托盘天平（交互式）">

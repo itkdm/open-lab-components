@@ -1,18 +1,48 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.symmetry.interactive",
   "name": "轴对称",
   "nameEn": "Line Symmetry",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 300 },
+  "viewport": {
+    "w": 300,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 600, "desc": "组件尺寸" },
-    { "key": "gridColor", "type": "color", "default": "#E0E0E0", "desc": "网格颜色" },
-    { "key": "shapeColor", "type": "color", "default": "#42A5F5", "desc": "图形颜色" },
-    { "key": "mirrorColor", "type": "color", "default": "#EF5350", "desc": "镜像颜色" },
-    { "key": "axisColor", "type": "color", "default": "#FF9800", "desc": "对称轴颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 180,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#E0E0E0",
+      "desc": "网格颜色"
+    },
+    {
+      "key": "shapeColor",
+      "type": "color",
+      "default": "#42A5F5",
+      "desc": "图形颜色"
+    },
+    {
+      "key": "mirrorColor",
+      "type": "color",
+      "default": "#EF5350",
+      "desc": "镜像颜色"
+    },
+    {
+      "key": "axisColor",
+      "type": "color",
+      "default": "#FF9800",
+      "desc": "对称轴颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -21,10 +51,115 @@
     "mirrorColor": "--cmp-mirror",
     "axisColor": "--cmp-axis"
   },
-  "tags": ["symmetry", "mirror", "reflection", "geometry", "math", "primary", "interactive"],
+  "tags": [
+    "symmetry",
+    "mirror",
+    "reflection",
+    "geometry",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "points": "array", "mirrorPoints": "array" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "points": "array",
+        "mirrorPoints": "array"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "轴对称",
+      "tags": [
+        "symmetry",
+        "mirror",
+        "reflection",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "轴对称",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格颜色"
+        },
+        "shapeColor": {
+          "label": "shapeColor",
+          "desc": "图形颜色"
+        },
+        "mirrorColor": {
+          "label": "mirrorColor",
+          "desc": "镜像颜色"
+        },
+        "axisColor": {
+          "label": "axisColor",
+          "desc": "对称轴颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "points": "array",
+            "mirrorPoints": "array"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Line Symmetry",
+      "tags": [
+        "symmetry",
+        "mirror",
+        "reflection",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Line Symmetry",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Sets the color of the grid lines."
+        },
+        "shapeColor": {
+          "label": "Shape Color",
+          "desc": "Sets the color of the geometric shape."
+        },
+        "mirrorColor": {
+          "label": "Mirror Surface Color",
+          "desc": "Sets the color of the reflective surface."
+        },
+        "axisColor": {
+          "label": "Axis Color",
+          "desc": "Sets the color of the coordinate or optical axis."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "points": "Current points.",
+            "mirrorPoints": "Current mirror points."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.symmetry.interactive" role="img" aria-label="轴对称">

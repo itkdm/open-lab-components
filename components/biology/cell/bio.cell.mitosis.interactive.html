@@ -1,35 +1,284 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.cell.mitosis.interactive",
   "name": "有丝分裂（交互式）",
-  "nameEn": "Mitosis (Interactive)",
+  "nameEn": "Mitosis Phase Explorer",
   "category": "biology/cell",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 400 },
-  "tags": ["biology","cell","mitosis","division","chromosome","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 400
+  },
+  "tags": [
+    "biology",
+    "cell",
+    "mitosis",
+    "division",
+    "chromosome",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "cellColor",      "type": "color",  "default": "#c8e6c9", "desc": "细胞颜色" },
-    { "key": "nucleusColor",   "type": "color",  "default": "#66bb6a", "desc": "细胞核颜色" },
-    { "key": "chromosomeColor","type": "color",  "default": "#e53935", "desc": "染色体颜色" },
-    { "key": "spindleColor",   "type": "color",  "default": "#78909c", "desc": "纺锤丝颜色" },
-    { "key": "phase",          "type": "enum",   "default": "interphase", "enum": ["interphase","prophase","metaphase","anaphase","telophase"], "desc": "当前分裂期" },
-    { "key": "autoPlay",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "自动播放" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.5, "max": 3, "desc": "播放速度" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "cellColor",
+      "type": "color",
+      "default": "#c8e6c9",
+      "desc": "细胞颜色"
+    },
+    {
+      "key": "nucleusColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "细胞核颜色"
+    },
+    {
+      "key": "chromosomeColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "染色体颜色"
+    },
+    {
+      "key": "spindleColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "纺锤丝颜色"
+    },
+    {
+      "key": "phase",
+      "type": "enum",
+      "default": "interphase",
+      "enum": [
+        "interphase",
+        "prophase",
+        "metaphase",
+        "anaphase",
+        "telophase"
+      ],
+      "desc": "当前分裂期"
+    },
+    {
+      "key": "autoPlay",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "自动播放"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.5,
+      "max": 3,
+      "desc": "播放速度"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "cellColor": "--cmp-cell", "nucleusColor": "--cmp-nucleus",
-    "chromosomeColor": "--cmp-chromo", "spindleColor": "--cmp-spindle", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "cellColor": "--cmp-cell",
+    "nucleusColor": "--cmp-nucleus",
+    "chromosomeColor": "--cmp-chromo",
+    "spindleColor": "--cmp-spindle",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "phase", "values": { "phase": "string — 当前期", "progress": "number(0-1)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "phase",
+      "values": {
+        "phase": "string — 当前期",
+        "progress": "number(0-1)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "有丝分裂（交互式）",
+      "tags": [
+        "biology",
+        "cell",
+        "mitosis",
+        "division",
+        "chromosome",
+        "interactive"
+      ],
+      "ariaLabel": "有丝分裂（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "cellColor": {
+          "label": "cellColor",
+          "desc": "细胞颜色"
+        },
+        "nucleusColor": {
+          "label": "nucleusColor",
+          "desc": "细胞核颜色"
+        },
+        "chromosomeColor": {
+          "label": "chromosomeColor",
+          "desc": "染色体颜色"
+        },
+        "spindleColor": {
+          "label": "spindleColor",
+          "desc": "纺锤丝颜色"
+        },
+        "phase": {
+          "label": "phase",
+          "desc": "当前分裂期"
+        },
+        "autoPlay": {
+          "label": "autoPlay",
+          "desc": "自动播放"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "播放速度"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "phase": "string — 当前期",
+            "progress": "number(0-1)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Mitosis Phase Explorer",
+      "tags": [
+        "biology",
+        "cell",
+        "mitosis",
+        "division",
+        "chromosome",
+        "interactive"
+      ],
+      "ariaLabel": "Mitosis Phase Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "cellColor": {
+          "label": "Cell Color",
+          "desc": "Sets the color of the cell body."
+        },
+        "nucleusColor": {
+          "label": "Nucleus Color",
+          "desc": "Sets the color of the nucleus."
+        },
+        "chromosomeColor": {
+          "label": "Chromosome Color",
+          "desc": "Sets the color of the chromosomes."
+        },
+        "spindleColor": {
+          "label": "Spindle Color",
+          "desc": "Sets the color of the spindle fibers."
+        },
+        "phase": {
+          "label": "Phase",
+          "desc": "Selects the biological phase to display."
+        },
+        "autoPlay": {
+          "label": "Auto Play",
+          "desc": "Starts the animation automatically on load."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "phase": "Current biological phase.",
+            "progress": "Current progress."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.cell.mitosis.interactive" role="img" aria-label="有丝分裂（交互式）">

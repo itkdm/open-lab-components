@@ -1,20 +1,117 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.measure.length-compare.interactive",
   "name": "长度比较",
-  "nameEn": "Length Comparison",
+  "nameEn": "Length Comparison Tool",
   "category": "math/measure",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 260 },
+  "viewport": {
+    "w": 360,
+    "h": 260
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["length", "measurement", "unit", "conversion", "centimeter", "meter", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "length",
+    "measurement",
+    "unit",
+    "conversion",
+    "centimeter",
+    "meter",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "topLength": "number", "topUnit": "string", "bottomLength": "number", "bottomUnit": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "topLength": "number",
+        "topUnit": "string",
+        "bottomLength": "number",
+        "bottomUnit": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "长度比较",
+      "tags": [
+        "length",
+        "measurement",
+        "unit",
+        "conversion",
+        "centimeter",
+        "meter",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "长度比较",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "topLength": "number",
+            "topUnit": "string",
+            "bottomLength": "number",
+            "bottomUnit": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Length Comparison Tool",
+      "tags": [
+        "length",
+        "measurement",
+        "unit",
+        "conversion",
+        "centimeter",
+        "meter",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Length Comparison Tool",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "topLength": "Current top length.",
+            "topUnit": "Current top unit.",
+            "bottomLength": "Current bottom length.",
+            "bottomUnit": "Current bottom unit."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.measure.length-compare.interactive" role="img" aria-label="长度比较">

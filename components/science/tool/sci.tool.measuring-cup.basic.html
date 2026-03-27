@@ -1,28 +1,151 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.tool.measuring-cup.basic",
   "name": "量杯",
   "nameEn": "Measuring Cup",
   "category": "science/tool",
   "version": "1.1.0",
-  "viewport": { "w": 160, "h": 180 },
-  "tags": ["measuring-cup", "volume", "liquid", "science", "primary"],
+  "viewport": {
+    "w": 160,
+    "h": 180
+  },
+  "tags": [
+    "measuring-cup",
+    "volume",
+    "liquid",
+    "science",
+    "primary"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)",  "default": 180, "min": 100, "max": 320, "desc": "组件高度" },
-    { "key": "liquidLevel", "type": "number(0-1)",  "default": 0.55, "min": 0, "max": 1, "desc": "液面高度占比" },
-    { "key": "liquidColor", "type": "color",        "default": "#42a5f5", "desc": "液体颜色" },
-    { "key": "bodyColor",   "type": "color",        "default": "rgba(220,237,250,0.45)", "desc": "杯身底色" },
-    { "key": "markColor",   "type": "color",        "default": "rgba(47,79,95,0.55)", "desc": "刻度线颜色" },
-    { "key": "strokeWidth", "type": "number(px)",   "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 100,
+      "max": 320,
+      "desc": "组件高度"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.55,
+      "min": 0,
+      "max": 1,
+      "desc": "液面高度占比"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "rgba(220,237,250,0.45)",
+      "desc": "杯身底色"
+    },
+    {
+      "key": "markColor",
+      "type": "color",
+      "default": "rgba(47,79,95,0.55)",
+      "desc": "刻度线颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number(px)",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
+    "size": "--cmp-size",
     "liquidLevel": "--cmp-liquid-level",
     "liquidColor": "--cmp-liquid-color",
-    "bodyColor":   "--cmp-body-color",
-    "markColor":   "--cmp-mark-color",
+    "bodyColor": "--cmp-body-color",
+    "markColor": "--cmp-mark-color",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "量杯",
+      "tags": [
+        "measuring-cup",
+        "volume",
+        "liquid",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "量杯",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液面高度占比"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "杯身底色"
+        },
+        "markColor": {
+          "label": "markColor",
+          "desc": "刻度线颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Measuring Cup",
+      "tags": [
+        "measuring-cup",
+        "volume",
+        "liquid",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "Measuring Cup",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Numeric control for liquid level."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Color setting for liquid color."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "markColor": {
+          "label": "Mark Color",
+          "desc": "Color setting for mark color."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

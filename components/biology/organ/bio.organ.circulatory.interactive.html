@@ -1,32 +1,253 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.organ.circulatory.interactive",
   "name": "血液循环系统（交互式）",
-  "nameEn": "Circulatory System (Interactive)",
+  "nameEn": "Circulatory System Explorer",
   "category": "biology/organ",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 520 },
-  "tags": ["biology","organ","heart","blood","circulation","artery","vein","interactive"],
+  "viewport": {
+    "w": 480,
+    "h": 520
+  },
+  "tags": [
+    "biology",
+    "organ",
+    "heart",
+    "blood",
+    "circulation",
+    "artery",
+    "vein",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 520, "min": 350, "max": 700, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "arteryColor",    "type": "color",  "default": "#e53935", "desc": "动脉颜色" },
-    { "key": "veinColor",      "type": "color",  "default": "#1e88e5", "desc": "静脉颜色" },
-    { "key": "heartColor",     "type": "color",  "default": "#c62828", "desc": "心脏颜色" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "highlight",      "type": "enum",   "default": "none", "enum": ["none","pulmonary","systemic"], "desc": "高亮循环" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 520,
+      "min": 350,
+      "max": 700,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "arteryColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "动脉颜色"
+    },
+    {
+      "key": "veinColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "静脉颜色"
+    },
+    {
+      "key": "heartColor",
+      "type": "color",
+      "default": "#c62828",
+      "desc": "心脏颜色"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "highlight",
+      "type": "enum",
+      "default": "none",
+      "enum": [
+        "none",
+        "pulmonary",
+        "systemic"
+      ],
+      "desc": "高亮循环"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "arteryColor": "--cmp-artery", "veinColor": "--cmp-vein", "heartColor": "--cmp-heart", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "arteryColor": "--cmp-artery",
+    "veinColor": "--cmp-vein",
+    "heartColor": "--cmp-heart",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "highlight", "values": { "highlight": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "highlight",
+      "values": {
+        "highlight": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "血液循环系统（交互式）",
+      "tags": [
+        "biology",
+        "organ",
+        "heart",
+        "blood",
+        "circulation",
+        "artery",
+        "vein",
+        "interactive"
+      ],
+      "ariaLabel": "血液循环系统（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "arteryColor": {
+          "label": "arteryColor",
+          "desc": "动脉颜色"
+        },
+        "veinColor": {
+          "label": "veinColor",
+          "desc": "静脉颜色"
+        },
+        "heartColor": {
+          "label": "heartColor",
+          "desc": "心脏颜色"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "highlight": {
+          "label": "highlight",
+          "desc": "高亮循环"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "highlight": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Circulatory System Explorer",
+      "tags": [
+        "biology",
+        "organ",
+        "heart",
+        "blood",
+        "circulation",
+        "artery",
+        "vein",
+        "interactive"
+      ],
+      "ariaLabel": "Circulatory System Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "arteryColor": {
+          "label": "Artery Color",
+          "desc": "Sets the color of the arteries."
+        },
+        "veinColor": {
+          "label": "Vein Color",
+          "desc": "Sets the color of the veins."
+        },
+        "heartColor": {
+          "label": "Heart Color",
+          "desc": "Sets the color of the heart."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "highlight": {
+          "label": "Highlight Mode",
+          "desc": "Selects which structure or pathway is highlighted."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "highlight": "Currently highlighted structure or pathway."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.organ.circulatory.interactive" role="img" aria-label="血液循环系统（交互式）">

@@ -1,28 +1,149 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.tool.magnifier.basic",
   "name": "放大镜",
   "nameEn": "Magnifying Glass",
   "category": "science/tool",
   "version": "1.0.0",
-  "viewport": { "w": 120, "h": 200 },
-  "tags": ["magnifier", "lens", "observation", "science", "primary"],
+  "viewport": {
+    "w": 120,
+    "h": 200
+  },
+  "tags": [
+    "magnifier",
+    "lens",
+    "observation",
+    "science",
+    "primary"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
-    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "lensColor",   "type": "color",  "default": "#e3f2fd", "desc": "镜片颜色" },
-    { "key": "handleColor", "type": "color",  "default": "#5d4037", "desc": "手柄颜色" },
-    { "key": "rimColor",    "type": "color",  "default": "#78909c", "desc": "镜框颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "lensColor",
+      "type": "color",
+      "default": "#e3f2fd",
+      "desc": "镜片颜色"
+    },
+    {
+      "key": "handleColor",
+      "type": "color",
+      "default": "#5d4037",
+      "desc": "手柄颜色"
+    },
+    {
+      "key": "rimColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "镜框颜色"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "lensColor":   "--cmp-lens",
+    "lensColor": "--cmp-lens",
     "handleColor": "--cmp-handle",
-    "rimColor":    "--cmp-rim"
+    "rimColor": "--cmp-rim"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "放大镜",
+      "tags": [
+        "magnifier",
+        "lens",
+        "observation",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "放大镜",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "lensColor": {
+          "label": "lensColor",
+          "desc": "镜片颜色"
+        },
+        "handleColor": {
+          "label": "handleColor",
+          "desc": "手柄颜色"
+        },
+        "rimColor": {
+          "label": "rimColor",
+          "desc": "镜框颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Magnifying Glass",
+      "tags": [
+        "magnifier",
+        "lens",
+        "observation",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "Magnifying Glass",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "lensColor": {
+          "label": "Lens Color",
+          "desc": "Color setting for lens color."
+        },
+        "handleColor": {
+          "label": "Handle Color",
+          "desc": "Color setting for handle color."
+        },
+        "rimColor": {
+          "label": "Rim Color",
+          "desc": "Color setting for rim color."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

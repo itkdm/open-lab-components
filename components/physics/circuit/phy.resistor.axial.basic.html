@@ -1,44 +1,210 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.resistor.axial.basic",
   "name": "电阻",
-  "nameEn": "Resistor",
+  "nameEn": "Axial Resistor",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 108, "h": 40 },
+  "viewport": {
+    "w": 108,
+    "h": 40
+  },
   "props": [
-    { "key": "size",   "type": "number(px)", "default": 64, "min": 16, "max": 256, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "aspect", "type": "number",     "default": 2.7, "min": 1.6, "max": 4.0, "desc": "宽高比（width = size * aspect）" },
-
-    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色（可选）" },
-    { "key": "strokeWidth", "type": "number", "default": 2.2, "min": 0, "max": 6, "desc": "描边粗细（SVG stroke-width）" },
-
-    { "key": "body",  "type": "color", "default": "#caa070", "desc": "电阻本体颜色" },
-    { "key": "band1", "type": "color", "default": "#9a4d0f", "desc": "色环1（默认棕）" },
-    { "key": "band2", "type": "color", "default": "#111827", "desc": "色环2（默认黑）" },
-    { "key": "band3", "type": "color", "default": "#111827", "desc": "色环3（默认黑）" },
-    { "key": "band4", "type": "color", "default": "#facc15", "desc": "色环4（默认黄）" },
-
-    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 64,
+      "min": 16,
+      "max": 256,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "aspect",
+      "type": "number",
+      "default": 2.7,
+      "min": 1.6,
+      "max": 4,
+      "desc": "宽高比（width = size * aspect）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色（可选）"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2.2,
+      "min": 0,
+      "max": 6,
+      "desc": "描边粗细（SVG stroke-width）"
+    },
+    {
+      "key": "body",
+      "type": "color",
+      "default": "#caa070",
+      "desc": "电阻本体颜色"
+    },
+    {
+      "key": "band1",
+      "type": "color",
+      "default": "#9a4d0f",
+      "desc": "色环1（默认棕）"
+    },
+    {
+      "key": "band2",
+      "type": "color",
+      "default": "#111827",
+      "desc": "色环2（默认黑）"
+    },
+    {
+      "key": "band3",
+      "type": "color",
+      "default": "#111827",
+      "desc": "色环3（默认黑）"
+    },
+    {
+      "key": "band4",
+      "type": "color",
+      "default": "#facc15",
+      "desc": "色环4（默认黄）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "aspect": "--cmp-aspect",
-
     "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-
     "body": "--cmp-body",
     "band1": "--cmp-band1",
     "band2": "--cmp-band2",
     "band3": "--cmp-band3",
     "band4": "--cmp-band4",
-
     "glow": "--cmp-glow"
   },
-  "tags": ["resistor", "circuit", "axial"]
-}-->
+  "tags": [
+    "resistor",
+    "circuit",
+    "axial"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电阻",
+      "tags": [
+        "resistor",
+        "circuit",
+        "axial"
+      ],
+      "ariaLabel": "电阻",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "aspect": {
+          "label": "aspect",
+          "desc": "宽高比（width = size * aspect）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色（可选）"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细（SVG stroke-width）"
+        },
+        "body": {
+          "label": "body",
+          "desc": "电阻本体颜色"
+        },
+        "band1": {
+          "label": "band1",
+          "desc": "色环1（默认棕）"
+        },
+        "band2": {
+          "label": "band2",
+          "desc": "色环2（默认黑）"
+        },
+        "band3": {
+          "label": "band3",
+          "desc": "色环3（默认黑）"
+        },
+        "band4": {
+          "label": "band4",
+          "desc": "色环4（默认黄）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Axial Resistor",
+      "tags": [
+        "resistor",
+        "circuit",
+        "axial"
+      ],
+      "ariaLabel": "Axial resistor",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "aspect": {
+          "label": "Aspect Ratio",
+          "desc": "Width-to-height ratio."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "body": {
+          "label": "Body Color",
+          "desc": "Color of the resistor body."
+        },
+        "band1": {
+          "label": "Band 1 Color",
+          "desc": "Color of the first resistor band."
+        },
+        "band2": {
+          "label": "Band 2 Color",
+          "desc": "Color of the second resistor band."
+        },
+        "band3": {
+          "label": "Band 3 Color",
+          "desc": "Color of the third resistor band."
+        },
+        "band4": {
+          "label": "Band 4 Color",
+          "desc": "Color of the tolerance band."
+        },
+        "glow": {
+          "label": "Highlight Intensity",
+          "desc": "Glow or highlight intensity from 0 to 1."
+        }
+      },
+      "events": {}
+    }
+  }
+}
+-->
 <div class="cmp" data-cmp-id="phy.resistor.axial.basic" role="img" aria-label="电阻">
     <svg class="cmp__svg" viewBox="0 0 108 40" aria-hidden="true">
         <!-- 引脚（可选，轻量表示） -->

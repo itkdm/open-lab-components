@@ -1,21 +1,119 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.human-body.interactive",
   "name": "人体系统",
   "nameEn": "Human Body Systems",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 240, "h": 400 },
+  "viewport": {
+    "w": 240,
+    "h": 400
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 240, "min": 160, "max": 480, "desc": "组件宽度" },
-    { "key": "system", "type": "enum(skeleton,digestive,respiratory,circulatory)", "default": "skeleton", "desc": "显示的系统" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 160,
+      "max": 480,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "system",
+      "type": "enum(skeleton,digestive,respiratory,circulatory)",
+      "default": "skeleton",
+      "desc": "显示的系统"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["human-body", "anatomy", "skeleton", "organs", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "human-body",
+    "anatomy",
+    "skeleton",
+    "organs",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "system": "string", "systemName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "system": "string",
+        "systemName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "人体系统",
+      "tags": [
+        "human-body",
+        "anatomy",
+        "skeleton",
+        "organs",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "人体系统",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "system": {
+          "label": "system",
+          "desc": "显示的系统"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "system": "string",
+            "systemName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Human Body Systems",
+      "tags": [
+        "human-body",
+        "anatomy",
+        "skeleton",
+        "organs",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Human Body Systems",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "system": {
+          "label": "System",
+          "desc": "Configuration for system."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "system": "Value for system.",
+            "systemName": "Value for system name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.human-body.interactive" role="img" aria-label="人体系统">

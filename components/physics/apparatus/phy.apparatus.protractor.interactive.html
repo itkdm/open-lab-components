@@ -1,25 +1,100 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.protractor.interactive",
   "name": "量角器（交互式）",
-  "nameEn": "Interactive Protractor",
+  "nameEn": "Interactive Protractor Explorer",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 280, "h": 140 },
+  "viewport": {
+    "w": 280,
+    "h": 140
+  },
   "props": [
-    { "key": "width", "type": "number(px)", "default": 280, "min": 140, "max": 960, "desc": "量角器宽度" },
-    { "key": "height", "type": "number(px)", "default": 140, "min": 70, "max": 480, "desc": "量角器高度" },
-    { "key": "rotate", "type": "number(deg)", "default": 0, "min": -180, "max": 180, "desc": "旋转角度" },
-    { "key": "opacity", "type": "number(0-1)", "default": 0.92, "min": 0, "max": 1, "desc": "透明度" },
-    { "key": "fill", "type": "color", "default": "rgba(200,230,255,0.3)", "desc": "填充色" },
-    { "key": "stroke", "type": "color", "default": "#1976d2", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 3, "min": 1, "max": 6, "desc": "描边宽度" },
-    { "key": "centerColor", "type": "color", "default": "#1976d2", "desc": "中心点颜色" },
-    { "key": "scaleColor", "type": "color", "default": "#1565c0", "desc": "刻度颜色" },
-    { "key": "draggable", "type": "boolean", "default": true, "desc": "是否可拖拽" },
-    { "key": "rotatable", "type": "boolean", "default": true, "desc": "是否可旋转" },
-    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "width",
+      "type": "number(px)",
+      "default": 280,
+      "min": 140,
+      "max": 960,
+      "desc": "量角器宽度"
+    },
+    {
+      "key": "height",
+      "type": "number(px)",
+      "default": 140,
+      "min": 70,
+      "max": 480,
+      "desc": "量角器高度"
+    },
+    {
+      "key": "rotate",
+      "type": "number(deg)",
+      "default": 0,
+      "min": -180,
+      "max": 180,
+      "desc": "旋转角度"
+    },
+    {
+      "key": "opacity",
+      "type": "number(0-1)",
+      "default": 0.92,
+      "min": 0,
+      "max": 1,
+      "desc": "透明度"
+    },
+    {
+      "key": "fill",
+      "type": "color",
+      "default": "rgba(200,230,255,0.3)",
+      "desc": "填充色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#1976d2",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 3,
+      "min": 1,
+      "max": 6,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "centerColor",
+      "type": "color",
+      "default": "#1976d2",
+      "desc": "中心点颜色"
+    },
+    {
+      "key": "scaleColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "刻度颜色"
+    },
+    {
+      "key": "draggable",
+      "type": "boolean",
+      "default": true,
+      "desc": "是否可拖拽"
+    },
+    {
+      "key": "rotatable",
+      "type": "boolean",
+      "default": true,
+      "desc": "是否可旋转"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
     "width": "--cmp-width",
@@ -35,7 +110,14 @@
     "rotatable": "--cmp-rotatable",
     "glow": "--cmp-glow"
   },
-  "tags": ["protractor", "angle", "measurement", "geometry", "interactive", "draggable"],
+  "tags": [
+    "protractor",
+    "angle",
+    "measurement",
+    "geometry",
+    "interactive",
+    "draggable"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -55,8 +137,171 @@
         "y": "number(px) — 最终 top 坐标"
       }
     }
-  ]
-}-->
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "量角器（交互式）",
+      "tags": [
+        "protractor",
+        "angle",
+        "measurement",
+        "geometry",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "量角器（交互式）",
+      "props": {
+        "width": {
+          "label": "width",
+          "desc": "量角器宽度"
+        },
+        "height": {
+          "label": "height",
+          "desc": "量角器高度"
+        },
+        "rotate": {
+          "label": "rotate",
+          "desc": "旋转角度"
+        },
+        "opacity": {
+          "label": "opacity",
+          "desc": "透明度"
+        },
+        "fill": {
+          "label": "fill",
+          "desc": "填充色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "centerColor": {
+          "label": "centerColor",
+          "desc": "中心点颜色"
+        },
+        "scaleColor": {
+          "label": "scaleColor",
+          "desc": "刻度颜色"
+        },
+        "draggable": {
+          "label": "draggable",
+          "desc": "是否可拖拽"
+        },
+        "rotatable": {
+          "label": "rotatable",
+          "desc": "是否可旋转"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number(deg) — 当前旋转角度",
+            "x": "number(px) — 拖拽时的 left 坐标",
+            "y": "number(px) — 拖拽时的 top 坐标"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "angle": "number(deg) — 最终旋转角度",
+            "x": "number(px) — 最终 left 坐标",
+            "y": "number(px) — 最终 top 坐标"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Interactive Protractor Explorer",
+      "tags": [
+        "protractor",
+        "angle",
+        "measurement",
+        "geometry",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Protractor Explorer",
+      "props": {
+        "width": {
+          "label": "Width",
+          "desc": "Numeric control for width."
+        },
+        "height": {
+          "label": "Height",
+          "desc": "Numeric control for height."
+        },
+        "rotate": {
+          "label": "Rotate",
+          "desc": "Numeric control for rotate."
+        },
+        "opacity": {
+          "label": "Opacity",
+          "desc": "Numeric control for opacity."
+        },
+        "fill": {
+          "label": "Fill",
+          "desc": "Color setting for fill."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "centerColor": {
+          "label": "Center Color",
+          "desc": "Color setting for center color."
+        },
+        "scaleColor": {
+          "label": "Scale Color",
+          "desc": "Color setting for scale color."
+        },
+        "draggable": {
+          "label": "Draggable",
+          "desc": "Configuration for draggable."
+        },
+        "rotatable": {
+          "label": "Rotatable",
+          "desc": "Configuration for rotatable."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Rotate | Drag",
+          "desc": "Event emitted during rotate | drag.",
+          "values": {
+            "angle": "Value for angle.",
+            "x": "Value for x.",
+            "y": "Value for y."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Rotate | Drag",
+          "desc": "Event emitted during rotate | drag.",
+          "values": {
+            "angle": "Value for angle.",
+            "x": "Value for x.",
+            "y": "Value for y."
+          }
+        }
+      }
+    }
+  }
+}
+-->
 <div class="cmp" data-cmp-id="phy.apparatus.protractor.interactive" role="img" aria-label="量角器（交互式）">
     <svg class="cmp__svg" viewBox="0 0 960 480" aria-hidden="true">
         <defs>

@@ -1,20 +1,108 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.shape-sorter.interactive",
   "name": "图形分类",
   "nameEn": "Shape Sorter",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 300 },
+  "viewport": {
+    "w": 360,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["shapes", "sorting", "classification", "geometry", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "shapes",
+    "sorting",
+    "classification",
+    "geometry",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "drag", "values": { "sorted": "object", "correct": "number", "total": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "sorted": "object",
+        "correct": "number",
+        "total": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "图形分类",
+      "tags": [
+        "shapes",
+        "sorting",
+        "classification",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "图形分类",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "sorted": "object",
+            "correct": "number",
+            "total": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Shape Sorter",
+      "tags": [
+        "shapes",
+        "sorting",
+        "classification",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Shape Sorter",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "sorted": "Current sorted.",
+            "correct": "Current correct.",
+            "total": "Current total."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.shape-sorter.interactive" role="img" aria-label="图形分类">

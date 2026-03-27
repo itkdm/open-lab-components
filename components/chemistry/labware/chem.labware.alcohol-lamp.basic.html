@@ -1,25 +1,137 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.alcohol-lamp.basic",
   "name": "酒精灯",
   "nameEn": "Alcohol Lamp",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 120 },
-  "tags": ["chemistry", "labware", "lamp", "heat", "flame"],
+  "viewport": {
+    "w": 100,
+    "h": 120
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "lamp",
+    "heat",
+    "flame"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 120, "min": 80, "max": 200, "desc": "组件高度" },
-    { "key": "alcoholLevel", "type": "number(0-1)", "default": 0.5, "min": 0, "max": 0.8, "desc": "酒精液面" },
-    { "key": "alcoholColor", "type": "color", "default": "#b3e5fc", "desc": "酒精颜色" },
-    { "key": "flameOn", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "火焰开关" },
-    { "key": "stroke", "type": "color", "default": "#8b7355", "desc": "描边颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 80,
+      "max": 200,
+      "desc": "组件高度"
+    },
+    {
+      "key": "alcoholLevel",
+      "type": "number(0-1)",
+      "default": 0.5,
+      "min": 0,
+      "max": 0.8,
+      "desc": "酒精液面"
+    },
+    {
+      "key": "alcoholColor",
+      "type": "color",
+      "default": "#b3e5fc",
+      "desc": "酒精颜色"
+    },
+    {
+      "key": "flameOn",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "火焰开关"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#8b7355",
+      "desc": "描边颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "alcoholLevel": "--cmp-alcohol-level",
     "alcoholColor": "--cmp-alcohol",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "酒精灯",
+      "tags": [
+        "chemistry",
+        "labware",
+        "lamp",
+        "heat",
+        "flame"
+      ],
+      "ariaLabel": "酒精灯",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "alcoholLevel": {
+          "label": "alcoholLevel",
+          "desc": "酒精液面"
+        },
+        "alcoholColor": {
+          "label": "alcoholColor",
+          "desc": "酒精颜色"
+        },
+        "flameOn": {
+          "label": "flameOn",
+          "desc": "火焰开关"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Alcohol Lamp",
+      "tags": [
+        "chemistry",
+        "labware",
+        "lamp",
+        "heat",
+        "flame"
+      ],
+      "ariaLabel": "Alcohol Lamp",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "alcoholLevel": {
+          "label": "Alcohol Level",
+          "desc": "Sets the fill level of the alcohol reservoir."
+        },
+        "alcoholColor": {
+          "label": "Alcohol Color",
+          "desc": "Sets the color of the alcohol reservoir."
+        },
+        "flameOn": {
+          "label": "Flame On",
+          "desc": "Toggles whether the flame is visible."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

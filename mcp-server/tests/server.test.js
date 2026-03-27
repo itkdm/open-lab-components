@@ -53,7 +53,7 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
 
     const listResult = await client.callTool({
       name: "list_components",
-      arguments: { category: "physics/mechanics", limit: 3 }
+      arguments: { category: "physics/mechanics", limit: 3, locale: "en" }
     });
     const payload = JSON.parse(listResult.content[0].text);
 
@@ -62,5 +62,12 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
     for (const item of payload.items) {
       assert.equal(item.category, "physics/mechanics");
     }
+
+    const getResult = await client.callTool({
+      name: "get_component",
+      arguments: { id: "phy.resistor.axial.basic", locale: "en" }
+    });
+    const componentPayload = JSON.parse(getResult.content[0].text);
+    assert.equal(componentPayload.component.name, "Axial Resistor");
   });
 });

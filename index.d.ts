@@ -1,7 +1,8 @@
-/**
- * open-lab-components
- * Zero-dependency HTML fragment component library for STEM education.
- */
+export interface ComponentPropText {
+  label: string;
+  desc: string;
+  category?: string;
+}
 
 export interface ComponentProp {
   key: string;
@@ -10,35 +11,63 @@ export interface ComponentProp {
   min?: number;
   max?: number;
   enum?: string[];
-  desc: string;
+  label?: string;
+  desc?: string;
+  category?: string;
+}
+
+export interface ComponentEventText {
+  label?: string;
+  desc?: string;
+  values: Record<string, string>;
 }
 
 export interface ComponentEvent {
   name: string;
   type: string;
+  label?: string;
+  desc?: string;
   values: Record<string, string>;
+}
+
+export interface ComponentLocaleData {
+  name: string;
+  tags: string[];
+  ariaLabel: string;
+  description?: string;
+  props?: Record<string, ComponentPropText>;
+  events?: Record<string, ComponentEventText>;
 }
 
 export interface ComponentManifest {
   schema: string;
+  normalizedSchema: string;
   id: string;
   name: string;
   nameEn: string;
+  ariaLabel: string;
   category: string;
   categoryName?: string;
   categoryNameEn?: string;
+  categoryLocales?: Record<string, string>;
   version: string;
   viewport: { w: number; h: number };
   tags: string[];
   props: ComponentProp[];
+  propTexts?: Record<string, ComponentPropText>;
   cssVars: Record<string, string>;
   events?: ComponentEvent[];
+  eventTexts?: Record<string, ComponentEventText>;
+  locales: Record<string, ComponentLocaleData>;
   sourcePath: string;
+  description?: string | null;
 }
 
 export interface Registry {
   schema: string;
   generatedAt: string;
+  defaultLocale: string;
+  locales: string[];
   count: number;
   items: ComponentManifest[];
 }
@@ -48,32 +77,17 @@ export interface ListFilter {
   tag?: string;
 }
 
-/** List all available components, optionally filtered by category or tag. */
-export function list(filter?: ListFilter): ComponentManifest[];
+export interface LocaleOptions {
+  locale?: string;
+}
 
-/** Get a single component manifest by ID. */
-export function get(id: string): ComponentManifest | null;
-
-/** Get all available category strings. */
+export function list(filter?: ListFilter, options?: LocaleOptions): ComponentManifest[];
+export function get(id: string, options?: LocaleOptions): ComponentManifest | null;
 export function categories(): string[];
-
-/** Read component HTML source synchronously (Node.js only). */
 export function readSync(id: string): string;
-
-/** Read component HTML source asynchronously (Node.js only). */
 export function read(id: string): Promise<string>;
-
-/** Resolve the absolute file path of a component (Node.js only). */
 export function resolve(id: string): string;
-
-/** Mount component HTML into a DOM container (browser). Handles script re-activation. */
 export function mount(html: string, container: HTMLElement, props?: Record<string, unknown>): void;
-
-/** Unmount a previously mounted component and run any registered cleanup callbacks. */
 export function unmount(container: HTMLElement): void;
-
-/** Update data-props on the mounted component root. */
 export function updateProps(container: HTMLElement, props?: Record<string, unknown>): void;
-
-/** The full component registry object. */
 export const registry: Registry;

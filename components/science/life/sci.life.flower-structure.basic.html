@@ -1,18 +1,90 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.flower-structure.basic",
   "name": "花的结构",
   "nameEn": "Flower Structure",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 280 },
+  "viewport": {
+    "w": 300,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 500, "desc": "组件宽度" },
-    { "key": "showLabels", "type": "boolean", "default": true, "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 180,
+      "max": 500,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "showLabels",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示标注"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["flower", "structure", "plant", "pollination", "science", "primary"]
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "flower",
+    "structure",
+    "plant",
+    "pollination",
+    "science",
+    "primary"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "花的结构",
+      "tags": [
+        "flower",
+        "structure",
+        "plant",
+        "pollination",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "花的结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Flower Structure",
+      "tags": [
+        "flower",
+        "structure",
+        "plant",
+        "pollination",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "Flower Structure",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Configuration for show labels."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.flower-structure.basic" role="img" aria-label="花的结构">

@@ -1,34 +1,290 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.fluid.bernoulli.interactive",
   "name": "伯努利原理（交互式）",
-  "nameEn": "Bernoulli's Principle (Interactive)",
+  "nameEn": "Bernoulli's Principle Explorer",
   "category": "physics/fluid",
   "version": "1.0.0",
-  "viewport": { "w": 540, "h": 400 },
-  "tags": ["fluid","bernoulli","pressure","velocity","venturi","interactive"],
+  "viewport": {
+    "w": 540,
+    "h": 400
+  },
+  "tags": [
+    "fluid",
+    "bernoulli",
+    "pressure",
+    "velocity",
+    "venturi",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "fluidColor", "type": "color",  "default": "#42a5f5", "desc": "流体颜色" },
-    { "key": "pipeColor",  "type": "color",  "default": "#90a4ae", "desc": "管道颜色" },
-    { "key": "flowSpeed",  "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "流速(m/s)" },
-    { "key": "narrowRatio","type": "number", "default": 0.4, "min": 0.2, "max": 0.8, "desc": "缩窄比" },
-    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "speed",      "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "showPressure","type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示压力计" },
-    { "key": "showVectors","type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示速度矢量" },
-    { "key": "showLabels", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "fluidColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "流体颜色"
+    },
+    {
+      "key": "pipeColor",
+      "type": "color",
+      "default": "#90a4ae",
+      "desc": "管道颜色"
+    },
+    {
+      "key": "flowSpeed",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "流速(m/s)"
+    },
+    {
+      "key": "narrowRatio",
+      "type": "number",
+      "default": 0.4,
+      "min": 0.2,
+      "max": 0.8,
+      "desc": "缩窄比"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "showPressure",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示压力计"
+    },
+    {
+      "key": "showVectors",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示速度矢量"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "fluidColor": "--cmp-fluid", "pipeColor": "--cmp-pipe", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "fluidColor": "--cmp-fluid",
+    "pipeColor": "--cmp-pipe",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "tick", "values": { "v1": "number", "v2": "number", "P1": "number", "P2": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "tick",
+      "values": {
+        "v1": "number",
+        "v2": "number",
+        "P1": "number",
+        "P2": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "伯努利原理（交互式）",
+      "tags": [
+        "fluid",
+        "bernoulli",
+        "pressure",
+        "velocity",
+        "venturi",
+        "interactive"
+      ],
+      "ariaLabel": "伯努利原理（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "fluidColor": {
+          "label": "fluidColor",
+          "desc": "流体颜色"
+        },
+        "pipeColor": {
+          "label": "pipeColor",
+          "desc": "管道颜色"
+        },
+        "flowSpeed": {
+          "label": "flowSpeed",
+          "desc": "流速(m/s)"
+        },
+        "narrowRatio": {
+          "label": "narrowRatio",
+          "desc": "缩窄比"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "showPressure": {
+          "label": "showPressure",
+          "desc": "显示压力计"
+        },
+        "showVectors": {
+          "label": "showVectors",
+          "desc": "显示速度矢量"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "v1": "number",
+            "v2": "number",
+            "P1": "number",
+            "P2": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Bernoulli's Principle Explorer",
+      "tags": [
+        "fluid",
+        "bernoulli",
+        "pressure",
+        "velocity",
+        "venturi",
+        "interactive"
+      ],
+      "ariaLabel": "Bernoulli's Principle Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "fluidColor": {
+          "label": "Fluid Color",
+          "desc": "Color setting for fluid color."
+        },
+        "pipeColor": {
+          "label": "Pipe Color",
+          "desc": "Color setting for pipe color."
+        },
+        "flowSpeed": {
+          "label": "Flow Speed",
+          "desc": "Numeric control for flow speed."
+        },
+        "narrowRatio": {
+          "label": "Narrow Ratio",
+          "desc": "Numeric control for narrow ratio."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "showPressure": {
+          "label": "Show Pressure",
+          "desc": "Select the show pressure option."
+        },
+        "showVectors": {
+          "label": "Show Vectors",
+          "desc": "Select the show vectors option."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Select the show labels option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Tick",
+          "desc": "Event emitted during tick.",
+          "values": {
+            "v1": "Value for v1.",
+            "v2": "Value for v2.",
+            "P1": "Value for p1.",
+            "P2": "Value for p2."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.fluid.bernoulli.interactive" role="img" aria-label="伯努利原理（交互式）">

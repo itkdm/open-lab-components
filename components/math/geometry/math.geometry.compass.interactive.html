@@ -1,21 +1,70 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.compass.interactive",
   "name": "圆规（交互式）",
-  "nameEn": "Compass (Interactive)",
+  "nameEn": "Geometric Compass",
   "category": "math/geometry",
   "version": "1.2.0",
-  "viewport": { "w": 300, "h": 300 },
+  "viewport": {
+    "w": 300,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 150, "max": 600, "desc": "组件尺寸" },
-    { "key": "metalColor", "type": "color", "default": "#888888", "desc": "金属部件颜色" },
-    { "key": "pencilColor", "type": "color", "default": "#ffb74d", "desc": "铅笔腿颜色" },
-    { "key": "arcColor", "type": "color", "default": "#1565c0", "desc": "圆弧颜色" },
-    { "key": "stroke", "type": "color", "default": "#555555", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边宽度" },
-    { "key": "accent", "type": "color", "default": "#d32f2f", "desc": "半径文字颜色" },
-    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 150,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "metalColor",
+      "type": "color",
+      "default": "#888888",
+      "desc": "金属部件颜色"
+    },
+    {
+      "key": "pencilColor",
+      "type": "color",
+      "default": "#ffb74d",
+      "desc": "铅笔腿颜色"
+    },
+    {
+      "key": "arcColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "圆弧颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#555555",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#d32f2f",
+      "desc": "半径文字颜色"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -27,11 +76,161 @@
     "accent": "--cmp-accent",
     "glow": "--cmp-glow"
   },
-  "tags": ["compass", "geometry", "circle", "radius", "interactive", "math", "drawing"],
+  "tags": [
+    "compass",
+    "geometry",
+    "circle",
+    "radius",
+    "interactive",
+    "math",
+    "drawing"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "drag", "values": { "radius": "number", "sweepDeg": "number — 已画弧度数" } },
-    { "name": "cmp:changeend", "type": "drag", "values": { "radius": "number", "sweepDeg": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "radius": "number",
+        "sweepDeg": "number — 已画弧度数"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "drag",
+      "values": {
+        "radius": "number",
+        "sweepDeg": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "圆规（交互式）",
+      "tags": [
+        "compass",
+        "geometry",
+        "circle",
+        "radius",
+        "interactive",
+        "math",
+        "drawing"
+      ],
+      "ariaLabel": "圆规（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "metalColor": {
+          "label": "metalColor",
+          "desc": "金属部件颜色"
+        },
+        "pencilColor": {
+          "label": "pencilColor",
+          "desc": "铅笔腿颜色"
+        },
+        "arcColor": {
+          "label": "arcColor",
+          "desc": "圆弧颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "半径文字颜色"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "radius": "number",
+            "sweepDeg": "number — 已画弧度数"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "radius": "number",
+            "sweepDeg": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Geometric Compass",
+      "tags": [
+        "compass",
+        "geometry",
+        "circle",
+        "radius",
+        "interactive",
+        "math",
+        "drawing"
+      ],
+      "ariaLabel": "Geometric Compass",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "metalColor": {
+          "label": "Metal Color",
+          "desc": "Sets the color of the metal parts."
+        },
+        "pencilColor": {
+          "label": "Pencil Color",
+          "desc": "Sets the color of the pencil."
+        },
+        "arcColor": {
+          "label": "Arc Color",
+          "desc": "Sets the color of the angle arc."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "radius": "Current radius.",
+            "sweepDeg": "Current sweep deg."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "radius": "Current radius.",
+            "sweepDeg": "Current sweep deg."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.compass.interactive" role="img" aria-label="圆规（交互式）">

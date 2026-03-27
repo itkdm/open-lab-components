@@ -1,31 +1,90 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.pressure-demo.interactive",
   "name": "压强演示器（交互式）",
-  "nameEn": "Pressure Demo (Interactive)",
+  "nameEn": "Pressure Demonstrator",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 200 },
-  "tags": ["pressure", "force", "area", "mechanics", "interactive", "sponge", "brick"],
+  "viewport": {
+    "w": 200,
+    "h": 200
+  },
+  "tags": [
+    "pressure",
+    "force",
+    "area",
+    "mechanics",
+    "interactive",
+    "sponge",
+    "brick"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 400, "desc": "组件尺寸（正方形）" },
-    { "key": "mass",        "type": "number",     "default": 2,   "min": 0.5, "max": 10,  "desc": "砖块质量(kg)" },
-    { "key": "brickColor",  "type": "color",      "default": "#c62828", "desc": "砖块颜色" },
-    { "key": "spongeColor", "type": "color",      "default": "#fff176", "desc": "海绵颜色" },
-    { "key": "stroke",      "type": "color",      "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number",     "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "accent",      "type": "color",      "default": "#1565c0", "desc": "强调色（文字）" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 400,
+      "desc": "组件尺寸（正方形）"
+    },
+    {
+      "key": "mass",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 10,
+      "desc": "砖块质量(kg)"
+    },
+    {
+      "key": "brickColor",
+      "type": "color",
+      "default": "#c62828",
+      "desc": "砖块颜色"
+    },
+    {
+      "key": "spongeColor",
+      "type": "color",
+      "default": "#fff176",
+      "desc": "海绵颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色（文字）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "brickColor":  "--cmp-brick",
+    "size": "--cmp-size",
+    "brickColor": "--cmp-brick",
     "spongeColor": "--cmp-sponge",
-    "stroke":      "--cmp-stroke",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "accent":      "--cmp-accent",
-    "glow":        "--cmp-glow"
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
   "events": [
     {
@@ -37,7 +96,123 @@
         "pressure": "number(Pa) — 压强"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "压强演示器（交互式）",
+      "tags": [
+        "pressure",
+        "force",
+        "area",
+        "mechanics",
+        "interactive",
+        "sponge",
+        "brick"
+      ],
+      "ariaLabel": "压强演示器（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸（正方形）"
+        },
+        "mass": {
+          "label": "mass",
+          "desc": "砖块质量(kg)"
+        },
+        "brickColor": {
+          "label": "brickColor",
+          "desc": "砖块颜色"
+        },
+        "spongeColor": {
+          "label": "spongeColor",
+          "desc": "海绵颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（文字）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "orientation": "string — 当前朝向(flat/side/upright)",
+            "area": "number(cm2) — 接触面积",
+            "pressure": "number(Pa) — 压强"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Pressure Demonstrator",
+      "tags": [
+        "pressure",
+        "force",
+        "area",
+        "mechanics",
+        "interactive",
+        "sponge",
+        "brick"
+      ],
+      "ariaLabel": "Pressure Demonstrator",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "mass": {
+          "label": "Mass",
+          "desc": "Sets the mass value used in the demonstration."
+        },
+        "brickColor": {
+          "label": "Brick Color",
+          "desc": "Sets the color of the weight block."
+        },
+        "spongeColor": {
+          "label": "Sponge Color",
+          "desc": "Sets the color of the sponge."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "orientation": "Current orientation.",
+            "area": "Current area.",
+            "pressure": "Current pressure value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.pressure-demo.interactive" role="img" aria-label="压强演示器（交互式）">

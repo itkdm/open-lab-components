@@ -1,21 +1,67 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "cs.ai.perceptron.basic",
   "name": "感知机模型",
   "nameEn": "Perceptron Node",
   "category": "cs/ai",
   "version": "1.0.0",
-  "viewport": { "w": 240, "h": 150 },
-  "tags": ["ai", "neural-network", "perceptron", "node", "cs"],
+  "viewport": {
+    "w": 240,
+    "h": 150
+  },
+  "tags": [
+    "ai",
+    "neural-network",
+    "perceptron",
+    "node",
+    "cs"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 240, "min": 120, "max": 800, "desc": "组件尺寸宽度" },
-    { "key": "w1", "type": "number(0-1)", "default": 1, "desc": "输入 x1 权重" },
-    { "key": "w2", "type": "number(0-1)", "default": 0.3, "desc": "输入 x2 权重" },
-    { "key": "w3", "type": "number(0-1)", "default": 0.8, "desc": "输入 x3 权重" },
-    { "key": "activation", "type": "number(0-1)", "default": 1, "desc": "激活值（控制输出亮度）" },
-    { "key": "accent", "type": "color", "default": "#10b981", "desc": "激活高亮色" },
-    { "key": "stroke", "type": "color", "default": "#374151", "desc": "常规描边色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 120,
+      "max": 800,
+      "desc": "组件尺寸宽度"
+    },
+    {
+      "key": "w1",
+      "type": "number(0-1)",
+      "default": 1,
+      "desc": "输入 x1 权重"
+    },
+    {
+      "key": "w2",
+      "type": "number(0-1)",
+      "default": 0.3,
+      "desc": "输入 x2 权重"
+    },
+    {
+      "key": "w3",
+      "type": "number(0-1)",
+      "default": 0.8,
+      "desc": "输入 x3 权重"
+    },
+    {
+      "key": "activation",
+      "type": "number(0-1)",
+      "default": 1,
+      "desc": "激活值（控制输出亮度）"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#10b981",
+      "desc": "激活高亮色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#374151",
+      "desc": "常规描边色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -25,6 +71,92 @@
     "activation": "--cmp-activation",
     "accent": "--cmp-accent",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "感知机模型",
+      "tags": [
+        "ai",
+        "neural-network",
+        "perceptron",
+        "node",
+        "cs"
+      ],
+      "ariaLabel": "感知机模型",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸宽度"
+        },
+        "w1": {
+          "label": "w1",
+          "desc": "输入 x1 权重"
+        },
+        "w2": {
+          "label": "w2",
+          "desc": "输入 x2 权重"
+        },
+        "w3": {
+          "label": "w3",
+          "desc": "输入 x3 权重"
+        },
+        "activation": {
+          "label": "activation",
+          "desc": "激活值（控制输出亮度）"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "激活高亮色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "常规描边色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Perceptron Node",
+      "tags": [
+        "ai",
+        "neural-network",
+        "perceptron",
+        "node",
+        "cs"
+      ],
+      "ariaLabel": "Perceptron Node",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "w1": {
+          "label": "W1",
+          "desc": "Numeric control for w1."
+        },
+        "w2": {
+          "label": "W2",
+          "desc": "Numeric control for w2."
+        },
+        "w3": {
+          "label": "W3",
+          "desc": "Numeric control for w3."
+        },
+        "activation": {
+          "label": "Activation",
+          "desc": "Numeric control for activation."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,25 +1,176 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.organ.neuron.basic",
   "name": "神经元结构",
-  "nameEn": "Neuron Structure",
+  "nameEn": "Neuron Anatomy",
   "category": "biology/organ",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 140 },
-  "tags": ["biology", "organ", "neuron", "nerve", "anatomy", "synapse", "axon", "dendrite"],
+  "viewport": {
+    "w": 360,
+    "h": 140
+  },
+  "tags": [
+    "biology",
+    "organ",
+    "neuron",
+    "nerve",
+    "anatomy",
+    "synapse",
+    "axon",
+    "dendrite"
+  ],
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 140, "min": 100, "max": 300, "desc": "组件高度" },
-    { "key": "bodyColor",     "type": "color",  "default": "#7e57c2", "desc": "细胞体颜色" },
-    { "key": "axonColor",     "type": "color",  "default": "#fdd835", "desc": "轴突颜色" },
-    { "key": "myelinColor",   "type": "color",  "default": "#fff9c4", "desc": "髓鞘颜色" },
-    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLabels",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 140,
+      "min": 100,
+      "max": 300,
+      "desc": "组件高度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#7e57c2",
+      "desc": "细胞体颜色"
+    },
+    {
+      "key": "axonColor",
+      "type": "color",
+      "default": "#fdd835",
+      "desc": "轴突颜色"
+    },
+    {
+      "key": "myelinColor",
+      "type": "color",
+      "default": "#fff9c4",
+      "desc": "髓鞘颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bodyColor": "--cmp-body", "axonColor": "--cmp-axon",
-    "myelinColor": "--cmp-myelin", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "axonColor": "--cmp-axon",
+    "myelinColor": "--cmp-myelin",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "神经元结构",
+      "tags": [
+        "biology",
+        "organ",
+        "neuron",
+        "nerve",
+        "anatomy",
+        "synapse",
+        "axon",
+        "dendrite"
+      ],
+      "ariaLabel": "神经元结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "细胞体颜色"
+        },
+        "axonColor": {
+          "label": "axonColor",
+          "desc": "轴突颜色"
+        },
+        "myelinColor": {
+          "label": "myelinColor",
+          "desc": "髓鞘颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Neuron Anatomy",
+      "tags": [
+        "biology",
+        "organ",
+        "neuron",
+        "nerve",
+        "anatomy",
+        "synapse",
+        "axon",
+        "dendrite"
+      ],
+      "ariaLabel": "Neuron Anatomy",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the organ or instrument."
+        },
+        "axonColor": {
+          "label": "Axon Color",
+          "desc": "Sets the color of the axon."
+        },
+        "myelinColor": {
+          "label": "Myelin Color",
+          "desc": "Sets the color of the myelin sheath."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

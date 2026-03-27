@@ -1,19 +1,56 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.tool.sundial.interactive",
   "name": "日晷",
   "nameEn": "Sundial",
   "category": "science/tool",
   "version": "1.0.0",
-  "viewport": { "w": 240, "h": 280 },
+  "viewport": {
+    "w": 240,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 240, "min": 120, "max": 480, "desc": "组件宽度" },
-    { "key": "hour", "type": "number", "default": 12, "min": 6, "max": 18, "desc": "当前时刻（6-18）" },
-    { "key": "plateColor", "type": "color", "default": "#D7CCC8", "desc": "表盘颜色" },
-    { "key": "shadowColor", "type": "color", "default": "rgba(0,0,0,0.4)", "desc": "阴影颜色" },
-    { "key": "gnomColor", "type": "color", "default": "#5D4037", "desc": "晷针颜色" },
-    { "key": "markColor", "type": "color", "default": "#4E342E", "desc": "刻度颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 120,
+      "max": 480,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "hour",
+      "type": "number",
+      "default": 12,
+      "min": 6,
+      "max": 18,
+      "desc": "当前时刻（6-18）"
+    },
+    {
+      "key": "plateColor",
+      "type": "color",
+      "default": "#D7CCC8",
+      "desc": "表盘颜色"
+    },
+    {
+      "key": "shadowColor",
+      "type": "color",
+      "default": "rgba(0,0,0,0.4)",
+      "desc": "阴影颜色"
+    },
+    {
+      "key": "gnomColor",
+      "type": "color",
+      "default": "#5D4037",
+      "desc": "晷针颜色"
+    },
+    {
+      "key": "markColor",
+      "type": "color",
+      "default": "#4E342E",
+      "desc": "刻度颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -23,11 +60,151 @@
     "gnomColor": "--cmp-gnom",
     "markColor": "--cmp-mark"
   },
-  "tags": ["sundial", "time", "shadow", "sun", "science", "primary", "interactive"],
+  "tags": [
+    "sundial",
+    "time",
+    "shadow",
+    "sun",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "rotate", "values": { "hour": "number(6-18)", "sunAngle": "number(deg)", "shadowAngle": "number(deg)" } },
-    { "name": "cmp:changeend", "type": "rotate", "values": { "hour": "number(6-18)", "sunAngle": "number(deg)", "shadowAngle": "number(deg)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "rotate",
+      "values": {
+        "hour": "number(6-18)",
+        "sunAngle": "number(deg)",
+        "shadowAngle": "number(deg)"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "rotate",
+      "values": {
+        "hour": "number(6-18)",
+        "sunAngle": "number(deg)",
+        "shadowAngle": "number(deg)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "日晷",
+      "tags": [
+        "sundial",
+        "time",
+        "shadow",
+        "sun",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "日晷",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "hour": {
+          "label": "hour",
+          "desc": "当前时刻（6-18）"
+        },
+        "plateColor": {
+          "label": "plateColor",
+          "desc": "表盘颜色"
+        },
+        "shadowColor": {
+          "label": "shadowColor",
+          "desc": "阴影颜色"
+        },
+        "gnomColor": {
+          "label": "gnomColor",
+          "desc": "晷针颜色"
+        },
+        "markColor": {
+          "label": "markColor",
+          "desc": "刻度颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "hour": "number(6-18)",
+            "sunAngle": "number(deg)",
+            "shadowAngle": "number(deg)"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "hour": "number(6-18)",
+            "sunAngle": "number(deg)",
+            "shadowAngle": "number(deg)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Sundial",
+      "tags": [
+        "sundial",
+        "time",
+        "shadow",
+        "sun",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Sundial",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "hour": {
+          "label": "Hour",
+          "desc": "Numeric control for hour."
+        },
+        "plateColor": {
+          "label": "Plate Color",
+          "desc": "Color setting for plate color."
+        },
+        "shadowColor": {
+          "label": "Shadow Color",
+          "desc": "Color setting for shadow color."
+        },
+        "gnomColor": {
+          "label": "Gnom Color",
+          "desc": "Color setting for gnom color."
+        },
+        "markColor": {
+          "label": "Mark Color",
+          "desc": "Color setting for mark color."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Rotate",
+          "desc": "Event emitted during rotate.",
+          "values": {
+            "hour": "Value for hour.",
+            "sunAngle": "Value for sun angle.",
+            "shadowAngle": "Value for shadow angle."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Rotate",
+          "desc": "Event emitted during rotate.",
+          "values": {
+            "hour": "Value for hour.",
+            "sunAngle": "Value for sun angle.",
+            "shadowAngle": "Value for shadow angle."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.tool.sundial.interactive" role="img" aria-label="日晷">

@@ -484,3 +484,16 @@ container.querySelectorAll('script').forEach(oldScript => {
 ### 如何知道一个组件支持哪些参数？
 
 查看组件文件顶部的 `@cmp-manifest` 注释块，`props` 数组列出了所有可配置项及其类型、默认值和说明。也可以通过 `registry.json` 批量查询。
+
+
+## Localization
+
+The registry now provides both a raw multi-locale view and locale-specific views.
+
+- Raw registry: `registry/registry.json`
+- Localized views: `registry/registry.zh-CN.json`, `registry/registry.en.json`
+- Category views: `registry/categories.zh-CN.json`, `registry/categories.en.json`
+
+When consuming metadata, prefer the localized registry that matches the current host locale. If a field is missing, fall back to `zh-CN`.
+
+See [RELEASE-2026-03-I18N.md](./RELEASE-2026-03-I18N.md) for the full migration summary and rollout scope.

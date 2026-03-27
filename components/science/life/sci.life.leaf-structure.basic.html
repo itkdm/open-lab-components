@@ -1,18 +1,90 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.leaf-structure.basic",
   "name": "叶片结构",
   "nameEn": "Leaf Structure",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 280 },
+  "viewport": {
+    "w": 300,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 500, "desc": "组件宽度" },
-    { "key": "showLabels", "type": "boolean", "default": true, "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 180,
+      "max": 500,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "showLabels",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示标注"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["leaf", "structure", "plant", "photosynthesis", "science", "primary"]
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "leaf",
+    "structure",
+    "plant",
+    "photosynthesis",
+    "science",
+    "primary"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "叶片结构",
+      "tags": [
+        "leaf",
+        "structure",
+        "plant",
+        "photosynthesis",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "叶片结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Leaf Structure",
+      "tags": [
+        "leaf",
+        "structure",
+        "plant",
+        "photosynthesis",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "Leaf Structure",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Configuration for show labels."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.leaf-structure.basic" role="img" aria-label="叶片结构">

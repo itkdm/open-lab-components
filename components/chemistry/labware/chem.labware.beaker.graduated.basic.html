@@ -1,26 +1,105 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.beaker.graduated.basic",
   "name": "烧杯（刻度）",
   "nameEn": "Graduated Beaker",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 140, "h": 180 },
-  "tags": ["chemistry", "labware", "beaker", "graduated", "volume"],
+  "viewport": {
+    "w": 140,
+    "h": 180
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "beaker",
+    "graduated",
+    "volume"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 180, "min": 120, "max": 320, "desc": "组件高度" },
-    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.45, "min": 0, "max": 1, "desc": "液面高度占比" },
-    { "key": "scaleMin", "type": "number", "default": 0, "desc": "刻度最小值" },
-    { "key": "scaleMax", "type": "number", "default": 200, "desc": "刻度最大值" },
-    { "key": "majorStep", "type": "number", "default": 50, "min": 1, "desc": "主刻度间隔" },
-    { "key": "minorStep", "type": "number", "default": 10, "min": 1, "desc": "次刻度间隔" },
-    { "key": "liquidColor", "type": "color", "default": "#4db6ac", "desc": "液体颜色" },
-    { "key": "glassTint", "type": "color", "default": "rgba(226, 242, 255, 0.55)", "desc": "玻璃底色" },
-    { "key": "stroke", "type": "color", "default": "#2f4f5f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number(px)", "default": 2, "min": 1, "max": 5, "desc": "描边宽度" },
-    { "key": "markColor", "type": "color", "default": "rgba(47, 79, 95, 0.45)", "desc": "刻度线颜色" },
-    { "key": "highlight", "type": "number(0-1)", "default": 0.35, "min": 0, "max": 1, "desc": "高光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 120,
+      "max": 320,
+      "desc": "组件高度"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.45,
+      "min": 0,
+      "max": 1,
+      "desc": "液面高度占比"
+    },
+    {
+      "key": "scaleMin",
+      "type": "number",
+      "default": 0,
+      "desc": "刻度最小值"
+    },
+    {
+      "key": "scaleMax",
+      "type": "number",
+      "default": 200,
+      "desc": "刻度最大值"
+    },
+    {
+      "key": "majorStep",
+      "type": "number",
+      "default": 50,
+      "min": 1,
+      "desc": "主刻度间隔"
+    },
+    {
+      "key": "minorStep",
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "desc": "次刻度间隔"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#4db6ac",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(226, 242, 255, 0.55)",
+      "desc": "玻璃底色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#2f4f5f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number(px)",
+      "default": 2,
+      "min": 1,
+      "max": 5,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "markColor",
+      "type": "color",
+      "default": "rgba(47, 79, 95, 0.45)",
+      "desc": "刻度线颜色"
+    },
+    {
+      "key": "highlight",
+      "type": "number(0-1)",
+      "default": 0.35,
+      "min": 0,
+      "max": 1,
+      "desc": "高光强度"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -35,6 +114,132 @@
     "strokeWidth": "--cmp-stroke-width",
     "markColor": "--cmp-mark-color",
     "highlight": "--cmp-highlight"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "烧杯（刻度）",
+      "tags": [
+        "chemistry",
+        "labware",
+        "beaker",
+        "graduated",
+        "volume"
+      ],
+      "ariaLabel": "烧杯（刻度）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液面高度占比"
+        },
+        "scaleMin": {
+          "label": "scaleMin",
+          "desc": "刻度最小值"
+        },
+        "scaleMax": {
+          "label": "scaleMax",
+          "desc": "刻度最大值"
+        },
+        "majorStep": {
+          "label": "majorStep",
+          "desc": "主刻度间隔"
+        },
+        "minorStep": {
+          "label": "minorStep",
+          "desc": "次刻度间隔"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "markColor": {
+          "label": "markColor",
+          "desc": "刻度线颜色"
+        },
+        "highlight": {
+          "label": "highlight",
+          "desc": "高光强度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Graduated Beaker",
+      "tags": [
+        "chemistry",
+        "labware",
+        "beaker",
+        "graduated",
+        "volume"
+      ],
+      "ariaLabel": "Graduated Beaker",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Sets the fill level as a fraction of the vessel height."
+        },
+        "scaleMin": {
+          "label": "Scale Minimum",
+          "desc": "Sets the lowest value shown on the scale."
+        },
+        "scaleMax": {
+          "label": "Scale Maximum",
+          "desc": "Sets the highest value shown on the scale."
+        },
+        "majorStep": {
+          "label": "Major Tick Interval",
+          "desc": "Sets the interval between major scale markings."
+        },
+        "minorStep": {
+          "label": "Minor Tick Interval",
+          "desc": "Sets the interval between minor scale markings."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "markColor": {
+          "label": "Scale Mark Color",
+          "desc": "Sets the color of the scale markings."
+        },
+        "highlight": {
+          "label": "Highlight Intensity",
+          "desc": "Controls the strength of the specular highlight."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,53 +1,434 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.refraction.interactive",
   "name": "光的折射（交互式）",
-  "nameEn": "Light Refraction (Interactive)",
+  "nameEn": "Refraction at a Boundary",
   "category": "physics/optics",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 400 },
+  "viewport": {
+    "w": 480,
+    "h": 400
+  },
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",        "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-
-    { "key": "medium1Color",  "type": "color",  "default": "#e3f2fd", "desc": "介质1颜色（上方，空气）" },
-    { "key": "medium2Color",  "type": "color",  "default": "#bbdefb", "desc": "介质2颜色（下方，水/玻璃）" },
-    { "key": "interfaceColor","type": "color",  "default": "#90a4ae", "desc": "分界面颜色" },
-    { "key": "normalColor",   "type": "color",  "default": "#4caf50", "desc": "法线颜色" },
-
-    { "key": "incidentColor", "type": "color",  "default": "#ff9800", "desc": "入射光颜色" },
-    { "key": "refractColor",  "type": "color",  "default": "#2196f3", "desc": "折射光颜色" },
-    { "key": "reflectColor",  "type": "color",  "default": "#ffb74d", "desc": "反射光颜色" },
-    { "key": "rayWidth",      "type": "number", "default": 2.2, "min": 0.5, "max": 5, "desc": "光线粗细" },
-
-    { "key": "n1",            "type": "number", "default": 1.0,  "min": 1.0, "max": 2.5, "desc": "介质1折射率" },
-    { "key": "n2",            "type": "number", "default": 1.5,  "min": 1.0, "max": 2.5, "desc": "介质2折射率" },
-    { "key": "initAngle",     "type": "number", "default": 40,   "min": 0,   "max": 85,  "desc": "初始入射角（度）" },
-    { "key": "medium1Name",   "type": "string", "default": "空气",  "desc": "介质1名称" },
-    { "key": "medium2Name",   "type": "string", "default": "玻璃",  "desc": "介质2名称" },
-
-    { "key": "showLabels",    "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "角度标注" },
-    { "key": "showReflect",   "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示反射光" },
-    { "key": "showData",      "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "数据面板" },
-
-    { "key": "accent",        "type": "color",  "default": "#1565c0", "desc": "强调色" },
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "medium1Color",
+      "type": "color",
+      "default": "#e3f2fd",
+      "desc": "介质1颜色（上方，空气）"
+    },
+    {
+      "key": "medium2Color",
+      "type": "color",
+      "default": "#bbdefb",
+      "desc": "介质2颜色（下方，水/玻璃）"
+    },
+    {
+      "key": "interfaceColor",
+      "type": "color",
+      "default": "#90a4ae",
+      "desc": "分界面颜色"
+    },
+    {
+      "key": "normalColor",
+      "type": "color",
+      "default": "#4caf50",
+      "desc": "法线颜色"
+    },
+    {
+      "key": "incidentColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "入射光颜色"
+    },
+    {
+      "key": "refractColor",
+      "type": "color",
+      "default": "#2196f3",
+      "desc": "折射光颜色"
+    },
+    {
+      "key": "reflectColor",
+      "type": "color",
+      "default": "#ffb74d",
+      "desc": "反射光颜色"
+    },
+    {
+      "key": "rayWidth",
+      "type": "number",
+      "default": 2.2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "光线粗细"
+    },
+    {
+      "key": "n1",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 2.5,
+      "desc": "介质1折射率"
+    },
+    {
+      "key": "n2",
+      "type": "number",
+      "default": 1.5,
+      "min": 1,
+      "max": 2.5,
+      "desc": "介质2折射率"
+    },
+    {
+      "key": "initAngle",
+      "type": "number",
+      "default": 40,
+      "min": 0,
+      "max": 85,
+      "desc": "初始入射角（度）"
+    },
+    {
+      "key": "medium1Name",
+      "type": "string",
+      "default": "空气",
+      "desc": "介质1名称"
+    },
+    {
+      "key": "medium2Name",
+      "type": "string",
+      "default": "玻璃",
+      "desc": "介质2名称"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "角度标注"
+    },
+    {
+      "key": "showReflect",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示反射光"
+    },
+    {
+      "key": "showData",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "数据面板"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "medium1Color": "--cmp-m1", "medium2Color": "--cmp-m2",
-    "interfaceColor": "--cmp-interface", "normalColor": "--cmp-normal",
-    "incidentColor": "--cmp-incident", "refractColor": "--cmp-refract",
-    "reflectColor": "--cmp-reflect", "rayWidth": "--cmp-ray-width",
-    "accent": "--cmp-accent", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "medium1Color": "--cmp-m1",
+    "medium2Color": "--cmp-m2",
+    "interfaceColor": "--cmp-interface",
+    "normalColor": "--cmp-normal",
+    "incidentColor": "--cmp-incident",
+    "refractColor": "--cmp-refract",
+    "reflectColor": "--cmp-reflect",
+    "rayWidth": "--cmp-ray-width",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
-  "tags": ["optics","refraction","snell-law","light","interactive","draggable"],
+  "tags": [
+    "optics",
+    "refraction",
+    "snell-law",
+    "light",
+    "interactive",
+    "draggable"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "angle": "number(deg) — 入射角" } },
-    { "name": "cmp:changeend", "type": "slide", "values": { "angle": "number(deg) — 入射角" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "angle": "number(deg) — 入射角"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "angle": "number(deg) — 入射角"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "光的折射（交互式）",
+      "tags": [
+        "optics",
+        "refraction",
+        "snell-law",
+        "light",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "光的折射（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "medium1Color": {
+          "label": "medium1Color",
+          "desc": "介质1颜色（上方，空气）"
+        },
+        "medium2Color": {
+          "label": "medium2Color",
+          "desc": "介质2颜色（下方，水/玻璃）"
+        },
+        "interfaceColor": {
+          "label": "interfaceColor",
+          "desc": "分界面颜色"
+        },
+        "normalColor": {
+          "label": "normalColor",
+          "desc": "法线颜色"
+        },
+        "incidentColor": {
+          "label": "incidentColor",
+          "desc": "入射光颜色"
+        },
+        "refractColor": {
+          "label": "refractColor",
+          "desc": "折射光颜色"
+        },
+        "reflectColor": {
+          "label": "reflectColor",
+          "desc": "反射光颜色"
+        },
+        "rayWidth": {
+          "label": "rayWidth",
+          "desc": "光线粗细"
+        },
+        "n1": {
+          "label": "n1",
+          "desc": "介质1折射率"
+        },
+        "n2": {
+          "label": "n2",
+          "desc": "介质2折射率"
+        },
+        "initAngle": {
+          "label": "initAngle",
+          "desc": "初始入射角（度）"
+        },
+        "medium1Name": {
+          "label": "medium1Name",
+          "desc": "介质1名称"
+        },
+        "medium2Name": {
+          "label": "medium2Name",
+          "desc": "介质2名称"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "角度标注"
+        },
+        "showReflect": {
+          "label": "showReflect",
+          "desc": "显示反射光"
+        },
+        "showData": {
+          "label": "showData",
+          "desc": "数据面板"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number(deg) — 入射角"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "angle": "number(deg) — 入射角"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Refraction at a Boundary",
+      "tags": [
+        "optics",
+        "refraction",
+        "snell-law",
+        "light",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Refraction at a Boundary",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "medium1Color": {
+          "label": "Medium 1 Color",
+          "desc": "Sets the color used for medium 1."
+        },
+        "medium2Color": {
+          "label": "Medium 2 Color",
+          "desc": "Sets the color used for medium 2."
+        },
+        "interfaceColor": {
+          "label": "Interface Color",
+          "desc": "Sets the color of the boundary interface."
+        },
+        "normalColor": {
+          "label": "Normal Line Color",
+          "desc": "Sets the color of the normal line."
+        },
+        "incidentColor": {
+          "label": "Incident Ray Color",
+          "desc": "Sets the color of the incident ray."
+        },
+        "refractColor": {
+          "label": "Refracted Ray Color",
+          "desc": "Sets the color of the refracted ray."
+        },
+        "reflectColor": {
+          "label": "Reflected Ray Color",
+          "desc": "Sets the color of the reflected ray."
+        },
+        "rayWidth": {
+          "label": "Ray Width",
+          "desc": "Sets the line width of the rays."
+        },
+        "n1": {
+          "label": "Refractive Index n1",
+          "desc": "Sets the refractive index of medium 1."
+        },
+        "n2": {
+          "label": "Refractive Index n2",
+          "desc": "Sets the refractive index of medium 2."
+        },
+        "initAngle": {
+          "label": "Initial Angle",
+          "desc": "Sets the initial angle of incidence in degrees."
+        },
+        "medium1Name": {
+          "label": "Medium 1 Label",
+          "desc": "Sets the display label for medium 1."
+        },
+        "medium2Name": {
+          "label": "Medium 2 Label",
+          "desc": "Sets the display label for medium 2."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showReflect": {
+          "label": "Show Reflected Ray",
+          "desc": "Shows or hides the reflected ray."
+        },
+        "showData": {
+          "label": "Show Data Panel",
+          "desc": "Shows or hides the data readout panel."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle in degrees."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "angle": "Current angle in degrees."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.optics.refraction.interactive" role="img" aria-label="光的折射（交互式）">

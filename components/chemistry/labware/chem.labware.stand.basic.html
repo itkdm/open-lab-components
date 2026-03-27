@@ -1,21 +1,71 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.stand.basic",
   "name": "铁架台",
-  "nameEn": "Lab Stand",
+  "nameEn": "Retort Stand",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 180 },
-  "tags": ["chemistry", "labware", "stand", "support", "clamp"],
+  "viewport": {
+    "w": 100,
+    "h": 180
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "stand",
+    "support",
+    "clamp"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 180, "min": 120, "max": 280, "desc": "组件高度" },
-    { "key": "metalColor", "type": "color", "default": "#546e7a", "desc": "金属颜色" },
-    { "key": "baseColor", "type": "color", "default": "#37474f", "desc": "底座颜色" },
-    { "key": "clampColor", "type": "color", "default": "#78909c", "desc": "铁夹颜色" },
-    { "key": "stroke", "type": "color", "default": "#263238", "desc": "描边颜色" },
-    { "key": "clampPos", "type": "number(0-1)", "default": 0.4, "min": 0.1, "max": 0.85, "desc": "铁夹位置" },
-    { "key": "ringPos", "type": "number(0-1)", "default": 0.7, "min": 0.15, "max": 0.9, "desc": "铁圈位置" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 120,
+      "max": 280,
+      "desc": "组件高度"
+    },
+    {
+      "key": "metalColor",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "金属颜色"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "底座颜色"
+    },
+    {
+      "key": "clampColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "铁夹颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "clampPos",
+      "type": "number(0-1)",
+      "default": 0.4,
+      "min": 0.1,
+      "max": 0.85,
+      "desc": "铁夹位置"
+    },
+    {
+      "key": "ringPos",
+      "type": "number(0-1)",
+      "default": 0.7,
+      "min": 0.15,
+      "max": 0.9,
+      "desc": "铁圈位置"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -25,6 +75,92 @@
     "stroke": "--cmp-stroke",
     "clampPos": "--cmp-clamp-pos",
     "ringPos": "--cmp-ring-pos"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "铁架台",
+      "tags": [
+        "chemistry",
+        "labware",
+        "stand",
+        "support",
+        "clamp"
+      ],
+      "ariaLabel": "铁架台",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "metalColor": {
+          "label": "metalColor",
+          "desc": "金属颜色"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "底座颜色"
+        },
+        "clampColor": {
+          "label": "clampColor",
+          "desc": "铁夹颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "clampPos": {
+          "label": "clampPos",
+          "desc": "铁夹位置"
+        },
+        "ringPos": {
+          "label": "ringPos",
+          "desc": "铁圈位置"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Retort Stand",
+      "tags": [
+        "chemistry",
+        "labware",
+        "stand",
+        "support",
+        "clamp"
+      ],
+      "ariaLabel": "Retort Stand",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "metalColor": {
+          "label": "Metal Color",
+          "desc": "Sets the metal surface color."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Sets the color of the base."
+        },
+        "clampColor": {
+          "label": "Clamp Color",
+          "desc": "Sets the color of the clamp."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "clampPos": {
+          "label": "Clamp Position",
+          "desc": "Sets the vertical clamp position."
+        },
+        "ringPos": {
+          "label": "Ring Position",
+          "desc": "Sets the ring position."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

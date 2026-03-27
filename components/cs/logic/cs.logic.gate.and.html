@@ -1,19 +1,56 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "cs.logic.gate.and",
   "name": "与门 (AND Gate)",
   "nameEn": "AND Gate",
   "category": "cs/logic",
   "version": "1.0.0",
-  "viewport": { "w": 180, "h": 100 },
-  "tags": ["logic", "gate", "and", "digital", "circuit", "cs"],
+  "viewport": {
+    "w": 180,
+    "h": 100
+  },
+  "tags": [
+    "logic",
+    "gate",
+    "and",
+    "digital",
+    "circuit",
+    "cs"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 180, "min": 100, "max": 600, "desc": "组件尺寸宽度" },
-    { "key": "inA", "type": "number(0-1)", "default": 1, "desc": "输入引脚 A (1=通电, 0=断电)" },
-    { "key": "inB", "type": "number(0-1)", "default": 0, "desc": "输入引脚 B (1=通电, 0=断电)" },
-    { "key": "accent", "type": "color", "default": "#ef4444", "desc": "通电高亮色" },
-    { "key": "stroke", "type": "color", "default": "#4b5563", "desc": "常规/断电色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 100,
+      "max": 600,
+      "desc": "组件尺寸宽度"
+    },
+    {
+      "key": "inA",
+      "type": "number(0-1)",
+      "default": 1,
+      "desc": "输入引脚 A (1=通电, 0=断电)"
+    },
+    {
+      "key": "inB",
+      "type": "number(0-1)",
+      "default": 0,
+      "desc": "输入引脚 B (1=通电, 0=断电)"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#ef4444",
+      "desc": "通电高亮色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#4b5563",
+      "desc": "常规/断电色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -21,6 +58,78 @@
     "inB": "--cmp-in-b",
     "accent": "--cmp-accent",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "与门 (AND Gate)",
+      "tags": [
+        "logic",
+        "gate",
+        "and",
+        "digital",
+        "circuit",
+        "cs"
+      ],
+      "ariaLabel": "与门",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸宽度"
+        },
+        "inA": {
+          "label": "inA",
+          "desc": "输入引脚 A (1=通电, 0=断电)"
+        },
+        "inB": {
+          "label": "inB",
+          "desc": "输入引脚 B (1=通电, 0=断电)"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "通电高亮色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "常规/断电色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "AND Gate",
+      "tags": [
+        "logic",
+        "gate",
+        "and",
+        "digital",
+        "circuit",
+        "cs"
+      ],
+      "ariaLabel": "AND Gate",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "inA": {
+          "label": "In A",
+          "desc": "Numeric control for in a."
+        },
+        "inB": {
+          "label": "In B",
+          "desc": "Numeric control for in b."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

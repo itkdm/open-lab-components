@@ -1,27 +1,157 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.place-value.interactive",
   "name": "数位表",
   "nameEn": "Place Value Chart",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 280 },
+  "viewport": {
+    "w": 360,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "组件宽度" },
-    { "key": "value", "type": "number", "default": 0, "min": 0, "max": 9999, "desc": "当前数值" },
-    { "key": "headerColor", "type": "color", "default": "#1565C0", "desc": "表头颜色" },
-    { "key": "blockColor", "type": "color", "default": "#42A5F5", "desc": "方块颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 200,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "value",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 9999,
+      "desc": "当前数值"
+    },
+    {
+      "key": "headerColor",
+      "type": "color",
+      "default": "#1565C0",
+      "desc": "表头颜色"
+    },
+    {
+      "key": "blockColor",
+      "type": "color",
+      "default": "#42A5F5",
+      "desc": "方块颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "headerColor": "--cmp-header",
     "blockColor": "--cmp-block"
   },
-  "tags": ["place-value", "number", "counting", "math", "primary", "interactive"],
+  "tags": [
+    "place-value",
+    "number",
+    "counting",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "value": "number", "thousands": "number", "hundreds": "number", "tens": "number", "ones": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "value": "number",
+        "thousands": "number",
+        "hundreds": "number",
+        "tens": "number",
+        "ones": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "数位表",
+      "tags": [
+        "place-value",
+        "number",
+        "counting",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "数位表: 0",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "value": {
+          "label": "value",
+          "desc": "当前数值"
+        },
+        "headerColor": {
+          "label": "headerColor",
+          "desc": "表头颜色"
+        },
+        "blockColor": {
+          "label": "blockColor",
+          "desc": "方块颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "value": "number",
+            "thousands": "number",
+            "hundreds": "number",
+            "tens": "number",
+            "ones": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Place Value Chart",
+      "tags": [
+        "place-value",
+        "number",
+        "counting",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Place Value Chart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "value": {
+          "label": "Value",
+          "desc": "Sets the current numeric value."
+        },
+        "headerColor": {
+          "label": "Header Color",
+          "desc": "Sets the color of the header area."
+        },
+        "blockColor": {
+          "label": "Block Color",
+          "desc": "Sets the color of the blocks."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "value": "Current numeric value.",
+            "thousands": "Current thousands.",
+            "hundreds": "Current hundreds.",
+            "tens": "Current tens.",
+            "ones": "Current ones."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.place-value.interactive" role="img" aria-label="数位表: 0">

@@ -1,26 +1,104 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.meter.current.basic",
   "name": "电流表",
   "nameEn": "Ammeter",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 320 },
-  "tags": ["ammeter", "meter", "current", "circuit", "static", "basic"],
+  "viewport": {
+    "w": 320,
+    "h": 320
+  },
+  "tags": [
+    "ammeter",
+    "meter",
+    "current",
+    "circuit",
+    "static",
+    "basic"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 280, "min": 80, "max": 560, "desc": "组件尺寸（正方形）" },
-    { "key": "stroke", "type": "color", "default": "#111111", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number(px)", "default": 3, "min": 1, "max": 8, "desc": "描边宽度" },
-    { "key": "accent", "type": "color", "default": "#F39A1F", "desc": "强调色（表盘橙色）" },
-    { "key": "body", "type": "color", "default": "#2B2B2B", "desc": "外壳颜色" },
-    { "key": "wire", "type": "color", "default": "#0F0F0F", "desc": "导线颜色" },
-    { "key": "headFill", "type": "color", "default": "#CFE0FF", "desc": "探头内圈填充" },
-    { "key": "displayFill", "type": "color", "default": "#FFFFFF", "desc": "显示窗填充" },
-    { "key": "value", "type": "string", "default": "-", "desc": "显示值（通过 CSS 变量注入）" },
-    { "key": "unit", "type": "string", "default": "", "desc": "单位（如 A / mA，通过 CSS 变量注入）" },
-    { "key": "probex", "type": "number", "default": 268, "min": 0, "max": 320, "desc": "探头位置 X（viewBox坐标；若<=1则按比例）" },
-    { "key": "probey", "type": "number", "default": 80, "min": 0, "max": 320, "desc": "探头位置 Y（viewBox坐标；若<=1则按比例）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 280,
+      "min": 80,
+      "max": 560,
+      "desc": "组件尺寸（正方形）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111111",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number(px)",
+      "default": 3,
+      "min": 1,
+      "max": 8,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#F39A1F",
+      "desc": "强调色（表盘橙色）"
+    },
+    {
+      "key": "body",
+      "type": "color",
+      "default": "#2B2B2B",
+      "desc": "外壳颜色"
+    },
+    {
+      "key": "wire",
+      "type": "color",
+      "default": "#0F0F0F",
+      "desc": "导线颜色"
+    },
+    {
+      "key": "headFill",
+      "type": "color",
+      "default": "#CFE0FF",
+      "desc": "探头内圈填充"
+    },
+    {
+      "key": "displayFill",
+      "type": "color",
+      "default": "#FFFFFF",
+      "desc": "显示窗填充"
+    },
+    {
+      "key": "value",
+      "type": "string",
+      "default": "-",
+      "desc": "显示值（通过 CSS 变量注入）"
+    },
+    {
+      "key": "unit",
+      "type": "string",
+      "default": "",
+      "desc": "单位（如 A / mA，通过 CSS 变量注入）"
+    },
+    {
+      "key": "probex",
+      "type": "number",
+      "default": 268,
+      "min": 0,
+      "max": 320,
+      "desc": "探头位置 X（viewBox坐标；若<=1则按比例）"
+    },
+    {
+      "key": "probey",
+      "type": "number",
+      "default": 80,
+      "min": 0,
+      "max": 320,
+      "desc": "探头位置 Y（viewBox坐标；若<=1则按比例）"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -35,6 +113,134 @@
     "unit": "--cmp-unit",
     "probex": "--cmp-probe-x",
     "probey": "--cmp-probe-y"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "电流表",
+      "tags": [
+        "ammeter",
+        "meter",
+        "current",
+        "circuit",
+        "static",
+        "basic"
+      ],
+      "ariaLabel": "电流表",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸（正方形）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（表盘橙色）"
+        },
+        "body": {
+          "label": "body",
+          "desc": "外壳颜色"
+        },
+        "wire": {
+          "label": "wire",
+          "desc": "导线颜色"
+        },
+        "headFill": {
+          "label": "headFill",
+          "desc": "探头内圈填充"
+        },
+        "displayFill": {
+          "label": "displayFill",
+          "desc": "显示窗填充"
+        },
+        "value": {
+          "label": "value",
+          "desc": "显示值（通过 CSS 变量注入）"
+        },
+        "unit": {
+          "label": "unit",
+          "desc": "单位（如 A / mA，通过 CSS 变量注入）"
+        },
+        "probex": {
+          "label": "probex",
+          "desc": "探头位置 X（viewBox坐标；若<=1则按比例）"
+        },
+        "probey": {
+          "label": "probey",
+          "desc": "探头位置 Y（viewBox坐标；若<=1则按比例）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Ammeter",
+      "tags": [
+        "ammeter",
+        "meter",
+        "current",
+        "circuit",
+        "static",
+        "basic"
+      ],
+      "ariaLabel": "Ammeter",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Accent color for annotations and highlights."
+        },
+        "body": {
+          "label": "Body Color",
+          "desc": "Color of the resistor body."
+        },
+        "wire": {
+          "label": "Wire Color",
+          "desc": "Color of the wire."
+        },
+        "headFill": {
+          "label": "Probe Tip Color",
+          "desc": "Fill color of the probe head."
+        },
+        "displayFill": {
+          "label": "Display Background",
+          "desc": "Background color of the digital display area."
+        },
+        "value": {
+          "label": "Value",
+          "desc": "Initial marked value."
+        },
+        "unit": {
+          "label": "Unit Label",
+          "desc": "Unit text shown with the reading."
+        },
+        "probex": {
+          "label": "Probe X",
+          "desc": "X position of the probe in viewBox coordinates."
+        },
+        "probey": {
+          "label": "Probe Y",
+          "desc": "Y position of the probe in viewBox coordinates."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

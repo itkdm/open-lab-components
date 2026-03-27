@@ -1,19 +1,54 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.water-cycle.interactive",
   "name": "水循环",
   "nameEn": "Water Cycle",
   "category": "science/earth",
   "version": "1.0.0",
-  "viewport": { "w": 400, "h": 300 },
+  "viewport": {
+    "w": 400,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 400, "min": 200, "max": 800, "desc": "组件宽度" },
-    { "key": "skyColor", "type": "color", "default": "#87CEEB", "desc": "天空颜色" },
-    { "key": "waterColor", "type": "color", "default": "#2196F3", "desc": "水面颜色" },
-    { "key": "mountainColor", "type": "color", "default": "#6D4C41", "desc": "山体颜色" },
-    { "key": "sunColor", "type": "color", "default": "#FFD54F", "desc": "太阳颜色" },
-    { "key": "labelColor", "type": "color", "default": "#333333", "desc": "标签颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 200,
+      "max": 800,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "skyColor",
+      "type": "color",
+      "default": "#87CEEB",
+      "desc": "天空颜色"
+    },
+    {
+      "key": "waterColor",
+      "type": "color",
+      "default": "#2196F3",
+      "desc": "水面颜色"
+    },
+    {
+      "key": "mountainColor",
+      "type": "color",
+      "default": "#6D4C41",
+      "desc": "山体颜色"
+    },
+    {
+      "key": "sunColor",
+      "type": "color",
+      "default": "#FFD54F",
+      "desc": "太阳颜色"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "default": "#333333",
+      "desc": "标签颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -23,7 +58,15 @@
     "sunColor": "--cmp-sun",
     "labelColor": "--cmp-label"
   },
-  "tags": ["water-cycle", "evaporation", "precipitation", "earth-science", "science", "primary", "interactive"],
+  "tags": [
+    "water-cycle",
+    "evaporation",
+    "precipitation",
+    "earth-science",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -33,7 +76,105 @@
         "stageName": "string — 阶段中文名"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "水循环",
+      "tags": [
+        "water-cycle",
+        "evaporation",
+        "precipitation",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "水循环",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "skyColor": {
+          "label": "skyColor",
+          "desc": "天空颜色"
+        },
+        "waterColor": {
+          "label": "waterColor",
+          "desc": "水面颜色"
+        },
+        "mountainColor": {
+          "label": "mountainColor",
+          "desc": "山体颜色"
+        },
+        "sunColor": {
+          "label": "sunColor",
+          "desc": "太阳颜色"
+        },
+        "labelColor": {
+          "label": "labelColor",
+          "desc": "标签颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "activeStage": "string — 当前高亮阶段ID",
+            "stageName": "string — 阶段中文名"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Water Cycle",
+      "tags": [
+        "water-cycle",
+        "evaporation",
+        "precipitation",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Water Cycle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "skyColor": {
+          "label": "Sky Color",
+          "desc": "Color setting for sky color."
+        },
+        "waterColor": {
+          "label": "Water Color",
+          "desc": "Color setting for water color."
+        },
+        "mountainColor": {
+          "label": "Mountain Color",
+          "desc": "Color setting for mountain color."
+        },
+        "sunColor": {
+          "label": "Sun Color",
+          "desc": "Color setting for sun color."
+        },
+        "labelColor": {
+          "label": "Label Color",
+          "desc": "Color setting for label color."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "activeStage": "Value for active stage.",
+            "stageName": "Value for stage name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.water-cycle.interactive" role="img" aria-label="水循环">

@@ -1,38 +1,230 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.capacitor.basic",
   "name": "电容器（平行板）",
   "nameEn": "Parallel Plate Capacitor",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 120, "h": 100 },
-  "tags": ["capacitor", "parallel-plate", "circuit", "static", "electric-field"],
+  "viewport": {
+    "w": 120,
+    "h": 100
+  },
+  "tags": [
+    "capacitor",
+    "parallel-plate",
+    "circuit",
+    "static",
+    "electric-field"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 100, "min": 60, "max": 240, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "plateColor",  "type": "color",  "default": "#607d8b", "desc": "极板颜色" },
-    { "key": "wireColor",   "type": "color",  "default": "#333333", "desc": "引线颜色" },
-    { "key": "posColor",    "type": "color",  "default": "#f44336", "desc": "正极标注色" },
-    { "key": "negColor",    "type": "color",  "default": "#2196f3", "desc": "负极标注色" },
-    { "key": "fieldColor",  "type": "color",  "default": "#ff9800", "desc": "电场线颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#1a1a1a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "gap",         "type": "number(0-1)", "default": 0.3, "min": 0.1, "max": 0.8, "desc": "极板间距比例" },
-    { "key": "charge",      "type": "number(0-1)", "default": 0.5, "min": 0, "max": 1, "desc": "电荷密度（0=无电荷，1=满）" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 100,
+      "min": 60,
+      "max": 240,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "plateColor",
+      "type": "color",
+      "default": "#607d8b",
+      "desc": "极板颜色"
+    },
+    {
+      "key": "wireColor",
+      "type": "color",
+      "default": "#333333",
+      "desc": "引线颜色"
+    },
+    {
+      "key": "posColor",
+      "type": "color",
+      "default": "#f44336",
+      "desc": "正极标注色"
+    },
+    {
+      "key": "negColor",
+      "type": "color",
+      "default": "#2196f3",
+      "desc": "负极标注色"
+    },
+    {
+      "key": "fieldColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "电场线颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#1a1a1a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "gap",
+      "type": "number(0-1)",
+      "default": 0.3,
+      "min": 0.1,
+      "max": 0.8,
+      "desc": "极板间距比例"
+    },
+    {
+      "key": "charge",
+      "type": "number(0-1)",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "desc": "电荷密度（0=无电荷，1=满）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "plateColor":  "--cmp-plate",
-    "wireColor":   "--cmp-wire",
-    "posColor":    "--cmp-pos",
-    "negColor":    "--cmp-neg",
-    "fieldColor":  "--cmp-field",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "plateColor": "--cmp-plate",
+    "wireColor": "--cmp-wire",
+    "posColor": "--cmp-pos",
+    "negColor": "--cmp-neg",
+    "fieldColor": "--cmp-field",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "gap":         "--cmp-gap",
-    "charge":      "--cmp-charge",
-    "glow":        "--cmp-glow"
+    "gap": "--cmp-gap",
+    "charge": "--cmp-charge",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "电容器（平行板）",
+      "tags": [
+        "capacitor",
+        "parallel-plate",
+        "circuit",
+        "static",
+        "electric-field"
+      ],
+      "ariaLabel": "电容器（平行板）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "plateColor": {
+          "label": "plateColor",
+          "desc": "极板颜色"
+        },
+        "wireColor": {
+          "label": "wireColor",
+          "desc": "引线颜色"
+        },
+        "posColor": {
+          "label": "posColor",
+          "desc": "正极标注色"
+        },
+        "negColor": {
+          "label": "negColor",
+          "desc": "负极标注色"
+        },
+        "fieldColor": {
+          "label": "fieldColor",
+          "desc": "电场线颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "gap": {
+          "label": "gap",
+          "desc": "极板间距比例"
+        },
+        "charge": {
+          "label": "charge",
+          "desc": "电荷密度（0=无电荷，1=满）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Parallel Plate Capacitor",
+      "tags": [
+        "capacitor",
+        "parallel-plate",
+        "circuit",
+        "static",
+        "electric-field"
+      ],
+      "ariaLabel": "Parallel Plate Capacitor",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "plateColor": {
+          "label": "Plate Color",
+          "desc": "Color setting for plate color."
+        },
+        "wireColor": {
+          "label": "Wire Color",
+          "desc": "Color setting for wire color."
+        },
+        "posColor": {
+          "label": "Pos Color",
+          "desc": "Color setting for pos color."
+        },
+        "negColor": {
+          "label": "Neg Color",
+          "desc": "Color setting for neg color."
+        },
+        "fieldColor": {
+          "label": "Field Color",
+          "desc": "Color setting for field color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "gap": {
+          "label": "Gap",
+          "desc": "Numeric control for gap."
+        },
+        "charge": {
+          "label": "Charge",
+          "desc": "Numeric control for charge."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

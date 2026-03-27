@@ -1,31 +1,180 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.magnet.horseshoe.basic",
   "name": "U形磁铁",
   "nameEn": "Horseshoe Magnet",
   "category": "physics/magnet",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 200 },
-  "tags": ["magnet", "horseshoe", "u-magnet", "NS-pole", "magnetic-field"],
+  "viewport": {
+    "w": 160,
+    "h": 200
+  },
+  "tags": [
+    "magnet",
+    "horseshoe",
+    "u-magnet",
+    "NS-pole",
+    "magnetic-field"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
-    { "key": "northColor", "type": "color",  "default": "#e53935", "desc": "N极颜色" },
-    { "key": "southColor", "type": "color",  "default": "#1e88e5", "desc": "S极颜色" },
-    { "key": "fieldColor", "type": "color",  "default": "#666666", "desc": "磁力线颜色" },
-    { "key": "stroke",     "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "showField",  "type": "boolean", "default": true, "desc": "显示磁力线" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "northColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "N极颜色"
+    },
+    {
+      "key": "southColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "S极颜色"
+    },
+    {
+      "key": "fieldColor",
+      "type": "color",
+      "default": "#666666",
+      "desc": "磁力线颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showField",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示磁力线"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
+    "size": "--cmp-size",
     "northColor": "--cmp-north",
     "southColor": "--cmp-south",
     "fieldColor": "--cmp-field",
-    "stroke":     "--cmp-stroke",
-    "strokeWidth":"--cmp-stroke-width",
-    "glow":       "--cmp-glow"
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "U形磁铁",
+      "tags": [
+        "magnet",
+        "horseshoe",
+        "u-magnet",
+        "NS-pole",
+        "magnetic-field"
+      ],
+      "ariaLabel": "U形磁铁",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "northColor": {
+          "label": "northColor",
+          "desc": "N极颜色"
+        },
+        "southColor": {
+          "label": "southColor",
+          "desc": "S极颜色"
+        },
+        "fieldColor": {
+          "label": "fieldColor",
+          "desc": "磁力线颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showField": {
+          "label": "showField",
+          "desc": "显示磁力线"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Horseshoe Magnet",
+      "tags": [
+        "magnet",
+        "horseshoe",
+        "u-magnet",
+        "NS-pole",
+        "magnetic-field"
+      ],
+      "ariaLabel": "Horseshoe Magnet",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "northColor": {
+          "label": "North Color",
+          "desc": "Color setting for north color."
+        },
+        "southColor": {
+          "label": "South Color",
+          "desc": "Color setting for south color."
+        },
+        "fieldColor": {
+          "label": "Field Color",
+          "desc": "Color setting for field color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "showField": {
+          "label": "Show Field",
+          "desc": "Configuration for show field."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

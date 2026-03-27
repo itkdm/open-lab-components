@@ -29,6 +29,14 @@ test("list_components filters by category and omits html", () => {
   }
 });
 
+test("list_components localizes names and tags", () => {
+  const result = listComponents({ category: "physics/circuit", limit: 20, locale: "en" });
+  const resistor = result.items.find((item) => item.id === "phy.resistor.axial.basic");
+  assert.ok(resistor);
+  assert.equal(resistor.name, "Axial Resistor");
+  assert.ok(resistor.tags.includes("resistor"));
+});
+
 test("list_components filters hasEvents deterministically", () => {
   const withEvents = listComponents({ hasEvents: true, limit: 10 });
   assert.ok(withEvents.items.length > 0);
@@ -55,6 +63,13 @@ test("get_component returns full html and registry fields", () => {
   assert.match(result.component.html, /data-cmp-id="phy\.mechanics\.projectile\.interactive"/);
   assert.equal(typeof result.component.sourcePath, "string");
   assert.equal(result.component.sourcePath.includes("\\"), false);
+});
+
+test("get_component returns localized fields with locale option", () => {
+  const result = getComponent("phy.resistor.axial.basic", "en");
+  assert.equal(result.component.name, "Axial Resistor");
+  assert.equal(result.component.ariaLabel, "Axial resistor");
+  assert.ok(result.component.locales["zh-CN"]);
 });
 
 test("get_component unknown id returns suggestions metadata", () => {

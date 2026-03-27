@@ -1,34 +1,130 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.meter.voltage.draggable",
   "name": "电压表",
   "nameEn": "Voltmeter",
   "category": "physics/circuit",
   "version": "1.0.7",
-  "viewport": { "w": 320, "h": 240 },
+  "viewport": {
+    "w": 320,
+    "h": 240
+  },
   "props": [
-    { "key": "size",   "type": "number(px)", "default": 180, "min": 64, "max": 512, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "aspect", "type": "number",     "default": 1.333, "min": 1.0, "max": 2.2, "desc": "宽高比（width = size * aspect）" },
-
-    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 2.5, "min": 0, "max": 6, "desc": "描边粗细（SVG stroke-width）" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" },
-
-    { "key": "meterShell",  "type": "color", "default": "#111827", "desc": "表壳颜色" },
-    { "key": "meterPanel",  "type": "color", "default": "#f59e0b", "desc": "表盘面板颜色" },
-
-    { "key": "wireBlack",   "type": "color", "default": "#111827", "desc": "黑线颜色" },
-    { "key": "wireRed",     "type": "color", "default": "#ef4444", "desc": "红线颜色" },
-    { "key": "wireWidth",   "type": "number", "default": 5, "min": 2, "max": 12, "desc": "导线粗细" },
-
-    { "key": "probeBlack",  "type": "color", "default": "#111827", "desc": "黑表笔颜色" },
-    { "key": "probeRed",    "type": "color", "default": "#f97316", "desc": "红表笔颜色（偏橙红）" },
-
-    { "key": "leftX",  "type": "number", "default": 92,  "min": -200, "max": 520, "desc": "黑表笔位置 X（viewBox坐标；若<=1则按比例）" },
-    { "key": "leftY",  "type": "number", "default": 160, "min": -200, "max": 440, "desc": "黑表笔位置 Y（viewBox坐标；若<=1则按比例）" },
-    { "key": "rightX", "type": "number", "default": 268, "min": -200, "max": 520, "desc": "红表笔位置 X（viewBox坐标；若<=1则按比例）" },
-    { "key": "rightY", "type": "number", "default": 120, "min": -200, "max": 440, "desc": "红表笔位置 Y（viewBox坐标；若<=1则按比例）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 64,
+      "max": 512,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "aspect",
+      "type": "number",
+      "default": 1.333,
+      "min": 1,
+      "max": 2.2,
+      "desc": "宽高比（width = size * aspect）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2.5,
+      "min": 0,
+      "max": 6,
+      "desc": "描边粗细（SVG stroke-width）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    },
+    {
+      "key": "meterShell",
+      "type": "color",
+      "default": "#111827",
+      "desc": "表壳颜色"
+    },
+    {
+      "key": "meterPanel",
+      "type": "color",
+      "default": "#f59e0b",
+      "desc": "表盘面板颜色"
+    },
+    {
+      "key": "wireBlack",
+      "type": "color",
+      "default": "#111827",
+      "desc": "黑线颜色"
+    },
+    {
+      "key": "wireRed",
+      "type": "color",
+      "default": "#ef4444",
+      "desc": "红线颜色"
+    },
+    {
+      "key": "wireWidth",
+      "type": "number",
+      "default": 5,
+      "min": 2,
+      "max": 12,
+      "desc": "导线粗细"
+    },
+    {
+      "key": "probeBlack",
+      "type": "color",
+      "default": "#111827",
+      "desc": "黑表笔颜色"
+    },
+    {
+      "key": "probeRed",
+      "type": "color",
+      "default": "#f97316",
+      "desc": "红表笔颜色（偏橙红）"
+    },
+    {
+      "key": "leftX",
+      "type": "number",
+      "default": 92,
+      "min": -200,
+      "max": 520,
+      "desc": "黑表笔位置 X（viewBox坐标；若<=1则按比例）"
+    },
+    {
+      "key": "leftY",
+      "type": "number",
+      "default": 160,
+      "min": -200,
+      "max": 440,
+      "desc": "黑表笔位置 Y（viewBox坐标；若<=1则按比例）"
+    },
+    {
+      "key": "rightX",
+      "type": "number",
+      "default": 268,
+      "min": -200,
+      "max": 520,
+      "desc": "红表笔位置 X（viewBox坐标；若<=1则按比例）"
+    },
+    {
+      "key": "rightY",
+      "type": "number",
+      "default": 120,
+      "min": -200,
+      "max": 440,
+      "desc": "红表笔位置 Y（viewBox坐标；若<=1则按比例）"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -48,7 +144,168 @@
     "rightX": "--cmp-right-x",
     "rightY": "--cmp-right-y"
   },
-  "tags": ["voltmeter", "meter", "circuit", "draggable"]
+  "tags": [
+    "voltmeter",
+    "meter",
+    "circuit",
+    "draggable"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电压表",
+      "tags": [
+        "voltmeter",
+        "meter",
+        "circuit",
+        "draggable"
+      ],
+      "ariaLabel": "电压表（可拖动表笔）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "aspect": {
+          "label": "aspect",
+          "desc": "宽高比（width = size * aspect）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细（SVG stroke-width）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        },
+        "meterShell": {
+          "label": "meterShell",
+          "desc": "表壳颜色"
+        },
+        "meterPanel": {
+          "label": "meterPanel",
+          "desc": "表盘面板颜色"
+        },
+        "wireBlack": {
+          "label": "wireBlack",
+          "desc": "黑线颜色"
+        },
+        "wireRed": {
+          "label": "wireRed",
+          "desc": "红线颜色"
+        },
+        "wireWidth": {
+          "label": "wireWidth",
+          "desc": "导线粗细"
+        },
+        "probeBlack": {
+          "label": "probeBlack",
+          "desc": "黑表笔颜色"
+        },
+        "probeRed": {
+          "label": "probeRed",
+          "desc": "红表笔颜色（偏橙红）"
+        },
+        "leftX": {
+          "label": "leftX",
+          "desc": "黑表笔位置 X（viewBox坐标；若<=1则按比例）"
+        },
+        "leftY": {
+          "label": "leftY",
+          "desc": "黑表笔位置 Y（viewBox坐标；若<=1则按比例）"
+        },
+        "rightX": {
+          "label": "rightX",
+          "desc": "红表笔位置 X（viewBox坐标；若<=1则按比例）"
+        },
+        "rightY": {
+          "label": "rightY",
+          "desc": "红表笔位置 Y（viewBox坐标；若<=1则按比例）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Voltmeter",
+      "tags": [
+        "voltmeter",
+        "meter",
+        "circuit",
+        "draggable"
+      ],
+      "ariaLabel": "Voltmeter with movable probes",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "aspect": {
+          "label": "Aspect Ratio",
+          "desc": "Width-to-height ratio."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "glow": {
+          "label": "Highlight Intensity",
+          "desc": "Glow or highlight intensity from 0 to 1."
+        },
+        "meterShell": {
+          "label": "Case Color",
+          "desc": "Color of the outer meter case."
+        },
+        "meterPanel": {
+          "label": "Dial Face Color",
+          "desc": "Color of the meter face."
+        },
+        "wireBlack": {
+          "label": "Black Lead Color",
+          "desc": "Color of the black lead wire."
+        },
+        "wireRed": {
+          "label": "Red Lead Color",
+          "desc": "Color of the red lead wire."
+        },
+        "wireWidth": {
+          "label": "Wire Width",
+          "desc": "Thickness of the wire."
+        },
+        "probeBlack": {
+          "label": "Black Probe Color",
+          "desc": "Color of the black probe."
+        },
+        "probeRed": {
+          "label": "Red Probe Color",
+          "desc": "Color of the red probe."
+        },
+        "leftX": {
+          "label": "Black Probe X",
+          "desc": "X position of the black probe in viewBox coordinates."
+        },
+        "leftY": {
+          "label": "Black Probe Y",
+          "desc": "Y position of the black probe in viewBox coordinates."
+        },
+        "rightX": {
+          "label": "Red Probe X",
+          "desc": "X position of the red probe in viewBox coordinates."
+        },
+        "rightY": {
+          "label": "Red Probe Y",
+          "desc": "Y position of the red probe in viewBox coordinates."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.meter.voltage.draggable" role="img" aria-label="电压表（可拖动表笔）">

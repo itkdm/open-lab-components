@@ -16,8 +16,8 @@ function tokenize(value) {
     .filter(Boolean);
 }
 
-function getItems() {
-  return lab.registry.items.slice();
+function getItems(locale) {
+  return lab.list(undefined, { locale });
 }
 
 function hasEvents(item) {
@@ -33,11 +33,13 @@ function toSummary(item) {
     id: item.id,
     name: item.name,
     nameEn: item.nameEn,
+    ariaLabel: item.ariaLabel,
     category: item.category,
     categoryName: item.categoryName,
     categoryNameEn: item.categoryNameEn,
     version: item.version,
     tags: Array.isArray(item.tags) ? item.tags.slice() : [],
+    locales: item.locales,
     hasEvents: hasEvents(item),
     eventCount: eventCount(item)
   };
@@ -53,8 +55,8 @@ function clampLimit(limit, fallback, max) {
   return Math.min(Math.floor(parsed), max);
 }
 
-function filterItems({ category, tag, hasEvents: wantEvents } = {}) {
-  return getItems()
+function filterItems({ category, tag, hasEvents: wantEvents, locale } = {}) {
+  return getItems(locale)
     .filter((item) => {
       if (category && item.category !== category) return false;
       if (tag && !(Array.isArray(item.tags) && item.tags.includes(tag))) return false;
@@ -64,10 +66,10 @@ function filterItems({ category, tag, hasEvents: wantEvents } = {}) {
     .sort(compareItems);
 }
 
-function getCategories() {
+function getCategories(locale = "zh-CN") {
   const counts = new Map();
 
-  for (const item of getItems()) {
+  for (const item of getItems(locale)) {
     const current = counts.get(item.category) || {
       category: item.category,
       categoryName: item.categoryName,
@@ -86,6 +88,7 @@ function listComponents(input = {}) {
   if (input.category) appliedFilters.category = input.category;
   if (input.tag) appliedFilters.tag = input.tag;
   if (typeof input.hasEvents === "boolean") appliedFilters.hasEvents = input.hasEvents;
+  if (input.locale) appliedFilters.locale = input.locale;
 
   const limit = clampLimit(input.limit, 20, 50);
   const filtered = filterItems(input);
@@ -100,25 +103,28 @@ function listComponents(input = {}) {
 function buildSearchIndex() {
   if (searchIndex) return searchIndex;
 
-  searchIndex = getItems().map((item) => {
+  searchIndex = lab.registry.items.map((item) => {
+    const localePayloads = Object.entries(item.locales || {}).map(([locale, localeData]) => ({
+      locale,
+      name: normalizeText(localeData.name),
+      ariaLabel: normalizeText(localeData.ariaLabel),
+      tags: Array.isArray(localeData.tags) ? localeData.tags.map(normalizeText) : []
+    }));
+
     const fields = {
       id: normalizeText(item.id),
-      name: normalizeText(item.name),
-      nameEn: normalizeText(item.nameEn),
       category: normalizeText(item.category),
       categoryName: normalizeText(item.categoryName),
       categoryNameEn: normalizeText(item.categoryNameEn),
-      tags: Array.isArray(item.tags) ? item.tags.map(normalizeText) : []
+      locales: localePayloads
     };
 
     const allText = [
       fields.id,
-      fields.name,
-      fields.nameEn,
       fields.category,
       fields.categoryName,
       fields.categoryNameEn,
-      ...fields.tags
+      ...localePayloads.flatMap((entry) => [entry.name, entry.ariaLabel, ...entry.tags])
     ].join(" ");
 
     return {
@@ -137,14 +143,16 @@ function scoreMatch(entry, query) {
   if (!q) return null;
 
   const { fields, tokens } = entry;
+  const localizedNames = fields.locales.map((entry) => entry.name);
+  const localizedAriaLabels = fields.locales.map((entry) => entry.ariaLabel);
+  const localizedTags = fields.locales.flatMap((entry) => entry.tags);
 
   if (fields.id === q) return { score: 1000, matchReason: "exact id" };
-  if (fields.name === q) return { score: 950, matchReason: "exact name" };
-  if (fields.nameEn === q) return { score: 940, matchReason: "exact English name" };
+  if (localizedNames.includes(q)) return { score: 950, matchReason: "exact localized name" };
+  if (localizedAriaLabels.includes(q)) return { score: 940, matchReason: "exact localized ariaLabel" };
   if (fields.id.startsWith(q)) return { score: 900, matchReason: "id prefix" };
-  if (fields.name.startsWith(q)) return { score: 880, matchReason: "name prefix" };
-  if (fields.nameEn.startsWith(q)) return { score: 870, matchReason: "English name prefix" };
-  if (fields.tags.includes(q)) return { score: 840, matchReason: "exact tag" };
+  if (localizedNames.some((name) => name.startsWith(q))) return { score: 880, matchReason: "localized name prefix" };
+  if (localizedTags.includes(q)) return { score: 840, matchReason: "exact tag" };
   if (fields.category === q) return { score: 830, matchReason: "exact category" };
   if (fields.categoryName === q || fields.categoryNameEn === q) return { score: 820, matchReason: "exact category name" };
 
@@ -158,12 +166,12 @@ function scoreMatch(entry, query) {
 
   if (
     fields.id.includes(q) ||
-    fields.name.includes(q) ||
-    fields.nameEn.includes(q) ||
     fields.category.includes(q) ||
     fields.categoryName.includes(q) ||
     fields.categoryNameEn.includes(q) ||
-    fields.tags.some((tag) => tag.includes(q))
+    localizedNames.some((name) => name.includes(q)) ||
+    localizedAriaLabels.some((name) => name.includes(q)) ||
+    localizedTags.some((tag) => tag.includes(q))
   ) {
     return { score: 600, matchReason: "substring match" };
   }
@@ -177,6 +185,7 @@ function searchComponents(input = {}) {
 
   const limit = clampLimit(input.limit, 10, 20);
   const category = input.category;
+  const locale = input.locale;
   const matches = [];
 
   for (const entry of buildSearchIndex()) {
@@ -184,7 +193,7 @@ function searchComponents(input = {}) {
     const match = scoreMatch(entry, query);
     if (!match) continue;
     matches.push({
-      ...toSummary(entry.item),
+      ...toSummary(lab.get(entry.item.id, { locale })),
       score: match.score,
       matchReason: match.matchReason
     });
@@ -194,18 +203,18 @@ function searchComponents(input = {}) {
   return { items: matches.slice(0, limit) };
 }
 
-function getSuggestions(id) {
-  return searchComponents({ query: id, limit: 5 }).items.map((item) => item.id);
+function getSuggestions(id, locale) {
+  return searchComponents({ query: id, limit: 5, locale }).items.map((item) => item.id);
 }
 
-function getComponent(id) {
-  const item = lab.get(id);
+function getComponent(id, locale = "zh-CN") {
+  const item = lab.get(id, { locale });
   if (!item) {
     const error = new Error(`Component not found: ${id}`);
     error.code = "COMPONENT_NOT_FOUND";
     error.data = {
       id,
-      suggestions: getSuggestions(id)
+      suggestions: getSuggestions(id, locale)
     };
     throw error;
   }

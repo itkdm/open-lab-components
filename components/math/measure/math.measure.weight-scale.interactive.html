@@ -1,23 +1,160 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.measure.weight-scale.interactive",
   "name": "称重器",
   "nameEn": "Weight Scale",
   "category": "math/measure",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 300 },
+  "viewport": {
+    "w": 300,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 200, "max": 500, "desc": "组件尺寸" },
-    { "key": "weight", "type": "number", "default": 0, "min": 0, "max": 5000, "desc": "当前重量(克)" },
-    { "key": "dialColor", "type": "color", "default": "#FAFAFA", "desc": "表盘颜色" },
-    { "key": "needleColor", "type": "color", "default": "#E53935", "desc": "指针颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 200,
+      "max": 500,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "weight",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 5000,
+      "desc": "当前重量(克)"
+    },
+    {
+      "key": "dialColor",
+      "type": "color",
+      "default": "#FAFAFA",
+      "desc": "表盘颜色"
+    },
+    {
+      "key": "needleColor",
+      "type": "color",
+      "default": "#E53935",
+      "desc": "指针颜色"
+    }
   ],
-  "cssVars": { "size": "--cmp-size", "dialColor": "--cmp-dial", "needleColor": "--cmp-needle" },
-  "tags": ["weight", "mass", "scale", "measurement", "gram", "kilogram", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size",
+    "dialColor": "--cmp-dial",
+    "needleColor": "--cmp-needle"
+  },
+  "tags": [
+    "weight",
+    "mass",
+    "scale",
+    "measurement",
+    "gram",
+    "kilogram",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "weight": "number", "unit": "string", "display": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "weight": "number",
+        "unit": "string",
+        "display": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "称重器",
+      "tags": [
+        "weight",
+        "mass",
+        "scale",
+        "measurement",
+        "gram",
+        "kilogram",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "称重器",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "weight": {
+          "label": "weight",
+          "desc": "当前重量(克)"
+        },
+        "dialColor": {
+          "label": "dialColor",
+          "desc": "表盘颜色"
+        },
+        "needleColor": {
+          "label": "needleColor",
+          "desc": "指针颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "weight": "number",
+            "unit": "string",
+            "display": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Weight Scale",
+      "tags": [
+        "weight",
+        "mass",
+        "scale",
+        "measurement",
+        "gram",
+        "kilogram",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Weight Scale",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "weight": {
+          "label": "Weight",
+          "desc": "Sets the weight value."
+        },
+        "dialColor": {
+          "label": "Dial Color",
+          "desc": "Sets the color of the dial markings."
+        },
+        "needleColor": {
+          "label": "Needle Color",
+          "desc": "Sets the color of the pointer or needle."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "weight": "Current weight.",
+            "unit": "Current unit.",
+            "display": "Current display."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.measure.weight-scale.interactive" role="img" aria-label="称重器">

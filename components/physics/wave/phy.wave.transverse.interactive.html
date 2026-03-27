@@ -1,36 +1,226 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.wave.transverse.interactive",
   "name": "横波演示（交互式）",
-  "nameEn": "Transverse Wave (Interactive)",
+  "nameEn": "Transverse Wave Explorer",
   "category": "physics/wave",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 140 },
-  "tags": ["wave", "transverse", "mechanics", "interactive", "frequency", "amplitude"],
+  "viewport": {
+    "w": 300,
+    "h": 140
+  },
+  "tags": [
+    "wave",
+    "transverse",
+    "mechanics",
+    "interactive",
+    "frequency",
+    "amplitude"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 140, "min": 80, "max": 300, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "waveColor",  "type": "color",  "default": "#1565c0", "desc": "波形颜色" },
-    { "key": "dotColor",   "type": "color",  "default": "#e53935", "desc": "质点颜色" },
-    { "key": "axisColor",  "type": "color",  "default": "#999999", "desc": "轴线颜色" },
-    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
-    { "key": "accent",     "type": "color",  "default": "#1565c0", "desc": "标注颜色" },
-    { "key": "frequency",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "频率(Hz)" },
-    { "key": "amplitude",  "type": "number", "default": 35,  "min": 10, "max": 55, "desc": "振幅(viewBox单位)" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 140,
+      "min": 80,
+      "max": 300,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "waveColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "波形颜色"
+    },
+    {
+      "key": "dotColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "质点颜色"
+    },
+    {
+      "key": "axisColor",
+      "type": "color",
+      "default": "#999999",
+      "desc": "轴线颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#222222",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "标注颜色"
+    },
+    {
+      "key": "frequency",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "频率(Hz)"
+    },
+    {
+      "key": "amplitude",
+      "type": "number",
+      "default": 35,
+      "min": 10,
+      "max": 55,
+      "desc": "振幅(viewBox单位)"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":      "--cmp-size",
+    "size": "--cmp-size",
     "waveColor": "--cmp-wave",
-    "dotColor":  "--cmp-dot",
+    "dotColor": "--cmp-dot",
     "axisColor": "--cmp-axis",
-    "stroke":    "--cmp-stroke",
-    "accent":    "--cmp-accent",
-    "glow":      "--cmp-glow"
+    "stroke": "--cmp-stroke",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "frequency": "number(Hz)", "amplitude": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "frequency": "number(Hz)",
+        "amplitude": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "横波演示（交互式）",
+      "tags": [
+        "wave",
+        "transverse",
+        "mechanics",
+        "interactive",
+        "frequency",
+        "amplitude"
+      ],
+      "ariaLabel": "横波演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "waveColor": {
+          "label": "waveColor",
+          "desc": "波形颜色"
+        },
+        "dotColor": {
+          "label": "dotColor",
+          "desc": "质点颜色"
+        },
+        "axisColor": {
+          "label": "axisColor",
+          "desc": "轴线颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "标注颜色"
+        },
+        "frequency": {
+          "label": "frequency",
+          "desc": "频率(Hz)"
+        },
+        "amplitude": {
+          "label": "amplitude",
+          "desc": "振幅(viewBox单位)"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "frequency": "number(Hz)",
+            "amplitude": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Transverse Wave Explorer",
+      "tags": [
+        "wave",
+        "transverse",
+        "mechanics",
+        "interactive",
+        "frequency",
+        "amplitude"
+      ],
+      "ariaLabel": "Transverse Wave Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "waveColor": {
+          "label": "Wave Color",
+          "desc": "Color setting for wave color."
+        },
+        "dotColor": {
+          "label": "Dot Color",
+          "desc": "Color setting for dot color."
+        },
+        "axisColor": {
+          "label": "Axis Color",
+          "desc": "Color setting for axis color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "frequency": {
+          "label": "Frequency",
+          "desc": "Numeric control for frequency."
+        },
+        "amplitude": {
+          "label": "Amplitude",
+          "desc": "Numeric control for amplitude."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Adjust",
+          "desc": "Event emitted during adjust.",
+          "values": {
+            "frequency": "Value for frequency.",
+            "amplitude": "Value for amplitude."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.wave.transverse.interactive" role="img" aria-label="横波演示（交互式）">

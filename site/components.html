@@ -691,26 +691,30 @@
       }
     };
 
-    let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+    function resolveInitialLang() {
+      const params = new URLSearchParams(window.location.search);
+      const queryLang = (params.get('lang') || '').toLowerCase();
+      if (queryLang === 'en') return 'en';
+      if (queryLang === 'zh' || queryLang === 'zh-cn') return 'zh';
+      const stored = (localStorage.getItem(LANG_KEY) || '').toLowerCase();
+      if (stored === 'en') return 'en';
+      if (stored === 'zh' || stored === 'zh-cn') return 'zh';
+      const browserLang = (navigator.language || '').toLowerCase();
+      return browserLang.startsWith('en') ? 'en' : 'zh';
+    }
+
+    let currentLang = resolveInitialLang();
 
     function t(key) {
       return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
     }
 
     function getComponentName(component) {
-      // 优先使用 registry 中的 nameEn 字段
-      if (currentLang === 'en' && component.nameEn) {
-        return component.nameEn;
-      }
-      return component.name;
+      return component.name || component.nameEn || component.id;
     }
 
     function getCategoryName(component) {
-      // 优先使用 registry 中的 categoryNameEn 字段
-      if (currentLang === 'en' && component.categoryNameEn) {
-        return component.categoryNameEn;
-      }
-      return component.categoryName || component.category;
+      return component.categoryName || component.categoryNameEn || component.category;
     }
 
     function getEventsTag(component) {
@@ -780,7 +784,8 @@
 
     async function loadRegistry() {
       try {
-        const res = await fetch('./registry/registry.json');
+        const locale = currentLang === 'en' ? 'en' : 'zh-CN';
+        const res = await fetch(`./registry/registry.${locale}.json`);
         const data = await res.json();
         registry = Array.isArray(data.items) ? data.items : (Array.isArray(data) ? data : []);
         filtered = registry;
@@ -1154,10 +1159,7 @@ ${componentHtml}
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
       localStorage.setItem(LANG_KEY, currentLang);
       applyStaticTexts();
-      buildSubjectFilter();
-      buildCategoryFilter();
-      updateStats();
-      render();
+      loadRegistry();
     }
 
     const langToggle = document.getElementById('langToggle');

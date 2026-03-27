@@ -1,35 +1,285 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.double-slit.interactive",
   "name": "双缝干涉（交互式）",
-  "nameEn": "Double-Slit Interference (Interactive)",
+  "nameEn": "Double-Slit Interference Explorer",
   "category": "physics/optics",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 360 },
+  "viewport": {
+    "w": 520,
+    "h": 360
+  },
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 360, "min": 240, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "lightColor",    "type": "color",  "default": "#ffeb3b", "desc": "光源颜色" },
-    { "key": "barrierColor",  "type": "color",  "default": "#455a64", "desc": "障碍物颜色" },
-    { "key": "screenColor",   "type": "color",  "default": "#fafafa", "desc": "屏幕颜色" },
-    { "key": "wavelength",    "type": "number", "default": 550, "min": 400, "max": 700, "desc": "波长（nm）" },
-    { "key": "slitSpacing",   "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "缝间距（mm）" },
-    { "key": "showWaves",     "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示波纹" },
-    { "key": "showPattern",   "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示干涉条纹" },
-    { "key": "showLabels",    "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 240,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "lightColor",
+      "type": "color",
+      "default": "#ffeb3b",
+      "desc": "光源颜色"
+    },
+    {
+      "key": "barrierColor",
+      "type": "color",
+      "default": "#455a64",
+      "desc": "障碍物颜色"
+    },
+    {
+      "key": "screenColor",
+      "type": "color",
+      "default": "#fafafa",
+      "desc": "屏幕颜色"
+    },
+    {
+      "key": "wavelength",
+      "type": "number",
+      "default": 550,
+      "min": 400,
+      "max": 700,
+      "desc": "波长（nm）"
+    },
+    {
+      "key": "slitSpacing",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "缝间距（mm）"
+    },
+    {
+      "key": "showWaves",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示波纹"
+    },
+    {
+      "key": "showPattern",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示干涉条纹"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "lightColor": "--cmp-light", "barrierColor": "--cmp-barrier", "screenColor": "--cmp-screen",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "lightColor": "--cmp-light",
+    "barrierColor": "--cmp-barrier",
+    "screenColor": "--cmp-screen",
     "glow": "--cmp-glow"
   },
-  "tags": ["optics","double-slit","interference","wave","interactive","animation"],
+  "tags": [
+    "optics",
+    "double-slit",
+    "interference",
+    "wave",
+    "interactive",
+    "animation"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "wavelength": "number(nm)", "slitSpacing": "number(mm)", "fringeSpacing": "number(mm)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "wavelength": "number(nm)",
+        "slitSpacing": "number(mm)",
+        "fringeSpacing": "number(mm)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "双缝干涉（交互式）",
+      "tags": [
+        "optics",
+        "double-slit",
+        "interference",
+        "wave",
+        "interactive",
+        "animation"
+      ],
+      "ariaLabel": "双缝干涉（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "lightColor": {
+          "label": "lightColor",
+          "desc": "光源颜色"
+        },
+        "barrierColor": {
+          "label": "barrierColor",
+          "desc": "障碍物颜色"
+        },
+        "screenColor": {
+          "label": "screenColor",
+          "desc": "屏幕颜色"
+        },
+        "wavelength": {
+          "label": "wavelength",
+          "desc": "波长（nm）"
+        },
+        "slitSpacing": {
+          "label": "slitSpacing",
+          "desc": "缝间距（mm）"
+        },
+        "showWaves": {
+          "label": "showWaves",
+          "desc": "显示波纹"
+        },
+        "showPattern": {
+          "label": "showPattern",
+          "desc": "显示干涉条纹"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "wavelength": "number(nm)",
+            "slitSpacing": "number(mm)",
+            "fringeSpacing": "number(mm)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Double-Slit Interference Explorer",
+      "tags": [
+        "optics",
+        "double-slit",
+        "interference",
+        "wave",
+        "interactive",
+        "animation"
+      ],
+      "ariaLabel": "Double-Slit Interference Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "lightColor": {
+          "label": "Light Color",
+          "desc": "Sets the color of the light source or wavefront."
+        },
+        "barrierColor": {
+          "label": "Barrier Color",
+          "desc": "Sets the color of the slit barrier."
+        },
+        "screenColor": {
+          "label": "Screen Color",
+          "desc": "Sets the color of the screen."
+        },
+        "wavelength": {
+          "label": "Wavelength",
+          "desc": "Sets the wavelength."
+        },
+        "slitSpacing": {
+          "label": "Slit Spacing",
+          "desc": "Sets the spacing between the slits."
+        },
+        "showWaves": {
+          "label": "Show Waves",
+          "desc": "Shows or hides the wavefronts."
+        },
+        "showPattern": {
+          "label": "Show Pattern",
+          "desc": "Shows or hides the resulting pattern."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "wavelength": "Current wavelength value.",
+            "slitSpacing": "Current slit spacing.",
+            "fringeSpacing": "Computed fringe spacing."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.optics.double-slit.interactive" role="img" aria-label="双缝干涉（交互式）">

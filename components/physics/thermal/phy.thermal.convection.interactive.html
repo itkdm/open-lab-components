@@ -1,34 +1,190 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.thermal.convection.interactive",
   "name": "对流演示（交互式）",
-  "nameEn": "Convection Demo (Interactive)",
+  "nameEn": "Convection Explorer",
   "category": "physics/thermal",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 200 },
-  "tags": ["thermal", "convection", "heat", "particle", "interactive"],
+  "viewport": {
+    "w": 160,
+    "h": 200
+  },
+  "tags": [
+    "thermal",
+    "convection",
+    "heat",
+    "particle",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
-    { "key": "liquidColor",   "type": "color",  "default": "rgba(66,165,245,0.3)", "desc": "液体颜色" },
-    { "key": "particleColor", "type": "color",  "default": "#e53935", "desc": "粒子颜色" },
-    { "key": "flameColor",    "type": "color",  "default": "#ff9800", "desc": "火焰颜色" },
-    { "key": "stroke",        "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "rgba(66,165,245,0.3)",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "particleColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "粒子颜色"
+    },
+    {
+      "key": "flameColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "火焰颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":          "--cmp-size",
-    "liquidColor":   "--cmp-liquid",
+    "size": "--cmp-size",
+    "liquidColor": "--cmp-liquid",
     "particleColor": "--cmp-particle",
-    "flameColor":    "--cmp-flame",
-    "stroke":        "--cmp-stroke",
-    "strokeWidth":   "--cmp-stroke-width",
-    "glow":          "--cmp-glow"
+    "flameColor": "--cmp-flame",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "heating": "boolean — 是否加热中" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "heating": "boolean — 是否加热中"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "对流演示（交互式）",
+      "tags": [
+        "thermal",
+        "convection",
+        "heat",
+        "particle",
+        "interactive"
+      ],
+      "ariaLabel": "对流演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "particleColor": {
+          "label": "particleColor",
+          "desc": "粒子颜色"
+        },
+        "flameColor": {
+          "label": "flameColor",
+          "desc": "火焰颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "heating": "boolean — 是否加热中"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Convection Explorer",
+      "tags": [
+        "thermal",
+        "convection",
+        "heat",
+        "particle",
+        "interactive"
+      ],
+      "ariaLabel": "Convection Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Color setting for liquid color."
+        },
+        "particleColor": {
+          "label": "Particle Color",
+          "desc": "Color setting for particle color."
+        },
+        "flameColor": {
+          "label": "Flame Color",
+          "desc": "Color setting for flame color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "heating": "Value for heating."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.thermal.convection.interactive" role="img" aria-label="对流演示（交互式）">

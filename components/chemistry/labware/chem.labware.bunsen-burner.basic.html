@@ -1,25 +1,110 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.bunsen-burner.basic",
   "name": "本生灯",
   "nameEn": "Bunsen Burner",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 320 },
-  "tags": ["chemistry", "labware", "bunsen", "burner", "heat", "flame", "gas"],
+  "viewport": {
+    "w": 160,
+    "h": 320
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "bunsen",
+    "burner",
+    "heat",
+    "flame",
+    "gas"
+  ],
   "props": [
-    { "key": "size",            "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",          "type": "color",      "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",     "type": "number",     "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "bodyColor",       "type": "color",      "default": "#78909c", "desc": "灯管颜色" },
-    { "key": "baseColor",       "type": "color",      "default": "#546e7a", "desc": "底座颜色" },
-    { "key": "flameColor",      "type": "color",      "default": "#2196f3", "desc": "外焰颜色" },
-    { "key": "innerFlameColor", "type": "color",      "default": "#64b5f6", "desc": "内焰颜色" },
-    { "key": "airHoleOpen",     "type": "enum",       "default": "open", "enum": ["open", "half", "closed"], "desc": "空气调节环状态" },
-    { "key": "lit",             "type": "enum",       "default": "on",   "enum": ["on", "off"], "desc": "点火状态" },
-    { "key": "showLabels",      "type": "enum",       "default": "on",   "enum": ["on", "off"], "desc": "显示标注" },
-    { "key": "glow",            "type": "number(0-1)","default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "灯管颜色"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "底座颜色"
+    },
+    {
+      "key": "flameColor",
+      "type": "color",
+      "default": "#2196f3",
+      "desc": "外焰颜色"
+    },
+    {
+      "key": "innerFlameColor",
+      "type": "color",
+      "default": "#64b5f6",
+      "desc": "内焰颜色"
+    },
+    {
+      "key": "airHoleOpen",
+      "type": "enum",
+      "default": "open",
+      "enum": [
+        "open",
+        "half",
+        "closed"
+      ],
+      "desc": "空气调节环状态"
+    },
+    {
+      "key": "lit",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "点火状态"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -32,8 +117,153 @@
     "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "state", "values": { "lit": "on|off", "airHoleOpen": "open|half|closed" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "state",
+      "values": {
+        "lit": "on|off",
+        "airHoleOpen": "open|half|closed"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "本生灯",
+      "tags": [
+        "chemistry",
+        "labware",
+        "bunsen",
+        "burner",
+        "heat",
+        "flame",
+        "gas"
+      ],
+      "ariaLabel": "本生灯",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "灯管颜色"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "底座颜色"
+        },
+        "flameColor": {
+          "label": "flameColor",
+          "desc": "外焰颜色"
+        },
+        "innerFlameColor": {
+          "label": "innerFlameColor",
+          "desc": "内焰颜色"
+        },
+        "airHoleOpen": {
+          "label": "airHoleOpen",
+          "desc": "空气调节环状态"
+        },
+        "lit": {
+          "label": "lit",
+          "desc": "点火状态"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "lit": "on|off",
+            "airHoleOpen": "open|half|closed"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Bunsen Burner",
+      "tags": [
+        "chemistry",
+        "labware",
+        "bunsen",
+        "burner",
+        "heat",
+        "flame",
+        "gas"
+      ],
+      "ariaLabel": "Bunsen Burner",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the apparatus."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Sets the color of the base."
+        },
+        "flameColor": {
+          "label": "Outer Flame Color",
+          "desc": "Sets the color of the outer flame."
+        },
+        "innerFlameColor": {
+          "label": "Inner Flame Color",
+          "desc": "Sets the color of the inner flame cone."
+        },
+        "airHoleOpen": {
+          "label": "Air Inlet Open",
+          "desc": "Toggles whether the air inlet is open."
+        },
+        "lit": {
+          "label": "Lit",
+          "desc": "Toggles whether the burner is lit."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides reference labels."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "lit": "Whether the burner is lit.",
+            "airHoleOpen": "Whether the air inlet is open."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.labware.bunsen-burner.basic" role="img" aria-label="本生灯">

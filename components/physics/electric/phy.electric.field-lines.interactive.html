@@ -1,33 +1,271 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.electric.field-lines.interactive",
   "name": "电场线演示（交互式）",
-  "nameEn": "Electric Field Lines (Interactive)",
+  "nameEn": "Electric Field Lines Explorer",
   "category": "physics/electric",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 450 },
-  "tags": ["physics","electric","field","charge","coulomb","force","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 450
+  },
+  "tags": [
+    "physics",
+    "electric",
+    "field",
+    "charge",
+    "coulomb",
+    "force",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "positiveColor",  "type": "color",  "default": "#e53935", "desc": "正电荷颜色" },
-    { "key": "negativeColor",  "type": "color",  "default": "#1e88e5", "desc": "负电荷颜色" },
-    { "key": "fieldColor",     "type": "color",  "default": "#ff9800", "desc": "场线颜色" },
-    { "key": "preset",         "type": "enum",   "default": "dipole", "enum": ["single-pos","single-neg","dipole","same-charge","quad"], "desc": "预设" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showEquipotential","type": "enum", "default": "off", "enum": ["on","off"], "desc": "显示等势线" },
-    { "key": "showTestCharge", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示试探电荷" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 450,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "positiveColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "正电荷颜色"
+    },
+    {
+      "key": "negativeColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "负电荷颜色"
+    },
+    {
+      "key": "fieldColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "场线颜色"
+    },
+    {
+      "key": "preset",
+      "type": "enum",
+      "default": "dipole",
+      "enum": [
+        "single-pos",
+        "single-neg",
+        "dipole",
+        "same-charge",
+        "quad"
+      ],
+      "desc": "预设"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showEquipotential",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示等势线"
+    },
+    {
+      "key": "showTestCharge",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示试探电荷"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "positiveColor": "--cmp-pos", "negativeColor": "--cmp-neg", "fieldColor": "--cmp-field", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "positiveColor": "--cmp-pos",
+    "negativeColor": "--cmp-neg",
+    "fieldColor": "--cmp-field",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "preset", "values": { "preset": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "preset",
+      "values": {
+        "preset": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电场线演示（交互式）",
+      "tags": [
+        "physics",
+        "electric",
+        "field",
+        "charge",
+        "coulomb",
+        "force",
+        "interactive"
+      ],
+      "ariaLabel": "电场线演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "positiveColor": {
+          "label": "positiveColor",
+          "desc": "正电荷颜色"
+        },
+        "negativeColor": {
+          "label": "negativeColor",
+          "desc": "负电荷颜色"
+        },
+        "fieldColor": {
+          "label": "fieldColor",
+          "desc": "场线颜色"
+        },
+        "preset": {
+          "label": "preset",
+          "desc": "预设"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showEquipotential": {
+          "label": "showEquipotential",
+          "desc": "显示等势线"
+        },
+        "showTestCharge": {
+          "label": "showTestCharge",
+          "desc": "显示试探电荷"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "preset": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Electric Field Lines Explorer",
+      "tags": [
+        "physics",
+        "electric",
+        "field",
+        "charge",
+        "coulomb",
+        "force",
+        "interactive"
+      ],
+      "ariaLabel": "Electric Field Lines Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "positiveColor": {
+          "label": "Positive Color",
+          "desc": "Color setting for positive color."
+        },
+        "negativeColor": {
+          "label": "Negative Color",
+          "desc": "Color setting for negative color."
+        },
+        "fieldColor": {
+          "label": "Field Color",
+          "desc": "Color setting for field color."
+        },
+        "preset": {
+          "label": "Preset",
+          "desc": "Select the preset option."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Select the show labels option."
+        },
+        "showEquipotential": {
+          "label": "Show Equipotential",
+          "desc": "Select the show equipotential option."
+        },
+        "showTestCharge": {
+          "label": "Show Test Charge",
+          "desc": "Select the show test charge option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Preset",
+          "desc": "Event emitted during preset.",
+          "values": {
+            "preset": "Value for preset."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.electric.field-lines.interactive" role="img" aria-label="电场线演示（交互式）">

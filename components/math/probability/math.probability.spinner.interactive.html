@@ -1,21 +1,124 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.probability.spinner.interactive",
   "name": "概率转盘（交互式）",
-  "nameEn": "Probability Spinner (Interactive)",
+  "nameEn": "Probability Spinner",
   "category": "math/probability",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 220 },
-  "tags": ["math", "probability", "spinner", "random", "statistics", "interactive"],
+  "viewport": {
+    "w": 200,
+    "h": 220
+  },
+  "tags": [
+    "math",
+    "probability",
+    "spinner",
+    "random",
+    "statistics",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",      "type": "number(px)", "default": 220, "min": 120, "max": 360, "desc": "组件高度" },
-    { "key": "sectors",   "type": "number", "default": 4, "min": 2, "max": 8, "desc": "扇区数量" },
-    { "key": "spinning",  "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "旋转状态" },
-    { "key": "stroke",    "type": "color",  "default": "#37474f", "desc": "描边颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 220,
+      "min": 120,
+      "max": 360,
+      "desc": "组件高度"
+    },
+    {
+      "key": "sectors",
+      "type": "number",
+      "default": 4,
+      "min": 2,
+      "max": 8,
+      "desc": "扇区数量"
+    },
+    {
+      "key": "spinning",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "旋转状态"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "概率转盘（交互式）",
+      "tags": [
+        "math",
+        "probability",
+        "spinner",
+        "random",
+        "statistics",
+        "interactive"
+      ],
+      "ariaLabel": "概率转盘（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "sectors": {
+          "label": "sectors",
+          "desc": "扇区数量"
+        },
+        "spinning": {
+          "label": "spinning",
+          "desc": "旋转状态"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Probability Spinner",
+      "tags": [
+        "math",
+        "probability",
+        "spinner",
+        "random",
+        "statistics",
+        "interactive"
+      ],
+      "ariaLabel": "Probability Spinner",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "sectors": {
+          "label": "Sectors",
+          "desc": "Sets the number of sectors."
+        },
+        "spinning": {
+          "label": "Spinning",
+          "desc": "Starts or stops the spinner rotation."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

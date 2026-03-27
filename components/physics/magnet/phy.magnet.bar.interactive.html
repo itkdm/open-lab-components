@@ -1,36 +1,236 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.magnet.bar.interactive",
   "name": "条形磁铁（交互式）",
-  "nameEn": "Bar Magnet (Interactive)",
+  "nameEn": "Bar Magnet Explorer",
   "category": "physics/magnet",
   "version": "1.0.0",
-  "viewport": { "w": 240, "h": 180 },
-  "tags": ["magnet", "bar-magnet", "magnetic-field", "NS-pole", "interactive", "draggable"],
+  "viewport": {
+    "w": 240,
+    "h": 180
+  },
+  "tags": [
+    "magnet",
+    "bar-magnet",
+    "magnetic-field",
+    "NS-pole",
+    "interactive",
+    "draggable"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 180, "min": 100, "max": 360, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "northColor", "type": "color",  "default": "#f44336", "desc": "N极颜色" },
-    { "key": "southColor", "type": "color",  "default": "#2196f3", "desc": "S极颜色" },
-    { "key": "fieldColor", "type": "color",  "default": "#666666", "desc": "磁力线颜色" },
-    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
-    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "showField",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示磁力线" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 100,
+      "max": 360,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "northColor",
+      "type": "color",
+      "default": "#f44336",
+      "desc": "N极颜色"
+    },
+    {
+      "key": "southColor",
+      "type": "color",
+      "default": "#2196f3",
+      "desc": "S极颜色"
+    },
+    {
+      "key": "fieldColor",
+      "type": "color",
+      "default": "#666666",
+      "desc": "磁力线颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#222222",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showField",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示磁力线"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
+    "size": "--cmp-size",
     "northColor": "--cmp-north",
     "southColor": "--cmp-south",
     "fieldColor": "--cmp-field",
-    "stroke":     "--cmp-stroke",
-    "strokeWidth":"--cmp-stroke-width",
-    "glow":       "--cmp-glow"
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change",    "type": "drag", "values": { "x": "number", "y": "number" } },
-    { "name": "cmp:changeend", "type": "drag", "values": { "x": "number", "y": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "x": "number",
+        "y": "number"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "drag",
+      "values": {
+        "x": "number",
+        "y": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "条形磁铁（交互式）",
+      "tags": [
+        "magnet",
+        "bar-magnet",
+        "magnetic-field",
+        "NS-pole",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "条形磁铁（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "northColor": {
+          "label": "northColor",
+          "desc": "N极颜色"
+        },
+        "southColor": {
+          "label": "southColor",
+          "desc": "S极颜色"
+        },
+        "fieldColor": {
+          "label": "fieldColor",
+          "desc": "磁力线颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showField": {
+          "label": "showField",
+          "desc": "显示磁力线"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "x": "number",
+            "y": "number"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "x": "number",
+            "y": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Bar Magnet Explorer",
+      "tags": [
+        "magnet",
+        "bar-magnet",
+        "magnetic-field",
+        "NS-pole",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Bar Magnet Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "northColor": {
+          "label": "North Color",
+          "desc": "Color setting for north color."
+        },
+        "southColor": {
+          "label": "South Color",
+          "desc": "Color setting for south color."
+        },
+        "fieldColor": {
+          "label": "Field Color",
+          "desc": "Color setting for field color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "showField": {
+          "label": "Show Field",
+          "desc": "Select the show field option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Drag",
+          "desc": "Event emitted during drag.",
+          "values": {
+            "x": "Value for x.",
+            "y": "Value for y."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Drag",
+          "desc": "Event emitted during drag.",
+          "values": {
+            "x": "Value for x.",
+            "y": "Value for y."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.magnet.bar.interactive" role="img" aria-label="条形磁铁（交互式）">

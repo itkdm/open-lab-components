@@ -1,40 +1,193 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.switch.knife.basic",
   "name": "开关（刀闸）",
   "nameEn": "Knife Switch",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 118, "h": 100 },
-  "tags": ["switch", "knife-switch", "circuit", "static"],
+  "viewport": {
+    "w": 118,
+    "h": 100
+  },
+  "tags": [
+    "switch",
+    "knife-switch",
+    "circuit",
+    "static"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 120, "min": 48, "max": 360, "desc": "组件尺寸（正方形）" },
-    { "key": "stroke", "type": "color", "default": "#2b2b2b", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number(px)", "default": 2, "min": 0.5, "max": 6, "desc": "描边宽度" },
-
-    { "key": "metalHi", "type": "color", "default": "#f1b8a3", "desc": "金属高光色" },
-    { "key": "metalMid", "type": "color", "default": "#d07c66", "desc": "金属主体色" },
-    { "key": "metalLo", "type": "color", "default": "#a65443", "desc": "金属阴影色" },
-
-    { "key": "pivotFill", "type": "color", "default": "#c9c9c9", "desc": "转轴外圈填充" },
-    { "key": "pivotInner", "type": "color", "default": "#2d2d2d", "desc": "转轴内圈填充" },
-
-    { "key": "angle", "type": "number(deg)", "default": -50, "min": -90, "max": 0, "desc": "刀闸角度（-90~0，0 为闭合）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 48,
+      "max": 360,
+      "desc": "组件尺寸（正方形）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#2b2b2b",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number(px)",
+      "default": 2,
+      "min": 0.5,
+      "max": 6,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "metalHi",
+      "type": "color",
+      "default": "#f1b8a3",
+      "desc": "金属高光色"
+    },
+    {
+      "key": "metalMid",
+      "type": "color",
+      "default": "#d07c66",
+      "desc": "金属主体色"
+    },
+    {
+      "key": "metalLo",
+      "type": "color",
+      "default": "#a65443",
+      "desc": "金属阴影色"
+    },
+    {
+      "key": "pivotFill",
+      "type": "color",
+      "default": "#c9c9c9",
+      "desc": "转轴外圈填充"
+    },
+    {
+      "key": "pivotInner",
+      "type": "color",
+      "default": "#2d2d2d",
+      "desc": "转轴内圈填充"
+    },
+    {
+      "key": "angle",
+      "type": "number(deg)",
+      "default": -50,
+      "min": -90,
+      "max": 0,
+      "desc": "刀闸角度（-90~0，0 为闭合）"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-
     "metalHi": "--cmp-metal-hi",
     "metalMid": "--cmp-metal-mid",
     "metalLo": "--cmp-metal-lo",
-
     "pivotFill": "--cmp-pivot-fill",
     "pivotInner": "--cmp-pivot-inner",
-
     "angle": "--cmp-switch-angle"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "开关（刀闸）",
+      "tags": [
+        "switch",
+        "knife-switch",
+        "circuit",
+        "static"
+      ],
+      "ariaLabel": "开关（刀闸）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸（正方形）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "metalHi": {
+          "label": "metalHi",
+          "desc": "金属高光色"
+        },
+        "metalMid": {
+          "label": "metalMid",
+          "desc": "金属主体色"
+        },
+        "metalLo": {
+          "label": "metalLo",
+          "desc": "金属阴影色"
+        },
+        "pivotFill": {
+          "label": "pivotFill",
+          "desc": "转轴外圈填充"
+        },
+        "pivotInner": {
+          "label": "pivotInner",
+          "desc": "转轴内圈填充"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "刀闸角度（-90~0，0 为闭合）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Knife Switch",
+      "tags": [
+        "switch",
+        "knife-switch",
+        "circuit",
+        "static"
+      ],
+      "ariaLabel": "Knife switch",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "metalHi": {
+          "label": "Metal Highlight",
+          "desc": "Highlight color for metallic parts."
+        },
+        "metalMid": {
+          "label": "Metal Midtone",
+          "desc": "Midtone color for metallic parts."
+        },
+        "metalLo": {
+          "label": "Metal Shadow",
+          "desc": "Shadow color for metallic parts."
+        },
+        "pivotFill": {
+          "label": "Pivot Fill Color",
+          "desc": "Fill color of the pivot marker."
+        },
+        "pivotInner": {
+          "label": "Pivot Center Color",
+          "desc": "Color of the inner pivot detail."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Selected angle in degrees."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

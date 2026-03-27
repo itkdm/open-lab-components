@@ -1,31 +1,86 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.magnet.field-lines.interactive",
   "name": "磁感线演示（交互式）",
-  "nameEn": "Magnetic Field Lines Demo (Interactive)",
+  "nameEn": "Magnetic Field Lines Explorer",
   "category": "physics/magnet",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 240 },
-  "tags": ["magnet", "magnetic-field", "field-lines", "iron-filings", "interactive"],
+  "viewport": {
+    "w": 320,
+    "h": 240
+  },
+  "tags": [
+    "magnet",
+    "magnetic-field",
+    "field-lines",
+    "iron-filings",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 240, "min": 140, "max": 480, "desc": "组件高度" },
-    { "key": "northColor",   "type": "color",  "default": "#e53935", "desc": "N极颜色" },
-    { "key": "southColor",   "type": "color",  "default": "#1e88e5", "desc": "S极颜色" },
-    { "key": "filingColor",  "type": "color",  "default": "#555555", "desc": "铁粉颜色" },
-    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showButtons",  "type": "boolean", "default": false, "desc": "显示撒铁粉/重置按钮" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 140,
+      "max": 480,
+      "desc": "组件高度"
+    },
+    {
+      "key": "northColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "N极颜色"
+    },
+    {
+      "key": "southColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "S极颜色"
+    },
+    {
+      "key": "filingColor",
+      "type": "color",
+      "default": "#555555",
+      "desc": "铁粉颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showButtons",
+      "type": "boolean",
+      "default": false,
+      "desc": "显示撒铁粉/重置按钮"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "northColor":  "--cmp-north",
-    "southColor":  "--cmp-south",
+    "size": "--cmp-size",
+    "northColor": "--cmp-north",
+    "southColor": "--cmp-south",
     "filingColor": "--cmp-filing",
-    "stroke":      "--cmp-stroke",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
   },
   "events": [
     {
@@ -36,7 +91,117 @@
         "filingCount": "number — 铁粉数量"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "磁感线演示（交互式）",
+      "tags": [
+        "magnet",
+        "magnetic-field",
+        "field-lines",
+        "iron-filings",
+        "interactive"
+      ],
+      "ariaLabel": "磁感线演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "northColor": {
+          "label": "northColor",
+          "desc": "N极颜色"
+        },
+        "southColor": {
+          "label": "southColor",
+          "desc": "S极颜色"
+        },
+        "filingColor": {
+          "label": "filingColor",
+          "desc": "铁粉颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showButtons": {
+          "label": "showButtons",
+          "desc": "显示撒铁粉/重置按钮"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "sprinkled": "boolean — 铁粉是否已撒",
+            "filingCount": "number — 铁粉数量"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Magnetic Field Lines Explorer",
+      "tags": [
+        "magnet",
+        "magnetic-field",
+        "field-lines",
+        "iron-filings",
+        "interactive"
+      ],
+      "ariaLabel": "Magnetic Field Lines Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "northColor": {
+          "label": "North Color",
+          "desc": "Color setting for north color."
+        },
+        "southColor": {
+          "label": "South Color",
+          "desc": "Color setting for south color."
+        },
+        "filingColor": {
+          "label": "Filing Color",
+          "desc": "Color setting for filing color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "showButtons": {
+          "label": "Show Buttons",
+          "desc": "Configuration for show buttons."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "sprinkled": "Value for sprinkled.",
+            "filingCount": "Value for filing count."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.magnet.field-lines.interactive" role="img" aria-label="磁感线演示（交互式）">

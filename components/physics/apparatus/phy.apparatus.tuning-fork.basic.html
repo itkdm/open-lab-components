@@ -1,27 +1,157 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.tuning-fork.basic",
   "name": "音叉",
   "nameEn": "Tuning Fork",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 80, "h": 160 },
-  "tags": ["tuning-fork", "sound", "acoustics", "vibration", "wave", "apparatus"],
+  "viewport": {
+    "w": 80,
+    "h": 160
+  },
+  "tags": [
+    "tuning-fork",
+    "sound",
+    "acoustics",
+    "vibration",
+    "wave",
+    "apparatus"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)",  "default": 160,       "min": 80, "max": 320, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "metalColor",  "type": "color",       "default": "#90a4ae", "desc": "金属主体颜色" },
-    { "key": "vibrating",   "type": "enum",        "default": "off",     "enum": ["on","off"], "desc": "振动状态" },
-    { "key": "stroke",      "type": "color",       "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number",      "default": 1.8,       "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0,         "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 80,
+      "max": 320,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "metalColor",
+      "type": "color",
+      "default": "#90a4ae",
+      "desc": "金属主体颜色"
+    },
+    {
+      "key": "vibrating",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "振动状态"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "metalColor":  "--cmp-metal",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "metalColor": "--cmp-metal",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "音叉",
+      "tags": [
+        "tuning-fork",
+        "sound",
+        "acoustics",
+        "vibration",
+        "wave",
+        "apparatus"
+      ],
+      "ariaLabel": "音叉",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "metalColor": {
+          "label": "metalColor",
+          "desc": "金属主体颜色"
+        },
+        "vibrating": {
+          "label": "vibrating",
+          "desc": "振动状态"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Tuning Fork",
+      "tags": [
+        "tuning-fork",
+        "sound",
+        "acoustics",
+        "vibration",
+        "wave",
+        "apparatus"
+      ],
+      "ariaLabel": "Tuning Fork",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "metalColor": {
+          "label": "Metal Color",
+          "desc": "Color setting for metal color."
+        },
+        "vibrating": {
+          "label": "Vibrating",
+          "desc": "Select the vibrating option."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

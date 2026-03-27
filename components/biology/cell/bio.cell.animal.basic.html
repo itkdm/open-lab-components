@@ -1,26 +1,170 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.cell.animal.basic",
   "name": "动物细胞",
   "nameEn": "Animal Cell",
   "category": "biology/cell",
   "version": "1.0.0",
-  "viewport": { "w": 220, "h": 220 },
-  "tags": ["biology", "cell", "animal", "organelle", "nucleus", "membrane"],
+  "viewport": {
+    "w": 220,
+    "h": 220
+  },
+  "tags": [
+    "biology",
+    "cell",
+    "animal",
+    "organelle",
+    "nucleus",
+    "membrane"
+  ],
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 220, "min": 120, "max": 400, "desc": "组件尺寸" },
-    { "key": "membraneColor", "type": "color",  "default": "#ffcc80", "desc": "细胞膜颜色" },
-    { "key": "cytoplasmColor","type": "color",  "default": "#fff8e1", "desc": "细胞质颜色" },
-    { "key": "nucleusColor",  "type": "color",  "default": "#7e57c2", "desc": "细胞核颜色" },
-    { "key": "stroke",        "type": "color",  "default": "#5d4037", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLabels",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 220,
+      "min": 120,
+      "max": 400,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "membraneColor",
+      "type": "color",
+      "default": "#ffcc80",
+      "desc": "细胞膜颜色"
+    },
+    {
+      "key": "cytoplasmColor",
+      "type": "color",
+      "default": "#fff8e1",
+      "desc": "细胞质颜色"
+    },
+    {
+      "key": "nucleusColor",
+      "type": "color",
+      "default": "#7e57c2",
+      "desc": "细胞核颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#5d4037",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "membraneColor": "--cmp-membrane",
-    "cytoplasmColor": "--cmp-cytoplasm", "nucleusColor": "--cmp-nucleus",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "membraneColor": "--cmp-membrane",
+    "cytoplasmColor": "--cmp-cytoplasm",
+    "nucleusColor": "--cmp-nucleus",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "动物细胞",
+      "tags": [
+        "biology",
+        "cell",
+        "animal",
+        "organelle",
+        "nucleus",
+        "membrane"
+      ],
+      "ariaLabel": "动物细胞",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "membraneColor": {
+          "label": "membraneColor",
+          "desc": "细胞膜颜色"
+        },
+        "cytoplasmColor": {
+          "label": "cytoplasmColor",
+          "desc": "细胞质颜色"
+        },
+        "nucleusColor": {
+          "label": "nucleusColor",
+          "desc": "细胞核颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Animal Cell",
+      "tags": [
+        "biology",
+        "cell",
+        "animal",
+        "organelle",
+        "nucleus",
+        "membrane"
+      ],
+      "ariaLabel": "Animal Cell",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "membraneColor": {
+          "label": "Membrane Color",
+          "desc": "Sets the color of the cell membrane."
+        },
+        "cytoplasmColor": {
+          "label": "Cytoplasm Color",
+          "desc": "Sets the color of the cytoplasm."
+        },
+        "nucleusColor": {
+          "label": "Nucleus Color",
+          "desc": "Sets the color of the nucleus."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

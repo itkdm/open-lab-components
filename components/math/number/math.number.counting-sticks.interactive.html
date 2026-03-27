@@ -1,33 +1,141 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.counting-sticks.interactive",
   "name": "计数棒",
   "nameEn": "Counting Sticks",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 200 },
+  "viewport": {
+    "w": 300,
+    "h": 200
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 300, "min": 160, "max": 600, "desc": "组件宽度" },
-    { "key": "count",       "type": "number",     "default": 0,   "min": 0,   "max": 20,  "desc": "初始计数棒数量" },
-    { "key": "stickColors", "type": "array",      "default": ["#e53935","#1e88e5","#43a047","#fb8c00"], "desc": "每组颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 160,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "count",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 20,
+      "desc": "初始计数棒数量"
+    },
+    {
+      "key": "stickColors",
+      "type": "array",
+      "default": [
+        "#e53935",
+        "#1e88e5",
+        "#43a047",
+        "#fb8c00"
+      ],
+      "desc": "每组颜色"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
+    "size": "--cmp-size",
     "stickColors": "--cmp-stick-colors"
   },
-  "tags": ["counting", "sticks", "number", "math", "primary", "interactive"],
+  "tags": [
+    "counting",
+    "sticks",
+    "number",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
     {
       "name": "cmp:change",
       "type": "adjust",
       "values": {
-        "count":   "number — 当前计数棒总数",
+        "count": "number — 当前计数棒总数",
         "bundles": "number — 完整捆数（每捆5根）",
         "singles": "number — 散棒数量"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "计数棒",
+      "tags": [
+        "counting",
+        "sticks",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "计数棒: 0",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "count": {
+          "label": "count",
+          "desc": "初始计数棒数量"
+        },
+        "stickColors": {
+          "label": "stickColors",
+          "desc": "每组颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "count": "number — 当前计数棒总数",
+            "bundles": "number — 完整捆数（每捆5根）",
+            "singles": "number — 散棒数量"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Counting Sticks",
+      "tags": [
+        "counting",
+        "sticks",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Counting Sticks",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "count": {
+          "label": "Count",
+          "desc": "Sets the item count."
+        },
+        "stickColors": {
+          "label": "Stick Colors",
+          "desc": "Controls stick colors."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "count": "Current count.",
+            "bundles": "Current bundles.",
+            "singles": "Current singles."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.counting-sticks.interactive" role="img" aria-label="计数棒: 0">

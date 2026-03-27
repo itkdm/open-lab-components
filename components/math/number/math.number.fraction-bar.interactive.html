@@ -1,21 +1,124 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.fraction-bar.interactive",
   "name": "分数条",
   "nameEn": "Fraction Bar",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 280 },
+  "viewport": {
+    "w": 360,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "maxDenom", "type": "number", "default": 8, "min": 2, "max": 12, "desc": "最大分母" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "maxDenom",
+      "type": "number",
+      "default": 8,
+      "min": 2,
+      "max": 12,
+      "desc": "最大分母"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["fraction", "bar", "comparison", "number", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "fraction",
+    "bar",
+    "comparison",
+    "number",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "row": "number", "numerator": "number", "denominator": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "row": "number",
+        "numerator": "number",
+        "denominator": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "分数条",
+      "tags": [
+        "fraction",
+        "bar",
+        "comparison",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "分数条",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "maxDenom": {
+          "label": "maxDenom",
+          "desc": "最大分母"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "row": "number",
+            "numerator": "number",
+            "denominator": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Fraction Bar",
+      "tags": [
+        "fraction",
+        "bar",
+        "comparison",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Fraction Bar",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "maxDenom": {
+          "label": "Maximum Denominator",
+          "desc": "Sets the largest denominator allowed."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "row": "Current row.",
+            "numerator": "Current numerator.",
+            "denominator": "Current denominator."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.fraction-bar.interactive" role="img" aria-label="分数条">

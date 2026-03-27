@@ -1,19 +1,56 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.fraction-circle.interactive",
   "name": "分数圆",
   "nameEn": "Fraction Circle",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 240 },
+  "viewport": {
+    "w": 200,
+    "h": 240
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 240, "min": 140, "max": 400, "desc": "组件高度" },
-    { "key": "denominator", "type": "number",     "default": 4,   "min": 2,   "max": 12,  "desc": "分母（等分数）" },
-    { "key": "fillColor",   "type": "color",  "default": "#ff7043", "desc": "填充颜色" },
-    { "key": "emptyColor",  "type": "color",  "default": "#fff3e0", "desc": "未填充颜色" },
-    { "key": "strokeColor", "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "textColor",   "type": "color",  "default": "#37474f", "desc": "文字颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 140,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "denominator",
+      "type": "number",
+      "default": 4,
+      "min": 2,
+      "max": 12,
+      "desc": "分母（等分数）"
+    },
+    {
+      "key": "fillColor",
+      "type": "color",
+      "default": "#ff7043",
+      "desc": "填充颜色"
+    },
+    {
+      "key": "emptyColor",
+      "type": "color",
+      "default": "#fff3e0",
+      "desc": "未填充颜色"
+    },
+    {
+      "key": "strokeColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "textColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "文字颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -22,11 +59,148 @@
     "strokeColor": "--cmp-stroke",
     "textColor": "--cmp-text"
   },
-  "tags": ["fraction", "circle", "number", "math", "primary", "interactive"],
+  "tags": [
+    "fraction",
+    "circle",
+    "number",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change",    "type": "toggle", "values": { "numerator": "number", "denominator": "number", "simplified": "string" } },
-    { "name": "cmp:changeend", "type": "toggle", "values": { "numerator": "number", "denominator": "number", "simplified": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "numerator": "number",
+        "denominator": "number",
+        "simplified": "string"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "toggle",
+      "values": {
+        "numerator": "number",
+        "denominator": "number",
+        "simplified": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "分数圆",
+      "tags": [
+        "fraction",
+        "circle",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "分数圆",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "denominator": {
+          "label": "denominator",
+          "desc": "分母（等分数）"
+        },
+        "fillColor": {
+          "label": "fillColor",
+          "desc": "填充颜色"
+        },
+        "emptyColor": {
+          "label": "emptyColor",
+          "desc": "未填充颜色"
+        },
+        "strokeColor": {
+          "label": "strokeColor",
+          "desc": "描边颜色"
+        },
+        "textColor": {
+          "label": "textColor",
+          "desc": "文字颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "numerator": "number",
+            "denominator": "number",
+            "simplified": "string"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "numerator": "number",
+            "denominator": "number",
+            "simplified": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Fraction Circle",
+      "tags": [
+        "fraction",
+        "circle",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Fraction Circle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "denominator": {
+          "label": "Denominator",
+          "desc": "Sets the denominator value."
+        },
+        "fillColor": {
+          "label": "Fill Color",
+          "desc": "Sets the fill color of the highlighted region."
+        },
+        "emptyColor": {
+          "label": "Empty Color",
+          "desc": "Sets the color of the empty region."
+        },
+        "strokeColor": {
+          "label": "Stroke Color",
+          "desc": "Sets the outline color."
+        },
+        "textColor": {
+          "label": "Text Color",
+          "desc": "Sets the color of the text."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "numerator": "Current numerator.",
+            "denominator": "Current denominator.",
+            "simplified": "Current simplified."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "numerator": "Current numerator.",
+            "denominator": "Current denominator.",
+            "simplified": "Current simplified."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.fraction-circle.interactive" role="img" aria-label="分数圆">

@@ -1,34 +1,191 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.power.source.schematic",
   "name": "电源（电路符号）",
   "nameEn": "Power Source (Schematic)",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 40 },
+  "viewport": {
+    "w": 100,
+    "h": 40
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 48, "min": 20, "max": 200, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "aspect",      "type": "number",     "default": 2.5, "min": 1.5, "max": 4.0, "desc": "宽高比" },
-    { "key": "cells",       "type": "number",     "default": 1,   "min": 1,   "max": 4,   "desc": "电池符号节数（每节=一长一短竖线）" },
-
-    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "线条颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 2.2, "min": 1, "max": 5, "desc": "线条粗细" },
-    { "key": "accent",      "type": "color",  "default": "#ef4444", "desc": "正极标记颜色" },
-
-    { "key": "showPolar",   "type": "enum", "default": "on", "enum": ["on","off"], "desc": "是否显示 +/− 标记" },
-
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 48,
+      "min": 20,
+      "max": 200,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "aspect",
+      "type": "number",
+      "default": 2.5,
+      "min": 1.5,
+      "max": 4,
+      "desc": "宽高比"
+    },
+    {
+      "key": "cells",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "desc": "电池符号节数（每节=一长一短竖线）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "线条颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2.2,
+      "min": 1,
+      "max": 5,
+      "desc": "线条粗细"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#ef4444",
+      "desc": "正极标记颜色"
+    },
+    {
+      "key": "showPolar",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示 +/− 标记"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "aspect":      "--cmp-aspect",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "aspect": "--cmp-aspect",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "accent":      "--cmp-accent",
-    "glow":        "--cmp-glow"
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
-  "tags": ["battery", "power", "source", "schematic", "circuit-symbol", "circuit"]
+  "tags": [
+    "battery",
+    "power",
+    "source",
+    "schematic",
+    "circuit-symbol",
+    "circuit"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电源（电路符号）",
+      "tags": [
+        "battery",
+        "power",
+        "source",
+        "schematic",
+        "circuit-symbol",
+        "circuit"
+      ],
+      "ariaLabel": "电源符号",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "aspect": {
+          "label": "aspect",
+          "desc": "宽高比"
+        },
+        "cells": {
+          "label": "cells",
+          "desc": "电池符号节数（每节=一长一短竖线）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "线条颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "线条粗细"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "正极标记颜色"
+        },
+        "showPolar": {
+          "label": "showPolar",
+          "desc": "是否显示 +/− 标记"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Power Source (Schematic)",
+      "tags": [
+        "battery",
+        "power",
+        "source",
+        "schematic",
+        "circuit-symbol",
+        "circuit"
+      ],
+      "ariaLabel": "Power Source (Schematic)",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "aspect": {
+          "label": "Aspect",
+          "desc": "Numeric control for aspect."
+        },
+        "cells": {
+          "label": "Cells",
+          "desc": "Numeric control for cells."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "showPolar": {
+          "label": "Show Polar",
+          "desc": "Select the show polar option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.power.source.schematic" role="img" aria-label="电源符号">

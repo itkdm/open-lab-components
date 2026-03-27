@@ -1,20 +1,67 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.cart.basic",
   "name": "小车",
   "nameEn": "Cart",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 120, "h": 60 },
-  "tags": ["physics", "mechanics", "cart", "motion", "friction"],
+  "viewport": {
+    "w": 120,
+    "h": 60
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "cart",
+    "motion",
+    "friction"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 120, "min": 80, "max": 200, "desc": "组件宽度" },
-    { "key": "bodyColor", "type": "color", "default": "#5c6bc0", "desc": "车身颜色" },
-    { "key": "wheelColor", "type": "color", "default": "#37474f", "desc": "车轮颜色" },
-    { "key": "stroke", "type": "color", "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边宽度" },
-    { "key": "hookVisible", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "显示挂钩" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 80,
+      "max": 200,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "车身颜色"
+    },
+    {
+      "key": "wheelColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "车轮颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "hookVisible",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示挂钩"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -22,6 +69,84 @@
     "wheelColor": "--cmp-wheel",
     "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "小车",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "motion",
+        "friction"
+      ],
+      "ariaLabel": "小车",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "车身颜色"
+        },
+        "wheelColor": {
+          "label": "wheelColor",
+          "desc": "车轮颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "hookVisible": {
+          "label": "hookVisible",
+          "desc": "显示挂钩"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Cart",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "motion",
+        "friction"
+      ],
+      "ariaLabel": "Cart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the apparatus."
+        },
+        "wheelColor": {
+          "label": "Wheel Color",
+          "desc": "Sets the color of the wheels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "hookVisible": {
+          "label": "Show Hook",
+          "desc": "Shows or hides the hook."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

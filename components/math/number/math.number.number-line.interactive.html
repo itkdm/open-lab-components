@@ -1,28 +1,81 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.number-line.interactive",
   "name": "数轴",
-  "nameEn": "Number Line",
+  "nameEn": "Number Line Explorer",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 80 },
+  "viewport": {
+    "w": 500,
+    "h": 80
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 500, "min": 200, "max": 1000, "desc": "组件宽度" },
-    { "key": "min",         "type": "number",     "default": 0,   "min": -100, "max": 100, "desc": "数轴最小值" },
-    { "key": "max",         "type": "number",     "default": 10,  "min": -100, "max": 100, "desc": "数轴最大值" },
-    { "key": "value",       "type": "number",     "default": 0,   "min": -100, "max": 100, "desc": "标记初始位置" },
-    { "key": "lineColor",   "type": "color",      "default": "#37474f", "desc": "数轴线条颜色" },
-    { "key": "markerColor", "type": "color",      "default": "#e53935", "desc": "标记颜色" },
-    { "key": "numberColor", "type": "color",      "default": "#37474f", "desc": "数字颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 500,
+      "min": 200,
+      "max": 1000,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "min",
+      "type": "number",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "desc": "数轴最小值"
+    },
+    {
+      "key": "max",
+      "type": "number",
+      "default": 10,
+      "min": -100,
+      "max": 100,
+      "desc": "数轴最大值"
+    },
+    {
+      "key": "value",
+      "type": "number",
+      "default": 0,
+      "min": -100,
+      "max": 100,
+      "desc": "标记初始位置"
+    },
+    {
+      "key": "lineColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "数轴线条颜色"
+    },
+    {
+      "key": "markerColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "标记颜色"
+    },
+    {
+      "key": "numberColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "数字颜色"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "lineColor":   "--cmp-line-color",
+    "size": "--cmp-size",
+    "lineColor": "--cmp-line-color",
     "markerColor": "--cmp-marker-color",
     "numberColor": "--cmp-number-color"
   },
-  "tags": ["number-line", "counting", "integers", "math", "primary", "interactive"],
+  "tags": [
+    "number-line",
+    "counting",
+    "integers",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -38,7 +91,121 @@
         "position": "number — 最终标记所在整数位置"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "数轴",
+      "tags": [
+        "number-line",
+        "counting",
+        "integers",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "数轴 0–10",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "min": {
+          "label": "min",
+          "desc": "数轴最小值"
+        },
+        "max": {
+          "label": "max",
+          "desc": "数轴最大值"
+        },
+        "value": {
+          "label": "value",
+          "desc": "标记初始位置"
+        },
+        "lineColor": {
+          "label": "lineColor",
+          "desc": "数轴线条颜色"
+        },
+        "markerColor": {
+          "label": "markerColor",
+          "desc": "标记颜色"
+        },
+        "numberColor": {
+          "label": "numberColor",
+          "desc": "数字颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "position": "number — 当前标记所在整数位置"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "position": "number — 最终标记所在整数位置"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Number Line Explorer",
+      "tags": [
+        "number-line",
+        "counting",
+        "integers",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Number Line Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "min": {
+          "label": "Minimum",
+          "desc": "Sets the minimum value."
+        },
+        "max": {
+          "label": "Maximum",
+          "desc": "Sets the maximum value."
+        },
+        "value": {
+          "label": "Value",
+          "desc": "Sets the current numeric value."
+        },
+        "lineColor": {
+          "label": "Line Color",
+          "desc": "Sets the color of the line."
+        },
+        "markerColor": {
+          "label": "Marker Color",
+          "desc": "Sets the color of the marker."
+        },
+        "numberColor": {
+          "label": "Number Color",
+          "desc": "Sets the color of the numerals."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "position": "Current position."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "position": "Current position."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.number-line.interactive" role="img" aria-label="数轴 0–10">

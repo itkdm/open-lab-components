@@ -1,55 +1,430 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.mirror.plane.interactive",
   "name": "平面镜反射（交互式）",
-  "nameEn": "Plane Mirror Reflection (Interactive)",
+  "nameEn": "Plane Mirror Imaging",
   "category": "physics/optics",
   "version": "2.0.0",
-  "viewport": { "w": 480, "h": 360 },
+  "viewport": {
+    "w": 480,
+    "h": 360
+  },
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 360, "min": 240, "max": 600, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "stroke",        "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "mirrorColor",   "type": "color",  "default": "#78909c", "desc": "镜面颜色" },
-    { "key": "mirrorBack",    "type": "color",  "default": "#455a64", "desc": "镜背涂层颜色" },
-    { "key": "normalColor",   "type": "color",  "default": "#4caf50", "desc": "法线颜色" },
-    { "key": "incidentColor", "type": "color",  "default": "#ff9800", "desc": "入射光颜色" },
-    { "key": "reflectColor",  "type": "color",  "default": "#ff9800", "desc": "反射光颜色" },
-    { "key": "virtualColor",  "type": "color",  "default": "#81d4fa", "desc": "虚像光路颜色" },
-    { "key": "rayWidth",      "type": "number", "default": 2.2, "min": 0.5, "max": 5, "desc": "光线粗细" },
-    { "key": "objectColor",   "type": "color",  "default": "#e53935", "desc": "物体颜色" },
-    { "key": "imageColor",    "type": "color",  "default": "#1e88e5", "desc": "虚像颜色" },
-    { "key": "initAngle",     "type": "number", "default": 40, "min": 5, "max": 80, "desc": "初始入射角（度）" },
-    { "key": "objectDist",    "type": "number", "default": 100, "min": 40, "max": 200, "desc": "物体到镜面距离（viewBox 单位）" },
-    { "key": "objectHeight",  "type": "number", "default": 50, "min": 20, "max": 80, "desc": "物体高度（viewBox 单位）" },
-    { "key": "showLabels",    "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示角度标注" },
-    { "key": "showVirtual",   "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示虚像和虚像光路" },
-    { "key": "showData",      "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示数据面板" },
-    { "key": "accent",        "type": "color",  "default": "#1565c0", "desc": "强调色（标注文字）" },
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 240,
+      "max": 600,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "mirrorColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "镜面颜色"
+    },
+    {
+      "key": "mirrorBack",
+      "type": "color",
+      "default": "#455a64",
+      "desc": "镜背涂层颜色"
+    },
+    {
+      "key": "normalColor",
+      "type": "color",
+      "default": "#4caf50",
+      "desc": "法线颜色"
+    },
+    {
+      "key": "incidentColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "入射光颜色"
+    },
+    {
+      "key": "reflectColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "反射光颜色"
+    },
+    {
+      "key": "virtualColor",
+      "type": "color",
+      "default": "#81d4fa",
+      "desc": "虚像光路颜色"
+    },
+    {
+      "key": "rayWidth",
+      "type": "number",
+      "default": 2.2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "光线粗细"
+    },
+    {
+      "key": "objectColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "物体颜色"
+    },
+    {
+      "key": "imageColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "虚像颜色"
+    },
+    {
+      "key": "initAngle",
+      "type": "number",
+      "default": 40,
+      "min": 5,
+      "max": 80,
+      "desc": "初始入射角（度）"
+    },
+    {
+      "key": "objectDist",
+      "type": "number",
+      "default": 100,
+      "min": 40,
+      "max": 200,
+      "desc": "物体到镜面距离（viewBox 单位）"
+    },
+    {
+      "key": "objectHeight",
+      "type": "number",
+      "default": 50,
+      "min": 20,
+      "max": 80,
+      "desc": "物体高度（viewBox 单位）"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示角度标注"
+    },
+    {
+      "key": "showVirtual",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示虚像和虚像光路"
+    },
+    {
+      "key": "showData",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示数据面板"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色（标注文字）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":          "--cmp-size",
-    "stroke":        "--cmp-stroke",
-    "strokeWidth":   "--cmp-stroke-width",
-    "mirrorColor":   "--cmp-mirror",
-    "mirrorBack":    "--cmp-mirror-back",
-    "normalColor":   "--cmp-normal",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "mirrorColor": "--cmp-mirror",
+    "mirrorBack": "--cmp-mirror-back",
+    "normalColor": "--cmp-normal",
     "incidentColor": "--cmp-incident",
-    "reflectColor":  "--cmp-reflect",
-    "virtualColor":  "--cmp-virtual",
-    "rayWidth":      "--cmp-ray-width",
-    "objectColor":   "--cmp-object",
-    "imageColor":    "--cmp-image",
-    "accent":        "--cmp-accent",
-    "glow":          "--cmp-glow"
+    "reflectColor": "--cmp-reflect",
+    "virtualColor": "--cmp-virtual",
+    "rayWidth": "--cmp-ray-width",
+    "objectColor": "--cmp-object",
+    "imageColor": "--cmp-image",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
-  "tags": ["optics", "mirror", "plane-mirror", "reflection", "law-of-reflection", "interactive", "draggable"],
+  "tags": [
+    "optics",
+    "mirror",
+    "plane-mirror",
+    "reflection",
+    "law-of-reflection",
+    "interactive",
+    "draggable"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "angle": "number(deg) — 入射角", "objectDist": "number — 物距" } },
-    { "name": "cmp:changeend", "type": "slide", "values": { "angle": "number(deg) — 入射角", "objectDist": "number — 物距" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "angle": "number(deg) — 入射角",
+        "objectDist": "number — 物距"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "angle": "number(deg) — 入射角",
+        "objectDist": "number — 物距"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "平面镜反射（交互式）",
+      "tags": [
+        "optics",
+        "mirror",
+        "plane-mirror",
+        "reflection",
+        "law-of-reflection",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "平面镜反射（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "mirrorColor": {
+          "label": "mirrorColor",
+          "desc": "镜面颜色"
+        },
+        "mirrorBack": {
+          "label": "mirrorBack",
+          "desc": "镜背涂层颜色"
+        },
+        "normalColor": {
+          "label": "normalColor",
+          "desc": "法线颜色"
+        },
+        "incidentColor": {
+          "label": "incidentColor",
+          "desc": "入射光颜色"
+        },
+        "reflectColor": {
+          "label": "reflectColor",
+          "desc": "反射光颜色"
+        },
+        "virtualColor": {
+          "label": "virtualColor",
+          "desc": "虚像光路颜色"
+        },
+        "rayWidth": {
+          "label": "rayWidth",
+          "desc": "光线粗细"
+        },
+        "objectColor": {
+          "label": "objectColor",
+          "desc": "物体颜色"
+        },
+        "imageColor": {
+          "label": "imageColor",
+          "desc": "虚像颜色"
+        },
+        "initAngle": {
+          "label": "initAngle",
+          "desc": "初始入射角（度）"
+        },
+        "objectDist": {
+          "label": "objectDist",
+          "desc": "物体到镜面距离（viewBox 单位）"
+        },
+        "objectHeight": {
+          "label": "objectHeight",
+          "desc": "物体高度（viewBox 单位）"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "是否显示角度标注"
+        },
+        "showVirtual": {
+          "label": "showVirtual",
+          "desc": "是否显示虚像和虚像光路"
+        },
+        "showData": {
+          "label": "showData",
+          "desc": "是否显示数据面板"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（标注文字）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number(deg) — 入射角",
+            "objectDist": "number — 物距"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "angle": "number(deg) — 入射角",
+            "objectDist": "number — 物距"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Plane Mirror Imaging",
+      "tags": [
+        "optics",
+        "mirror",
+        "plane-mirror",
+        "reflection",
+        "law-of-reflection",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Plane Mirror Imaging",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "mirrorColor": {
+          "label": "Mirror Surface Color",
+          "desc": "Sets the color of the reflective surface."
+        },
+        "mirrorBack": {
+          "label": "Mirror Backing Color",
+          "desc": "Sets the color of the mirror backing."
+        },
+        "normalColor": {
+          "label": "Normal Line Color",
+          "desc": "Sets the color of the normal line."
+        },
+        "incidentColor": {
+          "label": "Incident Ray Color",
+          "desc": "Sets the color of the incident ray."
+        },
+        "reflectColor": {
+          "label": "Reflected Ray Color",
+          "desc": "Sets the color of the reflected ray."
+        },
+        "virtualColor": {
+          "label": "Virtual Image Color",
+          "desc": "Sets the color of the virtual image guide."
+        },
+        "rayWidth": {
+          "label": "Ray Width",
+          "desc": "Sets the line width of the rays."
+        },
+        "objectColor": {
+          "label": "Object Color",
+          "desc": "Sets the color of the object marker or arrow."
+        },
+        "imageColor": {
+          "label": "Image Color",
+          "desc": "Sets the color of the image indicator."
+        },
+        "initAngle": {
+          "label": "Initial Angle",
+          "desc": "Sets the initial angle of incidence in degrees."
+        },
+        "objectDist": {
+          "label": "Object Distance",
+          "desc": "Sets the object distance in viewBox units."
+        },
+        "objectHeight": {
+          "label": "Object Height",
+          "desc": "Sets the object height in viewBox units."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showVirtual": {
+          "label": "Show Virtual Image",
+          "desc": "Shows or hides the virtual image construction."
+        },
+        "showData": {
+          "label": "Show Data Panel",
+          "desc": "Shows or hides the data readout panel."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle in degrees.",
+            "objectDist": "Current object distance in viewBox units."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "angle": "Current angle in degrees.",
+            "objectDist": "Current object distance in viewBox units."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.optics.mirror.plane.interactive" role="img" aria-label="平面镜反射（交互式）">

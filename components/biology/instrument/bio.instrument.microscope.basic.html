@@ -1,24 +1,152 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.instrument.microscope.basic",
   "name": "光学显微镜",
-  "nameEn": "Optical Microscope",
+  "nameEn": "Compound Light Microscope",
   "category": "biology/instrument",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 300 },
-  "tags": ["biology", "instrument", "microscope", "optics", "magnification"],
+  "viewport": {
+    "w": 200,
+    "h": 300
+  },
+  "tags": [
+    "biology",
+    "instrument",
+    "microscope",
+    "optics",
+    "magnification"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 300, "min": 180, "max": 500, "desc": "组件高度" },
-    { "key": "bodyColor",   "type": "color",  "default": "#37474f", "desc": "机身颜色" },
-    { "key": "metalColor",  "type": "color",  "default": "#78909c", "desc": "金属件颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 180,
+      "max": 500,
+      "desc": "组件高度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "机身颜色"
+    },
+    {
+      "key": "metalColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "金属件颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bodyColor": "--cmp-body", "metalColor": "--cmp-metal",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "metalColor": "--cmp-metal",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "光学显微镜",
+      "tags": [
+        "biology",
+        "instrument",
+        "microscope",
+        "optics",
+        "magnification"
+      ],
+      "ariaLabel": "光学显微镜",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "机身颜色"
+        },
+        "metalColor": {
+          "label": "metalColor",
+          "desc": "金属件颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Compound Light Microscope",
+      "tags": [
+        "biology",
+        "instrument",
+        "microscope",
+        "optics",
+        "magnification"
+      ],
+      "ariaLabel": "Compound Light Microscope",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the organ or instrument."
+        },
+        "metalColor": {
+          "label": "Metal Color",
+          "desc": "Sets the color of the metal parts."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

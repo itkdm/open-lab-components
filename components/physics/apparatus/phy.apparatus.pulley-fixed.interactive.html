@@ -1,53 +1,391 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.pulley-fixed.interactive",
   "name": "定滑轮（交互式）",
-  "nameEn": "Fixed Pulley (Interactive)",
+  "nameEn": "Fixed Pulley Explorer",
   "category": "physics/apparatus",
   "version": "1.5.0",
-  "viewport": { "w": 200, "h": 340 },
+  "viewport": {
+    "w": 200,
+    "h": 340
+  },
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 340, "min": 200, "max": 600, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 2,   "min": 0.5, "max": 5, "desc": "描边粗细" },
-    { "key": "wheelColor",   "type": "color",  "default": "#b0b0b0", "desc": "滑轮颜色" },
-    { "key": "wheelEdge",    "type": "color",  "default": "#888888", "desc": "滑轮边缘深色" },
-    { "key": "axleColor",    "type": "color",  "default": "#555555", "desc": "轴心颜色" },
-    { "key": "bracketColor", "type": "color",  "default": "#666666", "desc": "支架颜色" },
-    { "key": "ropeColor",    "type": "color",  "default": "#8B7355", "desc": "绳索颜色" },
-    { "key": "ropeWidth",    "type": "number", "default": 3,   "min": 1.5, "max": 8, "desc": "绳索粗细" },
-    { "key": "ropeBottom",   "type": "number", "default": 290, "min": 200, "max": 330, "desc": "绳索末端最大Y（控制绳索总长度）" },
-    { "key": "loadMass",     "type": "number", "default": 200, "min": 0, "max": 5000, "desc": "负载质量(g)" },
-    { "key": "unit",         "type": "enum",   "default": "g", "enum": ["g","kg"], "desc": "质量单位" },
-    { "key": "blockEdge",    "type": "color",  "default": "#bdbdbd", "desc": "砝码边缘色" },
-    { "key": "blockCenter",  "type": "color",  "default": "#e7e7e7", "desc": "砝码中心色" },
-    { "key": "hookColor",    "type": "color",  "default": "#111827", "desc": "钩子颜色" },
-    { "key": "blockScale",   "type": "number", "default": 1,   "min": 0.5, "max": 2, "desc": "砝码尺寸缩放（相对默认大小）" },
-    { "key": "accent",       "type": "color",  "default": "#1565c0", "desc": "强调色（力值文字）" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 340,
+      "min": 200,
+      "max": 600,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "wheelColor",
+      "type": "color",
+      "default": "#b0b0b0",
+      "desc": "滑轮颜色"
+    },
+    {
+      "key": "wheelEdge",
+      "type": "color",
+      "default": "#888888",
+      "desc": "滑轮边缘深色"
+    },
+    {
+      "key": "axleColor",
+      "type": "color",
+      "default": "#555555",
+      "desc": "轴心颜色"
+    },
+    {
+      "key": "bracketColor",
+      "type": "color",
+      "default": "#666666",
+      "desc": "支架颜色"
+    },
+    {
+      "key": "ropeColor",
+      "type": "color",
+      "default": "#8B7355",
+      "desc": "绳索颜色"
+    },
+    {
+      "key": "ropeWidth",
+      "type": "number",
+      "default": 3,
+      "min": 1.5,
+      "max": 8,
+      "desc": "绳索粗细"
+    },
+    {
+      "key": "ropeBottom",
+      "type": "number",
+      "default": 290,
+      "min": 200,
+      "max": 330,
+      "desc": "绳索末端最大Y（控制绳索总长度）"
+    },
+    {
+      "key": "loadMass",
+      "type": "number",
+      "default": 200,
+      "min": 0,
+      "max": 5000,
+      "desc": "负载质量(g)"
+    },
+    {
+      "key": "unit",
+      "type": "enum",
+      "default": "g",
+      "enum": [
+        "g",
+        "kg"
+      ],
+      "desc": "质量单位"
+    },
+    {
+      "key": "blockEdge",
+      "type": "color",
+      "default": "#bdbdbd",
+      "desc": "砝码边缘色"
+    },
+    {
+      "key": "blockCenter",
+      "type": "color",
+      "default": "#e7e7e7",
+      "desc": "砝码中心色"
+    },
+    {
+      "key": "hookColor",
+      "type": "color",
+      "default": "#111827",
+      "desc": "钩子颜色"
+    },
+    {
+      "key": "blockScale",
+      "type": "number",
+      "default": 1,
+      "min": 0.5,
+      "max": 2,
+      "desc": "砝码尺寸缩放（相对默认大小）"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色（力值文字）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":         "--cmp-size",
-    "stroke":       "--cmp-stroke",
-    "strokeWidth":  "--cmp-stroke-width",
-    "wheelColor":   "--cmp-wheel",
-    "wheelEdge":    "--cmp-wheel-edge",
-    "axleColor":    "--cmp-axle",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "wheelColor": "--cmp-wheel",
+    "wheelEdge": "--cmp-wheel-edge",
+    "axleColor": "--cmp-axle",
     "bracketColor": "--cmp-bracket",
-    "ropeColor":    "--cmp-rope",
-    "ropeWidth":    "--cmp-rope-width",
-    "blockEdge":    "--cmp-block-edge",
-    "blockCenter":  "--cmp-block-center",
-    "hookColor":    "--cmp-hook",
-    "accent":       "--cmp-accent",
-    "glow":         "--cmp-glow"
+    "ropeColor": "--cmp-rope",
+    "ropeWidth": "--cmp-rope-width",
+    "blockEdge": "--cmp-block-edge",
+    "blockCenter": "--cmp-block-center",
+    "hookColor": "--cmp-hook",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
-  "tags": ["pulley", "fixed-pulley", "simple-machine", "mechanics", "interactive", "draggable"],
+  "tags": [
+    "pulley",
+    "fixed-pulley",
+    "simple-machine",
+    "mechanics",
+    "interactive",
+    "draggable"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "ratio": "number(0-1) — 拉绳比例", "force": "number(N) — 拉力" } },
-    { "name": "cmp:changeend", "type": "adjust", "values": { "ratio": "number(0-1) — 拉绳比例", "force": "number(N) — 拉力" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "ratio": "number(0-1) — 拉绳比例",
+        "force": "number(N) — 拉力"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "adjust",
+      "values": {
+        "ratio": "number(0-1) — 拉绳比例",
+        "force": "number(N) — 拉力"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "定滑轮（交互式）",
+      "tags": [
+        "pulley",
+        "fixed-pulley",
+        "simple-machine",
+        "mechanics",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "定滑轮（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "wheelColor": {
+          "label": "wheelColor",
+          "desc": "滑轮颜色"
+        },
+        "wheelEdge": {
+          "label": "wheelEdge",
+          "desc": "滑轮边缘深色"
+        },
+        "axleColor": {
+          "label": "axleColor",
+          "desc": "轴心颜色"
+        },
+        "bracketColor": {
+          "label": "bracketColor",
+          "desc": "支架颜色"
+        },
+        "ropeColor": {
+          "label": "ropeColor",
+          "desc": "绳索颜色"
+        },
+        "ropeWidth": {
+          "label": "ropeWidth",
+          "desc": "绳索粗细"
+        },
+        "ropeBottom": {
+          "label": "ropeBottom",
+          "desc": "绳索末端最大Y（控制绳索总长度）"
+        },
+        "loadMass": {
+          "label": "loadMass",
+          "desc": "负载质量(g)"
+        },
+        "unit": {
+          "label": "unit",
+          "desc": "质量单位"
+        },
+        "blockEdge": {
+          "label": "blockEdge",
+          "desc": "砝码边缘色"
+        },
+        "blockCenter": {
+          "label": "blockCenter",
+          "desc": "砝码中心色"
+        },
+        "hookColor": {
+          "label": "hookColor",
+          "desc": "钩子颜色"
+        },
+        "blockScale": {
+          "label": "blockScale",
+          "desc": "砝码尺寸缩放（相对默认大小）"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（力值文字）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "ratio": "number(0-1) — 拉绳比例",
+            "force": "number(N) — 拉力"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "ratio": "number(0-1) — 拉绳比例",
+            "force": "number(N) — 拉力"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Fixed Pulley Explorer",
+      "tags": [
+        "pulley",
+        "fixed-pulley",
+        "simple-machine",
+        "mechanics",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Fixed Pulley Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "wheelColor": {
+          "label": "Wheel Color",
+          "desc": "Color setting for wheel color."
+        },
+        "wheelEdge": {
+          "label": "Wheel Edge",
+          "desc": "Color setting for wheel edge."
+        },
+        "axleColor": {
+          "label": "Axle Color",
+          "desc": "Color setting for axle color."
+        },
+        "bracketColor": {
+          "label": "Bracket Color",
+          "desc": "Color setting for bracket color."
+        },
+        "ropeColor": {
+          "label": "Rope Color",
+          "desc": "Color setting for rope color."
+        },
+        "ropeWidth": {
+          "label": "Rope Width",
+          "desc": "Numeric control for rope width."
+        },
+        "ropeBottom": {
+          "label": "Rope Bottom",
+          "desc": "Numeric control for rope bottom."
+        },
+        "loadMass": {
+          "label": "Load Mass",
+          "desc": "Numeric control for load mass."
+        },
+        "unit": {
+          "label": "Unit",
+          "desc": "Select the unit option."
+        },
+        "blockEdge": {
+          "label": "Block Edge",
+          "desc": "Color setting for block edge."
+        },
+        "blockCenter": {
+          "label": "Block Center",
+          "desc": "Color setting for block center."
+        },
+        "hookColor": {
+          "label": "Hook Color",
+          "desc": "Color setting for hook color."
+        },
+        "blockScale": {
+          "label": "Block Scale",
+          "desc": "Numeric control for block scale."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Adjust",
+          "desc": "Event emitted during adjust.",
+          "values": {
+            "ratio": "Value for ratio.",
+            "force": "Value for force."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Adjust",
+          "desc": "Event emitted during adjust.",
+          "values": {
+            "ratio": "Value for ratio.",
+            "force": "Value for force."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.pulley-fixed.interactive" role="img" aria-label="定滑轮（交互式）">

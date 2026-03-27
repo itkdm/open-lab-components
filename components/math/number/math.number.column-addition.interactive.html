@@ -1,23 +1,154 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.column-addition.interactive",
   "name": "竖式计算",
   "nameEn": "Column Addition",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 260, "h": 280 },
+  "viewport": {
+    "w": 260,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 260, "min": 180, "max": 500, "desc": "组件宽度" },
-    { "key": "num1", "type": "number", "default": 356, "min": 0, "max": 9999, "desc": "第一个数" },
-    { "key": "num2", "type": "number", "default": 278, "min": 0, "max": 9999, "desc": "第二个数" },
-    { "key": "operation", "type": "enum(+,-)", "default": "+", "desc": "运算符" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 260,
+      "min": 180,
+      "max": 500,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "num1",
+      "type": "number",
+      "default": 356,
+      "min": 0,
+      "max": 9999,
+      "desc": "第一个数"
+    },
+    {
+      "key": "num2",
+      "type": "number",
+      "default": 278,
+      "min": 0,
+      "max": 9999,
+      "desc": "第二个数"
+    },
+    {
+      "key": "operation",
+      "type": "enum(+,-)",
+      "default": "+",
+      "desc": "运算符"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["addition", "subtraction", "column", "arithmetic", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "addition",
+    "subtraction",
+    "column",
+    "arithmetic",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "answer": "array", "carries": "array", "correct": "boolean" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "answer": "array",
+        "carries": "array",
+        "correct": "boolean"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "竖式计算",
+      "tags": [
+        "addition",
+        "subtraction",
+        "column",
+        "arithmetic",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "竖式计算",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "num1": {
+          "label": "num1",
+          "desc": "第一个数"
+        },
+        "num2": {
+          "label": "num2",
+          "desc": "第二个数"
+        },
+        "operation": {
+          "label": "operation",
+          "desc": "运算符"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "answer": "array",
+            "carries": "array",
+            "correct": "boolean"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Column Addition",
+      "tags": [
+        "addition",
+        "subtraction",
+        "column",
+        "arithmetic",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Column Addition",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "num1": {
+          "label": "Value 1",
+          "desc": "Sets the first numeric value."
+        },
+        "num2": {
+          "label": "Value 2",
+          "desc": "Sets the second numeric value."
+        },
+        "operation": {
+          "label": "Operation",
+          "desc": "Selects the arithmetic or vector operation to display."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "answer": "Current answer.",
+            "carries": "Current carries.",
+            "correct": "Current correct."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.column-addition.interactive" role="img" aria-label="竖式计算">

@@ -1,28 +1,172 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.mirror.concave.basic",
   "name": "凹面镜",
   "nameEn": "Concave Mirror",
   "category": "physics/optics",
   "version": "1.0.0",
-  "viewport": { "w": 80, "h": 200 },
-  "tags": ["optics", "mirror", "concave", "reflection", "focus"],
+  "viewport": {
+    "w": 80,
+    "h": 200
+  },
+  "tags": [
+    "optics",
+    "mirror",
+    "concave",
+    "reflection",
+    "focus"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
-    { "key": "mirrorColor", "type": "color",  "default": "#b0bec5", "desc": "镜面颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "showAxis",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示主光轴" },
-    { "key": "showFocus",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示焦点标记" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "mirrorColor",
+      "type": "color",
+      "default": "#b0bec5",
+      "desc": "镜面颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showAxis",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示主光轴"
+    },
+    {
+      "key": "showFocus",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示焦点标记"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
+    "size": "--cmp-size",
     "mirrorColor": "--cmp-mirror",
-    "stroke":      "--cmp-stroke",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "凹面镜",
+      "tags": [
+        "optics",
+        "mirror",
+        "concave",
+        "reflection",
+        "focus"
+      ],
+      "ariaLabel": "凹面镜",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "mirrorColor": {
+          "label": "mirrorColor",
+          "desc": "镜面颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showAxis": {
+          "label": "showAxis",
+          "desc": "显示主光轴"
+        },
+        "showFocus": {
+          "label": "showFocus",
+          "desc": "显示焦点标记"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Concave Mirror",
+      "tags": [
+        "optics",
+        "mirror",
+        "concave",
+        "reflection",
+        "focus"
+      ],
+      "ariaLabel": "Concave Mirror",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "mirrorColor": {
+          "label": "Mirror Surface Color",
+          "desc": "Sets the color of the reflective surface."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showAxis": {
+          "label": "Show Axes",
+          "desc": "Shows or hides the coordinate axes."
+        },
+        "showFocus": {
+          "label": "Show Focal Points",
+          "desc": "Shows or hides focal points and focal markers."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,178 +1,349 @@
 {
-  "schema": "cmp-category-names/v1",
+  "schema": "cmp-category-names/v2",
   "categories": {
     "cs/ai": {
       "name": "计算机·人工智能",
-      "nameEn": "Computer Science · AI"
+      "nameEn": "Computer Science · AI",
+      "locales": {
+        "zh-CN": "计算机·人工智能",
+        "en": "Computer Science · AI"
+      }
     },
     "cs/logic": {
       "name": "计算机·数字逻辑",
-      "nameEn": "Computer Science · Digital Logic"
+      "nameEn": "Computer Science · Digital Logic",
+      "locales": {
+        "zh-CN": "计算机·数字逻辑",
+        "en": "Computer Science · Digital Logic"
+      }
     },
     "physics/apparatus": {
       "name": "物理器材",
-      "nameEn": "Physics Apparatus"
+      "nameEn": "Physics Apparatus",
+      "locales": {
+        "zh-CN": "物理器材",
+        "en": "Physics Apparatus"
+      }
     },
     "physics/circuit": {
       "name": "电路元件",
-      "nameEn": "Circuit Components"
+      "nameEn": "Circuit Components",
+      "locales": {
+        "zh-CN": "电路元件",
+        "en": "Circuit Components"
+      }
     },
     "physics/atomic": {
       "name": "原子与原子模型",
-      "nameEn": "Atomic Physics"
+      "nameEn": "Atomic Physics",
+      "locales": {
+        "zh-CN": "原子与原子模型",
+        "en": "Atomic Physics"
+      }
     },
     "physics/electric": {
       "name": "电学基础",
-      "nameEn": "Electricity"
+      "nameEn": "Electricity",
+      "locales": {
+        "zh-CN": "电学基础",
+        "en": "Electricity"
+      }
     },
     "physics/em": {
       "name": "电磁学",
-      "nameEn": "Electromagnetism"
+      "nameEn": "Electromagnetism",
+      "locales": {
+        "zh-CN": "电磁学",
+        "en": "Electromagnetism"
+      }
     },
     "physics/fluid": {
       "name": "流体与压强",
-      "nameEn": "Fluid Mechanics"
+      "nameEn": "Fluid Mechanics",
+      "locales": {
+        "zh-CN": "流体与压强",
+        "en": "Fluid Mechanics"
+      }
     },
     "physics/gravity": {
       "name": "重力与天体",
-      "nameEn": "Gravity & Astronomy"
+      "nameEn": "Gravity & Astronomy",
+      "locales": {
+        "zh-CN": "重力与天体",
+        "en": "Gravity & Astronomy"
+      }
     },
     "physics/magnet": {
       "name": "磁学",
-      "nameEn": "Magnetism"
+      "nameEn": "Magnetism",
+      "locales": {
+        "zh-CN": "磁学",
+        "en": "Magnetism"
+      }
     },
     "physics/mechanics": {
       "name": "力学",
-      "nameEn": "Mechanics"
+      "nameEn": "Mechanics",
+      "locales": {
+        "zh-CN": "力学",
+        "en": "Mechanics"
+      }
     },
     "physics/optics": {
       "name": "光学",
-      "nameEn": "Optics"
+      "nameEn": "Optics",
+      "locales": {
+        "zh-CN": "光学",
+        "en": "Optics"
+      }
     },
     "physics/thermal": {
       "name": "热学",
-      "nameEn": "Thermal Physics"
+      "nameEn": "Thermal Physics",
+      "locales": {
+        "zh-CN": "热学",
+        "en": "Thermal Physics"
+      }
     },
     "physics/wave": {
       "name": "波动与声学",
-      "nameEn": "Waves & Acoustics"
+      "nameEn": "Waves & Acoustics",
+      "locales": {
+        "zh-CN": "波动与声学",
+        "en": "Waves & Acoustics"
+      }
     },
     "chemistry/labware": {
       "name": "化学器皿",
-      "nameEn": "Chemistry Labware"
+      "nameEn": "Chemistry Labware",
+      "locales": {
+        "zh-CN": "化学器皿",
+        "en": "Chemistry Labware"
+      }
     },
     "chemistry/substance": {
       "name": "化学物质",
-      "nameEn": "Chemical Substances"
+      "nameEn": "Chemical Substances",
+      "locales": {
+        "zh-CN": "化学物质",
+        "en": "Chemical Substances"
+      }
     },
     "chemistry/gas": {
       "name": "气体与分子",
-      "nameEn": "Gas & Molecules"
+      "nameEn": "Gas & Molecules",
+      "locales": {
+        "zh-CN": "气体与分子",
+        "en": "Gas & Molecules"
+      }
     },
     "chemistry/model": {
       "name": "化学模型",
-      "nameEn": "Chemical Models"
+      "nameEn": "Chemical Models",
+      "locales": {
+        "zh-CN": "化学模型",
+        "en": "Chemical Models"
+      }
     },
     "chemistry/reaction": {
       "name": "化学反应",
-      "nameEn": "Chemical Reactions"
+      "nameEn": "Chemical Reactions",
+      "locales": {
+        "zh-CN": "化学反应",
+        "en": "Chemical Reactions"
+      }
     },
     "chemistry/solution": {
       "name": "溶液与浓度",
-      "nameEn": "Solutions & Concentration"
+      "nameEn": "Solutions & Concentration",
+      "locales": {
+        "zh-CN": "溶液与浓度",
+        "en": "Solutions & Concentration"
+      }
     },
     "biology/cell": {
       "name": "细胞与分子",
-      "nameEn": "Cell & Molecular Biology"
+      "nameEn": "Cell & Molecular Biology",
+      "locales": {
+        "zh-CN": "细胞与分子",
+        "en": "Cell & Molecular Biology"
+      }
     },
     "biology/ecology": {
       "name": "生态与环境",
-      "nameEn": "Ecology & Environment"
+      "nameEn": "Ecology & Environment",
+      "locales": {
+        "zh-CN": "生态与环境",
+        "en": "Ecology & Environment"
+      }
     },
     "biology/genetics": {
       "name": "遗传与变异",
-      "nameEn": "Genetics"
+      "nameEn": "Genetics",
+      "locales": {
+        "zh-CN": "遗传与变异",
+        "en": "Genetics"
+      }
     },
     "biology/instrument": {
       "name": "生物实验器材",
-      "nameEn": "Biology Labware"
+      "nameEn": "Biology Labware",
+      "locales": {
+        "zh-CN": "生物实验器材",
+        "en": "Biology Labware"
+      }
     },
     "biology/organ": {
       "name": "器官与系统",
-      "nameEn": "Organs & Systems"
+      "nameEn": "Organs & Systems",
+      "locales": {
+        "zh-CN": "器官与系统",
+        "en": "Organs & Systems"
+      }
     },
     "math/geometry": {
       "name": "几何图形",
-      "nameEn": "Geometry"
+      "nameEn": "Geometry",
+      "locales": {
+        "zh-CN": "几何图形",
+        "en": "Geometry"
+      }
     },
     "math/clock": {
       "name": "钟表与时间",
-      "nameEn": "Clock & Time"
+      "nameEn": "Clock & Time",
+      "locales": {
+        "zh-CN": "钟表与时间",
+        "en": "Clock & Time"
+      }
     },
     "math/calculus": {
       "name": "微积分",
-      "nameEn": "Calculus"
+      "nameEn": "Calculus",
+      "locales": {
+        "zh-CN": "微积分",
+        "en": "Calculus"
+      }
     },
     "math/complex": {
       "name": "复数与复平面",
-      "nameEn": "Complex Numbers"
+      "nameEn": "Complex Numbers",
+      "locales": {
+        "zh-CN": "复数与复平面",
+        "en": "Complex Numbers"
+      }
     },
     "math/coordinate": {
       "name": "坐标与图像",
-      "nameEn": "Coordinate Systems"
+      "nameEn": "Coordinate Systems",
+      "locales": {
+        "zh-CN": "坐标与图像",
+        "en": "Coordinate Systems"
+      }
     },
     "math/function": {
       "name": "函数与图像",
-      "nameEn": "Functions"
+      "nameEn": "Functions",
+      "locales": {
+        "zh-CN": "函数与图像",
+        "en": "Functions"
+      }
     },
     "math/measure": {
       "name": "测量",
-      "nameEn": "Measurement"
+      "nameEn": "Measurement",
+      "locales": {
+        "zh-CN": "测量",
+        "en": "Measurement"
+      }
     },
     "math/number": {
       "name": "数与运算",
-      "nameEn": "Numbers & Operations"
+      "nameEn": "Numbers & Operations",
+      "locales": {
+        "zh-CN": "数与运算",
+        "en": "Numbers & Operations"
+      }
     },
     "math/probability": {
       "name": "概率初步",
-      "nameEn": "Probability"
+      "nameEn": "Probability",
+      "locales": {
+        "zh-CN": "概率初步",
+        "en": "Probability"
+      }
     },
     "math/statistics": {
       "name": "统计与概率",
-      "nameEn": "Statistics & Probability"
+      "nameEn": "Statistics & Probability",
+      "locales": {
+        "zh-CN": "统计与概率",
+        "en": "Statistics & Probability"
+      }
     },
     "math/time": {
       "name": "时间与日期",
-      "nameEn": "Time & Date"
+      "nameEn": "Time & Date",
+      "locales": {
+        "zh-CN": "时间与日期",
+        "en": "Time & Date"
+      }
     },
     "math/tool": {
       "name": "数学工具",
-      "nameEn": "Math Tools"
+      "nameEn": "Math Tools",
+      "locales": {
+        "zh-CN": "数学工具",
+        "en": "Math Tools"
+      }
     },
     "math/trigonometry": {
       "name": "三角函数",
-      "nameEn": "Trigonometry"
+      "nameEn": "Trigonometry",
+      "locales": {
+        "zh-CN": "三角函数",
+        "en": "Trigonometry"
+      }
     },
     "math/vector": {
       "name": "向量",
-      "nameEn": "Vectors"
+      "nameEn": "Vectors",
+      "locales": {
+        "zh-CN": "向量",
+        "en": "Vectors"
+      }
     },
     "science/tool": {
       "name": "科学工具",
-      "nameEn": "Science Tools"
+      "nameEn": "Science Tools",
+      "locales": {
+        "zh-CN": "科学工具",
+        "en": "Science Tools"
+      }
     },
     "science/life": {
       "name": "生命科学",
-      "nameEn": "Life Science"
+      "nameEn": "Life Science",
+      "locales": {
+        "zh-CN": "生命科学",
+        "en": "Life Science"
+      }
     },
     "science/earth": {
       "name": "地球科学",
-      "nameEn": "Earth Science"
+      "nameEn": "Earth Science",
+      "locales": {
+        "zh-CN": "地球科学",
+        "en": "Earth Science"
+      }
     },
     "general/ui": {
       "name": "通用UI",
-      "nameEn": "General UI"
+      "nameEn": "General UI",
+      "locales": {
+        "zh-CN": "通用UI",
+        "en": "General UI"
+      }
     }
   }
 }
-

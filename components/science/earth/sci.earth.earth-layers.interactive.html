@@ -1,20 +1,114 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.earth-layers.interactive",
   "name": "地球圈层",
   "nameEn": "Earth Layers",
   "category": "science/earth",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 360 },
+  "viewport": {
+    "w": 360,
+    "h": 360
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "组件尺寸" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 200,
+      "max": 600,
+      "desc": "组件尺寸"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["earth", "layers", "crust", "mantle", "core", "geology", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "earth",
+    "layers",
+    "crust",
+    "mantle",
+    "core",
+    "geology",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "layer": "string", "layerName": "string", "depth": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "layer": "string",
+        "layerName": "string",
+        "depth": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "地球圈层",
+      "tags": [
+        "earth",
+        "layers",
+        "crust",
+        "mantle",
+        "core",
+        "geology",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "地球圈层",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "layer": "string",
+            "layerName": "string",
+            "depth": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Earth Layers",
+      "tags": [
+        "earth",
+        "layers",
+        "crust",
+        "mantle",
+        "core",
+        "geology",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Earth Layers",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "layer": "Value for layer.",
+            "layerName": "Value for layer name.",
+            "depth": "Value for depth."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.earth-layers.interactive" role="img" aria-label="地球圈层">

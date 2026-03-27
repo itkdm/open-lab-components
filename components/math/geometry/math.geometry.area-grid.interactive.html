@@ -1,28 +1,170 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.area-grid.interactive",
   "name": "面积网格",
   "nameEn": "Area Grid",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 320 },
+  "viewport": {
+    "w": 320,
+    "h": 320
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
-    { "key": "cols", "type": "number", "default": 10, "min": 4, "max": 20, "desc": "列数" },
-    { "key": "rows", "type": "number", "default": 10, "min": 4, "max": 20, "desc": "行数" },
-    { "key": "gridColor", "type": "color", "default": "#B0BEC5", "desc": "网格线颜色" },
-    { "key": "fillColor", "type": "color", "default": "#42A5F5", "desc": "填充颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "cols",
+      "type": "number",
+      "default": 10,
+      "min": 4,
+      "max": 20,
+      "desc": "列数"
+    },
+    {
+      "key": "rows",
+      "type": "number",
+      "default": 10,
+      "min": 4,
+      "max": 20,
+      "desc": "行数"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#B0BEC5",
+      "desc": "网格线颜色"
+    },
+    {
+      "key": "fillColor",
+      "type": "color",
+      "default": "#42A5F5",
+      "desc": "填充颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "gridColor": "--cmp-grid",
     "fillColor": "--cmp-fill"
   },
-  "tags": ["area", "grid", "counting", "measurement", "geometry", "math", "primary", "interactive"],
+  "tags": [
+    "area",
+    "grid",
+    "counting",
+    "measurement",
+    "geometry",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "filledCount": "number", "totalCells": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "filledCount": "number",
+        "totalCells": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "面积网格",
+      "tags": [
+        "area",
+        "grid",
+        "counting",
+        "measurement",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "面积网格",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "cols": {
+          "label": "cols",
+          "desc": "列数"
+        },
+        "rows": {
+          "label": "rows",
+          "desc": "行数"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格线颜色"
+        },
+        "fillColor": {
+          "label": "fillColor",
+          "desc": "填充颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "filledCount": "number",
+            "totalCells": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Area Grid",
+      "tags": [
+        "area",
+        "grid",
+        "counting",
+        "measurement",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Area Grid",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "cols": {
+          "label": "Columns",
+          "desc": "Sets the number of columns."
+        },
+        "rows": {
+          "label": "Rows",
+          "desc": "Sets the number of rows."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Sets the color of the grid lines."
+        },
+        "fillColor": {
+          "label": "Fill Color",
+          "desc": "Sets the fill color of the highlighted region."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "filledCount": "Current filled count.",
+            "totalCells": "Current total cells."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.area-grid.interactive" role="img" aria-label="面积网格">

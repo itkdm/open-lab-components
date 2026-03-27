@@ -1,32 +1,180 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.diode.basic",
   "name": "二极管",
   "nameEn": "Diode",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 108, "h": 40 },
-  "tags": ["diode", "circuit", "semiconductor", "rectifier"],
+  "viewport": {
+    "w": 108,
+    "h": 40
+  },
+  "tags": [
+    "diode",
+    "circuit",
+    "semiconductor",
+    "rectifier"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 64,        "min": 16, "max": 256, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "aspect",      "type": "number",     "default": 2.7,       "min": 1.6, "max": 4.0, "desc": "宽高比（width = size × aspect）" },
-    { "key": "bodyColor",   "type": "color",      "default": "#1a1a1a", "desc": "管体颜色（深色玻璃/塑封）" },
-    { "key": "bandColor",   "type": "color",      "default": "#c0c0c0", "desc": "阴极色环颜色" },
-    { "key": "leadColor",   "type": "color",      "default": "#888888", "desc": "引脚颜色" },
-    { "key": "stroke",      "type": "color",      "default": "#111827", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number",     "default": 1.8,       "min": 0, "max": 5, "desc": "描边粗细" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0,        "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 64,
+      "min": 16,
+      "max": 256,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "aspect",
+      "type": "number",
+      "default": 2.7,
+      "min": 1.6,
+      "max": 4,
+      "desc": "宽高比（width = size × aspect）"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#1a1a1a",
+      "desc": "管体颜色（深色玻璃/塑封）"
+    },
+    {
+      "key": "bandColor",
+      "type": "color",
+      "default": "#c0c0c0",
+      "desc": "阴极色环颜色"
+    },
+    {
+      "key": "leadColor",
+      "type": "color",
+      "default": "#888888",
+      "desc": "引脚颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0,
+      "max": 5,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "aspect":      "--cmp-aspect",
-    "bodyColor":   "--cmp-body",
-    "bandColor":   "--cmp-band",
-    "leadColor":   "--cmp-lead",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "aspect": "--cmp-aspect",
+    "bodyColor": "--cmp-body",
+    "bandColor": "--cmp-band",
+    "leadColor": "--cmp-lead",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "二极管",
+      "tags": [
+        "diode",
+        "circuit",
+        "semiconductor",
+        "rectifier"
+      ],
+      "ariaLabel": "二极管",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "aspect": {
+          "label": "aspect",
+          "desc": "宽高比（width = size × aspect）"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "管体颜色（深色玻璃/塑封）"
+        },
+        "bandColor": {
+          "label": "bandColor",
+          "desc": "阴极色环颜色"
+        },
+        "leadColor": {
+          "label": "leadColor",
+          "desc": "引脚颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Diode",
+      "tags": [
+        "diode",
+        "circuit",
+        "semiconductor",
+        "rectifier"
+      ],
+      "ariaLabel": "Diode",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "aspect": {
+          "label": "Aspect",
+          "desc": "Numeric control for aspect."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "bandColor": {
+          "label": "Band Color",
+          "desc": "Color setting for band color."
+        },
+        "leadColor": {
+          "label": "Lead Color",
+          "desc": "Color setting for lead color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,29 +1,170 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.cart.flatbed",
   "name": "平板小车",
   "nameEn": "Flatbed Cart",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 140, "h": 56 },
-  "tags": ["physics", "mechanics", "cart", "flatbed", "friction", "load"],
+  "viewport": {
+    "w": 140,
+    "h": 56
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "cart",
+    "flatbed",
+    "friction",
+    "load"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 240, "desc": "组件宽度" },
-    { "key": "bodyColor",   "type": "color",  "default": "#8d6e63", "desc": "平板颜色" },
-    { "key": "frameColor",  "type": "color",  "default": "#546e7a", "desc": "底架颜色" },
-    { "key": "wheelColor",  "type": "color",  "default": "#37474f", "desc": "车轮颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边宽度" },
-    { "key": "hookVisible", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示挂钩" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 140,
+      "min": 80,
+      "max": 240,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#8d6e63",
+      "desc": "平板颜色"
+    },
+    {
+      "key": "frameColor",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "底架颜色"
+    },
+    {
+      "key": "wheelColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "车轮颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边宽度"
+    },
+    {
+      "key": "hookVisible",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示挂钩"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "bodyColor":   "--cmp-body",
-    "frameColor":  "--cmp-frame",
-    "wheelColor":  "--cmp-wheel",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "frameColor": "--cmp-frame",
+    "wheelColor": "--cmp-wheel",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "平板小车",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "flatbed",
+        "friction",
+        "load"
+      ],
+      "ariaLabel": "平板小车",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "平板颜色"
+        },
+        "frameColor": {
+          "label": "frameColor",
+          "desc": "底架颜色"
+        },
+        "wheelColor": {
+          "label": "wheelColor",
+          "desc": "车轮颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        },
+        "hookVisible": {
+          "label": "hookVisible",
+          "desc": "显示挂钩"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Flatbed Cart",
+      "tags": [
+        "physics",
+        "mechanics",
+        "cart",
+        "flatbed",
+        "friction",
+        "load"
+      ],
+      "ariaLabel": "Flatbed Cart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the apparatus."
+        },
+        "frameColor": {
+          "label": "Frame Color",
+          "desc": "Sets the color of the support frame."
+        },
+        "wheelColor": {
+          "label": "Wheel Color",
+          "desc": "Sets the color of the wheels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "hookVisible": {
+          "label": "Show Hook",
+          "desc": "Shows or hides the hook."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

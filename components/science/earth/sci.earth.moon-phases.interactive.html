@@ -1,21 +1,124 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.moon-phases.interactive",
   "name": "月相变化",
   "nameEn": "Moon Phases",
   "category": "science/earth",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 300 },
+  "viewport": {
+    "w": 360,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "组件宽度" },
-    { "key": "phase", "type": "number", "default": 0, "min": 0, "max": 7, "desc": "月相（0-7）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 200,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "phase",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 7,
+      "desc": "月相（0-7）"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["moon", "phases", "lunar", "astronomy", "earth-science", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "moon",
+    "phases",
+    "lunar",
+    "astronomy",
+    "earth-science",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "phase": "number(0-7)", "phaseName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "phase": "number(0-7)",
+        "phaseName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "月相变化",
+      "tags": [
+        "moon",
+        "phases",
+        "lunar",
+        "astronomy",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "月相变化",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "phase": {
+          "label": "phase",
+          "desc": "月相（0-7）"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "phase": "number(0-7)",
+            "phaseName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Moon Phases",
+      "tags": [
+        "moon",
+        "phases",
+        "lunar",
+        "astronomy",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Moon Phases",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "phase": {
+          "label": "Phase",
+          "desc": "Numeric control for phase."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "phase": "Value for phase.",
+            "phaseName": "Value for phase name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.moon-phases.interactive" role="img" aria-label="月相变化">

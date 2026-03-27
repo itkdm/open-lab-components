@@ -1,30 +1,167 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.tool.filter-funnel.basic",
   "name": "过滤装置",
   "nameEn": "Filter Funnel",
   "category": "science/tool",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 280 },
-  "tags": ["funnel", "filter", "filtration", "separation", "science", "primary"],
+  "viewport": {
+    "w": 160,
+    "h": 280
+  },
+  "tags": [
+    "funnel",
+    "filter",
+    "filtration",
+    "separation",
+    "science",
+    "primary"
+  ],
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 280, "min": 160, "max": 560, "desc": "组件高度" },
-    { "key": "funnelColor",   "type": "color",  "default": "#e3f2fd", "desc": "漏斗玻璃颜色" },
-    { "key": "paperColor",    "type": "color",  "default": "#faf5e8", "desc": "滤纸颜色" },
-    { "key": "liquidColor",   "type": "color",  "default": "#8d6e4b", "desc": "待过滤液体颜色" },
-    { "key": "filtrateColor", "type": "color",  "default": "#bbdefb", "desc": "滤液颜色" },
-    { "key": "strokeColor",   "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 280,
+      "min": 160,
+      "max": 560,
+      "desc": "组件高度"
+    },
+    {
+      "key": "funnelColor",
+      "type": "color",
+      "default": "#e3f2fd",
+      "desc": "漏斗玻璃颜色"
+    },
+    {
+      "key": "paperColor",
+      "type": "color",
+      "default": "#faf5e8",
+      "desc": "滤纸颜色"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#8d6e4b",
+      "desc": "待过滤液体颜色"
+    },
+    {
+      "key": "filtrateColor",
+      "type": "color",
+      "default": "#bbdefb",
+      "desc": "滤液颜色"
+    },
+    {
+      "key": "strokeColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size":          "--cmp-size",
-    "funnelColor":   "--cmp-funnel",
-    "paperColor":    "--cmp-paper",
-    "liquidColor":   "--cmp-liquid",
+    "size": "--cmp-size",
+    "funnelColor": "--cmp-funnel",
+    "paperColor": "--cmp-paper",
+    "liquidColor": "--cmp-liquid",
     "filtrateColor": "--cmp-filtrate",
-    "strokeColor":   "--cmp-stroke",
-    "strokeWidth":   "--cmp-stroke-width"
+    "strokeColor": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "过滤装置",
+      "tags": [
+        "funnel",
+        "filter",
+        "filtration",
+        "separation",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "过滤装置",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "funnelColor": {
+          "label": "funnelColor",
+          "desc": "漏斗玻璃颜色"
+        },
+        "paperColor": {
+          "label": "paperColor",
+          "desc": "滤纸颜色"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "待过滤液体颜色"
+        },
+        "filtrateColor": {
+          "label": "filtrateColor",
+          "desc": "滤液颜色"
+        },
+        "strokeColor": {
+          "label": "strokeColor",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Filter Funnel",
+      "tags": [
+        "funnel",
+        "filter",
+        "filtration",
+        "separation",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "Filter Funnel",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "funnelColor": {
+          "label": "Funnel Color",
+          "desc": "Color setting for funnel color."
+        },
+        "paperColor": {
+          "label": "Paper Color",
+          "desc": "Color setting for paper color."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Color setting for liquid color."
+        },
+        "filtrateColor": {
+          "label": "Filtrate Color",
+          "desc": "Color setting for filtrate color."
+        },
+        "strokeColor": {
+          "label": "Stroke Color",
+          "desc": "Color setting for stroke color."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,20 +1,105 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.food-chain.interactive",
   "name": "食物链",
   "nameEn": "Food Chain",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 400, "h": 200 },
+  "viewport": {
+    "w": 400,
+    "h": 200
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 400, "min": 240, "max": 800, "desc": "组件宽度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 240,
+      "max": 800,
+      "desc": "组件宽度"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["food-chain", "ecosystem", "predator", "prey", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "food-chain",
+    "ecosystem",
+    "predator",
+    "prey",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "selected": "string", "role": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "selected": "string",
+        "role": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "食物链",
+      "tags": [
+        "food-chain",
+        "ecosystem",
+        "predator",
+        "prey",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "食物链",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "selected": "string",
+            "role": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Food Chain",
+      "tags": [
+        "food-chain",
+        "ecosystem",
+        "predator",
+        "prey",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Food Chain",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "selected": "Value for selected.",
+            "role": "Value for role."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.food-chain.interactive" role="img" aria-label="食物链">

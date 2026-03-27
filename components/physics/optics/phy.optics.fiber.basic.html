@@ -1,23 +1,135 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.fiber.basic",
   "name": "光纤（全反射演示）",
-  "nameEn": "Optical Fiber (Total Internal Reflection)",
+  "nameEn": "Optical Fiber Model",
   "category": "physics/optics",
   "version": "1.0.0",
-  "viewport": { "w": 400, "h": 100 },
-  "tags": ["optics", "fiber", "total-internal-reflection", "light", "refraction"],
+  "viewport": {
+    "w": 400,
+    "h": 100
+  },
+  "tags": [
+    "optics",
+    "fiber",
+    "total-internal-reflection",
+    "light",
+    "refraction"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 100, "min": 60, "max": 180, "desc": "组件高度" },
-    { "key": "lightOn",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "光源开关" },
-    { "key": "fiberColor", "type": "color",  "default": "#e3f2fd", "desc": "光纤颜色" },
-    { "key": "lightColor", "type": "color",  "default": "#fdd835", "desc": "光线颜色" },
-    { "key": "stroke",     "type": "color",  "default": "#546e7a", "desc": "描边颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 100,
+      "min": 60,
+      "max": 180,
+      "desc": "组件高度"
+    },
+    {
+      "key": "lightOn",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "光源开关"
+    },
+    {
+      "key": "fiberColor",
+      "type": "color",
+      "default": "#e3f2fd",
+      "desc": "光纤颜色"
+    },
+    {
+      "key": "lightColor",
+      "type": "color",
+      "default": "#fdd835",
+      "desc": "光线颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "描边颜色"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "fiberColor": "--cmp-fiber",
-    "lightColor": "--cmp-light", "stroke": "--cmp-stroke"
+    "size": "--cmp-size",
+    "fiberColor": "--cmp-fiber",
+    "lightColor": "--cmp-light",
+    "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "光纤（全反射演示）",
+      "tags": [
+        "optics",
+        "fiber",
+        "total-internal-reflection",
+        "light",
+        "refraction"
+      ],
+      "ariaLabel": "光纤（全反射演示）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "lightOn": {
+          "label": "lightOn",
+          "desc": "光源开关"
+        },
+        "fiberColor": {
+          "label": "fiberColor",
+          "desc": "光纤颜色"
+        },
+        "lightColor": {
+          "label": "lightColor",
+          "desc": "光线颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Optical Fiber Model",
+      "tags": [
+        "optics",
+        "fiber",
+        "total-internal-reflection",
+        "light",
+        "refraction"
+      ],
+      "ariaLabel": "Optical Fiber Model",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "lightOn": {
+          "label": "Light On",
+          "desc": "Toggles whether the light source is on."
+        },
+        "fiberColor": {
+          "label": "Fiber Color",
+          "desc": "Sets the color of the optical fiber."
+        },
+        "lightColor": {
+          "label": "Light Color",
+          "desc": "Sets the color of the light source or wavefront."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

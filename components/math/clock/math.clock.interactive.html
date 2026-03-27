@@ -1,28 +1,116 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.clock.interactive",
   "name": "交互式钟表",
-  "nameEn": "Interactive Clock",
+  "nameEn": "Teaching Clock",
   "category": "math/clock",
   "version": "2.1.0",
-  "viewport": { "w": 240, "h": 300 },
+  "viewport": {
+    "w": 240,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 240, "min": 120, "max": 600, "desc": "钟表直径" },
-    { "key": "speed", "type": "number", "default": 1, "min": 0, "max": 3600, "desc": "时间流逝倍速（0=静止，1=真实时间）" },
-    { "key": "secondSmooth", "type": "boolean", "default": false, "desc": "秒针是否顺滑（true=顺滑，false=跳秒）" },
-    { "key": "hourLengthRatio", "type": "number", "default": 0.22, "min": 0.15, "max": 0.35, "desc": "时针长度占钟表直径的比例" },
-    { "key": "minuteLengthRatio", "type": "number", "default": 0.32, "min": 0.2, "max": 0.45, "desc": "分针长度占钟表直径的比例" },
-    { "key": "secondLengthRatio", "type": "number", "default": 0.38, "min": 0.25, "max": 0.5, "desc": "秒针长度占钟表直径的比例" },
-    { "key": "dialBg", "type": "color", "default": "#ffffff", "desc": "表盘背景色" },
-    { "key": "bezelColor", "type": "color", "default": "#888888", "desc": "外圈边框颜色" },
-    { "key": "markColor", "type": "color", "default": "#333333", "desc": "刻度线颜色（整点）" },
-    { "key": "markSmallColor", "type": "color", "default": "#999999", "desc": "刻度线颜色（非整点）" },
-    { "key": "numberColor", "type": "color", "default": "#222222", "desc": "数字颜色" },
-    { "key": "hourHandColor", "type": "color", "default": "#222222", "desc": "时针颜色" },
-    { "key": "minuteHandColor", "type": "color", "default": "#444444", "desc": "分针颜色" },
-    { "key": "secondHandColor", "type": "color", "default": "#d63031", "desc": "秒针颜色" },
-    { "key": "centerDotColor", "type": "color", "default": "#222222", "desc": "中心圆点颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 120,
+      "max": 600,
+      "desc": "钟表直径"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0,
+      "max": 3600,
+      "desc": "时间流逝倍速（0=静止，1=真实时间）"
+    },
+    {
+      "key": "secondSmooth",
+      "type": "boolean",
+      "default": false,
+      "desc": "秒针是否顺滑（true=顺滑，false=跳秒）"
+    },
+    {
+      "key": "hourLengthRatio",
+      "type": "number",
+      "default": 0.22,
+      "min": 0.15,
+      "max": 0.35,
+      "desc": "时针长度占钟表直径的比例"
+    },
+    {
+      "key": "minuteLengthRatio",
+      "type": "number",
+      "default": 0.32,
+      "min": 0.2,
+      "max": 0.45,
+      "desc": "分针长度占钟表直径的比例"
+    },
+    {
+      "key": "secondLengthRatio",
+      "type": "number",
+      "default": 0.38,
+      "min": 0.25,
+      "max": 0.5,
+      "desc": "秒针长度占钟表直径的比例"
+    },
+    {
+      "key": "dialBg",
+      "type": "color",
+      "default": "#ffffff",
+      "desc": "表盘背景色"
+    },
+    {
+      "key": "bezelColor",
+      "type": "color",
+      "default": "#888888",
+      "desc": "外圈边框颜色"
+    },
+    {
+      "key": "markColor",
+      "type": "color",
+      "default": "#333333",
+      "desc": "刻度线颜色（整点）"
+    },
+    {
+      "key": "markSmallColor",
+      "type": "color",
+      "default": "#999999",
+      "desc": "刻度线颜色（非整点）"
+    },
+    {
+      "key": "numberColor",
+      "type": "color",
+      "default": "#222222",
+      "desc": "数字颜色"
+    },
+    {
+      "key": "hourHandColor",
+      "type": "color",
+      "default": "#222222",
+      "desc": "时针颜色"
+    },
+    {
+      "key": "minuteHandColor",
+      "type": "color",
+      "default": "#444444",
+      "desc": "分针颜色"
+    },
+    {
+      "key": "secondHandColor",
+      "type": "color",
+      "default": "#d63031",
+      "desc": "秒针颜色"
+    },
+    {
+      "key": "centerDotColor",
+      "type": "color",
+      "default": "#222222",
+      "desc": "中心圆点颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-clock-size",
@@ -41,7 +129,163 @@
     "secondHandColor": "--cmp-second-hand-color",
     "centerDotColor": "--cmp-center-dot-color"
   },
-  "tags": ["clock", "time", "interactive", "teaching", "math"]
+  "tags": [
+    "clock",
+    "time",
+    "interactive",
+    "teaching",
+    "math"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "交互式钟表",
+      "tags": [
+        "clock",
+        "time",
+        "interactive",
+        "teaching",
+        "math"
+      ],
+      "ariaLabel": "交互式钟表",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "钟表直径"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "时间流逝倍速（0=静止，1=真实时间）"
+        },
+        "secondSmooth": {
+          "label": "secondSmooth",
+          "desc": "秒针是否顺滑（true=顺滑，false=跳秒）"
+        },
+        "hourLengthRatio": {
+          "label": "hourLengthRatio",
+          "desc": "时针长度占钟表直径的比例"
+        },
+        "minuteLengthRatio": {
+          "label": "minuteLengthRatio",
+          "desc": "分针长度占钟表直径的比例"
+        },
+        "secondLengthRatio": {
+          "label": "secondLengthRatio",
+          "desc": "秒针长度占钟表直径的比例"
+        },
+        "dialBg": {
+          "label": "dialBg",
+          "desc": "表盘背景色"
+        },
+        "bezelColor": {
+          "label": "bezelColor",
+          "desc": "外圈边框颜色"
+        },
+        "markColor": {
+          "label": "markColor",
+          "desc": "刻度线颜色（整点）"
+        },
+        "markSmallColor": {
+          "label": "markSmallColor",
+          "desc": "刻度线颜色（非整点）"
+        },
+        "numberColor": {
+          "label": "numberColor",
+          "desc": "数字颜色"
+        },
+        "hourHandColor": {
+          "label": "hourHandColor",
+          "desc": "时针颜色"
+        },
+        "minuteHandColor": {
+          "label": "minuteHandColor",
+          "desc": "分针颜色"
+        },
+        "secondHandColor": {
+          "label": "secondHandColor",
+          "desc": "秒针颜色"
+        },
+        "centerDotColor": {
+          "label": "centerDotColor",
+          "desc": "中心圆点颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Teaching Clock",
+      "tags": [
+        "clock",
+        "time",
+        "interactive",
+        "teaching",
+        "math"
+      ],
+      "ariaLabel": "Teaching Clock",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "secondSmooth": {
+          "label": "Smooth Second Hand",
+          "desc": "Toggles smooth motion for the second hand."
+        },
+        "hourLengthRatio": {
+          "label": "Hour Hand Length",
+          "desc": "Sets the relative length of the hour hand."
+        },
+        "minuteLengthRatio": {
+          "label": "Minute Hand Length",
+          "desc": "Sets the relative length of the minute hand."
+        },
+        "secondLengthRatio": {
+          "label": "Second Hand Length",
+          "desc": "Sets the relative length of the second hand."
+        },
+        "dialBg": {
+          "label": "Dial Background",
+          "desc": "Sets the background color of the dial."
+        },
+        "bezelColor": {
+          "label": "Bezel Color",
+          "desc": "Sets the color of the outer bezel."
+        },
+        "markColor": {
+          "label": "Mark Color",
+          "desc": "Sets the color of the major marks."
+        },
+        "markSmallColor": {
+          "label": "Minor Mark Color",
+          "desc": "Sets the color of the minor marks."
+        },
+        "numberColor": {
+          "label": "Number Color",
+          "desc": "Sets the color of the numerals."
+        },
+        "hourHandColor": {
+          "label": "Hour Hand Color",
+          "desc": "Sets the color of the hour hand."
+        },
+        "minuteHandColor": {
+          "label": "Minute Hand Color",
+          "desc": "Sets the color of the minute hand."
+        },
+        "secondHandColor": {
+          "label": "Second Hand Color",
+          "desc": "Sets the color of the second hand."
+        },
+        "centerDotColor": {
+          "label": "Center Dot Color",
+          "desc": "Sets the color of the center marker."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.clock.interactive" role="img" aria-label="交互式钟表">

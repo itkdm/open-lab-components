@@ -1,36 +1,323 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.gravity.orbital.interactive",
   "name": "万有引力与轨道（交互式）",
-  "nameEn": "Gravitational Orbit (Interactive)",
+  "nameEn": "Orbital Motion Explorer",
   "category": "physics/gravity",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 450 },
-  "tags": ["physics","gravity","orbit","Kepler","satellite","planet","interactive"],
+  "viewport": {
+    "w": 480,
+    "h": 450
+  },
+  "tags": [
+    "physics",
+    "gravity",
+    "orbit",
+    "Kepler",
+    "satellite",
+    "planet",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "planetColor",    "type": "color",  "default": "#42a5f5", "desc": "行星颜色" },
-    { "key": "sunColor",       "type": "color",  "default": "#ff9800", "desc": "恒星颜色" },
-    { "key": "trailColor",     "type": "color",  "default": "#90caf9", "desc": "轨迹颜色" },
-    { "key": "orbitRadius",    "type": "number", "default": 120, "min": 60, "max": 180, "desc": "轨道半径" },
-    { "key": "eccentricity",   "type": "number", "default": 0.3, "min": 0, "max": 0.85, "desc": "离心率" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showForce",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示引力" },
-    { "key": "showTrail",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示轨迹" },
-    { "key": "showKepler",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示开普勒面积" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 450,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "planetColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "行星颜色"
+    },
+    {
+      "key": "sunColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "恒星颜色"
+    },
+    {
+      "key": "trailColor",
+      "type": "color",
+      "default": "#90caf9",
+      "desc": "轨迹颜色"
+    },
+    {
+      "key": "orbitRadius",
+      "type": "number",
+      "default": 120,
+      "min": 60,
+      "max": 180,
+      "desc": "轨道半径"
+    },
+    {
+      "key": "eccentricity",
+      "type": "number",
+      "default": 0.3,
+      "min": 0,
+      "max": 0.85,
+      "desc": "离心率"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showForce",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示引力"
+    },
+    {
+      "key": "showTrail",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示轨迹"
+    },
+    {
+      "key": "showKepler",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示开普勒面积"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "planetColor": "--cmp-planet", "sunColor": "--cmp-sun", "trailColor": "--cmp-trail", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "planetColor": "--cmp-planet",
+    "sunColor": "--cmp-sun",
+    "trailColor": "--cmp-trail",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "state", "values": { "angle": "number(rad)", "distance": "number", "velocity": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "state",
+      "values": {
+        "angle": "number(rad)",
+        "distance": "number",
+        "velocity": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "万有引力与轨道（交互式）",
+      "tags": [
+        "physics",
+        "gravity",
+        "orbit",
+        "Kepler",
+        "satellite",
+        "planet",
+        "interactive"
+      ],
+      "ariaLabel": "万有引力与轨道（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "planetColor": {
+          "label": "planetColor",
+          "desc": "行星颜色"
+        },
+        "sunColor": {
+          "label": "sunColor",
+          "desc": "恒星颜色"
+        },
+        "trailColor": {
+          "label": "trailColor",
+          "desc": "轨迹颜色"
+        },
+        "orbitRadius": {
+          "label": "orbitRadius",
+          "desc": "轨道半径"
+        },
+        "eccentricity": {
+          "label": "eccentricity",
+          "desc": "离心率"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showForce": {
+          "label": "showForce",
+          "desc": "显示引力"
+        },
+        "showTrail": {
+          "label": "showTrail",
+          "desc": "显示轨迹"
+        },
+        "showKepler": {
+          "label": "showKepler",
+          "desc": "显示开普勒面积"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number(rad)",
+            "distance": "number",
+            "velocity": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Orbital Motion Explorer",
+      "tags": [
+        "physics",
+        "gravity",
+        "orbit",
+        "Kepler",
+        "satellite",
+        "planet",
+        "interactive"
+      ],
+      "ariaLabel": "Orbital Motion Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "planetColor": {
+          "label": "Planet Color",
+          "desc": "Color setting for planet color."
+        },
+        "sunColor": {
+          "label": "Sun Color",
+          "desc": "Color setting for sun color."
+        },
+        "trailColor": {
+          "label": "Trail Color",
+          "desc": "Color setting for trail color."
+        },
+        "orbitRadius": {
+          "label": "Orbit Radius",
+          "desc": "Numeric control for orbit radius."
+        },
+        "eccentricity": {
+          "label": "Eccentricity",
+          "desc": "Numeric control for eccentricity."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Select the show labels option."
+        },
+        "showForce": {
+          "label": "Show Force",
+          "desc": "Select the show force option."
+        },
+        "showTrail": {
+          "label": "Show Trail",
+          "desc": "Select the show trail option."
+        },
+        "showKepler": {
+          "label": "Show Kepler",
+          "desc": "Select the show kepler option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "State",
+          "desc": "Event emitted during state.",
+          "values": {
+            "angle": "Value for angle.",
+            "distance": "Value for distance.",
+            "velocity": "Value for velocity."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.gravity.orbital.interactive" role="img" aria-label="万有引力与轨道（交互式）">

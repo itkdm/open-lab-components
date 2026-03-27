@@ -1,33 +1,274 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.calculus.derivative.interactive",
   "name": "导数与切线（交互式）",
-  "nameEn": "Derivative & Tangent Line (Interactive)",
+  "nameEn": "Derivative and Tangent Explorer",
   "category": "math/calculus",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 420 },
-  "tags": ["math","calculus","derivative","tangent","slope","function","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 420
+  },
+  "tags": [
+    "math",
+    "calculus",
+    "derivative",
+    "tangent",
+    "slope",
+    "function",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "funcColor",      "type": "color",  "default": "#5c6bc0", "desc": "函数曲线颜色" },
-    { "key": "tangentColor",   "type": "color",  "default": "#ef5350", "desc": "切线颜色" },
-    { "key": "derivColor",     "type": "color",  "default": "#66bb6a", "desc": "导函数颜色" },
-    { "key": "func",           "type": "enum",   "default": "x2", "enum": ["x2","x3","sinx","cosx"], "desc": "函数类型" },
-    { "key": "xPos",           "type": "number", "default": 1, "min": -3, "max": 3, "desc": "切点x坐标" },
-    { "key": "showDerivative", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示导函数" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 420,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "funcColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "函数曲线颜色"
+    },
+    {
+      "key": "tangentColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "切线颜色"
+    },
+    {
+      "key": "derivColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "导函数颜色"
+    },
+    {
+      "key": "func",
+      "type": "enum",
+      "default": "x2",
+      "enum": [
+        "x2",
+        "x3",
+        "sinx",
+        "cosx"
+      ],
+      "desc": "函数类型"
+    },
+    {
+      "key": "xPos",
+      "type": "number",
+      "default": 1,
+      "min": -3,
+      "max": 3,
+      "desc": "切点x坐标"
+    },
+    {
+      "key": "showDerivative",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示导函数"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "funcColor": "--cmp-func", "tangentColor": "--cmp-tangent", "derivColor": "--cmp-deriv", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "funcColor": "--cmp-func",
+    "tangentColor": "--cmp-tangent",
+    "derivColor": "--cmp-deriv",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "position", "values": { "x": "number", "y": "number", "slope": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "position",
+      "values": {
+        "x": "number",
+        "y": "number",
+        "slope": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "导数与切线（交互式）",
+      "tags": [
+        "math",
+        "calculus",
+        "derivative",
+        "tangent",
+        "slope",
+        "function",
+        "interactive"
+      ],
+      "ariaLabel": "导数与切线（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "funcColor": {
+          "label": "funcColor",
+          "desc": "函数曲线颜色"
+        },
+        "tangentColor": {
+          "label": "tangentColor",
+          "desc": "切线颜色"
+        },
+        "derivColor": {
+          "label": "derivColor",
+          "desc": "导函数颜色"
+        },
+        "func": {
+          "label": "func",
+          "desc": "函数类型"
+        },
+        "xPos": {
+          "label": "xPos",
+          "desc": "切点x坐标"
+        },
+        "showDerivative": {
+          "label": "showDerivative",
+          "desc": "显示导函数"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "x": "number",
+            "y": "number",
+            "slope": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Derivative and Tangent Explorer",
+      "tags": [
+        "math",
+        "calculus",
+        "derivative",
+        "tangent",
+        "slope",
+        "function",
+        "interactive"
+      ],
+      "ariaLabel": "Derivative and Tangent Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "funcColor": {
+          "label": "Function Color",
+          "desc": "Sets the color of the main function graph."
+        },
+        "tangentColor": {
+          "label": "Tangent Line Color",
+          "desc": "Sets the color of the tangent line."
+        },
+        "derivColor": {
+          "label": "Derivative Color",
+          "desc": "Sets the color of the derivative graph."
+        },
+        "func": {
+          "label": "Function Family",
+          "desc": "Selects which function family is displayed."
+        },
+        "xPos": {
+          "label": "X Position",
+          "desc": "Sets the x-position used for evaluation."
+        },
+        "showDerivative": {
+          "label": "Show Derivative",
+          "desc": "Shows or hides the derivative graph."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "x": "Current x-coordinate.",
+            "y": "Current y-coordinate.",
+            "slope": "Current slope value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.calculus.derivative.interactive" role="img" aria-label="导数与切线（交互式）">

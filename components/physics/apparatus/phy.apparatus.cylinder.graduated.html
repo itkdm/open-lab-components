@@ -1,23 +1,84 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.cylinder.graduated",
   "name": "量筒（刻度）",
   "nameEn": "Graduated Cylinder",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 120, "h": 360 },
+  "viewport": {
+    "w": 120,
+    "h": 360
+  },
   "props": [
-    { "key": "height", "type": "number(px)", "default": 360, "min": 200, "max": 600, "desc": "量筒总高度" },
-    { "key": "width", "type": "number(px)", "default": 120, "min": 60, "max": 240, "desc": "量筒区域宽度（含刻度）" },
-    { "key": "maxVolume", "type": "number", "default": 100, "min": 10, "max": 2000, "desc": "最大量程（mL）" },
-    { "key": "volume", "type": "number", "default": 60, "min": 0, "max": 2000, "desc": "当前液面体积（mL）" },
-    { "key": "liquidColor", "type": "color", "default": "rgba(30,136,229,0.45)", "desc": "液体颜色" },
-    { "key": "glassFill", "type": "color", "default": "rgba(245,250,255,0.85)", "desc": "玻璃筒体填充色" },
-    { "key": "glassStroke", "type": "color", "default": "#90a4ae", "desc": "玻璃筒体描边色" },
-    { "key": "scaleColor", "type": "color", "default": "#37474f", "desc": "主刻度线颜色" },
-    { "key": "scaleMinorColor", "type": "color", "default": "#78909c", "desc": "次刻度线颜色" },
-    { "key": "labelColor", "type": "color", "default": "#263238", "desc": "数字刻度文字颜色" }
+    {
+      "key": "height",
+      "type": "number(px)",
+      "default": 360,
+      "min": 200,
+      "max": 600,
+      "desc": "量筒总高度"
+    },
+    {
+      "key": "width",
+      "type": "number(px)",
+      "default": 120,
+      "min": 60,
+      "max": 240,
+      "desc": "量筒区域宽度（含刻度）"
+    },
+    {
+      "key": "maxVolume",
+      "type": "number",
+      "default": 100,
+      "min": 10,
+      "max": 2000,
+      "desc": "最大量程（mL）"
+    },
+    {
+      "key": "volume",
+      "type": "number",
+      "default": 60,
+      "min": 0,
+      "max": 2000,
+      "desc": "当前液面体积（mL）"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "rgba(30,136,229,0.45)",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "glassFill",
+      "type": "color",
+      "default": "rgba(245,250,255,0.85)",
+      "desc": "玻璃筒体填充色"
+    },
+    {
+      "key": "glassStroke",
+      "type": "color",
+      "default": "#90a4ae",
+      "desc": "玻璃筒体描边色"
+    },
+    {
+      "key": "scaleColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "主刻度线颜色"
+    },
+    {
+      "key": "scaleMinorColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "次刻度线颜色"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "default": "#263238",
+      "desc": "数字刻度文字颜色"
+    }
   ],
   "cssVars": {
     "height": "--cmp-height",
@@ -31,7 +92,126 @@
     "scaleMinorColor": "--cmp-scale-minor-color",
     "labelColor": "--cmp-label-color"
   },
-  "tags": ["cylinder", "graduated", "measurement", "volume", "apparatus", "labware"]
+  "tags": [
+    "cylinder",
+    "graduated",
+    "measurement",
+    "volume",
+    "apparatus",
+    "labware"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "量筒（刻度）",
+      "tags": [
+        "cylinder",
+        "graduated",
+        "measurement",
+        "volume",
+        "apparatus",
+        "labware"
+      ],
+      "ariaLabel": "量筒（刻度）",
+      "props": {
+        "height": {
+          "label": "height",
+          "desc": "量筒总高度"
+        },
+        "width": {
+          "label": "width",
+          "desc": "量筒区域宽度（含刻度）"
+        },
+        "maxVolume": {
+          "label": "maxVolume",
+          "desc": "最大量程（mL）"
+        },
+        "volume": {
+          "label": "volume",
+          "desc": "当前液面体积（mL）"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "glassFill": {
+          "label": "glassFill",
+          "desc": "玻璃筒体填充色"
+        },
+        "glassStroke": {
+          "label": "glassStroke",
+          "desc": "玻璃筒体描边色"
+        },
+        "scaleColor": {
+          "label": "scaleColor",
+          "desc": "主刻度线颜色"
+        },
+        "scaleMinorColor": {
+          "label": "scaleMinorColor",
+          "desc": "次刻度线颜色"
+        },
+        "labelColor": {
+          "label": "labelColor",
+          "desc": "数字刻度文字颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Graduated Cylinder",
+      "tags": [
+        "cylinder",
+        "graduated",
+        "measurement",
+        "volume",
+        "apparatus",
+        "labware"
+      ],
+      "ariaLabel": "Graduated Cylinder",
+      "props": {
+        "height": {
+          "label": "Height",
+          "desc": "Numeric control for height."
+        },
+        "width": {
+          "label": "Width",
+          "desc": "Numeric control for width."
+        },
+        "maxVolume": {
+          "label": "Max Volume",
+          "desc": "Numeric control for max volume."
+        },
+        "volume": {
+          "label": "Volume",
+          "desc": "Numeric control for volume."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Color setting for liquid color."
+        },
+        "glassFill": {
+          "label": "Glass Fill",
+          "desc": "Color setting for glass fill."
+        },
+        "glassStroke": {
+          "label": "Glass Stroke",
+          "desc": "Color setting for glass stroke."
+        },
+        "scaleColor": {
+          "label": "Scale Color",
+          "desc": "Color setting for scale color."
+        },
+        "scaleMinorColor": {
+          "label": "Scale Minor Color",
+          "desc": "Color setting for scale minor color."
+        },
+        "labelColor": {
+          "label": "Label Color",
+          "desc": "Color setting for label color."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.cylinder.graduated" role="img" aria-label="量筒（刻度）">

@@ -1,25 +1,153 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.distillation-flask.basic",
   "name": "蒸馏烧瓶",
   "nameEn": "Distillation Flask",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 130, "h": 140 },
-  "tags": ["chemistry", "labware", "flask", "distillation", "side-arm", "heating"],
+  "viewport": {
+    "w": 130,
+    "h": 140
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "flask",
+    "distillation",
+    "side-arm",
+    "heating"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 280, "desc": "组件高度" },
-    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.35, "min": 0, "max": 0.7, "desc": "液面高度" },
-    { "key": "liquidColor", "type": "color",  "default": "#80cbc4", "desc": "液体颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.3)", "desc": "玻璃底色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 140,
+      "min": 80,
+      "max": 280,
+      "desc": "组件高度"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.35,
+      "min": 0,
+      "max": 0.7,
+      "desc": "液面高度"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#80cbc4",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(220,240,255,0.3)",
+      "desc": "玻璃底色"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "liquidColor": "--cmp-liquid",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "size": "--cmp-size",
+    "liquidColor": "--cmp-liquid",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
     "glassTint": "--cmp-glass-tint"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "蒸馏烧瓶",
+      "tags": [
+        "chemistry",
+        "labware",
+        "flask",
+        "distillation",
+        "side-arm",
+        "heating"
+      ],
+      "ariaLabel": "蒸馏烧瓶",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液面高度"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Distillation Flask",
+      "tags": [
+        "chemistry",
+        "labware",
+        "flask",
+        "distillation",
+        "side-arm",
+        "heating"
+      ],
+      "ariaLabel": "Distillation Flask",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Sets the fill level as a fraction of the vessel height."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

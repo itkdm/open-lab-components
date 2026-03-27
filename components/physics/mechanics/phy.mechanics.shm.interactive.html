@@ -1,35 +1,306 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.shm.interactive",
   "name": "简谐运动（交互式）",
-  "nameEn": "Simple Harmonic Motion (Interactive)",
+  "nameEn": "Simple Harmonic Oscillator",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 400 },
-  "tags": ["mechanics","SHM","oscillation","spring","pendulum","sine","interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 400
+  },
+  "tags": [
+    "mechanics",
+    "SHM",
+    "oscillation",
+    "spring",
+    "pendulum",
+    "sine",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "massColor",  "type": "color",  "default": "#e53935", "desc": "质量块颜色" },
-    { "key": "springColor","type": "color",  "default": "#78909c", "desc": "弹簧颜色" },
-    { "key": "traceColor", "type": "color",  "default": "#ff9800", "desc": "轨迹颜色" },
-    { "key": "amplitude",  "type": "number", "default": 80, "min": 20, "max": 120, "desc": "振幅(px)" },
-    { "key": "period",     "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "周期(s)" },
-    { "key": "damping",    "type": "number", "default": 0, "min": 0, "max": 0.5, "desc": "阻尼系数" },
-    { "key": "showGraph",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示x-t图" },
-    { "key": "showVectors","type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示力/速度矢量" },
-    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "speed",      "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "massColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "质量块颜色"
+    },
+    {
+      "key": "springColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "弹簧颜色"
+    },
+    {
+      "key": "traceColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "轨迹颜色"
+    },
+    {
+      "key": "amplitude",
+      "type": "number",
+      "default": 80,
+      "min": 20,
+      "max": 120,
+      "desc": "振幅(px)"
+    },
+    {
+      "key": "period",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "周期(s)"
+    },
+    {
+      "key": "damping",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 0.5,
+      "desc": "阻尼系数"
+    },
+    {
+      "key": "showGraph",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示x-t图"
+    },
+    {
+      "key": "showVectors",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示力/速度矢量"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "massColor": "--cmp-mass", "springColor": "--cmp-spring", "traceColor": "--cmp-trace", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "massColor": "--cmp-mass",
+    "springColor": "--cmp-spring",
+    "traceColor": "--cmp-trace",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "tick", "values": { "x": "number", "v": "number", "a": "number", "t": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "tick",
+      "values": {
+        "x": "number",
+        "v": "number",
+        "a": "number",
+        "t": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "简谐运动（交互式）",
+      "tags": [
+        "mechanics",
+        "SHM",
+        "oscillation",
+        "spring",
+        "pendulum",
+        "sine",
+        "interactive"
+      ],
+      "ariaLabel": "简谐运动（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "massColor": {
+          "label": "massColor",
+          "desc": "质量块颜色"
+        },
+        "springColor": {
+          "label": "springColor",
+          "desc": "弹簧颜色"
+        },
+        "traceColor": {
+          "label": "traceColor",
+          "desc": "轨迹颜色"
+        },
+        "amplitude": {
+          "label": "amplitude",
+          "desc": "振幅(px)"
+        },
+        "period": {
+          "label": "period",
+          "desc": "周期(s)"
+        },
+        "damping": {
+          "label": "damping",
+          "desc": "阻尼系数"
+        },
+        "showGraph": {
+          "label": "showGraph",
+          "desc": "显示x-t图"
+        },
+        "showVectors": {
+          "label": "showVectors",
+          "desc": "显示力/速度矢量"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "x": "number",
+            "v": "number",
+            "a": "number",
+            "t": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Simple Harmonic Oscillator",
+      "tags": [
+        "mechanics",
+        "SHM",
+        "oscillation",
+        "spring",
+        "pendulum",
+        "sine",
+        "interactive"
+      ],
+      "ariaLabel": "Simple Harmonic Oscillator",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "massColor": {
+          "label": "Mass Color",
+          "desc": "Sets the color of the hanging mass."
+        },
+        "springColor": {
+          "label": "Spring Color",
+          "desc": "Sets the color of the spring."
+        },
+        "traceColor": {
+          "label": "Trace Color",
+          "desc": "Sets the color of the plotted trace."
+        },
+        "amplitude": {
+          "label": "Amplitude",
+          "desc": "Sets the oscillation amplitude."
+        },
+        "period": {
+          "label": "Period",
+          "desc": "Sets the oscillation period."
+        },
+        "damping": {
+          "label": "Damping",
+          "desc": "Sets the damping strength."
+        },
+        "showGraph": {
+          "label": "Show Graph",
+          "desc": "Shows or hides the graph panel."
+        },
+        "showVectors": {
+          "label": "Show Vectors",
+          "desc": "Shows or hides the vector arrows."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animated motion."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the motion speed."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "x": "Current horizontal position.",
+            "v": "Current v.",
+            "a": "Current a.",
+            "t": "Current t."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.shm.interactive" role="img" aria-label="简谐运动（交互式）">

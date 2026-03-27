@@ -1,26 +1,186 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.wave.standing.interactive",
   "name": "驻波演示（交互式）",
-  "nameEn": "Standing Wave (Interactive)",
+  "nameEn": "Standing Wave Explorer",
   "category": "physics/wave",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 140 },
-  "tags": ["wave", "standing", "node", "antinode", "resonance", "interactive"],
+  "viewport": {
+    "w": 480,
+    "h": 140
+  },
+  "tags": [
+    "wave",
+    "standing",
+    "node",
+    "antinode",
+    "resonance",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 260, "desc": "组件高度" },
-    { "key": "harmonics",   "type": "number",     "default": 3, "min": 1, "max": 8, "desc": "谐波次数（波腹数）" },
-    { "key": "amplitude",   "type": "number",     "default": 40, "min": 10, "max": 55, "desc": "振幅(px)" },
-    { "key": "speed",       "type": "number",     "default": 1, "min": 0, "max": 3, "desc": "速度倍率" },
-    { "key": "waveColor",   "type": "color",  "default": "#1e88e5", "desc": "波形颜色" },
-    { "key": "nodeColor",   "type": "color",  "default": "#e53935", "desc": "波节标记颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "showNodes",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示波节/波腹标记" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 140,
+      "min": 80,
+      "max": 260,
+      "desc": "组件高度"
+    },
+    {
+      "key": "harmonics",
+      "type": "number",
+      "default": 3,
+      "min": 1,
+      "max": 8,
+      "desc": "谐波次数（波腹数）"
+    },
+    {
+      "key": "amplitude",
+      "type": "number",
+      "default": 40,
+      "min": 10,
+      "max": 55,
+      "desc": "振幅(px)"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0,
+      "max": 3,
+      "desc": "速度倍率"
+    },
+    {
+      "key": "waveColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "波形颜色"
+    },
+    {
+      "key": "nodeColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "波节标记颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "showNodes",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示波节/波腹标记"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "waveColor": "--cmp-wave",
-    "nodeColor": "--cmp-node", "stroke": "--cmp-stroke"
+    "size": "--cmp-size",
+    "waveColor": "--cmp-wave",
+    "nodeColor": "--cmp-node",
+    "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "驻波演示（交互式）",
+      "tags": [
+        "wave",
+        "standing",
+        "node",
+        "antinode",
+        "resonance",
+        "interactive"
+      ],
+      "ariaLabel": "驻波演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "harmonics": {
+          "label": "harmonics",
+          "desc": "谐波次数（波腹数）"
+        },
+        "amplitude": {
+          "label": "amplitude",
+          "desc": "振幅(px)"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "速度倍率"
+        },
+        "waveColor": {
+          "label": "waveColor",
+          "desc": "波形颜色"
+        },
+        "nodeColor": {
+          "label": "nodeColor",
+          "desc": "波节标记颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "showNodes": {
+          "label": "showNodes",
+          "desc": "显示波节/波腹标记"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Standing Wave Explorer",
+      "tags": [
+        "wave",
+        "standing",
+        "node",
+        "antinode",
+        "resonance",
+        "interactive"
+      ],
+      "ariaLabel": "Standing Wave Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "harmonics": {
+          "label": "Harmonics",
+          "desc": "Numeric control for harmonics."
+        },
+        "amplitude": {
+          "label": "Amplitude",
+          "desc": "Numeric control for amplitude."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "waveColor": {
+          "label": "Wave Color",
+          "desc": "Color setting for wave color."
+        },
+        "nodeColor": {
+          "label": "Node Color",
+          "desc": "Color setting for node color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "showNodes": {
+          "label": "Show Nodes",
+          "desc": "Select the show nodes option."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

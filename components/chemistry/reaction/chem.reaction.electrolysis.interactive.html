@@ -1,41 +1,320 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.reaction.electrolysis.interactive",
   "name": "电解水（交互式）",
-  "nameEn": "Electrolysis of Water (Interactive)",
+  "nameEn": "Electrolysis of Water Explorer",
   "category": "chemistry/reaction",
   "version": "1.0.0",
-  "viewport": { "w": 460, "h": 400 },
+  "viewport": {
+    "w": 460,
+    "h": 400
+  },
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.2, "min": 0.5, "max": 4, "desc": "描边粗细" },
-
-    { "key": "waterColor",    "type": "color",  "default": "#bbdefb", "desc": "水的颜色" },
-    { "key": "cathodeColor",  "type": "color",  "default": "#78909c", "desc": "阴极颜色" },
-    { "key": "anodeColor",    "type": "color",  "default": "#78909c", "desc": "阳极颜色" },
-    { "key": "h2Color",       "type": "color",  "default": "#e3f2fd", "desc": "氢气颜色" },
-    { "key": "o2Color",       "type": "color",  "default": "#ffcdd2", "desc": "氧气颜色" },
-    { "key": "wireColor",     "type": "color",  "default": "#f44336", "desc": "导线颜色" },
-
-    { "key": "voltage",       "type": "number", "default": 6,   "min": 1,   "max": 24,  "desc": "电压（V）" },
-    { "key": "running",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行状态" },
-    { "key": "showLabels",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标签" },
-    { "key": "showData",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "数据面板" },
-
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "waterColor",
+      "type": "color",
+      "default": "#bbdefb",
+      "desc": "水的颜色"
+    },
+    {
+      "key": "cathodeColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "阴极颜色"
+    },
+    {
+      "key": "anodeColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "阳极颜色"
+    },
+    {
+      "key": "h2Color",
+      "type": "color",
+      "default": "#e3f2fd",
+      "desc": "氢气颜色"
+    },
+    {
+      "key": "o2Color",
+      "type": "color",
+      "default": "#ffcdd2",
+      "desc": "氧气颜色"
+    },
+    {
+      "key": "wireColor",
+      "type": "color",
+      "default": "#f44336",
+      "desc": "导线颜色"
+    },
+    {
+      "key": "voltage",
+      "type": "number",
+      "default": 6,
+      "min": 1,
+      "max": 24,
+      "desc": "电压（V）"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行状态"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标签"
+    },
+    {
+      "key": "showData",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "数据面板"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "waterColor": "--cmp-water", "cathodeColor": "--cmp-cathode", "anodeColor": "--cmp-anode",
-    "h2Color": "--cmp-h2", "o2Color": "--cmp-o2", "wireColor": "--cmp-wire",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "waterColor": "--cmp-water",
+    "cathodeColor": "--cmp-cathode",
+    "anodeColor": "--cmp-anode",
+    "h2Color": "--cmp-h2",
+    "o2Color": "--cmp-o2",
+    "wireColor": "--cmp-wire",
     "glow": "--cmp-glow"
   },
-  "tags": ["chemistry","electrolysis","water","H2","O2","reaction","interactive","animated"],
+  "tags": [
+    "chemistry",
+    "electrolysis",
+    "water",
+    "H2",
+    "O2",
+    "reaction",
+    "interactive",
+    "animated"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "tick", "values": { "voltage": "number(V)", "h2Volume": "number(mL)", "o2Volume": "number(mL)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "tick",
+      "values": {
+        "voltage": "number(V)",
+        "h2Volume": "number(mL)",
+        "o2Volume": "number(mL)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电解水（交互式）",
+      "tags": [
+        "chemistry",
+        "electrolysis",
+        "water",
+        "H2",
+        "O2",
+        "reaction",
+        "interactive",
+        "animated"
+      ],
+      "ariaLabel": "电解水（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "waterColor": {
+          "label": "waterColor",
+          "desc": "水的颜色"
+        },
+        "cathodeColor": {
+          "label": "cathodeColor",
+          "desc": "阴极颜色"
+        },
+        "anodeColor": {
+          "label": "anodeColor",
+          "desc": "阳极颜色"
+        },
+        "h2Color": {
+          "label": "h2Color",
+          "desc": "氢气颜色"
+        },
+        "o2Color": {
+          "label": "o2Color",
+          "desc": "氧气颜色"
+        },
+        "wireColor": {
+          "label": "wireColor",
+          "desc": "导线颜色"
+        },
+        "voltage": {
+          "label": "voltage",
+          "desc": "电压（V）"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行状态"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标签"
+        },
+        "showData": {
+          "label": "showData",
+          "desc": "数据面板"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "voltage": "number(V)",
+            "h2Volume": "number(mL)",
+            "o2Volume": "number(mL)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Electrolysis of Water Explorer",
+      "tags": [
+        "chemistry",
+        "electrolysis",
+        "water",
+        "H2",
+        "O2",
+        "reaction",
+        "interactive",
+        "animated"
+      ],
+      "ariaLabel": "Electrolysis of Water Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "waterColor": {
+          "label": "Water Color",
+          "desc": "Sets the color used for water."
+        },
+        "cathodeColor": {
+          "label": "Cathode Color",
+          "desc": "Sets the color of the cathode."
+        },
+        "anodeColor": {
+          "label": "Anode Color",
+          "desc": "Sets the color of the anode."
+        },
+        "h2Color": {
+          "label": "Hydrogen Color",
+          "desc": "Sets the color used for hydrogen."
+        },
+        "o2Color": {
+          "label": "Oxygen Color",
+          "desc": "Sets the color used for oxygen."
+        },
+        "wireColor": {
+          "label": "Wire Color",
+          "desc": "Sets the color of the connecting wires."
+        },
+        "voltage": {
+          "label": "Voltage",
+          "desc": "Sets the applied voltage."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showData": {
+          "label": "Show Data Panel",
+          "desc": "Shows or hides the data readout panel."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "voltage": "Current voltage.",
+            "h2Volume": "Current hydrogen volume.",
+            "o2Volume": "Current oxygen volume."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.reaction.electrolysis.interactive" role="img" aria-label="电解水（交互式）">

@@ -1,26 +1,135 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.hundred-chart.interactive",
   "name": "百数表",
   "nameEn": "Hundred Chart",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 360 },
+  "viewport": {
+    "w": 320,
+    "h": 360
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件宽度" },
-    { "key": "highlightColor", "type": "color", "default": "#FF9800", "desc": "高亮颜色" },
-    { "key": "cellColor", "type": "color", "default": "#E3F2FD", "desc": "单元格颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "highlightColor",
+      "type": "color",
+      "default": "#FF9800",
+      "desc": "高亮颜色"
+    },
+    {
+      "key": "cellColor",
+      "type": "color",
+      "default": "#E3F2FD",
+      "desc": "单元格颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "highlightColor": "--cmp-highlight",
     "cellColor": "--cmp-cell"
   },
-  "tags": ["hundred-chart", "counting", "pattern", "number", "math", "primary", "interactive"],
+  "tags": [
+    "hundred-chart",
+    "counting",
+    "pattern",
+    "number",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "number": "number", "highlighted": "array" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "number": "number",
+        "highlighted": "array"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "百数表",
+      "tags": [
+        "hundred-chart",
+        "counting",
+        "pattern",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "百数表",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "highlightColor": {
+          "label": "highlightColor",
+          "desc": "高亮颜色"
+        },
+        "cellColor": {
+          "label": "cellColor",
+          "desc": "单元格颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "number": "number",
+            "highlighted": "array"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Hundred Chart",
+      "tags": [
+        "hundred-chart",
+        "counting",
+        "pattern",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Hundred Chart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "highlightColor": {
+          "label": "Highlight Color",
+          "desc": "Sets the color used for highlighted elements."
+        },
+        "cellColor": {
+          "label": "Cell Color",
+          "desc": "Sets the color of the grid cells."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "number": "Current number.",
+            "highlighted": "Current highlighted."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.hundred-chart.interactive" role="img" aria-label="百数表">

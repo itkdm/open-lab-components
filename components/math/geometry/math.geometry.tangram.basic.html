@@ -1,31 +1,230 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.tangram.basic",
   "name": "七巧板",
   "nameEn": "Tangram",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 200 },
-  "tags": ["math", "geometry", "tangram", "puzzle", "shape", "area"],
+  "viewport": {
+    "w": 200,
+    "h": 200
+  },
+  "tags": [
+    "math",
+    "geometry",
+    "tangram",
+    "puzzle",
+    "shape",
+    "area"
+  ],
   "props": [
-    { "key": "size",    "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件尺寸" },
-    { "key": "color1",  "type": "color", "default": "#e53935", "desc": "大三角1" },
-    { "key": "color2",  "type": "color", "default": "#fb8c00", "desc": "大三角2" },
-    { "key": "color3",  "type": "color", "default": "#fdd835", "desc": "中三角" },
-    { "key": "color4",  "type": "color", "default": "#43a047", "desc": "小三角1" },
-    { "key": "color5",  "type": "color", "default": "#1e88e5", "desc": "小三角2" },
-    { "key": "color6",  "type": "color", "default": "#8e24aa", "desc": "正方形" },
-    { "key": "color7",  "type": "color", "default": "#00897b", "desc": "平行四边形" },
-    { "key": "stroke",  "type": "color", "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "exploded","type": "enum",  "default": "off", "enum": ["on","off"], "desc": "分解展示" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "color1",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "大三角1"
+    },
+    {
+      "key": "color2",
+      "type": "color",
+      "default": "#fb8c00",
+      "desc": "大三角2"
+    },
+    {
+      "key": "color3",
+      "type": "color",
+      "default": "#fdd835",
+      "desc": "中三角"
+    },
+    {
+      "key": "color4",
+      "type": "color",
+      "default": "#43a047",
+      "desc": "小三角1"
+    },
+    {
+      "key": "color5",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "小三角2"
+    },
+    {
+      "key": "color6",
+      "type": "color",
+      "default": "#8e24aa",
+      "desc": "正方形"
+    },
+    {
+      "key": "color7",
+      "type": "color",
+      "default": "#00897b",
+      "desc": "平行四边形"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "exploded",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "分解展示"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
-    "color1": "--cmp-c1", "color2": "--cmp-c2", "color3": "--cmp-c3",
-    "color4": "--cmp-c4", "color5": "--cmp-c5", "color6": "--cmp-c6", "color7": "--cmp-c7",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "color1": "--cmp-c1",
+    "color2": "--cmp-c2",
+    "color3": "--cmp-c3",
+    "color4": "--cmp-c4",
+    "color5": "--cmp-c5",
+    "color6": "--cmp-c6",
+    "color7": "--cmp-c7",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "七巧板",
+      "tags": [
+        "math",
+        "geometry",
+        "tangram",
+        "puzzle",
+        "shape",
+        "area"
+      ],
+      "ariaLabel": "七巧板",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "color1": {
+          "label": "color1",
+          "desc": "大三角1"
+        },
+        "color2": {
+          "label": "color2",
+          "desc": "大三角2"
+        },
+        "color3": {
+          "label": "color3",
+          "desc": "中三角"
+        },
+        "color4": {
+          "label": "color4",
+          "desc": "小三角1"
+        },
+        "color5": {
+          "label": "color5",
+          "desc": "小三角2"
+        },
+        "color6": {
+          "label": "color6",
+          "desc": "正方形"
+        },
+        "color7": {
+          "label": "color7",
+          "desc": "平行四边形"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "exploded": {
+          "label": "exploded",
+          "desc": "分解展示"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Tangram",
+      "tags": [
+        "math",
+        "geometry",
+        "tangram",
+        "puzzle",
+        "shape",
+        "area"
+      ],
+      "ariaLabel": "Tangram",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "color1": {
+          "label": "Color 1",
+          "desc": "Controls color1."
+        },
+        "color2": {
+          "label": "Color 2",
+          "desc": "Controls color2."
+        },
+        "color3": {
+          "label": "Color 3",
+          "desc": "Controls color3."
+        },
+        "color4": {
+          "label": "Color 4",
+          "desc": "Controls color4."
+        },
+        "color5": {
+          "label": "Color 5",
+          "desc": "Controls color5."
+        },
+        "color6": {
+          "label": "Color 6",
+          "desc": "Controls color6."
+        },
+        "color7": {
+          "label": "Color 7",
+          "desc": "Controls color7."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "exploded": {
+          "label": "Exploded View",
+          "desc": "Toggles the exploded view."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

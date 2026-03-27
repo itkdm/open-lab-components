@@ -1,21 +1,124 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.net-folding.interactive",
   "name": "展开图",
   "nameEn": "Net Folding",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 300 },
+  "viewport": {
+    "w": 360,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "pattern", "type": "number", "default": 1, "min": 1, "max": 11, "desc": "展开图样式(1-11)" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "pattern",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 11,
+      "desc": "展开图样式(1-11)"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["net", "folding", "cube", "3d", "geometry", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "net",
+    "folding",
+    "cube",
+    "3d",
+    "geometry",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "pattern": "number", "foldProgress": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "pattern": "number",
+        "foldProgress": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "展开图",
+      "tags": [
+        "net",
+        "folding",
+        "cube",
+        "3d",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "展开图",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "pattern": {
+          "label": "pattern",
+          "desc": "展开图样式(1-11)"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "pattern": "number",
+            "foldProgress": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Net Folding",
+      "tags": [
+        "net",
+        "folding",
+        "cube",
+        "3d",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Net Folding",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "pattern": {
+          "label": "Pattern",
+          "desc": "Selects the displayed pattern."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "pattern": "Current pattern.",
+            "foldProgress": "Current fold progress."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.net-folding.interactive" role="img" aria-label="展开图">

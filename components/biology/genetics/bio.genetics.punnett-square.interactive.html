@@ -1,25 +1,116 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.genetics.punnett-square.interactive",
   "name": "遗传分析棋盘格（交互式）",
-  "nameEn": "Punnett Square (Interactive)",
+  "nameEn": "Punnett Square Explorer",
   "category": "biology/genetics",
   "version": "1.0.0",
-  "viewport": { "w": 420, "h": 500 },
-  "tags": ["biology","genetics","punnett-square","inheritance","allele","genotype","phenotype","interactive"],
+  "viewport": {
+    "w": 420,
+    "h": 500
+  },
+  "tags": [
+    "biology",
+    "genetics",
+    "punnett-square",
+    "inheritance",
+    "allele",
+    "genotype",
+    "phenotype",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 500, "min": 300, "max": 700, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "dominantColor",  "type": "color",  "default": "#7b1fa2", "desc": "显性纯合颜色" },
-    { "key": "recessiveColor", "type": "color",  "default": "#e0e0e0", "desc": "隐性纯合颜色" },
-    { "key": "heteroColor",    "type": "color",  "default": "#ba68c8", "desc": "杂合子颜色" },
-    { "key": "parent1",        "type": "enum",   "default": "Aa", "enum": ["AA","Aa","aa"], "desc": "父本基因型" },
-    { "key": "parent2",        "type": "enum",   "default": "Aa", "enum": ["AA","Aa","aa"], "desc": "母本基因型" },
-    { "key": "showRatio",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示比例" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 500,
+      "min": 300,
+      "max": 700,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "dominantColor",
+      "type": "color",
+      "default": "#7b1fa2",
+      "desc": "显性纯合颜色"
+    },
+    {
+      "key": "recessiveColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "隐性纯合颜色"
+    },
+    {
+      "key": "heteroColor",
+      "type": "color",
+      "default": "#ba68c8",
+      "desc": "杂合子颜色"
+    },
+    {
+      "key": "parent1",
+      "type": "enum",
+      "default": "Aa",
+      "enum": [
+        "AA",
+        "Aa",
+        "aa"
+      ],
+      "desc": "父本基因型"
+    },
+    {
+      "key": "parent2",
+      "type": "enum",
+      "default": "Aa",
+      "enum": [
+        "AA",
+        "Aa",
+        "aa"
+      ],
+      "desc": "母本基因型"
+    },
+    {
+      "key": "showRatio",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示比例"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -31,8 +122,158 @@
     "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "select", "values": { "parent1": "string(AA|Aa|aa)", "parent2": "string(AA|Aa|aa)", "offspring": "object" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "select",
+      "values": {
+        "parent1": "string(AA|Aa|aa)",
+        "parent2": "string(AA|Aa|aa)",
+        "offspring": "object"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "遗传分析棋盘格（交互式）",
+      "tags": [
+        "biology",
+        "genetics",
+        "punnett-square",
+        "inheritance",
+        "allele",
+        "genotype",
+        "phenotype",
+        "interactive"
+      ],
+      "ariaLabel": "遗传分析棋盘格（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "dominantColor": {
+          "label": "dominantColor",
+          "desc": "显性纯合颜色"
+        },
+        "recessiveColor": {
+          "label": "recessiveColor",
+          "desc": "隐性纯合颜色"
+        },
+        "heteroColor": {
+          "label": "heteroColor",
+          "desc": "杂合子颜色"
+        },
+        "parent1": {
+          "label": "parent1",
+          "desc": "父本基因型"
+        },
+        "parent2": {
+          "label": "parent2",
+          "desc": "母本基因型"
+        },
+        "showRatio": {
+          "label": "showRatio",
+          "desc": "显示比例"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "parent1": "string(AA|Aa|aa)",
+            "parent2": "string(AA|Aa|aa)",
+            "offspring": "object"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Punnett Square Explorer",
+      "tags": [
+        "biology",
+        "genetics",
+        "punnett-square",
+        "inheritance",
+        "allele",
+        "genotype",
+        "phenotype",
+        "interactive"
+      ],
+      "ariaLabel": "Punnett Square Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "dominantColor": {
+          "label": "Dominant Trait Color",
+          "desc": "Sets the color used for dominant traits."
+        },
+        "recessiveColor": {
+          "label": "Recessive Trait Color",
+          "desc": "Sets the color used for recessive traits."
+        },
+        "heteroColor": {
+          "label": "Heterozygous Color",
+          "desc": "Sets the color used for heterozygous outcomes."
+        },
+        "parent1": {
+          "label": "Parent 1 Genotype",
+          "desc": "Sets the genotype for the first parent."
+        },
+        "parent2": {
+          "label": "Parent 2 Genotype",
+          "desc": "Sets the genotype for the second parent."
+        },
+        "showRatio": {
+          "label": "Show Ratio",
+          "desc": "Shows or hides the genotype ratio."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "parent1": "Current parent1.",
+            "parent2": "Current parent2.",
+            "offspring": "Current offspring."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.genetics.punnett-square.interactive" role="img" aria-label="遗传分析棋盘格（交互式）">

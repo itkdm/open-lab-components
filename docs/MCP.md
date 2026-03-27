@@ -79,3 +79,17 @@ This MCP server is intended to be published as a separate npm package:
 
 - package: `@itkdm/open-lab-components-mcp`
 - binary: `open-lab-components-mcp`
+
+
+## Localization
+
+All public MCP tools now accept an optional `locale` argument.
+
+- `get_categories({ locale })`
+- `list_components({ category?, tag?, hasEvents?, limit?, locale? })`
+- `search_components({ query, category?, limit?, locale? })`
+- `get_component({ id, locale? })`
+
+If `locale` is omitted, the server resolves display fields with `zh-CN`. Responses keep the full `locales` payload so hosts and agents can switch languages without refetching raw manifests.
+
+See [RELEASE-2026-03-I18N.md](./RELEASE-2026-03-I18N.md) for the broader `cmp-manifest/v2` and locale-aware registry rollout.

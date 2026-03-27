@@ -1,21 +1,127 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.seasons.interactive",
   "name": "四季变化",
   "nameEn": "Four Seasons",
   "category": "science/earth",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 320 },
+  "viewport": {
+    "w": 320,
+    "h": 320
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
-    { "key": "season", "type": "number", "default": 1, "min": 1, "max": 4, "desc": "当前季节（1春2夏3秋4冬）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "season",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "desc": "当前季节（1春2夏3秋4冬）"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["seasons", "spring", "summer", "autumn", "winter", "earth-science", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "seasons",
+    "spring",
+    "summer",
+    "autumn",
+    "winter",
+    "earth-science",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "season": "number(1-4)", "seasonName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "season": "number(1-4)",
+        "seasonName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "四季变化",
+      "tags": [
+        "seasons",
+        "spring",
+        "summer",
+        "autumn",
+        "winter",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "四季变化",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "season": {
+          "label": "season",
+          "desc": "当前季节（1春2夏3秋4冬）"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "season": "number(1-4)",
+            "seasonName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Four Seasons",
+      "tags": [
+        "seasons",
+        "spring",
+        "summer",
+        "autumn",
+        "winter",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Four Seasons",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "season": {
+          "label": "Season",
+          "desc": "Numeric control for season."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "season": "Value for season.",
+            "seasonName": "Value for season name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.seasons.interactive" role="img" aria-label="四季变化">

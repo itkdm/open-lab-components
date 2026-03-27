@@ -1,31 +1,185 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.tool.ruler.basic",
   "name": "直尺",
   "nameEn": "Ruler",
   "category": "math/tool",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 50 },
-  "tags": ["math", "ruler", "measurement", "length", "tool", "scale"],
+  "viewport": {
+    "w": 320,
+    "h": 50
+  },
+  "tags": [
+    "math",
+    "ruler",
+    "measurement",
+    "length",
+    "tool",
+    "scale"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 320, "min": 160, "max": 600, "desc": "组件宽度" },
-    { "key": "length",     "type": "number",  "default": 15, "min": 5, "max": 30, "desc": "尺长(cm)" },
-    { "key": "fill",       "type": "color",  "default": "rgba(200,230,255,0.3)", "desc": "填充色" },
-    { "key": "stroke",     "type": "color",  "default": "#1976d2", "desc": "描边颜色" },
-    { "key": "scaleColor", "type": "color",  "default": "#1565c0", "desc": "刻度颜色" },
-    { "key": "opacity",    "type": "number(0-1)", "default": 0.92, "min": 0.3, "max": 1, "desc": "透明度" },
-    { "key": "rotate",     "type": "number(deg)", "default": 0, "desc": "旋转角度" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 160,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "length",
+      "type": "number",
+      "default": 15,
+      "min": 5,
+      "max": 30,
+      "desc": "尺长(cm)"
+    },
+    {
+      "key": "fill",
+      "type": "color",
+      "default": "rgba(200,230,255,0.3)",
+      "desc": "填充色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#1976d2",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "scaleColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "刻度颜色"
+    },
+    {
+      "key": "opacity",
+      "type": "number(0-1)",
+      "default": 0.92,
+      "min": 0.3,
+      "max": 1,
+      "desc": "透明度"
+    },
+    {
+      "key": "rotate",
+      "type": "number(deg)",
+      "default": 0,
+      "desc": "旋转角度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
-    "fill":       "--cmp-fill",
-    "stroke":     "--cmp-stroke",
+    "size": "--cmp-size",
+    "fill": "--cmp-fill",
+    "stroke": "--cmp-stroke",
     "scaleColor": "--cmp-scale-color",
-    "opacity":    "--cmp-opacity",
-    "rotate":     "--cmp-rotate",
-    "glow":       "--cmp-glow"
+    "opacity": "--cmp-opacity",
+    "rotate": "--cmp-rotate",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "直尺",
+      "tags": [
+        "math",
+        "ruler",
+        "measurement",
+        "length",
+        "tool",
+        "scale"
+      ],
+      "ariaLabel": "直尺",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "length": {
+          "label": "length",
+          "desc": "尺长(cm)"
+        },
+        "fill": {
+          "label": "fill",
+          "desc": "填充色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "scaleColor": {
+          "label": "scaleColor",
+          "desc": "刻度颜色"
+        },
+        "opacity": {
+          "label": "opacity",
+          "desc": "透明度"
+        },
+        "rotate": {
+          "label": "rotate",
+          "desc": "旋转角度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Ruler",
+      "tags": [
+        "math",
+        "ruler",
+        "measurement",
+        "length",
+        "tool",
+        "scale"
+      ],
+      "ariaLabel": "Ruler",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "length": {
+          "label": "Length",
+          "desc": "Sets the overall length."
+        },
+        "fill": {
+          "label": "Fill Color",
+          "desc": "Sets the fill color of the main shape."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "scaleColor": {
+          "label": "Scale Color",
+          "desc": "Sets the color of the measurement scale."
+        },
+        "opacity": {
+          "label": "Opacity",
+          "desc": "Sets the transparency level from 0 to 1."
+        },
+        "rotate": {
+          "label": "Rotation",
+          "desc": "Rotates the component by the given angle in degrees."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

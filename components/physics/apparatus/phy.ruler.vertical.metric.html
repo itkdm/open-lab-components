@@ -1,27 +1,90 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.ruler.vertical.metric",
   "name": "刻度尺（垂直米制）",
   "nameEn": "Vertical Metric Ruler",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 64, "h": 400 },
+  "viewport": {
+    "w": 64,
+    "h": 400
+  },
   "props": [
-    { "key": "height", "type": "number(px)", "default": 400, "min": 200, "max": 800, "desc": "刻度尺高度" },
-    { "key": "width", "type": "number(px)", "default": 64, "min": 32, "max": 128, "desc": "刻度尺宽度" },
-    { "key": "rotate", "type": "number(deg)", "default": 0, "min": -180, "max": 180, "desc": "旋转角度" },
-    
-    { "key": "minValue", "type": "number", "default": 0, "min": 0, "max": 100, "desc": "起始刻度值（厘米）" },
-    { "key": "maxValue", "type": "number", "default": 90, "min": 10, "max": 200, "desc": "结束刻度值（厘米）" },
-    
-    { "key": "fill", "type": "color", "default": "#f1e68e", "desc": "刻度尺背景色" },
-    { "key": "stroke", "type": "color", "default": "#111827", "desc": "刻度线和数字颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 1, "max": 4, "desc": "刻度线粗细" },
-    
-    { "key": "unit", "type": "string", "default": "cm", "desc": "单位标识" },
-    
-    { "key": "glow", "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "height",
+      "type": "number(px)",
+      "default": 400,
+      "min": 200,
+      "max": 800,
+      "desc": "刻度尺高度"
+    },
+    {
+      "key": "width",
+      "type": "number(px)",
+      "default": 64,
+      "min": 32,
+      "max": 128,
+      "desc": "刻度尺宽度"
+    },
+    {
+      "key": "rotate",
+      "type": "number(deg)",
+      "default": 0,
+      "min": -180,
+      "max": 180,
+      "desc": "旋转角度"
+    },
+    {
+      "key": "minValue",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "desc": "起始刻度值（厘米）"
+    },
+    {
+      "key": "maxValue",
+      "type": "number",
+      "default": 90,
+      "min": 10,
+      "max": 200,
+      "desc": "结束刻度值（厘米）"
+    },
+    {
+      "key": "fill",
+      "type": "color",
+      "default": "#f1e68e",
+      "desc": "刻度尺背景色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "刻度线和数字颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 1,
+      "max": 4,
+      "desc": "刻度线粗细"
+    },
+    {
+      "key": "unit",
+      "type": "string",
+      "default": "cm",
+      "desc": "单位标识"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
     "height": "--cmp-height",
@@ -35,8 +98,125 @@
     "unit": "--cmp-unit",
     "glow": "--cmp-glow"
   },
-  "tags": ["ruler", "measurement", "metric", "vertical", "scale"]
-}-->
+  "tags": [
+    "ruler",
+    "measurement",
+    "metric",
+    "vertical",
+    "scale"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "刻度尺（垂直米制）",
+      "tags": [
+        "ruler",
+        "measurement",
+        "metric",
+        "vertical",
+        "scale"
+      ],
+      "ariaLabel": "刻度尺（垂直米制）",
+      "props": {
+        "height": {
+          "label": "height",
+          "desc": "刻度尺高度"
+        },
+        "width": {
+          "label": "width",
+          "desc": "刻度尺宽度"
+        },
+        "rotate": {
+          "label": "rotate",
+          "desc": "旋转角度"
+        },
+        "minValue": {
+          "label": "minValue",
+          "desc": "起始刻度值（厘米）"
+        },
+        "maxValue": {
+          "label": "maxValue",
+          "desc": "结束刻度值（厘米）"
+        },
+        "fill": {
+          "label": "fill",
+          "desc": "刻度尺背景色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "刻度线和数字颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "刻度线粗细"
+        },
+        "unit": {
+          "label": "unit",
+          "desc": "单位标识"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Vertical Metric Ruler",
+      "tags": [
+        "ruler",
+        "measurement",
+        "metric",
+        "vertical",
+        "scale"
+      ],
+      "ariaLabel": "Vertical Metric Ruler",
+      "props": {
+        "height": {
+          "label": "Height",
+          "desc": "Numeric control for height."
+        },
+        "width": {
+          "label": "Width",
+          "desc": "Numeric control for width."
+        },
+        "rotate": {
+          "label": "Rotate",
+          "desc": "Numeric control for rotate."
+        },
+        "minValue": {
+          "label": "Min Value",
+          "desc": "Numeric control for min value."
+        },
+        "maxValue": {
+          "label": "Max Value",
+          "desc": "Numeric control for max value."
+        },
+        "fill": {
+          "label": "Fill",
+          "desc": "Color setting for fill."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "unit": {
+          "label": "Unit",
+          "desc": "Configuration for unit."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
+  }
+}
+-->
 <div class="cmp" data-cmp-id="phy.ruler.vertical.metric" role="img" aria-label="刻度尺（垂直米制）">
     <svg class="cmp__svg" viewBox="0 0 64 400" aria-hidden="true">
         <!-- 刻度尺主体背景（带边框） -->

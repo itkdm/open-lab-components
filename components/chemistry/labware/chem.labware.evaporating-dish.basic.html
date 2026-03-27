@@ -1,32 +1,183 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.evaporating-dish.basic",
   "name": "蒸发皿",
   "nameEn": "Evaporating Dish",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 120 },
-  "tags": ["chemistry", "labware", "evaporating-dish", "porcelain", "heating"],
+  "viewport": {
+    "w": 200,
+    "h": 120
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "evaporating-dish",
+    "porcelain",
+    "heating"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件宽度" },
-    { "key": "bodyColor",   "type": "color",  "default": "#eceff1", "desc": "瓷体颜色" },
-    { "key": "innerColor",  "type": "color",  "default": "#fafafa", "desc": "内壁颜色" },
-    { "key": "liquidColor", "type": "color",  "default": "#4db6ac", "desc": "液体颜色" },
-    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.4, "min": 0, "max": 1, "desc": "液位占比" },
-    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#eceff1",
+      "desc": "瓷体颜色"
+    },
+    {
+      "key": "innerColor",
+      "type": "color",
+      "default": "#fafafa",
+      "desc": "内壁颜色"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#4db6ac",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.4,
+      "min": 0,
+      "max": 1,
+      "desc": "液位占比"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "bodyColor":   "--cmp-body",
-    "innerColor":  "--cmp-inner",
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "innerColor": "--cmp-inner",
     "liquidColor": "--cmp-liquid",
     "liquidLevel": "--cmp-liquid-level",
-    "stroke":      "--cmp-stroke",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "蒸发皿",
+      "tags": [
+        "chemistry",
+        "labware",
+        "evaporating-dish",
+        "porcelain",
+        "heating"
+      ],
+      "ariaLabel": "蒸发皿",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "瓷体颜色"
+        },
+        "innerColor": {
+          "label": "innerColor",
+          "desc": "内壁颜色"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液位占比"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Evaporating Dish",
+      "tags": [
+        "chemistry",
+        "labware",
+        "evaporating-dish",
+        "porcelain",
+        "heating"
+      ],
+      "ariaLabel": "Evaporating Dish",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the apparatus."
+        },
+        "innerColor": {
+          "label": "Inner Color",
+          "desc": "Sets the inner fill color."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Sets the fill level as a fraction of the vessel height."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

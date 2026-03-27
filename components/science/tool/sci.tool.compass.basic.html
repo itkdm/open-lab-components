@@ -1,30 +1,167 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.tool.compass.basic",
   "name": "指南针",
   "nameEn": "Compass",
   "category": "science/tool",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 200 },
-  "tags": ["compass", "direction", "magnet", "navigation", "science", "primary"],
+  "viewport": {
+    "w": 200,
+    "h": 200
+  },
+  "tags": [
+    "compass",
+    "direction",
+    "magnet",
+    "navigation",
+    "science",
+    "primary"
+  ],
   "props": [
-    { "key": "size",             "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件尺寸" },
-    { "key": "rotation",         "type": "number",     "default": 0,   "min": -180, "max": 180, "desc": "磁针旋转角度(°)" },
-    { "key": "rimColor",         "type": "color",      "default": "#b0bec5", "desc": "外圈金属色" },
-    { "key": "dialColor",        "type": "color",      "default": "#fafafa", "desc": "表盘底色" },
-    { "key": "needleNorthColor", "type": "color",      "default": "#e53935", "desc": "磁针北极颜色" },
-    { "key": "needleSouthColor", "type": "color",      "default": "#cfd8dc", "desc": "磁针南极颜色" },
-    { "key": "markColor",        "type": "color",      "default": "#37474f", "desc": "刻度/文字颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "rotation",
+      "type": "number",
+      "default": 0,
+      "min": -180,
+      "max": 180,
+      "desc": "磁针旋转角度(°)"
+    },
+    {
+      "key": "rimColor",
+      "type": "color",
+      "default": "#b0bec5",
+      "desc": "外圈金属色"
+    },
+    {
+      "key": "dialColor",
+      "type": "color",
+      "default": "#fafafa",
+      "desc": "表盘底色"
+    },
+    {
+      "key": "needleNorthColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "磁针北极颜色"
+    },
+    {
+      "key": "needleSouthColor",
+      "type": "color",
+      "default": "#cfd8dc",
+      "desc": "磁针南极颜色"
+    },
+    {
+      "key": "markColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "刻度/文字颜色"
+    }
   ],
   "cssVars": {
-    "size":             "--cmp-size",
-    "rotation":         "--cmp-rotation",
-    "rimColor":         "--cmp-rim-color",
-    "dialColor":        "--cmp-dial-color",
+    "size": "--cmp-size",
+    "rotation": "--cmp-rotation",
+    "rimColor": "--cmp-rim-color",
+    "dialColor": "--cmp-dial-color",
     "needleNorthColor": "--cmp-needle-north",
     "needleSouthColor": "--cmp-needle-south",
-    "markColor":        "--cmp-mark-color"
+    "markColor": "--cmp-mark-color"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "指南针",
+      "tags": [
+        "compass",
+        "direction",
+        "magnet",
+        "navigation",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "指南针",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "rotation": {
+          "label": "rotation",
+          "desc": "磁针旋转角度(°)"
+        },
+        "rimColor": {
+          "label": "rimColor",
+          "desc": "外圈金属色"
+        },
+        "dialColor": {
+          "label": "dialColor",
+          "desc": "表盘底色"
+        },
+        "needleNorthColor": {
+          "label": "needleNorthColor",
+          "desc": "磁针北极颜色"
+        },
+        "needleSouthColor": {
+          "label": "needleSouthColor",
+          "desc": "磁针南极颜色"
+        },
+        "markColor": {
+          "label": "markColor",
+          "desc": "刻度/文字颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Compass",
+      "tags": [
+        "compass",
+        "direction",
+        "magnet",
+        "navigation",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "Compass",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "rotation": {
+          "label": "Rotation",
+          "desc": "Numeric control for rotation."
+        },
+        "rimColor": {
+          "label": "Rim Color",
+          "desc": "Color setting for rim color."
+        },
+        "dialColor": {
+          "label": "Dial Color",
+          "desc": "Color setting for dial color."
+        },
+        "needleNorthColor": {
+          "label": "Needle North Color",
+          "desc": "Color setting for needle north color."
+        },
+        "needleSouthColor": {
+          "label": "Needle South Color",
+          "desc": "Color setting for needle south color."
+        },
+        "markColor": {
+          "label": "Mark Color",
+          "desc": "Color setting for mark color."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

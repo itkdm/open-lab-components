@@ -1,18 +1,50 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.multiplication-table.interactive",
   "name": "乘法口诀表",
   "nameEn": "Multiplication Table",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 380, "h": 380 },
+  "viewport": {
+    "w": 380,
+    "h": 380
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 380, "min": 240, "max": 600, "desc": "组件尺寸" },
-    { "key": "maxNumber", "type": "number", "default": 9, "min": 2, "max": 12, "desc": "最大乘数" },
-    { "key": "headerColor", "type": "color", "default": "#1565C0", "desc": "表头颜色" },
-    { "key": "cellColor", "type": "color", "default": "#E3F2FD", "desc": "单元格颜色" },
-    { "key": "highlightColor", "type": "color", "default": "#FF9800", "desc": "高亮颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 380,
+      "min": 240,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "maxNumber",
+      "type": "number",
+      "default": 9,
+      "min": 2,
+      "max": 12,
+      "desc": "最大乘数"
+    },
+    {
+      "key": "headerColor",
+      "type": "color",
+      "default": "#1565C0",
+      "desc": "表头颜色"
+    },
+    {
+      "key": "cellColor",
+      "type": "color",
+      "default": "#E3F2FD",
+      "desc": "单元格颜色"
+    },
+    {
+      "key": "highlightColor",
+      "type": "color",
+      "default": "#FF9800",
+      "desc": "高亮颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -20,10 +52,115 @@
     "cellColor": "--cmp-cell",
     "highlightColor": "--cmp-highlight"
   },
-  "tags": ["multiplication", "times-table", "arithmetic", "math", "primary", "interactive"],
+  "tags": [
+    "multiplication",
+    "times-table",
+    "arithmetic",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "a": "number", "b": "number", "product": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "a": "number",
+        "b": "number",
+        "product": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "乘法口诀表",
+      "tags": [
+        "multiplication",
+        "times-table",
+        "arithmetic",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "乘法口诀表",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "maxNumber": {
+          "label": "maxNumber",
+          "desc": "最大乘数"
+        },
+        "headerColor": {
+          "label": "headerColor",
+          "desc": "表头颜色"
+        },
+        "cellColor": {
+          "label": "cellColor",
+          "desc": "单元格颜色"
+        },
+        "highlightColor": {
+          "label": "highlightColor",
+          "desc": "高亮颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "a": "number",
+            "b": "number",
+            "product": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Multiplication Table",
+      "tags": [
+        "multiplication",
+        "times-table",
+        "arithmetic",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Multiplication Table",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "maxNumber": {
+          "label": "Maximum Number",
+          "desc": "Sets the largest number shown."
+        },
+        "headerColor": {
+          "label": "Header Color",
+          "desc": "Sets the color of the header area."
+        },
+        "cellColor": {
+          "label": "Cell Color",
+          "desc": "Sets the color of the grid cells."
+        },
+        "highlightColor": {
+          "label": "Highlight Color",
+          "desc": "Sets the color used for highlighted elements."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "a": "Current a.",
+            "b": "Current b.",
+            "product": "Current product."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.multiplication-table.interactive" role="img" aria-label="乘法口诀表">

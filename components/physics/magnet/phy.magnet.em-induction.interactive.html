@@ -1,35 +1,284 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.magnet.em-induction.interactive",
   "name": "电磁感应（交互式）",
-  "nameEn": "Electromagnetic Induction (Interactive)",
+  "nameEn": "Electromagnetic Induction Explorer",
   "category": "physics/magnet",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 380 },
-  "tags": ["physics","magnet","electromagnetic","induction","faraday","interactive"],
+  "viewport": {
+    "w": 480,
+    "h": 380
+  },
+  "tags": [
+    "physics",
+    "magnet",
+    "electromagnetic",
+    "induction",
+    "faraday",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "coilColor",   "type": "color",  "default": "#ff7043", "desc": "线圈颜色" },
-    { "key": "magnetColor", "type": "color",  "default": "#e53935", "desc": "N极颜色" },
-    { "key": "magnetSColor","type": "color",  "default": "#2196f3", "desc": "S极颜色" },
-    { "key": "wireColor",   "type": "color",  "default": "#78909c", "desc": "导线颜色" },
-    { "key": "speed",       "type": "number", "default": 1, "min": 0.5, "max": 3, "desc": "速度" },
-    { "key": "showField",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示磁力线" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 380,
+      "min": 260,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "coilColor",
+      "type": "color",
+      "default": "#ff7043",
+      "desc": "线圈颜色"
+    },
+    {
+      "key": "magnetColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "N极颜色"
+    },
+    {
+      "key": "magnetSColor",
+      "type": "color",
+      "default": "#2196f3",
+      "desc": "S极颜色"
+    },
+    {
+      "key": "wireColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "导线颜色"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.5,
+      "max": 3,
+      "desc": "速度"
+    },
+    {
+      "key": "showField",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示磁力线"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "coilColor": "--cmp-coil", "magnetColor": "--cmp-magN", "magnetSColor": "--cmp-magS",
-    "wireColor": "--cmp-wire", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "coilColor": "--cmp-coil",
+    "magnetColor": "--cmp-magN",
+    "magnetSColor": "--cmp-magS",
+    "wireColor": "--cmp-wire",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "induction", "values": { "magnetPosition": "number", "emf": "number", "current": "string — left|right|none" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "induction",
+      "values": {
+        "magnetPosition": "number",
+        "emf": "number",
+        "current": "string — left|right|none"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电磁感应（交互式）",
+      "tags": [
+        "physics",
+        "magnet",
+        "electromagnetic",
+        "induction",
+        "faraday",
+        "interactive"
+      ],
+      "ariaLabel": "电磁感应（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "coilColor": {
+          "label": "coilColor",
+          "desc": "线圈颜色"
+        },
+        "magnetColor": {
+          "label": "magnetColor",
+          "desc": "N极颜色"
+        },
+        "magnetSColor": {
+          "label": "magnetSColor",
+          "desc": "S极颜色"
+        },
+        "wireColor": {
+          "label": "wireColor",
+          "desc": "导线颜色"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "速度"
+        },
+        "showField": {
+          "label": "showField",
+          "desc": "显示磁力线"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "magnetPosition": "number",
+            "emf": "number",
+            "current": "string — left|right|none"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Electromagnetic Induction Explorer",
+      "tags": [
+        "physics",
+        "magnet",
+        "electromagnetic",
+        "induction",
+        "faraday",
+        "interactive"
+      ],
+      "ariaLabel": "Electromagnetic Induction Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "coilColor": {
+          "label": "Coil Color",
+          "desc": "Color setting for coil color."
+        },
+        "magnetColor": {
+          "label": "Magnet Color",
+          "desc": "Color setting for magnet color."
+        },
+        "magnetSColor": {
+          "label": "Magnet SColor",
+          "desc": "Color setting for magnet scolor."
+        },
+        "wireColor": {
+          "label": "Wire Color",
+          "desc": "Color setting for wire color."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "showField": {
+          "label": "Show Field",
+          "desc": "Select the show field option."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Select the show labels option."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Induction",
+          "desc": "Event emitted during induction.",
+          "values": {
+            "magnetPosition": "Value for magnet position.",
+            "emf": "Value for emf.",
+            "current": "Value for current."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.magnet.em-induction.interactive" role="img" aria-label="电磁感应（交互式）">

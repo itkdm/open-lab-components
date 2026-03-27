@@ -23,9 +23,11 @@ function registerTools(server) {
     {
       title: "Get component categories",
       description: "Return all available component categories with localized names and counts.",
-      inputSchema: {}
+      inputSchema: {
+        locale: z.string().optional()
+      }
     },
-    async () => jsonResponse({ categories: getCategories() })
+    async ({ locale } = {}) => jsonResponse({ categories: getCategories(locale) })
   );
 
   server.registerTool(
@@ -37,7 +39,8 @@ function registerTools(server) {
         category: z.string().optional(),
         tag: z.string().optional(),
         hasEvents: z.boolean().optional(),
-        limit: z.number().int().positive().optional()
+        limit: z.number().int().positive().optional(),
+        locale: z.string().optional()
       }
     },
     async (input) => jsonResponse(listComponents(input))
@@ -51,7 +54,8 @@ function registerTools(server) {
       inputSchema: {
         query: z.string().min(1),
         category: z.string().optional(),
-        limit: z.number().int().positive().optional()
+        limit: z.number().int().positive().optional(),
+        locale: z.string().optional()
       }
     },
     async (input) => jsonResponse(searchComponents(input))
@@ -63,12 +67,13 @@ function registerTools(server) {
       title: "Get a component",
       description: "Return a full component record including manifest-derived registry fields and complete HTML.",
       inputSchema: {
-        id: z.string().min(1)
+        id: z.string().min(1),
+        locale: z.string().optional()
       }
     },
-    async ({ id }) => {
+    async ({ id, locale }) => {
       try {
-        return jsonResponse(getComponent(id));
+        return jsonResponse(getComponent(id, locale));
       } catch (error) {
         if (error && error.code === "COMPONENT_NOT_FOUND") {
           return {

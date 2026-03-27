@@ -1,41 +1,254 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.power.battery-pack.basic",
   "name": "电池组（串联）",
-  "nameEn": "Battery Pack (Series)",
+  "nameEn": "Battery Pack",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 48 },
+  "viewport": {
+    "w": 200,
+    "h": 48
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 64,  "min": 24, "max": 256, "desc": "组件高度（宽度按节数自适应）" },
-    { "key": "cells",       "type": "number",     "default": 2,   "min": 1,  "max": 6,   "desc": "电池节数" },
-    { "key": "cellVoltage", "type": "number",     "default": 1.5, "min": 0.1,"max": 24,  "desc": "每节电压（V）" },
-
-    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 2.0, "min": 0.5, "max": 6, "desc": "描边粗细" },
-
-    { "key": "bodyColor",   "type": "color", "default": "#3b82f6", "desc": "电池外壳颜色" },
-    { "key": "capColor",    "type": "color", "default": "#d4a017", "desc": "正极铜帽颜色" },
-    { "key": "baseColor",   "type": "color", "default": "#a0a0a0", "desc": "负极底座颜色" },
-    { "key": "labelColor",  "type": "color", "default": "#ffffff", "desc": "标签文字颜色" },
-
-    { "key": "showLabel",   "type": "enum", "default": "auto", "enum": ["auto","on","off"], "desc": "是否显示电压标签" },
-    { "key": "showTotal",   "type": "enum", "default": "on",   "enum": ["on","off"], "desc": "是否显示总电压" },
-
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 64,
+      "min": 24,
+      "max": 256,
+      "desc": "组件高度（宽度按节数自适应）"
+    },
+    {
+      "key": "cells",
+      "type": "number",
+      "default": 2,
+      "min": 1,
+      "max": 6,
+      "desc": "电池节数"
+    },
+    {
+      "key": "cellVoltage",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.1,
+      "max": 24,
+      "desc": "每节电压（V）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 6,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#3b82f6",
+      "desc": "电池外壳颜色"
+    },
+    {
+      "key": "capColor",
+      "type": "color",
+      "default": "#d4a017",
+      "desc": "正极铜帽颜色"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#a0a0a0",
+      "desc": "负极底座颜色"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "default": "#ffffff",
+      "desc": "标签文字颜色"
+    },
+    {
+      "key": "showLabel",
+      "type": "enum",
+      "default": "auto",
+      "enum": [
+        "auto",
+        "on",
+        "off"
+      ],
+      "desc": "是否显示电压标签"
+    },
+    {
+      "key": "showTotal",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示总电压"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "bodyColor":   "--cmp-body",
-    "capColor":    "--cmp-cap",
-    "baseColor":   "--cmp-base",
-    "labelColor":  "--cmp-label-color",
-    "glow":        "--cmp-glow"
+    "bodyColor": "--cmp-body",
+    "capColor": "--cmp-cap",
+    "baseColor": "--cmp-base",
+    "labelColor": "--cmp-label-color",
+    "glow": "--cmp-glow"
   },
-  "tags": ["battery", "battery-pack", "series", "power", "circuit", "dc"]
+  "tags": [
+    "battery",
+    "battery-pack",
+    "series",
+    "power",
+    "circuit",
+    "dc"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电池组（串联）",
+      "tags": [
+        "battery",
+        "battery-pack",
+        "series",
+        "power",
+        "circuit",
+        "dc"
+      ],
+      "ariaLabel": "电池组 3V",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按节数自适应）"
+        },
+        "cells": {
+          "label": "cells",
+          "desc": "电池节数"
+        },
+        "cellVoltage": {
+          "label": "cellVoltage",
+          "desc": "每节电压（V）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "电池外壳颜色"
+        },
+        "capColor": {
+          "label": "capColor",
+          "desc": "正极铜帽颜色"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "负极底座颜色"
+        },
+        "labelColor": {
+          "label": "labelColor",
+          "desc": "标签文字颜色"
+        },
+        "showLabel": {
+          "label": "showLabel",
+          "desc": "是否显示电压标签"
+        },
+        "showTotal": {
+          "label": "showTotal",
+          "desc": "是否显示总电压"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Battery Pack",
+      "tags": [
+        "battery",
+        "battery-pack",
+        "series",
+        "power",
+        "circuit",
+        "dc"
+      ],
+      "ariaLabel": "Battery pack",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "cells": {
+          "label": "Cell Count",
+          "desc": "Number of cells in the battery pack."
+        },
+        "cellVoltage": {
+          "label": "Cell Voltage",
+          "desc": "Voltage per cell in volts."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Main body color."
+        },
+        "capColor": {
+          "label": "Positive Terminal Color",
+          "desc": "Color of the positive terminal cap."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Color of the base section."
+        },
+        "labelColor": {
+          "label": "Label Color",
+          "desc": "Color of the printed label text."
+        },
+        "showLabel": {
+          "label": "Show Label",
+          "desc": "Show the printed label."
+        },
+        "showTotal": {
+          "label": "Show Total",
+          "desc": "Show the total reading."
+        },
+        "glow": {
+          "label": "Highlight Intensity",
+          "desc": "Glow or highlight intensity from 0 to 1."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.power.battery-pack.basic" role="img" aria-label="电池组 3V">

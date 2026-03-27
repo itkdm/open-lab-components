@@ -1,23 +1,135 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.thermal.radiation.basic",
   "name": "热辐射演示",
   "nameEn": "Thermal Radiation Demo",
   "category": "physics/thermal",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 160 },
-  "tags": ["thermal", "radiation", "heat", "infrared", "emission"],
+  "viewport": {
+    "w": 200,
+    "h": 160
+  },
+  "tags": [
+    "thermal",
+    "radiation",
+    "heat",
+    "infrared",
+    "emission"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 160, "min": 100, "max": 300, "desc": "组件高度" },
-    { "key": "temperature", "type": "number",     "default": 0.5, "min": 0, "max": 1, "desc": "温度（0冷→1热）" },
-    { "key": "sourceColor", "type": "color",  "default": "#424242", "desc": "热源颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 100,
+      "max": 300,
+      "desc": "组件高度"
+    },
+    {
+      "key": "temperature",
+      "type": "number",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "desc": "温度（0冷→1热）"
+    },
+    {
+      "key": "sourceColor",
+      "type": "color",
+      "default": "#424242",
+      "desc": "热源颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "sourceColor": "--cmp-source",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "sourceColor": "--cmp-source",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "热辐射演示",
+      "tags": [
+        "thermal",
+        "radiation",
+        "heat",
+        "infrared",
+        "emission"
+      ],
+      "ariaLabel": "热辐射演示",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "temperature": {
+          "label": "temperature",
+          "desc": "温度（0冷→1热）"
+        },
+        "sourceColor": {
+          "label": "sourceColor",
+          "desc": "热源颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Thermal Radiation Demo",
+      "tags": [
+        "thermal",
+        "radiation",
+        "heat",
+        "infrared",
+        "emission"
+      ],
+      "ariaLabel": "Thermal Radiation Demo",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "temperature": {
+          "label": "Temperature",
+          "desc": "Numeric control for temperature."
+        },
+        "sourceColor": {
+          "label": "Source Color",
+          "desc": "Color setting for source color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

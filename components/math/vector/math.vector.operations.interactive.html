@@ -1,31 +1,244 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.vector.operations.interactive",
   "name": "向量运算（交互式）",
-  "nameEn": "Vector Operations (Interactive)",
+  "nameEn": "Vector Operations Explorer",
   "category": "math/vector",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 450 },
-  "tags": ["math","vector","addition","subtraction","dot-product","cross-product","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 450
+  },
+  "tags": [
+    "math",
+    "vector",
+    "addition",
+    "subtraction",
+    "dot-product",
+    "cross-product",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "vecAColor",      "type": "color",  "default": "#e53935", "desc": "向量A颜色" },
-    { "key": "vecBColor",      "type": "color",  "default": "#1e88e5", "desc": "向量B颜色" },
-    { "key": "resultColor",    "type": "color",  "default": "#66bb6a", "desc": "结果向量颜色" },
-    { "key": "operation",      "type": "enum",   "default": "add", "enum": ["add","sub","dot","cross"], "desc": "运算类型" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showGrid",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示网格" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 450,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "vecAColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "向量A颜色"
+    },
+    {
+      "key": "vecBColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "向量B颜色"
+    },
+    {
+      "key": "resultColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "结果向量颜色"
+    },
+    {
+      "key": "operation",
+      "type": "enum",
+      "default": "add",
+      "enum": [
+        "add",
+        "sub",
+        "dot",
+        "cross"
+      ],
+      "desc": "运算类型"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showGrid",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示网格"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "vecAColor": "--cmp-va", "vecBColor": "--cmp-vb", "resultColor": "--cmp-vr", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "vecAColor": "--cmp-va",
+    "vecBColor": "--cmp-vb",
+    "resultColor": "--cmp-vr",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "vector", "values": { "ax": "number", "ay": "number", "bx": "number", "by": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "vector",
+      "values": {
+        "ax": "number",
+        "ay": "number",
+        "bx": "number",
+        "by": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "向量运算（交互式）",
+      "tags": [
+        "math",
+        "vector",
+        "addition",
+        "subtraction",
+        "dot-product",
+        "cross-product",
+        "interactive"
+      ],
+      "ariaLabel": "向量运算（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "vecAColor": {
+          "label": "vecAColor",
+          "desc": "向量A颜色"
+        },
+        "vecBColor": {
+          "label": "vecBColor",
+          "desc": "向量B颜色"
+        },
+        "resultColor": {
+          "label": "resultColor",
+          "desc": "结果向量颜色"
+        },
+        "operation": {
+          "label": "operation",
+          "desc": "运算类型"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showGrid": {
+          "label": "showGrid",
+          "desc": "显示网格"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "ax": "number",
+            "ay": "number",
+            "bx": "number",
+            "by": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Vector Operations Explorer",
+      "tags": [
+        "math",
+        "vector",
+        "addition",
+        "subtraction",
+        "dot-product",
+        "cross-product",
+        "interactive"
+      ],
+      "ariaLabel": "Vector Operations Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "vecAColor": {
+          "label": "Vector A Color",
+          "desc": "Sets the color of vector A."
+        },
+        "vecBColor": {
+          "label": "Vector B Color",
+          "desc": "Sets the color of vector B."
+        },
+        "resultColor": {
+          "label": "Result Color",
+          "desc": "Sets the color used for the result."
+        },
+        "operation": {
+          "label": "Operation",
+          "desc": "Selects the arithmetic or vector operation to display."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showGrid": {
+          "label": "Show Grid",
+          "desc": "Shows or hides the grid overlay."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "ax": "Current ax.",
+            "ay": "Current ay.",
+            "bx": "Current bx.",
+            "by": "Current by."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.vector.operations.interactive" role="img" aria-label="向量运算（交互式）">

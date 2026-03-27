@@ -1,34 +1,274 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.statistics.histogram.interactive",
   "name": "直方图（交互式）",
-  "nameEn": "Histogram (Interactive)",
+  "nameEn": "Histogram Explorer",
   "category": "math/statistics",
   "version": "1.0.0",
-  "viewport": { "w": 460, "h": 380 },
+  "viewport": {
+    "w": 460,
+    "h": 380
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 380, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "barColor",    "type": "color",  "default": "#42a5f5", "desc": "柱体颜色" },
-    { "key": "axisColor",   "type": "color",  "default": "#37474f", "desc": "坐标轴颜色" },
-    { "key": "gridColor",   "type": "color",  "default": "#e0e0e0", "desc": "网格颜色" },
-    { "key": "dataset",     "type": "enum",   "default": "normal", "enum": ["normal","uniform","skewed","bimodal"], "desc": "数据集类型" },
-    { "key": "bins",        "type": "number", "default": 10, "min": 5, "max": 20, "desc": "分组数" },
-    { "key": "showMean",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示均值线" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标签" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 380,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "barColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "柱体颜色"
+    },
+    {
+      "key": "axisColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "坐标轴颜色"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "网格颜色"
+    },
+    {
+      "key": "dataset",
+      "type": "enum",
+      "default": "normal",
+      "enum": [
+        "normal",
+        "uniform",
+        "skewed",
+        "bimodal"
+      ],
+      "desc": "数据集类型"
+    },
+    {
+      "key": "bins",
+      "type": "number",
+      "default": 10,
+      "min": 5,
+      "max": 20,
+      "desc": "分组数"
+    },
+    {
+      "key": "showMean",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示均值线"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标签"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "barColor": "--cmp-bar", "axisColor": "--cmp-axis", "gridColor": "--cmp-grid",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "barColor": "--cmp-bar",
+    "axisColor": "--cmp-axis",
+    "gridColor": "--cmp-grid",
     "glow": "--cmp-glow"
   },
-  "tags": ["math","statistics","histogram","interactive","distribution","data"],
+  "tags": [
+    "math",
+    "statistics",
+    "histogram",
+    "interactive",
+    "distribution",
+    "data"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "param", "values": { "dataset": "string", "bins": "number", "mean": "number", "stddev": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "param",
+      "values": {
+        "dataset": "string",
+        "bins": "number",
+        "mean": "number",
+        "stddev": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "直方图（交互式）",
+      "tags": [
+        "math",
+        "statistics",
+        "histogram",
+        "interactive",
+        "distribution",
+        "data"
+      ],
+      "ariaLabel": "直方图（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "barColor": {
+          "label": "barColor",
+          "desc": "柱体颜色"
+        },
+        "axisColor": {
+          "label": "axisColor",
+          "desc": "坐标轴颜色"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格颜色"
+        },
+        "dataset": {
+          "label": "dataset",
+          "desc": "数据集类型"
+        },
+        "bins": {
+          "label": "bins",
+          "desc": "分组数"
+        },
+        "showMean": {
+          "label": "showMean",
+          "desc": "显示均值线"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标签"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "dataset": "string",
+            "bins": "number",
+            "mean": "number",
+            "stddev": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Histogram Explorer",
+      "tags": [
+        "math",
+        "statistics",
+        "histogram",
+        "interactive",
+        "distribution",
+        "data"
+      ],
+      "ariaLabel": "Histogram Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "barColor": {
+          "label": "Bar Color",
+          "desc": "Sets the color of the bars."
+        },
+        "axisColor": {
+          "label": "Axis Color",
+          "desc": "Sets the color of the coordinate or optical axis."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Sets the color of the grid lines."
+        },
+        "dataset": {
+          "label": "Dataset",
+          "desc": "Selects the dataset to display."
+        },
+        "bins": {
+          "label": "Bins",
+          "desc": "Sets the number of bins."
+        },
+        "showMean": {
+          "label": "Show Mean",
+          "desc": "Shows or hides the mean marker."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "dataset": "Current dataset.",
+            "bins": "Current bins.",
+            "mean": "Current mean.",
+            "stddev": "Current stddev."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.statistics.histogram.interactive" role="img" aria-label="直方图（交互式）">

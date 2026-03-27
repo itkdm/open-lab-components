@@ -1,21 +1,41 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.timer.interactive",
   "name": "计时器（交互式）",
-  "nameEn": "Timer (Interactive)",
+  "nameEn": "Timer Explorer",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 180, "h": 126 },
+  "viewport": {
+    "w": 180,
+    "h": 126
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 180, "min": 120, "max": 400, "desc": "组件宽度（高度按比例缩放）" },
-    { "key": "accent", "type": "color", "default": "#4a86e8", "desc": "计时器主体颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 120,
+      "max": 400,
+      "desc": "组件宽度（高度按比例缩放）"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#4a86e8",
+      "desc": "计时器主体颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "accent": "--cmp-accent"
   },
-  "tags": ["timer", "apparatus", "interactive", "measurement"],
+  "tags": [
+    "timer",
+    "apparatus",
+    "interactive",
+    "measurement"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -25,7 +45,67 @@
         "elapsed": "number(ms) - elapsed time in milliseconds"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "计时器（交互式）",
+      "tags": [
+        "timer",
+        "apparatus",
+        "interactive",
+        "measurement"
+      ],
+      "ariaLabel": "计时器（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度（高度按比例缩放）"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "计时器主体颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "running": "boolean - whether the timer is running",
+            "elapsed": "number(ms) - elapsed time in milliseconds"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Timer Explorer",
+      "tags": [
+        "timer",
+        "apparatus",
+        "interactive",
+        "measurement"
+      ],
+      "ariaLabel": "Timer Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "running": "Value for running.",
+            "elapsed": "Value for elapsed."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.timer.interactive" role="img" aria-label="计时器（交互式）">

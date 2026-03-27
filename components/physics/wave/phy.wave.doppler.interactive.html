@@ -1,34 +1,282 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.wave.doppler.interactive",
   "name": "多普勒效应（交互式）",
-  "nameEn": "Doppler Effect (Interactive)",
+  "nameEn": "Doppler Effect Explorer",
   "category": "physics/wave",
   "version": "1.0.0",
-  "viewport": { "w": 560, "h": 380 },
-  "tags": ["wave","doppler","frequency","sound","motion","interactive"],
+  "viewport": {
+    "w": 560,
+    "h": 380
+  },
+  "tags": [
+    "wave",
+    "doppler",
+    "frequency",
+    "sound",
+    "motion",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "sourceColor", "type": "color",  "default": "#e53935", "desc": "声源颜色" },
-    { "key": "waveColor",   "type": "color",  "default": "#42a5f5", "desc": "波纹颜色" },
-    { "key": "observerColor","type": "color", "default": "#43a047", "desc": "观察者颜色" },
-    { "key": "sourceSpeed", "type": "number", "default": 80, "min": 0, "max": 300, "desc": "声源速度(m/s)" },
-    { "key": "waveSpeed",   "type": "number", "default": 340, "min": 300, "max": 400, "desc": "声速(m/s)" },
-    { "key": "frequency",   "type": "number", "default": 440, "min": 200, "max": 800, "desc": "声源频率(Hz)" },
-    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "speed",       "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 380,
+      "min": 260,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "sourceColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "声源颜色"
+    },
+    {
+      "key": "waveColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "波纹颜色"
+    },
+    {
+      "key": "observerColor",
+      "type": "color",
+      "default": "#43a047",
+      "desc": "观察者颜色"
+    },
+    {
+      "key": "sourceSpeed",
+      "type": "number",
+      "default": 80,
+      "min": 0,
+      "max": 300,
+      "desc": "声源速度(m/s)"
+    },
+    {
+      "key": "waveSpeed",
+      "type": "number",
+      "default": 340,
+      "min": 300,
+      "max": 400,
+      "desc": "声速(m/s)"
+    },
+    {
+      "key": "frequency",
+      "type": "number",
+      "default": 440,
+      "min": 200,
+      "max": 800,
+      "desc": "声源频率(Hz)"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "sourceColor": "--cmp-source", "waveColor": "--cmp-wave", "observerColor": "--cmp-observer", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "sourceColor": "--cmp-source",
+    "waveColor": "--cmp-wave",
+    "observerColor": "--cmp-observer",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "tick", "values": { "fFront": "number(Hz)", "fBehind": "number(Hz)", "sourceX": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "tick",
+      "values": {
+        "fFront": "number(Hz)",
+        "fBehind": "number(Hz)",
+        "sourceX": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "多普勒效应（交互式）",
+      "tags": [
+        "wave",
+        "doppler",
+        "frequency",
+        "sound",
+        "motion",
+        "interactive"
+      ],
+      "ariaLabel": "多普勒效应（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "sourceColor": {
+          "label": "sourceColor",
+          "desc": "声源颜色"
+        },
+        "waveColor": {
+          "label": "waveColor",
+          "desc": "波纹颜色"
+        },
+        "observerColor": {
+          "label": "observerColor",
+          "desc": "观察者颜色"
+        },
+        "sourceSpeed": {
+          "label": "sourceSpeed",
+          "desc": "声源速度(m/s)"
+        },
+        "waveSpeed": {
+          "label": "waveSpeed",
+          "desc": "声速(m/s)"
+        },
+        "frequency": {
+          "label": "frequency",
+          "desc": "声源频率(Hz)"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "fFront": "number(Hz)",
+            "fBehind": "number(Hz)",
+            "sourceX": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Doppler Effect Explorer",
+      "tags": [
+        "wave",
+        "doppler",
+        "frequency",
+        "sound",
+        "motion",
+        "interactive"
+      ],
+      "ariaLabel": "Doppler Effect Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "sourceColor": {
+          "label": "Source Color",
+          "desc": "Color setting for source color."
+        },
+        "waveColor": {
+          "label": "Wave Color",
+          "desc": "Color setting for wave color."
+        },
+        "observerColor": {
+          "label": "Observer Color",
+          "desc": "Color setting for observer color."
+        },
+        "sourceSpeed": {
+          "label": "Source Speed",
+          "desc": "Numeric control for source speed."
+        },
+        "waveSpeed": {
+          "label": "Wave Speed",
+          "desc": "Numeric control for wave speed."
+        },
+        "frequency": {
+          "label": "Frequency",
+          "desc": "Numeric control for frequency."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Select the show labels option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Tick",
+          "desc": "Event emitted during tick.",
+          "values": {
+            "fFront": "Value for f front.",
+            "fBehind": "Value for f behind.",
+            "sourceX": "Value for source x."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.wave.doppler.interactive" role="img" aria-label="多普勒效应（交互式）">

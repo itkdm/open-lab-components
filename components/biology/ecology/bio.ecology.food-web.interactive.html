@@ -1,34 +1,244 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.ecology.food-web.interactive",
   "name": "食物网（交互式）",
-  "nameEn": "Food Web (Interactive)",
+  "nameEn": "Food Web Explorer",
   "category": "biology/ecology",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 420 },
-  "tags": ["biology","ecology","food-web","trophic","energy-flow"],
+  "viewport": {
+    "w": 500,
+    "h": 420
+  },
+  "tags": [
+    "biology",
+    "ecology",
+    "food-web",
+    "trophic",
+    "energy-flow"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 420, "min": 280, "max": 700, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "producerColor",  "type": "color",  "default": "#66bb6a", "desc": "生产者颜色" },
-    { "key": "herbivoreColor", "type": "color",  "default": "#ffb74d", "desc": "初级消费者颜色" },
-    { "key": "carnivoreColor", "type": "color",  "default": "#ef5350", "desc": "高级消费者颜色" },
-    { "key": "arrowColor",     "type": "color",  "default": "#78909c", "desc": "箭头颜色" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showLevels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示营养级标签" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 420,
+      "min": 280,
+      "max": 700,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "producerColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "生产者颜色"
+    },
+    {
+      "key": "herbivoreColor",
+      "type": "color",
+      "default": "#ffb74d",
+      "desc": "初级消费者颜色"
+    },
+    {
+      "key": "carnivoreColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "高级消费者颜色"
+    },
+    {
+      "key": "arrowColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "箭头颜色"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showLevels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示营养级标签"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "producerColor": "--cmp-producer", "herbivoreColor": "--cmp-herbivore",
-    "carnivoreColor": "--cmp-carnivore", "arrowColor": "--cmp-arrow",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "producerColor": "--cmp-producer",
+    "herbivoreColor": "--cmp-herbivore",
+    "carnivoreColor": "--cmp-carnivore",
+    "arrowColor": "--cmp-arrow",
     "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "hover", "values": { "organism": "string", "level": "string — producer|herbivore|carnivore" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "hover",
+      "values": {
+        "organism": "string",
+        "level": "string — producer|herbivore|carnivore"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "食物网（交互式）",
+      "tags": [
+        "biology",
+        "ecology",
+        "food-web",
+        "trophic",
+        "energy-flow"
+      ],
+      "ariaLabel": "食物网（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "producerColor": {
+          "label": "producerColor",
+          "desc": "生产者颜色"
+        },
+        "herbivoreColor": {
+          "label": "herbivoreColor",
+          "desc": "初级消费者颜色"
+        },
+        "carnivoreColor": {
+          "label": "carnivoreColor",
+          "desc": "高级消费者颜色"
+        },
+        "arrowColor": {
+          "label": "arrowColor",
+          "desc": "箭头颜色"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showLevels": {
+          "label": "showLevels",
+          "desc": "显示营养级标签"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "organism": "string",
+            "level": "string — producer|herbivore|carnivore"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Food Web Explorer",
+      "tags": [
+        "biology",
+        "ecology",
+        "food-web",
+        "trophic",
+        "energy-flow"
+      ],
+      "ariaLabel": "Food Web Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "producerColor": {
+          "label": "Producer Color",
+          "desc": "Sets the color used for producers."
+        },
+        "herbivoreColor": {
+          "label": "Herbivore Color",
+          "desc": "Sets the color used for herbivores."
+        },
+        "carnivoreColor": {
+          "label": "Carnivore Color",
+          "desc": "Sets the color used for carnivores."
+        },
+        "arrowColor": {
+          "label": "Arrow Color",
+          "desc": "Sets the color of the guide arrows."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showLevels": {
+          "label": "Show Levels",
+          "desc": "Shows or hides level markers."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "organism": "Current organism.",
+            "level": "Current level."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.ecology.food-web.interactive" role="img" aria-label="食物网（交互式）">

@@ -1,21 +1,121 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.frog-lifecycle.interactive",
   "name": "青蛙生命周期",
   "nameEn": "Frog Lifecycle",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 320 },
+  "viewport": {
+    "w": 320,
+    "h": 320
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
-    { "key": "stage", "type": "number", "default": 1, "min": 1, "max": 5, "desc": "当前阶段" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "stage",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 5,
+      "desc": "当前阶段"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["frog", "lifecycle", "metamorphosis", "amphibian", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "frog",
+    "lifecycle",
+    "metamorphosis",
+    "amphibian",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "stage": "number(1-5)", "stageName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "stage": "number(1-5)",
+        "stageName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "青蛙生命周期",
+      "tags": [
+        "frog",
+        "lifecycle",
+        "metamorphosis",
+        "amphibian",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "青蛙生命周期",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "stage": {
+          "label": "stage",
+          "desc": "当前阶段"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "stage": "number(1-5)",
+            "stageName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Frog Lifecycle",
+      "tags": [
+        "frog",
+        "lifecycle",
+        "metamorphosis",
+        "amphibian",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Frog Lifecycle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stage": {
+          "label": "Stage",
+          "desc": "Numeric control for stage."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "stage": "Value for stage.",
+            "stageName": "Value for stage name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.frog-lifecycle.interactive" role="img" aria-label="青蛙生命周期">

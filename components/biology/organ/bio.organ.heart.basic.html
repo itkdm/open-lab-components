@@ -1,25 +1,170 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.organ.heart.basic",
   "name": "心脏结构",
   "nameEn": "Heart Anatomy",
   "category": "biology/organ",
   "version": "1.0.0",
-  "viewport": { "w": 260, "h": 280 },
-  "tags": ["biology", "organ", "heart", "anatomy", "circulatory", "cardiovascular"],
+  "viewport": {
+    "w": 260,
+    "h": 280
+  },
+  "tags": [
+    "biology",
+    "organ",
+    "heart",
+    "anatomy",
+    "circulatory",
+    "cardiovascular"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 280, "min": 180, "max": 500, "desc": "组件高度" },
-    { "key": "bodyColor",   "type": "color",  "default": "#c62828", "desc": "心肌颜色" },
-    { "key": "venousColor", "type": "color",  "default": "#5c6bc0", "desc": "静脉血颜色" },
-    { "key": "arterialColor","type": "color", "default": "#e53935", "desc": "动脉血颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#4e342e", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 280,
+      "min": 180,
+      "max": 500,
+      "desc": "组件高度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#c62828",
+      "desc": "心肌颜色"
+    },
+    {
+      "key": "venousColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "静脉血颜色"
+    },
+    {
+      "key": "arterialColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "动脉血颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#4e342e",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bodyColor": "--cmp-body", "venousColor": "--cmp-venous",
-    "arterialColor": "--cmp-arterial", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "venousColor": "--cmp-venous",
+    "arterialColor": "--cmp-arterial",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "心脏结构",
+      "tags": [
+        "biology",
+        "organ",
+        "heart",
+        "anatomy",
+        "circulatory",
+        "cardiovascular"
+      ],
+      "ariaLabel": "心脏结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "心肌颜色"
+        },
+        "venousColor": {
+          "label": "venousColor",
+          "desc": "静脉血颜色"
+        },
+        "arterialColor": {
+          "label": "arterialColor",
+          "desc": "动脉血颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Heart Anatomy",
+      "tags": [
+        "biology",
+        "organ",
+        "heart",
+        "anatomy",
+        "circulatory",
+        "cardiovascular"
+      ],
+      "ariaLabel": "Heart Anatomy",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the organ or instrument."
+        },
+        "venousColor": {
+          "label": "Venous Blood Color",
+          "desc": "Sets the color used for venous blood flow."
+        },
+        "arterialColor": {
+          "label": "Arterial Blood Color",
+          "desc": "Sets the color used for arterial blood flow."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

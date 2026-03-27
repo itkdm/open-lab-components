@@ -1,18 +1,50 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.angle-maker.interactive",
   "name": "角度认识",
   "nameEn": "Angle Maker",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 300 },
+  "viewport": {
+    "w": 300,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 600, "desc": "组件尺寸" },
-    { "key": "angle", "type": "number", "default": 45, "min": 0, "max": 360, "desc": "当前角度" },
-    { "key": "rayColor", "type": "color", "default": "#1565C0", "desc": "射线颜色" },
-    { "key": "arcColor", "type": "color", "default": "#FF9800", "desc": "角弧颜色" },
-    { "key": "fillColor", "type": "color", "default": "rgba(255,152,0,0.15)", "desc": "角区域填充" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 180,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "angle",
+      "type": "number",
+      "default": 45,
+      "min": 0,
+      "max": 360,
+      "desc": "当前角度"
+    },
+    {
+      "key": "rayColor",
+      "type": "color",
+      "default": "#1565C0",
+      "desc": "射线颜色"
+    },
+    {
+      "key": "arcColor",
+      "type": "color",
+      "default": "#FF9800",
+      "desc": "角弧颜色"
+    },
+    {
+      "key": "fillColor",
+      "type": "color",
+      "default": "rgba(255,152,0,0.15)",
+      "desc": "角区域填充"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -20,11 +52,137 @@
     "arcColor": "--cmp-arc",
     "fillColor": "--cmp-fill"
   },
-  "tags": ["angle", "degree", "rotation", "geometry", "math", "primary", "interactive"],
+  "tags": [
+    "angle",
+    "degree",
+    "rotation",
+    "geometry",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "rotate", "values": { "angle": "number(0-360)", "type": "string" } },
-    { "name": "cmp:changeend", "type": "rotate", "values": { "angle": "number(0-360)", "type": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "rotate",
+      "values": {
+        "angle": "number(0-360)",
+        "type": "string"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "rotate",
+      "values": {
+        "angle": "number(0-360)",
+        "type": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "角度认识",
+      "tags": [
+        "angle",
+        "degree",
+        "rotation",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "角度认识",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "当前角度"
+        },
+        "rayColor": {
+          "label": "rayColor",
+          "desc": "射线颜色"
+        },
+        "arcColor": {
+          "label": "arcColor",
+          "desc": "角弧颜色"
+        },
+        "fillColor": {
+          "label": "fillColor",
+          "desc": "角区域填充"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number(0-360)",
+            "type": "string"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "angle": "number(0-360)",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Angle Maker",
+      "tags": [
+        "angle",
+        "degree",
+        "rotation",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Angle Maker",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Sets the angle in degrees."
+        },
+        "rayColor": {
+          "label": "Ray Color",
+          "desc": "Sets the color of the main light rays."
+        },
+        "arcColor": {
+          "label": "Arc Color",
+          "desc": "Sets the color of the angle arc."
+        },
+        "fillColor": {
+          "label": "Fill Color",
+          "desc": "Sets the fill color of the highlighted region."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle in degrees.",
+            "type": "Current mode or classification."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "angle": "Current angle in degrees.",
+            "type": "Current mode or classification."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.angle-maker.interactive" role="img" aria-label="角度认识">

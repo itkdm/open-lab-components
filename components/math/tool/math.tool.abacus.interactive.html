@@ -1,28 +1,72 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.tool.abacus.interactive",
   "name": "算盘",
   "nameEn": "Abacus",
   "category": "math/tool",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 240 },
+  "viewport": {
+    "w": 300,
+    "h": 240
+  },
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 300, "min": 160, "max": 600, "desc": "组件宽度" },
-    { "key": "rods",       "type": "number",     "default": 5,   "min": 3,   "max": 13,  "desc": "档位数量" },
-    { "key": "frameColor", "type": "color",      "default": "#6d4c2a", "desc": "框架颜色" },
-    { "key": "beadColor",  "type": "color",      "default": "#c0392b", "desc": "算珠颜色" },
-    { "key": "rodColor",   "type": "color",      "default": "#bfa76a", "desc": "档杆颜色" },
-    { "key": "beamColor",  "type": "color",      "default": "#5a3a1a", "desc": "横梁颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 160,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "rods",
+      "type": "number",
+      "default": 5,
+      "min": 3,
+      "max": 13,
+      "desc": "档位数量"
+    },
+    {
+      "key": "frameColor",
+      "type": "color",
+      "default": "#6d4c2a",
+      "desc": "框架颜色"
+    },
+    {
+      "key": "beadColor",
+      "type": "color",
+      "default": "#c0392b",
+      "desc": "算珠颜色"
+    },
+    {
+      "key": "rodColor",
+      "type": "color",
+      "default": "#bfa76a",
+      "desc": "档杆颜色"
+    },
+    {
+      "key": "beamColor",
+      "type": "color",
+      "default": "#5a3a1a",
+      "desc": "横梁颜色"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
+    "size": "--cmp-size",
     "frameColor": "--cmp-frame-color",
-    "beadColor":  "--cmp-bead-color",
-    "rodColor":   "--cmp-rod-color",
-    "beamColor":  "--cmp-beam-color"
+    "beadColor": "--cmp-bead-color",
+    "rodColor": "--cmp-rod-color",
+    "beamColor": "--cmp-beam-color"
   },
-  "tags": ["abacus", "counting", "calculation", "math", "primary", "interactive"],
+  "tags": [
+    "abacus",
+    "counting",
+    "calculation",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -40,7 +84,117 @@
         "rods": "number[] — 每档的值"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "算盘",
+      "tags": [
+        "abacus",
+        "counting",
+        "calculation",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "算盘",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "rods": {
+          "label": "rods",
+          "desc": "档位数量"
+        },
+        "frameColor": {
+          "label": "frameColor",
+          "desc": "框架颜色"
+        },
+        "beadColor": {
+          "label": "beadColor",
+          "desc": "算珠颜色"
+        },
+        "rodColor": {
+          "label": "rodColor",
+          "desc": "档杆颜色"
+        },
+        "beamColor": {
+          "label": "beamColor",
+          "desc": "横梁颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "value": "number — 当前算盘表示的数值",
+            "rods": "number[] — 每档的值（从高位到低位）"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "value": "number — 最终数值",
+            "rods": "number[] — 每档的值"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Abacus",
+      "tags": [
+        "abacus",
+        "counting",
+        "calculation",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Abacus",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "rods": {
+          "label": "Rods",
+          "desc": "Sets the number of rods."
+        },
+        "frameColor": {
+          "label": "Frame Color",
+          "desc": "Sets the color of the frame."
+        },
+        "beadColor": {
+          "label": "Bead Color",
+          "desc": "Sets the color of the beads."
+        },
+        "rodColor": {
+          "label": "Rod Color",
+          "desc": "Sets the color of the rods."
+        },
+        "beamColor": {
+          "label": "Beam Color",
+          "desc": "Sets the color of the beam."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "value": "Current numeric value.",
+            "rods": "Current rods."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "value": "Current numeric value.",
+            "rods": "Current rods."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.tool.abacus.interactive" role="img" aria-label="算盘">

@@ -1,20 +1,64 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.bulb.basic",
   "name": "电灯泡",
   "nameEn": "Light Bulb",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 64, "h": 64 },
+  "viewport": {
+    "w": 64,
+    "h": 64
+  },
   "props": [
-    { "key": "size",        "type": "number(px)",  "default": 64,  "min": 16, "max": 256, "desc": "组件尺寸（正方形）" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0,   "min": 0,  "max": 1,   "desc": "亮灯程度（0=灭，1=很亮）" },
-    { "key": "stroke",      "type": "color",       "default": "#111827", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number",      "default": 2.5, "min": 1, "max": 6,   "desc": "描边粗细（SVG stroke-width）" },
-    { "key": "accent",      "type": "color",       "default": "#f97316", "desc": "强调色（灯丝/高光）" },
-    { "key": "fill",        "type": "color",       "default": "rgba(255,255,255,0.0)", "desc": "玻璃填充（透明/微白）" },
-    { "key": "base",        "type": "color",       "default": "rgba(17,24,39,0.06)", "desc": "灯头填充（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 64,
+      "min": 16,
+      "max": 256,
+      "desc": "组件尺寸（正方形）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮灯程度（0=灭，1=很亮）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2.5,
+      "min": 1,
+      "max": 6,
+      "desc": "描边粗细（SVG stroke-width）"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#f97316",
+      "desc": "强调色（灯丝/高光）"
+    },
+    {
+      "key": "fill",
+      "type": "color",
+      "default": "rgba(255,255,255,0.0)",
+      "desc": "玻璃填充（透明/微白）"
+    },
+    {
+      "key": "base",
+      "type": "color",
+      "default": "rgba(17,24,39,0.06)",
+      "desc": "灯头填充（可选）"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -25,8 +69,98 @@
     "fill": "--cmp-fill",
     "base": "--cmp-base"
   },
-  "tags": ["physics", "circuit", "lamp", "bulb"]
-}-->
+  "tags": [
+    "physics",
+    "circuit",
+    "lamp",
+    "bulb"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电灯泡",
+      "tags": [
+        "physics",
+        "circuit",
+        "lamp",
+        "bulb"
+      ],
+      "ariaLabel": "电灯泡",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸（正方形）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮灯程度（0=灭，1=很亮）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细（SVG stroke-width）"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（灯丝/高光）"
+        },
+        "fill": {
+          "label": "fill",
+          "desc": "玻璃填充（透明/微白）"
+        },
+        "base": {
+          "label": "base",
+          "desc": "灯头填充（可选）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Light Bulb",
+      "tags": [
+        "physics",
+        "circuit",
+        "lamp",
+        "bulb"
+      ],
+      "ariaLabel": "Light Bulb",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "fill": {
+          "label": "Fill",
+          "desc": "Color setting for fill."
+        },
+        "base": {
+          "label": "Base",
+          "desc": "Color setting for base."
+        }
+      },
+      "events": {}
+    }
+  }
+}
+-->
 <div class="cmp" data-cmp-id="phy.apparatus.bulb.basic" role="img" aria-label="电灯泡">
     <svg class="cmp__svg" viewBox="0 0 64 64" aria-hidden="true">
         <!-- 灯泡发光（由 --cmp-glow 控制透明度） -->

@@ -1,22 +1,152 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.day-night.interactive",
   "name": "昼夜交替",
   "nameEn": "Day & Night Cycle",
   "category": "science/earth",
   "version": "1.2.0",
-  "viewport": { "w": 360, "h": 280 },
+  "viewport": {
+    "w": 360,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "rotation", "type": "number", "default": 0, "min": 0, "max": 360, "desc": "地球自转角度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "rotation",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 360,
+      "desc": "地球自转角度"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["day-night", "rotation", "earth", "sun", "astronomy", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "day-night",
+    "rotation",
+    "earth",
+    "sun",
+    "astronomy",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "rotate", "values": { "rotation": "number(0-360)", "hour": "number(0-23)", "dayNight": "string" } },
-    { "name": "cmp:changeend", "type": "rotate", "values": { "rotation": "number(0-360)", "hour": "number(0-23)", "dayNight": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "rotate",
+      "values": {
+        "rotation": "number(0-360)",
+        "hour": "number(0-23)",
+        "dayNight": "string"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "rotate",
+      "values": {
+        "rotation": "number(0-360)",
+        "hour": "number(0-23)",
+        "dayNight": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "昼夜交替",
+      "tags": [
+        "day-night",
+        "rotation",
+        "earth",
+        "sun",
+        "astronomy",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "昼夜交替",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "rotation": {
+          "label": "rotation",
+          "desc": "地球自转角度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "rotation": "number(0-360)",
+            "hour": "number(0-23)",
+            "dayNight": "string"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "rotation": "number(0-360)",
+            "hour": "number(0-23)",
+            "dayNight": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Day & Night Cycle",
+      "tags": [
+        "day-night",
+        "rotation",
+        "earth",
+        "sun",
+        "astronomy",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Day & Night Cycle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "rotation": {
+          "label": "Rotation",
+          "desc": "Numeric control for rotation."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Rotate",
+          "desc": "Event emitted during rotate.",
+          "values": {
+            "rotation": "Value for rotation.",
+            "hour": "Value for hour.",
+            "dayNight": "Value for day night."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Rotate",
+          "desc": "Event emitted during rotate.",
+          "values": {
+            "rotation": "Value for rotation.",
+            "hour": "Value for hour.",
+            "dayNight": "Value for day night."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.day-night.interactive" role="img" aria-label="昼夜交替">

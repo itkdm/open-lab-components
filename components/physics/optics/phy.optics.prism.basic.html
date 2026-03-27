@@ -1,29 +1,172 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.prism.basic",
   "name": "三棱镜",
   "nameEn": "Triangular Prism",
   "category": "physics/optics",
   "version": "1.0.0",
-  "viewport": { "w": 120, "h": 120 },
-  "tags": ["optics", "prism", "refraction", "dispersion", "spectrum", "light"],
+  "viewport": {
+    "w": 120,
+    "h": 120
+  },
+  "tags": [
+    "optics",
+    "prism",
+    "refraction",
+    "dispersion",
+    "spectrum",
+    "light"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 120, "min": 60, "max": 240, "desc": "组件尺寸" },
-    { "key": "glassColor",  "type": "color",  "default": "rgba(180,220,255,0.35)", "desc": "玻璃颜色" },
-    { "key": "edgeColor",   "type": "color",  "default": "#64b5f6", "desc": "棱边颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "showSpectrum","type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示色散光谱" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 60,
+      "max": 240,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "glassColor",
+      "type": "color",
+      "default": "rgba(180,220,255,0.35)",
+      "desc": "玻璃颜色"
+    },
+    {
+      "key": "edgeColor",
+      "type": "color",
+      "default": "#64b5f6",
+      "desc": "棱边颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showSpectrum",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示色散光谱"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "glassColor":  "--cmp-glass",
-    "edgeColor":   "--cmp-edge",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "glassColor": "--cmp-glass",
+    "edgeColor": "--cmp-edge",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "三棱镜",
+      "tags": [
+        "optics",
+        "prism",
+        "refraction",
+        "dispersion",
+        "spectrum",
+        "light"
+      ],
+      "ariaLabel": "三棱镜",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "glassColor": {
+          "label": "glassColor",
+          "desc": "玻璃颜色"
+        },
+        "edgeColor": {
+          "label": "edgeColor",
+          "desc": "棱边颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showSpectrum": {
+          "label": "showSpectrum",
+          "desc": "显示色散光谱"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Triangular Prism",
+      "tags": [
+        "optics",
+        "prism",
+        "refraction",
+        "dispersion",
+        "spectrum",
+        "light"
+      ],
+      "ariaLabel": "Triangular Prism",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "glassColor": {
+          "label": "Glass Color",
+          "desc": "Sets the color of the glass body."
+        },
+        "edgeColor": {
+          "label": "Edge Color",
+          "desc": "Sets the color of the outer edge."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showSpectrum": {
+          "label": "Show Spectrum",
+          "desc": "Shows or hides the spectrum."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,11 +1,12 @@
 # Open Lab Components MCP Server
 
-Read-only MCP server for discovering and retrieving components from the Open Lab Components library.
+Locale-aware MCP server for discovering and retrieving components from the Open Lab Components library.
 
-This package now supports:
+This package supports:
 
 - local `stdio` mode for VS Code and local MCP clients
-- remote `Streamable HTTP` mode for hosted VIP access
+- remote `Streamable HTTP` mode for hosted access
+- locale-aware summaries and component lookup
 
 ## What it exposes
 
@@ -16,7 +17,9 @@ The v1 server exposes these tools over `stdio`:
 - `search_components`
 - `get_component`
 
-This release is intentionally read-only. It does not create, edit, or validate components through MCP.
+All public tools accept an optional `locale` parameter.
+
+This release remains intentionally read-only. It does not create, edit, or validate components through MCP.
 
 ## Local usage
 
@@ -86,15 +89,28 @@ Returns all categories with localized names and component counts.
 
 ### `list_components`
 
-Returns filtered component summaries. It never returns HTML.
+Returns filtered component summaries resolved for the requested locale. It never returns HTML.
 
 ### `search_components`
 
-Runs deterministic lexical matching over ids, names, tags, and category metadata.
+Runs deterministic lexical matching over ids, names, tags, and category metadata across supported locales.
 
 ### `get_component`
 
 Returns a full registry item plus complete HTML for a single component id.
+
+## Locale behavior
+
+- default locale: `zh-CN`
+- supported locales: `zh-CN`, `en`
+- responses keep the full `locales` payload
+- display fields fall back to `zh-CN` when a requested locale field is missing
+
+## Release notes
+
+See [`../docs/RELEASE-2026-03-I18N.md`](../docs/RELEASE-2026-03-I18N.md) for the wider `cmp-manifest/v2` and locale-aware registry rollout.
+
+For release preparation and package publishing, see [`../docs/PUBLISHING.md`](../docs/PUBLISHING.md) and [`../docs/RELEASE-CHECKLIST-0.2.0.md`](../docs/RELEASE-CHECKLIST-0.2.0.md).
 
 ## Remote deployment
 

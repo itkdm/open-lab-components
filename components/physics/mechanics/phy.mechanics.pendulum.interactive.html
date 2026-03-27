@@ -1,31 +1,230 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.pendulum.interactive",
   "name": "单摆（交互式）",
-  "nameEn": "Simple Pendulum (Interactive)",
+  "nameEn": "Simple Pendulum Explorer",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 240 },
-  "tags": ["mechanics", "pendulum", "oscillation", "gravity", "period", "interactive"],
+  "viewport": {
+    "w": 200,
+    "h": 240
+  },
+  "tags": [
+    "mechanics",
+    "pendulum",
+    "oscillation",
+    "gravity",
+    "period",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 240, "min": 140, "max": 400, "desc": "组件高度" },
-    { "key": "length",      "type": "number(0-1)", "default": 0.7, "min": 0.3, "max": 1, "desc": "摆线长度比" },
-    { "key": "angle",       "type": "number",     "default": 30, "min": -60, "max": 60, "desc": "初始角度(°)" },
-    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "bobColor",    "type": "color",  "default": "#5c6bc0", "desc": "摆球颜色" },
-    { "key": "bobRadius",   "type": "number", "default": 14, "min": 8, "max": 24, "desc": "摆球半径" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showProtractor","type": "enum", "default": "on", "enum": ["on","off"], "desc": "显示角度刻度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 140,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "length",
+      "type": "number(0-1)",
+      "default": 0.7,
+      "min": 0.3,
+      "max": 1,
+      "desc": "摆线长度比"
+    },
+    {
+      "key": "angle",
+      "type": "number",
+      "default": 30,
+      "min": -60,
+      "max": 60,
+      "desc": "初始角度(°)"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "bobColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "摆球颜色"
+    },
+    {
+      "key": "bobRadius",
+      "type": "number",
+      "default": 14,
+      "min": 8,
+      "max": 24,
+      "desc": "摆球半径"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showProtractor",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示角度刻度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bobColor": "--cmp-bob",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "bobColor": "--cmp-bob",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
   },
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "angle": "number — 当前角度(°)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "angle": "number — 当前角度(°)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "单摆（交互式）",
+      "tags": [
+        "mechanics",
+        "pendulum",
+        "oscillation",
+        "gravity",
+        "period",
+        "interactive"
+      ],
+      "ariaLabel": "单摆（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "length": {
+          "label": "length",
+          "desc": "摆线长度比"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "初始角度(°)"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "bobColor": {
+          "label": "bobColor",
+          "desc": "摆球颜色"
+        },
+        "bobRadius": {
+          "label": "bobRadius",
+          "desc": "摆球半径"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showProtractor": {
+          "label": "showProtractor",
+          "desc": "显示角度刻度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number — 当前角度(°)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Simple Pendulum Explorer",
+      "tags": [
+        "mechanics",
+        "pendulum",
+        "oscillation",
+        "gravity",
+        "period",
+        "interactive"
+      ],
+      "ariaLabel": "Simple Pendulum Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "length": {
+          "label": "Length",
+          "desc": "Sets the overall length."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Sets the angle in degrees."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animated motion."
+        },
+        "bobColor": {
+          "label": "Bob Color",
+          "desc": "Sets the color of the pendulum bob."
+        },
+        "bobRadius": {
+          "label": "Bob Radius",
+          "desc": "Sets the radius of the pendulum bob."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showProtractor": {
+          "label": "Show Protractor",
+          "desc": "Shows or hides the protractor overlay."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.pendulum.interactive" role="img" aria-label="单摆（交互式）">

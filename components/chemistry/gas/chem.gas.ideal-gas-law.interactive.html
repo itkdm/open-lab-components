@@ -1,34 +1,292 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.gas.ideal-gas-law.interactive",
   "name": "理想气体定律（交互式）",
-  "nameEn": "Ideal Gas Law (Interactive)",
+  "nameEn": "Ideal Gas Law Explorer",
   "category": "chemistry/gas",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 450 },
-  "tags": ["chemistry","gas","ideal-gas","PV=nRT","pressure","volume","temperature","interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 450
+  },
+  "tags": [
+    "chemistry",
+    "gas",
+    "ideal-gas",
+    "PV=nRT",
+    "pressure",
+    "volume",
+    "temperature",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "gasColor",       "type": "color",  "default": "#42a5f5", "desc": "气体粒子颜色" },
-    { "key": "pistonColor",    "type": "color",  "default": "#78909c", "desc": "活塞颜色" },
-    { "key": "temperature",    "type": "number", "default": 300, "min": 100, "max": 600, "desc": "温度(K)" },
-    { "key": "volume",         "type": "number", "default": 50, "min": 20, "max": 100, "desc": "体积(%)" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showGraph",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示PV图" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 450,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "gasColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "气体粒子颜色"
+    },
+    {
+      "key": "pistonColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "活塞颜色"
+    },
+    {
+      "key": "temperature",
+      "type": "number",
+      "default": 300,
+      "min": 100,
+      "max": 600,
+      "desc": "温度(K)"
+    },
+    {
+      "key": "volume",
+      "type": "number",
+      "default": 50,
+      "min": 20,
+      "max": 100,
+      "desc": "体积(%)"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showGraph",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示PV图"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "gasColor": "--cmp-gas", "pistonColor": "--cmp-piston", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "gasColor": "--cmp-gas",
+    "pistonColor": "--cmp-piston",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "state", "values": { "temperature": "number(K)", "volume": "number(%)", "pressure": "number(kPa)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "state",
+      "values": {
+        "temperature": "number(K)",
+        "volume": "number(%)",
+        "pressure": "number(kPa)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "理想气体定律（交互式）",
+      "tags": [
+        "chemistry",
+        "gas",
+        "ideal-gas",
+        "PV=nRT",
+        "pressure",
+        "volume",
+        "temperature",
+        "interactive"
+      ],
+      "ariaLabel": "理想气体定律（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "gasColor": {
+          "label": "gasColor",
+          "desc": "气体粒子颜色"
+        },
+        "pistonColor": {
+          "label": "pistonColor",
+          "desc": "活塞颜色"
+        },
+        "temperature": {
+          "label": "temperature",
+          "desc": "温度(K)"
+        },
+        "volume": {
+          "label": "volume",
+          "desc": "体积(%)"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showGraph": {
+          "label": "showGraph",
+          "desc": "显示PV图"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "temperature": "number(K)",
+            "volume": "number(%)",
+            "pressure": "number(kPa)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Ideal Gas Law Explorer",
+      "tags": [
+        "chemistry",
+        "gas",
+        "ideal-gas",
+        "PV=nRT",
+        "pressure",
+        "volume",
+        "temperature",
+        "interactive"
+      ],
+      "ariaLabel": "Ideal Gas Law Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "gasColor": {
+          "label": "Gas Color",
+          "desc": "Sets the color of the gas region."
+        },
+        "pistonColor": {
+          "label": "Piston Color",
+          "desc": "Sets the color of the piston."
+        },
+        "temperature": {
+          "label": "Temperature",
+          "desc": "Sets the temperature used in the simulation."
+        },
+        "volume": {
+          "label": "Volume",
+          "desc": "Sets the gas volume."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showGraph": {
+          "label": "Show Graph",
+          "desc": "Shows or hides the graph panel."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "temperature": "Current temperature value.",
+            "volume": "Current volume value.",
+            "pressure": "Current pressure value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.gas.ideal-gas-law.interactive" role="img" aria-label="理想气体定律（交互式）">

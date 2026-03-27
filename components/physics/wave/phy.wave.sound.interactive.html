@@ -1,34 +1,286 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.wave.sound.interactive",
   "name": "声波演示（交互式）",
-  "nameEn": "Sound Wave Demonstration (Interactive)",
+  "nameEn": "Sound Wave Explorer",
   "category": "physics/wave",
   "version": "1.0.0",
-  "viewport": { "w": 550, "h": 350 },
-  "tags": ["physics","wave","sound","frequency","amplitude","longitudinal","interactive"],
+  "viewport": {
+    "w": 550,
+    "h": 350
+  },
+  "tags": [
+    "physics",
+    "wave",
+    "sound",
+    "frequency",
+    "amplitude",
+    "longitudinal",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 350, "min": 250, "max": 500, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "waveColor",      "type": "color",  "default": "#5c6bc0", "desc": "波形颜色" },
-    { "key": "particleColor",  "type": "color",  "default": "#42a5f5", "desc": "粒子颜色" },
-    { "key": "frequency",      "type": "number", "default": 2, "min": 0.5, "max": 5, "desc": "频率(Hz)" },
-    { "key": "amplitude",      "type": "number", "default": 30, "min": 5, "max": 50, "desc": "振幅(px)" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showParticles",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示粒子" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 350,
+      "min": 250,
+      "max": 500,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "waveColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "波形颜色"
+    },
+    {
+      "key": "particleColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "粒子颜色"
+    },
+    {
+      "key": "frequency",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "频率(Hz)"
+    },
+    {
+      "key": "amplitude",
+      "type": "number",
+      "default": 30,
+      "min": 5,
+      "max": 50,
+      "desc": "振幅(px)"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showParticles",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示粒子"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "waveColor": "--cmp-wave", "particleColor": "--cmp-particle", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "waveColor": "--cmp-wave",
+    "particleColor": "--cmp-particle",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "param", "values": { "frequency": "number", "amplitude": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "param",
+      "values": {
+        "frequency": "number",
+        "amplitude": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "声波演示（交互式）",
+      "tags": [
+        "physics",
+        "wave",
+        "sound",
+        "frequency",
+        "amplitude",
+        "longitudinal",
+        "interactive"
+      ],
+      "ariaLabel": "声波演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "waveColor": {
+          "label": "waveColor",
+          "desc": "波形颜色"
+        },
+        "particleColor": {
+          "label": "particleColor",
+          "desc": "粒子颜色"
+        },
+        "frequency": {
+          "label": "frequency",
+          "desc": "频率(Hz)"
+        },
+        "amplitude": {
+          "label": "amplitude",
+          "desc": "振幅(px)"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showParticles": {
+          "label": "showParticles",
+          "desc": "显示粒子"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "frequency": "number",
+            "amplitude": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Sound Wave Explorer",
+      "tags": [
+        "physics",
+        "wave",
+        "sound",
+        "frequency",
+        "amplitude",
+        "longitudinal",
+        "interactive"
+      ],
+      "ariaLabel": "Sound Wave Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "waveColor": {
+          "label": "Wave Color",
+          "desc": "Color setting for wave color."
+        },
+        "particleColor": {
+          "label": "Particle Color",
+          "desc": "Color setting for particle color."
+        },
+        "frequency": {
+          "label": "Frequency",
+          "desc": "Numeric control for frequency."
+        },
+        "amplitude": {
+          "label": "Amplitude",
+          "desc": "Numeric control for amplitude."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Select the show labels option."
+        },
+        "showParticles": {
+          "label": "Show Particles",
+          "desc": "Select the show particles option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Param",
+          "desc": "Event emitted during param.",
+          "values": {
+            "frequency": "Value for frequency.",
+            "amplitude": "Value for amplitude."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.wave.sound.interactive" role="img" aria-label="声波演示（交互式）">

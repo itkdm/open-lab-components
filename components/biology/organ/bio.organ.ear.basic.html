@@ -1,25 +1,173 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.organ.ear.basic",
   "name": "耳朵结构",
   "nameEn": "Ear Anatomy",
   "category": "biology/organ",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 200 },
-  "tags": ["biology", "organ", "ear", "anatomy", "hearing", "cochlea", "auditory"],
+  "viewport": {
+    "w": 300,
+    "h": 200
+  },
+  "tags": [
+    "biology",
+    "organ",
+    "ear",
+    "anatomy",
+    "hearing",
+    "cochlea",
+    "auditory"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 140, "max": 400, "desc": "组件高度" },
-    { "key": "skinColor",   "type": "color",  "default": "#ffccbc", "desc": "皮肤颜色" },
-    { "key": "boneColor",   "type": "color",  "default": "#efebe9", "desc": "骨骼颜色" },
-    { "key": "fluidColor",  "type": "color",  "default": "#b3e5fc", "desc": "淋巴液颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#4e342e", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 140,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "skinColor",
+      "type": "color",
+      "default": "#ffccbc",
+      "desc": "皮肤颜色"
+    },
+    {
+      "key": "boneColor",
+      "type": "color",
+      "default": "#efebe9",
+      "desc": "骨骼颜色"
+    },
+    {
+      "key": "fluidColor",
+      "type": "color",
+      "default": "#b3e5fc",
+      "desc": "淋巴液颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#4e342e",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "skinColor": "--cmp-skin", "boneColor": "--cmp-bone",
-    "fluidColor": "--cmp-fluid", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "skinColor": "--cmp-skin",
+    "boneColor": "--cmp-bone",
+    "fluidColor": "--cmp-fluid",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "耳朵结构",
+      "tags": [
+        "biology",
+        "organ",
+        "ear",
+        "anatomy",
+        "hearing",
+        "cochlea",
+        "auditory"
+      ],
+      "ariaLabel": "耳朵结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "skinColor": {
+          "label": "skinColor",
+          "desc": "皮肤颜色"
+        },
+        "boneColor": {
+          "label": "boneColor",
+          "desc": "骨骼颜色"
+        },
+        "fluidColor": {
+          "label": "fluidColor",
+          "desc": "淋巴液颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Ear Anatomy",
+      "tags": [
+        "biology",
+        "organ",
+        "ear",
+        "anatomy",
+        "hearing",
+        "cochlea",
+        "auditory"
+      ],
+      "ariaLabel": "Ear Anatomy",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "skinColor": {
+          "label": "Skin Color",
+          "desc": "Sets the color of the surrounding tissue or skin."
+        },
+        "boneColor": {
+          "label": "Bone Color",
+          "desc": "Sets the color of the surrounding bone structure."
+        },
+        "fluidColor": {
+          "label": "Fluid Color",
+          "desc": "Sets the color of the surrounding fluid."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

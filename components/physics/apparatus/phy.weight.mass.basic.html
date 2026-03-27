@@ -1,48 +1,244 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.weight.mass.basic",
   "name": "砝码（带重量显示）",
   "nameEn": "Weight with Mass Display",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 64, "h": 64 },
+  "viewport": {
+    "w": 64,
+    "h": 64
+  },
   "props": [
-    { "key": "size",         "type": "number(px)",  "default": 64,      "min": 16,  "max": 256, "desc": "组件尺寸（正方形）" },
-    { "key": "rotate",       "type": "number(deg)", "default": 0,       "min": -180,"max": 180, "desc": "旋转角度" },
-    { "key": "scale",        "type": "number",      "default": 1,       "min": 0.2, "max": 4,   "desc": "缩放比例" },
-
-    { "key": "stroke",       "type": "color",       "default": "#111827","desc": "描边颜色（可选）" },
-    { "key": "strokeWidth",  "type": "number",      "default": 2.5,     "min": 1,   "max": 6,   "desc": "描边粗细（可选）" },
-    { "key": "fill",         "type": "color",       "default": "rgba(255,255,255,0.0)", "desc": "填充色（可选）" },
-    { "key": "accent",       "type": "color",       "default": "#f97316","desc": "强调色/数字颜色（可选）" },
-
-    { "key": "label",        "type": "string",      "default": "50 g",  "desc": "重量显示文本（如：50 g / 0.5 kg）" },
-    { "key": "labelColor",   "type": "color",       "default": "#111827","desc": "单位颜色（可选）" },
-    { "key": "labelOpacity", "type": "number(0-1)", "default": 1,       "min": 0,   "max": 1,   "desc": "重量文本透明度" },
-
-    { "key": "glow",         "type": "number(0-1)", "default": 0,       "min": 0,   "max": 1,   "desc": "强调/亮度（可选）" },
-    { "key": "glowRgb",      "type": "string(rgb)", "default": "255,214,102", "desc": "强调 RGB（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 64,
+      "min": 16,
+      "max": 256,
+      "desc": "组件尺寸（正方形）"
+    },
+    {
+      "key": "rotate",
+      "type": "number(deg)",
+      "default": 0,
+      "min": -180,
+      "max": 180,
+      "desc": "旋转角度"
+    },
+    {
+      "key": "scale",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 4,
+      "desc": "缩放比例"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色（可选）"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2.5,
+      "min": 1,
+      "max": 6,
+      "desc": "描边粗细（可选）"
+    },
+    {
+      "key": "fill",
+      "type": "color",
+      "default": "rgba(255,255,255,0.0)",
+      "desc": "填充色（可选）"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#f97316",
+      "desc": "强调色/数字颜色（可选）"
+    },
+    {
+      "key": "label",
+      "type": "string",
+      "default": "50 g",
+      "desc": "重量显示文本（如：50 g / 0.5 kg）"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "default": "#111827",
+      "desc": "单位颜色（可选）"
+    },
+    {
+      "key": "labelOpacity",
+      "type": "number(0-1)",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "desc": "重量文本透明度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    },
+    {
+      "key": "glowRgb",
+      "type": "string(rgb)",
+      "default": "255,214,102",
+      "desc": "强调 RGB（可选）"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "rotate": "--cmp-rotate",
     "scale": "--cmp-scale",
-
     "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
     "fill": "--cmp-fill",
     "accent": "--cmp-accent",
-
     "label": "--cmp-label",
     "labelColor": "--cmp-label-color",
     "labelOpacity": "--cmp-label-opacity",
-
     "glow": "--cmp-glow",
     "glowRgb": "--cmp-glow-rgb"
   },
-  "tags": ["physics", "mass", "weight"]
-}-->
+  "tags": [
+    "physics",
+    "mass",
+    "weight"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "砝码（带重量显示）",
+      "tags": [
+        "physics",
+        "mass",
+        "weight"
+      ],
+      "ariaLabel": "砝码（带重量显示）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸（正方形）"
+        },
+        "rotate": {
+          "label": "rotate",
+          "desc": "旋转角度"
+        },
+        "scale": {
+          "label": "scale",
+          "desc": "缩放比例"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色（可选）"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细（可选）"
+        },
+        "fill": {
+          "label": "fill",
+          "desc": "填充色（可选）"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色/数字颜色（可选）"
+        },
+        "label": {
+          "label": "label",
+          "desc": "重量显示文本（如：50 g / 0.5 kg）"
+        },
+        "labelColor": {
+          "label": "labelColor",
+          "desc": "单位颜色（可选）"
+        },
+        "labelOpacity": {
+          "label": "labelOpacity",
+          "desc": "重量文本透明度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        },
+        "glowRgb": {
+          "label": "glowRgb",
+          "desc": "强调 RGB（可选）"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Weight with Mass Display",
+      "tags": [
+        "physics",
+        "mass",
+        "weight"
+      ],
+      "ariaLabel": "Weight with Mass Display",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "rotate": {
+          "label": "Rotate",
+          "desc": "Numeric control for rotate."
+        },
+        "scale": {
+          "label": "Scale",
+          "desc": "Numeric control for scale."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "fill": {
+          "label": "Fill",
+          "desc": "Color setting for fill."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "label": {
+          "label": "Label",
+          "desc": "Configuration for label."
+        },
+        "labelColor": {
+          "label": "Label Color",
+          "desc": "Color setting for label color."
+        },
+        "labelOpacity": {
+          "label": "Label Opacity",
+          "desc": "Numeric control for label opacity."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        },
+        "glowRgb": {
+          "label": "Glow Rgb",
+          "desc": "Configuration for glow rgb."
+        }
+      },
+      "events": {}
+    }
+  }
+}
+-->
 <div class="cmp" data-cmp-id="phy.weight.mass.basic" role="img" aria-label="砝码（带重量显示）" data-label="50 g">
     <svg class="cmp__svg" viewBox="0 0 64 64" aria-hidden="true">
         <!-- 顶部把手 -->

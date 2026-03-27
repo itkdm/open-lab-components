@@ -1,33 +1,267 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.model.bonding.interactive",
   "name": "化学键模型（交互式）",
-  "nameEn": "Chemical Bonding Model (Interactive)",
+  "nameEn": "Chemical Bonding Explorer",
   "category": "chemistry/model",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 400 },
-  "tags": ["chemistry","bonding","ionic","covalent","metallic","electron","interactive"],
+  "viewport": {
+    "w": 480,
+    "h": 400
+  },
+  "tags": [
+    "chemistry",
+    "bonding",
+    "ionic",
+    "covalent",
+    "metallic",
+    "electron",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "mode",           "type": "enum",   "default": "ionic", "enum": ["ionic","covalent","metallic"], "desc": "键类型" },
-    { "key": "cationColor",    "type": "color",  "default": "#5c6bc0", "desc": "阳离子颜色" },
-    { "key": "anionColor",     "type": "color",  "default": "#66bb6a", "desc": "阴离子颜色" },
-    { "key": "electronColor",  "type": "color",  "default": "#fdd835", "desc": "电子颜色" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "mode",
+      "type": "enum",
+      "default": "ionic",
+      "enum": [
+        "ionic",
+        "covalent",
+        "metallic"
+      ],
+      "desc": "键类型"
+    },
+    {
+      "key": "cationColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "阳离子颜色"
+    },
+    {
+      "key": "anionColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "阴离子颜色"
+    },
+    {
+      "key": "electronColor",
+      "type": "color",
+      "default": "#fdd835",
+      "desc": "电子颜色"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "cationColor": "--cmp-cation", "anionColor": "--cmp-anion", "electronColor": "--cmp-electron", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "cationColor": "--cmp-cation",
+    "anionColor": "--cmp-anion",
+    "electronColor": "--cmp-electron",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "mode", "values": { "mode": "string — ionic|covalent|metallic" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "mode",
+      "values": {
+        "mode": "string — ionic|covalent|metallic"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "化学键模型（交互式）",
+      "tags": [
+        "chemistry",
+        "bonding",
+        "ionic",
+        "covalent",
+        "metallic",
+        "electron",
+        "interactive"
+      ],
+      "ariaLabel": "化学键模型（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "mode": {
+          "label": "mode",
+          "desc": "键类型"
+        },
+        "cationColor": {
+          "label": "cationColor",
+          "desc": "阳离子颜色"
+        },
+        "anionColor": {
+          "label": "anionColor",
+          "desc": "阴离子颜色"
+        },
+        "electronColor": {
+          "label": "electronColor",
+          "desc": "电子颜色"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "mode": "string — ionic|covalent|metallic"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Chemical Bonding Explorer",
+      "tags": [
+        "chemistry",
+        "bonding",
+        "ionic",
+        "covalent",
+        "metallic",
+        "electron",
+        "interactive"
+      ],
+      "ariaLabel": "Chemical Bonding Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "mode": {
+          "label": "Bonding Mode",
+          "desc": "Selects the bonding model to display."
+        },
+        "cationColor": {
+          "label": "Cation Color",
+          "desc": "Sets the color of the cation."
+        },
+        "anionColor": {
+          "label": "Anion Color",
+          "desc": "Sets the color of the anion."
+        },
+        "electronColor": {
+          "label": "Electron Color",
+          "desc": "Sets the color of the electrons."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "mode": "Current bonding mode."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.model.bonding.interactive" role="img" aria-label="化学键模型（交互式）">

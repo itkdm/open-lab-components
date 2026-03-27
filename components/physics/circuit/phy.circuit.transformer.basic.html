@@ -1,27 +1,184 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.transformer.basic",
   "name": "变压器",
   "nameEn": "Transformer",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 140, "h": 120 },
-  "tags": ["circuit", "transformer", "coil", "voltage", "electromagnetic", "induction"],
+  "viewport": {
+    "w": 140,
+    "h": 120
+  },
+  "tags": [
+    "circuit",
+    "transformer",
+    "coil",
+    "voltage",
+    "electromagnetic",
+    "induction"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 120, "min": 80, "max": 240, "desc": "组件高度" },
-    { "key": "primaryTurns", "type": "number", "default": 4, "min": 2, "max": 8, "desc": "初级线圈匝数" },
-    { "key": "secondaryTurns","type": "number","default": 8, "min": 2, "max": 8, "desc": "次级线圈匝数" },
-    { "key": "coreColor",    "type": "color",  "default": "#546e7a", "desc": "铁芯颜色" },
-    { "key": "primaryColor", "type": "color",  "default": "#e53935", "desc": "初级线圈颜色" },
-    { "key": "secondaryColor","type": "color", "default": "#1e88e5", "desc": "次级线圈颜色" },
-    { "key": "stroke",       "type": "color",  "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 80,
+      "max": 240,
+      "desc": "组件高度"
+    },
+    {
+      "key": "primaryTurns",
+      "type": "number",
+      "default": 4,
+      "min": 2,
+      "max": 8,
+      "desc": "初级线圈匝数"
+    },
+    {
+      "key": "secondaryTurns",
+      "type": "number",
+      "default": 8,
+      "min": 2,
+      "max": 8,
+      "desc": "次级线圈匝数"
+    },
+    {
+      "key": "coreColor",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "铁芯颜色"
+    },
+    {
+      "key": "primaryColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "初级线圈颜色"
+    },
+    {
+      "key": "secondaryColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "次级线圈颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "coreColor": "--cmp-core",
-    "primaryColor": "--cmp-primary", "secondaryColor": "--cmp-secondary",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "coreColor": "--cmp-core",
+    "primaryColor": "--cmp-primary",
+    "secondaryColor": "--cmp-secondary",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "变压器",
+      "tags": [
+        "circuit",
+        "transformer",
+        "coil",
+        "voltage",
+        "electromagnetic",
+        "induction"
+      ],
+      "ariaLabel": "变压器",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "primaryTurns": {
+          "label": "primaryTurns",
+          "desc": "初级线圈匝数"
+        },
+        "secondaryTurns": {
+          "label": "secondaryTurns",
+          "desc": "次级线圈匝数"
+        },
+        "coreColor": {
+          "label": "coreColor",
+          "desc": "铁芯颜色"
+        },
+        "primaryColor": {
+          "label": "primaryColor",
+          "desc": "初级线圈颜色"
+        },
+        "secondaryColor": {
+          "label": "secondaryColor",
+          "desc": "次级线圈颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Transformer",
+      "tags": [
+        "circuit",
+        "transformer",
+        "coil",
+        "voltage",
+        "electromagnetic",
+        "induction"
+      ],
+      "ariaLabel": "Transformer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "primaryTurns": {
+          "label": "Primary Turns",
+          "desc": "Numeric control for primary turns."
+        },
+        "secondaryTurns": {
+          "label": "Secondary Turns",
+          "desc": "Numeric control for secondary turns."
+        },
+        "coreColor": {
+          "label": "Core Color",
+          "desc": "Color setting for core color."
+        },
+        "primaryColor": {
+          "label": "Primary Color",
+          "desc": "Color setting for primary color."
+        },
+        "secondaryColor": {
+          "label": "Secondary Color",
+          "desc": "Color setting for secondary color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

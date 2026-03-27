@@ -1,29 +1,168 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.crucible.basic",
   "name": "坩埚",
   "nameEn": "Crucible",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 120 },
-  "tags": ["chemistry", "labware", "crucible", "porcelain", "heating", "high-temperature"],
+  "viewport": {
+    "w": 100,
+    "h": 120
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "crucible",
+    "porcelain",
+    "heating",
+    "high-temperature"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 120, "min": 60, "max": 300, "desc": "组件高度" },
-    { "key": "bodyColor",  "type": "color",  "default": "#e0e0e0", "desc": "瓷体颜色" },
-    { "key": "innerColor", "type": "color",  "default": "#f5f5f5", "desc": "内壁颜色" },
-    { "key": "stroke",     "type": "color",  "default": "#616161", "desc": "描边颜色" },
-    { "key": "strokeWidth","type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLid",    "type": "boolean", "default": true, "desc": "显示坩埚盖" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 60,
+      "max": 300,
+      "desc": "组件高度"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "瓷体颜色"
+    },
+    {
+      "key": "innerColor",
+      "type": "color",
+      "default": "#f5f5f5",
+      "desc": "内壁颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#616161",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLid",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示坩埚盖"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
-    "bodyColor":  "--cmp-body",
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
     "innerColor": "--cmp-inner",
-    "stroke":     "--cmp-stroke",
-    "strokeWidth":"--cmp-stroke-width",
-    "glow":       "--cmp-glow"
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "坩埚",
+      "tags": [
+        "chemistry",
+        "labware",
+        "crucible",
+        "porcelain",
+        "heating",
+        "high-temperature"
+      ],
+      "ariaLabel": "坩埚",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "瓷体颜色"
+        },
+        "innerColor": {
+          "label": "innerColor",
+          "desc": "内壁颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLid": {
+          "label": "showLid",
+          "desc": "显示坩埚盖"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Crucible",
+      "tags": [
+        "chemistry",
+        "labware",
+        "crucible",
+        "porcelain",
+        "heating",
+        "high-temperature"
+      ],
+      "ariaLabel": "Crucible",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the apparatus."
+        },
+        "innerColor": {
+          "label": "Inner Color",
+          "desc": "Sets the inner fill color."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLid": {
+          "label": "Show Lid",
+          "desc": "Shows or hides the lid."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

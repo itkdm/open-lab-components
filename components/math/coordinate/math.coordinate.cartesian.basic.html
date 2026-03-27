@@ -1,28 +1,194 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.coordinate.cartesian.basic",
   "name": "坐标系",
-  "nameEn": "Cartesian Coordinate",
+  "nameEn": "Cartesian Plane",
   "category": "math/coordinate",
   "version": "1.0.0",
-  "viewport": { "w": 220, "h": 220 },
-  "tags": ["math", "coordinate", "cartesian", "axis", "grid"],
+  "viewport": {
+    "w": 220,
+    "h": 220
+  },
+  "tags": [
+    "math",
+    "coordinate",
+    "cartesian",
+    "axis",
+    "grid"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 220, "min": 150, "max": 400, "desc": "组件尺寸" },
-    { "key": "xMin", "type": "number", "default": -5, "desc": "X轴最小值" },
-    { "key": "xMax", "type": "number", "default": 5, "desc": "X轴最大值" },
-    { "key": "yMin", "type": "number", "default": -5, "desc": "Y轴最小值" },
-    { "key": "yMax", "type": "number", "default": 5, "desc": "Y轴最大值" },
-    { "key": "axisColor", "type": "color", "default": "#333", "desc": "坐标轴颜色" },
-    { "key": "gridColor", "type": "color", "default": "#e0e0e0", "desc": "网格颜色" },
-    { "key": "showGrid", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "显示网格" },
-    { "key": "showNumbers", "type": "enum", "default": "on", "enum": ["on", "off"], "desc": "显示刻度数字" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 220,
+      "min": 150,
+      "max": 400,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "xMin",
+      "type": "number",
+      "default": -5,
+      "desc": "X轴最小值"
+    },
+    {
+      "key": "xMax",
+      "type": "number",
+      "default": 5,
+      "desc": "X轴最大值"
+    },
+    {
+      "key": "yMin",
+      "type": "number",
+      "default": -5,
+      "desc": "Y轴最小值"
+    },
+    {
+      "key": "yMax",
+      "type": "number",
+      "default": 5,
+      "desc": "Y轴最大值"
+    },
+    {
+      "key": "axisColor",
+      "type": "color",
+      "default": "#333",
+      "desc": "坐标轴颜色"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "网格颜色"
+    },
+    {
+      "key": "showGrid",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示网格"
+    },
+    {
+      "key": "showNumbers",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示刻度数字"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "axisColor": "--cmp-axis",
     "gridColor": "--cmp-grid"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "坐标系",
+      "tags": [
+        "math",
+        "coordinate",
+        "cartesian",
+        "axis",
+        "grid"
+      ],
+      "ariaLabel": "坐标系",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "xMin": {
+          "label": "xMin",
+          "desc": "X轴最小值"
+        },
+        "xMax": {
+          "label": "xMax",
+          "desc": "X轴最大值"
+        },
+        "yMin": {
+          "label": "yMin",
+          "desc": "Y轴最小值"
+        },
+        "yMax": {
+          "label": "yMax",
+          "desc": "Y轴最大值"
+        },
+        "axisColor": {
+          "label": "axisColor",
+          "desc": "坐标轴颜色"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格颜色"
+        },
+        "showGrid": {
+          "label": "showGrid",
+          "desc": "显示网格"
+        },
+        "showNumbers": {
+          "label": "showNumbers",
+          "desc": "显示刻度数字"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Cartesian Plane",
+      "tags": [
+        "math",
+        "coordinate",
+        "cartesian",
+        "axis",
+        "grid"
+      ],
+      "ariaLabel": "Cartesian Plane",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "xMin": {
+          "label": "X Minimum",
+          "desc": "Sets the minimum value shown on the x-axis."
+        },
+        "xMax": {
+          "label": "X Maximum",
+          "desc": "Sets the maximum value shown on the x-axis."
+        },
+        "yMin": {
+          "label": "Y Minimum",
+          "desc": "Sets the minimum value shown on the y-axis."
+        },
+        "yMax": {
+          "label": "Y Maximum",
+          "desc": "Sets the maximum value shown on the y-axis."
+        },
+        "axisColor": {
+          "label": "Axis Color",
+          "desc": "Sets the color of the coordinate or optical axis."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Sets the color of the grid lines."
+        },
+        "showGrid": {
+          "label": "Show Grid",
+          "desc": "Shows or hides the grid overlay."
+        },
+        "showNumbers": {
+          "label": "Show Numbers",
+          "desc": "Shows or hides numeric labels."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

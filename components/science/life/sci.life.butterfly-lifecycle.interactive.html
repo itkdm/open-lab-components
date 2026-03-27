@@ -1,19 +1,56 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.butterfly-lifecycle.interactive",
   "name": "蝴蝶生命周期",
   "nameEn": "Butterfly Lifecycle",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 300 },
+  "viewport": {
+    "w": 300,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 180, "max": 600, "desc": "组件尺寸" },
-    { "key": "stage", "type": "number", "default": 1, "min": 1, "max": 4, "desc": "当前阶段（1-4）" },
-    { "key": "eggColor", "type": "color", "default": "#FFFDE7", "desc": "卵颜色" },
-    { "key": "larvaColor", "type": "color", "default": "#8BC34A", "desc": "幼虫颜色" },
-    { "key": "pupaColor", "type": "color", "default": "#795548", "desc": "蛹颜色" },
-    { "key": "wingColor", "type": "color", "default": "#FF9800", "desc": "蝴蝶翅膀颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 180,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "stage",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 4,
+      "desc": "当前阶段（1-4）"
+    },
+    {
+      "key": "eggColor",
+      "type": "color",
+      "default": "#FFFDE7",
+      "desc": "卵颜色"
+    },
+    {
+      "key": "larvaColor",
+      "type": "color",
+      "default": "#8BC34A",
+      "desc": "幼虫颜色"
+    },
+    {
+      "key": "pupaColor",
+      "type": "color",
+      "default": "#795548",
+      "desc": "蛹颜色"
+    },
+    {
+      "key": "wingColor",
+      "type": "color",
+      "default": "#FF9800",
+      "desc": "蝴蝶翅膀颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -22,10 +59,123 @@
     "pupaColor": "--cmp-pupa",
     "wingColor": "--cmp-wing"
   },
-  "tags": ["butterfly", "lifecycle", "metamorphosis", "insect", "science", "primary", "interactive"],
+  "tags": [
+    "butterfly",
+    "lifecycle",
+    "metamorphosis",
+    "insect",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "stage": "number(1-4)", "stageName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "stage": "number(1-4)",
+        "stageName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "蝴蝶生命周期",
+      "tags": [
+        "butterfly",
+        "lifecycle",
+        "metamorphosis",
+        "insect",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "蝴蝶生命周期",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "stage": {
+          "label": "stage",
+          "desc": "当前阶段（1-4）"
+        },
+        "eggColor": {
+          "label": "eggColor",
+          "desc": "卵颜色"
+        },
+        "larvaColor": {
+          "label": "larvaColor",
+          "desc": "幼虫颜色"
+        },
+        "pupaColor": {
+          "label": "pupaColor",
+          "desc": "蛹颜色"
+        },
+        "wingColor": {
+          "label": "wingColor",
+          "desc": "蝴蝶翅膀颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "stage": "number(1-4)",
+            "stageName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Butterfly Lifecycle",
+      "tags": [
+        "butterfly",
+        "lifecycle",
+        "metamorphosis",
+        "insect",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Butterfly Lifecycle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stage": {
+          "label": "Stage",
+          "desc": "Numeric control for stage."
+        },
+        "eggColor": {
+          "label": "Egg Color",
+          "desc": "Color setting for egg color."
+        },
+        "larvaColor": {
+          "label": "Larva Color",
+          "desc": "Color setting for larva color."
+        },
+        "pupaColor": {
+          "label": "Pupa Color",
+          "desc": "Color setting for pupa color."
+        },
+        "wingColor": {
+          "label": "Wing Color",
+          "desc": "Color setting for wing color."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "stage": "Value for stage.",
+            "stageName": "Value for stage name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.butterfly-lifecycle.interactive" role="img" aria-label="蝴蝶生命周期">

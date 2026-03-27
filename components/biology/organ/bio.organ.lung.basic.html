@@ -1,34 +1,244 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.organ.lung.basic",
   "name": "肺部结构",
-  "nameEn": "Lung Structure",
+  "nameEn": "Lung Anatomy",
   "category": "biology/organ",
   "version": "1.0.0",
-  "viewport": { "w": 420, "h": 400 },
-  "tags": ["biology","organ","lung","respiratory","anatomy"],
+  "viewport": {
+    "w": 420,
+    "h": 400
+  },
+  "tags": [
+    "biology",
+    "organ",
+    "lung",
+    "respiratory",
+    "anatomy"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "lungColor",   "type": "color",  "default": "#ef9a9a", "desc": "肺叶颜色" },
-    { "key": "tracheaColor","type": "color",  "default": "#e0e0e0", "desc": "气管颜色" },
-    { "key": "bronchiColor","type": "color",  "default": "#bcaaa4", "desc": "支气管颜色" },
-    { "key": "diaphragmColor","type": "color","default": "#ce93d8", "desc": "膈肌颜色" },
-    { "key": "breathe",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "呼吸动画" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "lungColor",
+      "type": "color",
+      "default": "#ef9a9a",
+      "desc": "肺叶颜色"
+    },
+    {
+      "key": "tracheaColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "气管颜色"
+    },
+    {
+      "key": "bronchiColor",
+      "type": "color",
+      "default": "#bcaaa4",
+      "desc": "支气管颜色"
+    },
+    {
+      "key": "diaphragmColor",
+      "type": "color",
+      "default": "#ce93d8",
+      "desc": "膈肌颜色"
+    },
+    {
+      "key": "breathe",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "呼吸动画"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "lungColor": "--cmp-lung", "tracheaColor": "--cmp-trachea",
-    "bronchiColor": "--cmp-bronchi", "diaphragmColor": "--cmp-diaphragm",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "lungColor": "--cmp-lung",
+    "tracheaColor": "--cmp-trachea",
+    "bronchiColor": "--cmp-bronchi",
+    "diaphragmColor": "--cmp-diaphragm",
     "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "breathe", "values": { "phase": "string — inhale|exhale", "volume": "number(0-1)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "breathe",
+      "values": {
+        "phase": "string — inhale|exhale",
+        "volume": "number(0-1)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "肺部结构",
+      "tags": [
+        "biology",
+        "organ",
+        "lung",
+        "respiratory",
+        "anatomy"
+      ],
+      "ariaLabel": "肺部结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "lungColor": {
+          "label": "lungColor",
+          "desc": "肺叶颜色"
+        },
+        "tracheaColor": {
+          "label": "tracheaColor",
+          "desc": "气管颜色"
+        },
+        "bronchiColor": {
+          "label": "bronchiColor",
+          "desc": "支气管颜色"
+        },
+        "diaphragmColor": {
+          "label": "diaphragmColor",
+          "desc": "膈肌颜色"
+        },
+        "breathe": {
+          "label": "breathe",
+          "desc": "呼吸动画"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "phase": "string — inhale|exhale",
+            "volume": "number(0-1)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Lung Anatomy",
+      "tags": [
+        "biology",
+        "organ",
+        "lung",
+        "respiratory",
+        "anatomy"
+      ],
+      "ariaLabel": "Lung Anatomy",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "lungColor": {
+          "label": "Lung Color",
+          "desc": "Sets the color of the lungs."
+        },
+        "tracheaColor": {
+          "label": "Trachea Color",
+          "desc": "Sets the color of the trachea."
+        },
+        "bronchiColor": {
+          "label": "Bronchi Color",
+          "desc": "Sets the color of the bronchi."
+        },
+        "diaphragmColor": {
+          "label": "Diaphragm Color",
+          "desc": "Sets the color of the diaphragm."
+        },
+        "breathe": {
+          "label": "Breathing Animation",
+          "desc": "Toggles the breathing animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "phase": "Current biological phase.",
+            "volume": "Current volume."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.organ.lung.basic" role="img" aria-label="肺部结构">

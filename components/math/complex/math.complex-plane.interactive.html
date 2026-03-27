@@ -1,35 +1,311 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.complex-plane.interactive",
   "name": "复数平面（交互式）",
-  "nameEn": "Complex Plane (Interactive)",
+  "nameEn": "Complex Plane Explorer",
   "category": "math/complex",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 440 },
-  "tags": ["math","complex","plane","argand","modulus","argument","interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 440
+  },
+  "tags": [
+    "math",
+    "complex",
+    "plane",
+    "argand",
+    "modulus",
+    "argument",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "pointColor", "type": "color",  "default": "#e53935", "desc": "点颜色" },
-    { "key": "gridColor",  "type": "color",  "default": "#e0e0e0", "desc": "网格颜色" },
-    { "key": "traceColor", "type": "color",  "default": "#ff9800", "desc": "轨迹颜色" },
-    { "key": "realPart",   "type": "number", "default": 3, "min": -5, "max": 5, "desc": "实部 a" },
-    { "key": "imagPart",   "type": "number", "default": 2, "min": -5, "max": 5, "desc": "虚部 b" },
-    { "key": "operation",  "type": "enum",   "default": "none", "enum": ["none","add","multiply","conjugate","power"], "desc": "运算" },
-    { "key": "showPolar",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示极坐标" },
-    { "key": "showTrace",  "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示轨迹" },
-    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "speed",      "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 440,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "pointColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "点颜色"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "网格颜色"
+    },
+    {
+      "key": "traceColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "轨迹颜色"
+    },
+    {
+      "key": "realPart",
+      "type": "number",
+      "default": 3,
+      "min": -5,
+      "max": 5,
+      "desc": "实部 a"
+    },
+    {
+      "key": "imagPart",
+      "type": "number",
+      "default": 2,
+      "min": -5,
+      "max": 5,
+      "desc": "虚部 b"
+    },
+    {
+      "key": "operation",
+      "type": "enum",
+      "default": "none",
+      "enum": [
+        "none",
+        "add",
+        "multiply",
+        "conjugate",
+        "power"
+      ],
+      "desc": "运算"
+    },
+    {
+      "key": "showPolar",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示极坐标"
+    },
+    {
+      "key": "showTrace",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示轨迹"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "pointColor": "--cmp-point", "gridColor": "--cmp-grid", "traceColor": "--cmp-trace", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "pointColor": "--cmp-point",
+    "gridColor": "--cmp-grid",
+    "traceColor": "--cmp-trace",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "update", "values": { "real": "number", "imag": "number", "modulus": "number", "argument": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "update",
+      "values": {
+        "real": "number",
+        "imag": "number",
+        "modulus": "number",
+        "argument": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "复数平面（交互式）",
+      "tags": [
+        "math",
+        "complex",
+        "plane",
+        "argand",
+        "modulus",
+        "argument",
+        "interactive"
+      ],
+      "ariaLabel": "复数平面（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "pointColor": {
+          "label": "pointColor",
+          "desc": "点颜色"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格颜色"
+        },
+        "traceColor": {
+          "label": "traceColor",
+          "desc": "轨迹颜色"
+        },
+        "realPart": {
+          "label": "realPart",
+          "desc": "实部 a"
+        },
+        "imagPart": {
+          "label": "imagPart",
+          "desc": "虚部 b"
+        },
+        "operation": {
+          "label": "operation",
+          "desc": "运算"
+        },
+        "showPolar": {
+          "label": "showPolar",
+          "desc": "显示极坐标"
+        },
+        "showTrace": {
+          "label": "showTrace",
+          "desc": "显示轨迹"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "real": "number",
+            "imag": "number",
+            "modulus": "number",
+            "argument": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Complex Plane Explorer",
+      "tags": [
+        "math",
+        "complex",
+        "plane",
+        "argand",
+        "modulus",
+        "argument",
+        "interactive"
+      ],
+      "ariaLabel": "Complex Plane Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "pointColor": {
+          "label": "Point Color",
+          "desc": "Sets the color of the point marker."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Sets the color of the grid lines."
+        },
+        "traceColor": {
+          "label": "Trace Color",
+          "desc": "Sets the color of the trace path."
+        },
+        "realPart": {
+          "label": "Real Part",
+          "desc": "Sets the real part of the complex number."
+        },
+        "imagPart": {
+          "label": "Imaginary Part",
+          "desc": "Sets the imaginary part of the complex number."
+        },
+        "operation": {
+          "label": "Operation",
+          "desc": "Selects the arithmetic or vector operation to display."
+        },
+        "showPolar": {
+          "label": "Show Polar Form",
+          "desc": "Shows or hides the polar representation."
+        },
+        "showTrace": {
+          "label": "Show Trace",
+          "desc": "Shows or hides the trace."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "real": "Current real.",
+            "imag": "Current imag.",
+            "modulus": "Current modulus.",
+            "argument": "Current argument."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.complex-plane.interactive" role="img" aria-label="复数平面（交互式）">

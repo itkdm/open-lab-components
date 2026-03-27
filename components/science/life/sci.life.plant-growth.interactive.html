@@ -1,19 +1,56 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.plant-growth.interactive",
   "name": "植物生长",
   "nameEn": "Plant Growth",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 240, "h": 320 },
+  "viewport": {
+    "w": 240,
+    "h": 320
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 240, "min": 120, "max": 480, "desc": "组件宽度" },
-    { "key": "stage", "type": "number", "default": 1, "min": 1, "max": 6, "desc": "生长阶段（1-6）" },
-    { "key": "soilColor", "type": "color", "default": "#8B4513", "desc": "土壤颜色" },
-    { "key": "stemColor", "type": "color", "default": "#228B22", "desc": "茎颜色" },
-    { "key": "leafColor", "type": "color", "default": "#32CD32", "desc": "叶子颜色" },
-    { "key": "flowerColor", "type": "color", "default": "#FF69B4", "desc": "花朵颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 120,
+      "max": 480,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "stage",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 6,
+      "desc": "生长阶段（1-6）"
+    },
+    {
+      "key": "soilColor",
+      "type": "color",
+      "default": "#8B4513",
+      "desc": "土壤颜色"
+    },
+    {
+      "key": "stemColor",
+      "type": "color",
+      "default": "#228B22",
+      "desc": "茎颜色"
+    },
+    {
+      "key": "leafColor",
+      "type": "color",
+      "default": "#32CD32",
+      "desc": "叶子颜色"
+    },
+    {
+      "key": "flowerColor",
+      "type": "color",
+      "default": "#FF69B4",
+      "desc": "花朵颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -22,11 +59,145 @@
     "leafColor": "--cmp-leaf",
     "flowerColor": "--cmp-flower"
   },
-  "tags": ["plant", "growth", "lifecycle", "biology", "science", "primary", "interactive"],
+  "tags": [
+    "plant",
+    "growth",
+    "lifecycle",
+    "biology",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "stage": "number(1-6)", "stageName": "string" } },
-    { "name": "cmp:changeend", "type": "slide", "values": { "stage": "number(1-6)", "stageName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "stage": "number(1-6)",
+        "stageName": "string"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "stage": "number(1-6)",
+        "stageName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "植物生长",
+      "tags": [
+        "plant",
+        "growth",
+        "lifecycle",
+        "biology",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "植物生长",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "stage": {
+          "label": "stage",
+          "desc": "生长阶段（1-6）"
+        },
+        "soilColor": {
+          "label": "soilColor",
+          "desc": "土壤颜色"
+        },
+        "stemColor": {
+          "label": "stemColor",
+          "desc": "茎颜色"
+        },
+        "leafColor": {
+          "label": "leafColor",
+          "desc": "叶子颜色"
+        },
+        "flowerColor": {
+          "label": "flowerColor",
+          "desc": "花朵颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "stage": "number(1-6)",
+            "stageName": "string"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "stage": "number(1-6)",
+            "stageName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Plant Growth",
+      "tags": [
+        "plant",
+        "growth",
+        "lifecycle",
+        "biology",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Plant Growth",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stage": {
+          "label": "Stage",
+          "desc": "Numeric control for stage."
+        },
+        "soilColor": {
+          "label": "Soil Color",
+          "desc": "Color setting for soil color."
+        },
+        "stemColor": {
+          "label": "Stem Color",
+          "desc": "Color setting for stem color."
+        },
+        "leafColor": {
+          "label": "Leaf Color",
+          "desc": "Color setting for leaf color."
+        },
+        "flowerColor": {
+          "label": "Flower Color",
+          "desc": "Color setting for flower color."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "stage": "Value for stage.",
+            "stageName": "Value for stage name."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "stage": "Value for stage.",
+            "stageName": "Value for stage name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.plant-growth.interactive" role="img" aria-label="植物生长">

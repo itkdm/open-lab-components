@@ -1,21 +1,124 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.statistics.bar-chart.interactive",
   "name": "条形统计图",
   "nameEn": "Bar Chart",
   "category": "math/statistics",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 280 },
+  "viewport": {
+    "w": 360,
+    "h": 280
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "maxValue", "type": "number", "default": 10, "min": 5, "max": 100, "desc": "Y轴最大值" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "maxValue",
+      "type": "number",
+      "default": 10,
+      "min": 5,
+      "max": 100,
+      "desc": "Y轴最大值"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["bar-chart", "statistics", "data", "graph", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "bar-chart",
+    "statistics",
+    "data",
+    "graph",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "data": "object", "category": "string", "value": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "data": "object",
+        "category": "string",
+        "value": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "条形统计图",
+      "tags": [
+        "bar-chart",
+        "statistics",
+        "data",
+        "graph",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "条形统计图",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "maxValue": {
+          "label": "maxValue",
+          "desc": "Y轴最大值"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "data": "object",
+            "category": "string",
+            "value": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Bar Chart",
+      "tags": [
+        "bar-chart",
+        "statistics",
+        "data",
+        "graph",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Bar Chart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "maxValue": {
+          "label": "Maximum Value",
+          "desc": "Sets the maximum scale value."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "data": "Current data.",
+            "category": "Current category.",
+            "value": "Current numeric value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.statistics.bar-chart.interactive" role="img" aria-label="条形统计图">

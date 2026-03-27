@@ -1,44 +1,342 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.wire-connector.interactive",
   "name": "导线连接器（交互式）",
-  "nameEn": "Wire Connector (Interactive)",
+  "nameEn": "Wire Connector Explorer",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 120 },
-  "tags": ["wire", "connector", "terminal", "circuit", "interactive", "draggable"],
+  "viewport": {
+    "w": 300,
+    "h": 120
+  },
+  "tags": [
+    "wire",
+    "connector",
+    "terminal",
+    "circuit",
+    "interactive",
+    "draggable"
+  ],
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 120, "min": 60,  "max": 300, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "wireColor",     "type": "color",  "default": "#d32f2f", "desc": "导线绝缘皮颜色" },
-    { "key": "wireWidth",     "type": "number", "default": 5,   "min": 2, "max": 10, "desc": "导线粗细" },
-    { "key": "coreColor",     "type": "color",  "default": "#b87333", "desc": "铜芯颜色" },
-    { "key": "terminalColor", "type": "color",  "default": "#555555", "desc": "接线柱颜色" },
-    { "key": "screwColor",    "type": "color",  "default": "#888888", "desc": "螺丝颜色" },
-    { "key": "stroke",        "type": "color",  "default": "#222222", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "ax",            "type": "number", "default": 50,  "min": 10, "max": 290, "desc": "A端X坐标" },
-    { "key": "ay",            "type": "number", "default": 60,  "min": 10, "max": 110, "desc": "A端Y坐标" },
-    { "key": "bx",            "type": "number", "default": 250, "min": 10, "max": 290, "desc": "B端X坐标" },
-    { "key": "by",            "type": "number", "default": 60,  "min": 10, "max": 110, "desc": "B端Y坐标" },
-    { "key": "sag",           "type": "number(0-1)", "default": 0.3, "min": 0, "max": 1, "desc": "导线下垂程度" },
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 60,
+      "max": 300,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "wireColor",
+      "type": "color",
+      "default": "#d32f2f",
+      "desc": "导线绝缘皮颜色"
+    },
+    {
+      "key": "wireWidth",
+      "type": "number",
+      "default": 5,
+      "min": 2,
+      "max": 10,
+      "desc": "导线粗细"
+    },
+    {
+      "key": "coreColor",
+      "type": "color",
+      "default": "#b87333",
+      "desc": "铜芯颜色"
+    },
+    {
+      "key": "terminalColor",
+      "type": "color",
+      "default": "#555555",
+      "desc": "接线柱颜色"
+    },
+    {
+      "key": "screwColor",
+      "type": "color",
+      "default": "#888888",
+      "desc": "螺丝颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#222222",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "ax",
+      "type": "number",
+      "default": 50,
+      "min": 10,
+      "max": 290,
+      "desc": "A端X坐标"
+    },
+    {
+      "key": "ay",
+      "type": "number",
+      "default": 60,
+      "min": 10,
+      "max": 110,
+      "desc": "A端Y坐标"
+    },
+    {
+      "key": "bx",
+      "type": "number",
+      "default": 250,
+      "min": 10,
+      "max": 290,
+      "desc": "B端X坐标"
+    },
+    {
+      "key": "by",
+      "type": "number",
+      "default": 60,
+      "min": 10,
+      "max": 110,
+      "desc": "B端Y坐标"
+    },
+    {
+      "key": "sag",
+      "type": "number(0-1)",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "desc": "导线下垂程度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":          "--cmp-size",
-    "wireColor":     "--cmp-wire-color",
-    "wireWidth":     "--cmp-wire-width",
-    "coreColor":     "--cmp-core-color",
+    "size": "--cmp-size",
+    "wireColor": "--cmp-wire-color",
+    "wireWidth": "--cmp-wire-width",
+    "coreColor": "--cmp-core-color",
     "terminalColor": "--cmp-terminal",
-    "screwColor":    "--cmp-screw",
-    "stroke":        "--cmp-stroke",
-    "strokeWidth":   "--cmp-stroke-width",
-    "glow":          "--cmp-glow"
+    "screwColor": "--cmp-screw",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change",    "type": "drag", "values": { "ax": "number — A端X", "ay": "number — A端Y", "bx": "number — B端X", "by": "number — B端Y" } },
-    { "name": "cmp:changeend", "type": "drag", "values": { "ax": "number — A端X", "ay": "number — A端Y", "bx": "number — B端X", "by": "number — B端Y" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "ax": "number — A端X",
+        "ay": "number — A端Y",
+        "bx": "number — B端X",
+        "by": "number — B端Y"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "drag",
+      "values": {
+        "ax": "number — A端X",
+        "ay": "number — A端Y",
+        "bx": "number — B端X",
+        "by": "number — B端Y"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "导线连接器（交互式）",
+      "tags": [
+        "wire",
+        "connector",
+        "terminal",
+        "circuit",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "导线连接器（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "wireColor": {
+          "label": "wireColor",
+          "desc": "导线绝缘皮颜色"
+        },
+        "wireWidth": {
+          "label": "wireWidth",
+          "desc": "导线粗细"
+        },
+        "coreColor": {
+          "label": "coreColor",
+          "desc": "铜芯颜色"
+        },
+        "terminalColor": {
+          "label": "terminalColor",
+          "desc": "接线柱颜色"
+        },
+        "screwColor": {
+          "label": "screwColor",
+          "desc": "螺丝颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "ax": {
+          "label": "ax",
+          "desc": "A端X坐标"
+        },
+        "ay": {
+          "label": "ay",
+          "desc": "A端Y坐标"
+        },
+        "bx": {
+          "label": "bx",
+          "desc": "B端X坐标"
+        },
+        "by": {
+          "label": "by",
+          "desc": "B端Y坐标"
+        },
+        "sag": {
+          "label": "sag",
+          "desc": "导线下垂程度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "ax": "number — A端X",
+            "ay": "number — A端Y",
+            "bx": "number — B端X",
+            "by": "number — B端Y"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "ax": "number — A端X",
+            "ay": "number — A端Y",
+            "bx": "number — B端X",
+            "by": "number — B端Y"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Wire Connector Explorer",
+      "tags": [
+        "wire",
+        "connector",
+        "terminal",
+        "circuit",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Wire Connector Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "wireColor": {
+          "label": "Wire Color",
+          "desc": "Color of the wire."
+        },
+        "wireWidth": {
+          "label": "Wire Width",
+          "desc": "Thickness of the wire."
+        },
+        "coreColor": {
+          "label": "Core Color",
+          "desc": "Color of the central core."
+        },
+        "terminalColor": {
+          "label": "Terminal Color",
+          "desc": "Color of the electrical terminals."
+        },
+        "screwColor": {
+          "label": "Screw Color",
+          "desc": "Color of the screw detail."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "ax": {
+          "label": "Endpoint A X",
+          "desc": "X position of endpoint A in viewBox coordinates."
+        },
+        "ay": {
+          "label": "Endpoint A Y",
+          "desc": "Y position of endpoint A in viewBox coordinates."
+        },
+        "bx": {
+          "label": "Endpoint B X",
+          "desc": "X position of endpoint B in viewBox coordinates."
+        },
+        "by": {
+          "label": "Endpoint B Y",
+          "desc": "Y position of endpoint B in viewBox coordinates."
+        },
+        "sag": {
+          "label": "Wire Sag",
+          "desc": "Amount of sag in the wire segment."
+        },
+        "glow": {
+          "label": "Highlight Intensity",
+          "desc": "Glow or highlight intensity from 0 to 1."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "ax": "X position of endpoint A.",
+            "ay": "Y position of endpoint A.",
+            "bx": "X position of endpoint B.",
+            "by": "Y position of endpoint B."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the interaction ends.",
+          "values": {
+            "ax": "X position of endpoint A.",
+            "ay": "Y position of endpoint A.",
+            "bx": "X position of endpoint B.",
+            "by": "Y position of endpoint B."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.circuit.wire-connector.interactive" role="img" aria-label="导线连接器（交互式）">

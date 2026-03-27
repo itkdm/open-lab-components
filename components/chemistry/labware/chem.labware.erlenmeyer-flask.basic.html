@@ -1,20 +1,65 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.erlenmeyer-flask.basic",
   "name": "锥形瓶",
   "nameEn": "Erlenmeyer Flask",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 120, "h": 160 },
-  "tags": ["chemistry", "labware", "flask", "erlenmeyer", "volume"],
+  "viewport": {
+    "w": 120,
+    "h": 160
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "flask",
+    "erlenmeyer",
+    "volume"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 160, "min": 100, "max": 280, "desc": "组件高度" },
-    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.4, "min": 0, "max": 1, "desc": "液面高度占比" },
-    { "key": "liquidColor", "type": "color", "default": "#4db6ac", "desc": "液体颜色" },
-    { "key": "glassTint", "type": "color", "default": "rgba(226, 242, 255, 0.55)", "desc": "玻璃底色" },
-    { "key": "stroke", "type": "color", "default": "#2f4f5f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number(px)", "default": 2, "min": 1, "max": 4, "desc": "描边宽度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 100,
+      "max": 280,
+      "desc": "组件高度"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.4,
+      "min": 0,
+      "max": 1,
+      "desc": "液面高度占比"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#4db6ac",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(226, 242, 255, 0.55)",
+      "desc": "玻璃底色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#2f4f5f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number(px)",
+      "default": 2,
+      "min": 1,
+      "max": 4,
+      "desc": "描边宽度"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -23,6 +68,84 @@
     "glassTint": "--cmp-glass-tint",
     "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "锥形瓶",
+      "tags": [
+        "chemistry",
+        "labware",
+        "flask",
+        "erlenmeyer",
+        "volume"
+      ],
+      "ariaLabel": "锥形瓶",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液面高度占比"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边宽度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Erlenmeyer Flask",
+      "tags": [
+        "chemistry",
+        "labware",
+        "flask",
+        "erlenmeyer",
+        "volume"
+      ],
+      "ariaLabel": "Erlenmeyer Flask",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Sets the fill level as a fraction of the vessel height."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

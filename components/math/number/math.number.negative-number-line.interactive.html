@@ -1,22 +1,143 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.negative-number-line.interactive",
   "name": "正负数轴",
   "nameEn": "Negative Number Line",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 220 },
+  "viewport": {
+    "w": 360,
+    "h": 220
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "value", "type": "number", "default": 0, "min": -10, "max": 10, "desc": "当前值" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "value",
+      "type": "number",
+      "default": 0,
+      "min": -10,
+      "max": 10,
+      "desc": "当前值"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["negative", "number-line", "integer", "positive", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "negative",
+    "number-line",
+    "integer",
+    "positive",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "value": "number", "type": "string" } },
-    { "name": "cmp:changeend", "type": "slide", "values": { "value": "number", "type": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "value": "number",
+        "type": "string"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "value": "number",
+        "type": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "正负数轴",
+      "tags": [
+        "negative",
+        "number-line",
+        "integer",
+        "positive",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "正负数轴",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "value": {
+          "label": "value",
+          "desc": "当前值"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "value": "number",
+            "type": "string"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "value": "number",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Negative Number Line",
+      "tags": [
+        "negative",
+        "number-line",
+        "integer",
+        "positive",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Negative Number Line",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "value": {
+          "label": "Value",
+          "desc": "Sets the current numeric value."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "value": "Current numeric value.",
+            "type": "Current mode or classification."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "value": "Current numeric value.",
+            "type": "Current mode or classification."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.negative-number-line.interactive" role="img" aria-label="正负数轴">

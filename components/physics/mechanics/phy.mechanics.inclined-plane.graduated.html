@@ -1,22 +1,102 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.inclined-plane.graduated",
   "name": "斜面（带刻度）",
   "nameEn": "Graduated Inclined Plane",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 100 },
-  "tags": ["physics", "mechanics", "inclined-plane", "graduated", "measurement"],
+  "viewport": {
+    "w": 160,
+    "h": 100
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "inclined-plane",
+    "graduated",
+    "measurement"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 160, "min": 100, "max": 240, "desc": "组件宽度" },
-    { "key": "surfaceColor", "type": "color", "default": "#eceff1", "desc": "斜面颜色" },
-    { "key": "stroke", "type": "color", "default": "#455a64", "desc": "描边颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 100,
+      "max": 240,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "surfaceColor",
+      "type": "color",
+      "default": "#eceff1",
+      "desc": "斜面颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#455a64",
+      "desc": "描边颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "surfaceColor": "--cmp-surface",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "斜面（带刻度）",
+      "tags": [
+        "physics",
+        "mechanics",
+        "inclined-plane",
+        "graduated",
+        "measurement"
+      ],
+      "ariaLabel": "斜面（带刻度）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "surfaceColor": {
+          "label": "surfaceColor",
+          "desc": "斜面颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Graduated Inclined Plane",
+      "tags": [
+        "physics",
+        "mechanics",
+        "inclined-plane",
+        "graduated",
+        "measurement"
+      ],
+      "ariaLabel": "Graduated Inclined Plane",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "surfaceColor": {
+          "label": "Surface Color",
+          "desc": "Sets the color of the contact surface."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

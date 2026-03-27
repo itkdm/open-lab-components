@@ -1,24 +1,150 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.micrometer.basic",
   "name": "螺旋测微器",
   "nameEn": "Micrometer",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 180 },
-  "tags": ["apparatus", "micrometer", "measurement", "precision", "screw-gauge"],
+  "viewport": {
+    "w": 300,
+    "h": 180
+  },
+  "tags": [
+    "apparatus",
+    "micrometer",
+    "measurement",
+    "precision",
+    "screw-gauge"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 180, "min": 120, "max": 300, "desc": "组件高度" },
-    { "key": "reading",     "type": "number",     "default": 5.25, "min": 0, "max": 25, "desc": "读数(mm)" },
-    { "key": "frameColor",  "type": "color",  "default": "#546e7a", "desc": "弓架颜色" },
-    { "key": "thimbleColor","type": "color",  "default": "#78909c", "desc": "活动套筒颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#263238", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 120,
+      "max": 300,
+      "desc": "组件高度"
+    },
+    {
+      "key": "reading",
+      "type": "number",
+      "default": 5.25,
+      "min": 0,
+      "max": 25,
+      "desc": "读数(mm)"
+    },
+    {
+      "key": "frameColor",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "弓架颜色"
+    },
+    {
+      "key": "thimbleColor",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "活动套筒颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#263238",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "frameColor": "--cmp-frame", "thimbleColor": "--cmp-thimble",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "frameColor": "--cmp-frame",
+    "thimbleColor": "--cmp-thimble",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "螺旋测微器",
+      "tags": [
+        "apparatus",
+        "micrometer",
+        "measurement",
+        "precision",
+        "screw-gauge"
+      ],
+      "ariaLabel": "螺旋测微器",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "reading": {
+          "label": "reading",
+          "desc": "读数(mm)"
+        },
+        "frameColor": {
+          "label": "frameColor",
+          "desc": "弓架颜色"
+        },
+        "thimbleColor": {
+          "label": "thimbleColor",
+          "desc": "活动套筒颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Micrometer",
+      "tags": [
+        "apparatus",
+        "micrometer",
+        "measurement",
+        "precision",
+        "screw-gauge"
+      ],
+      "ariaLabel": "Micrometer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "reading": {
+          "label": "Reading",
+          "desc": "Numeric control for reading."
+        },
+        "frameColor": {
+          "label": "Frame Color",
+          "desc": "Color setting for frame color."
+        },
+        "thimbleColor": {
+          "label": "Thimble Color",
+          "desc": "Color setting for thimble color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,39 +1,265 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.spring.interactive",
   "name": "弹簧（交互式）",
-  "nameEn": "Spring (Interactive)",
+  "nameEn": "Spring-Mass Oscillator",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 100 },
-  "tags": ["spring", "elastic", "hooke", "mechanics", "interactive", "draggable"],
+  "viewport": {
+    "w": 200,
+    "h": 100
+  },
+  "tags": [
+    "spring",
+    "elastic",
+    "hooke",
+    "mechanics",
+    "interactive",
+    "draggable"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 100, "min": 60, "max": 240, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "springColor",  "type": "color",  "default": "#555555", "desc": "弹簧颜色" },
-    { "key": "wallColor",    "type": "color",  "default": "#666666", "desc": "固定墙颜色" },
-    { "key": "handleColor",  "type": "color",  "default": "#e53935", "desc": "拖拽手柄颜色" },
-    { "key": "stroke",       "type": "color",  "default": "#222222", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "accent",       "type": "color",  "default": "#1565c0", "desc": "强调色（力值文字）" },
-    { "key": "k",            "type": "number", "default": 100, "min": 10, "max": 500, "desc": "弹簧劲度系数(N/m)" },
-    { "key": "naturalLen",   "type": "number", "default": 80,  "min": 40, "max": 120, "desc": "自然长度(viewBox单位)" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 100,
+      "min": 60,
+      "max": 240,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "springColor",
+      "type": "color",
+      "default": "#555555",
+      "desc": "弹簧颜色"
+    },
+    {
+      "key": "wallColor",
+      "type": "color",
+      "default": "#666666",
+      "desc": "固定墙颜色"
+    },
+    {
+      "key": "handleColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "拖拽手柄颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#222222",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色（力值文字）"
+    },
+    {
+      "key": "k",
+      "type": "number",
+      "default": 100,
+      "min": 10,
+      "max": 500,
+      "desc": "弹簧劲度系数(N/m)"
+    },
+    {
+      "key": "naturalLen",
+      "type": "number",
+      "default": 80,
+      "min": 40,
+      "max": 120,
+      "desc": "自然长度(viewBox单位)"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":         "--cmp-size",
-    "springColor":  "--cmp-spring",
-    "wallColor":    "--cmp-wall",
-    "handleColor":  "--cmp-handle",
-    "stroke":       "--cmp-stroke",
-    "strokeWidth":  "--cmp-stroke-width",
-    "accent":       "--cmp-accent",
-    "glow":         "--cmp-glow"
+    "size": "--cmp-size",
+    "springColor": "--cmp-spring",
+    "wallColor": "--cmp-wall",
+    "handleColor": "--cmp-handle",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change",    "type": "drag", "values": { "extension": "number — 形变量(viewBox单位)", "force": "number(N) — 弹力" } },
-    { "name": "cmp:changeend", "type": "drag", "values": { "extension": "number — 形变量(viewBox单位)", "force": "number(N) — 弹力" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "extension": "number — 形变量(viewBox单位)",
+        "force": "number(N) — 弹力"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "drag",
+      "values": {
+        "extension": "number — 形变量(viewBox单位)",
+        "force": "number(N) — 弹力"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "弹簧（交互式）",
+      "tags": [
+        "spring",
+        "elastic",
+        "hooke",
+        "mechanics",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "弹簧（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "springColor": {
+          "label": "springColor",
+          "desc": "弹簧颜色"
+        },
+        "wallColor": {
+          "label": "wallColor",
+          "desc": "固定墙颜色"
+        },
+        "handleColor": {
+          "label": "handleColor",
+          "desc": "拖拽手柄颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（力值文字）"
+        },
+        "k": {
+          "label": "k",
+          "desc": "弹簧劲度系数(N/m)"
+        },
+        "naturalLen": {
+          "label": "naturalLen",
+          "desc": "自然长度(viewBox单位)"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "extension": "number — 形变量(viewBox单位)",
+            "force": "number(N) — 弹力"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "extension": "number — 形变量(viewBox单位)",
+            "force": "number(N) — 弹力"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Spring-Mass Oscillator",
+      "tags": [
+        "spring",
+        "elastic",
+        "hooke",
+        "mechanics",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Spring-Mass Oscillator",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "springColor": {
+          "label": "Spring Color",
+          "desc": "Sets the color of the spring."
+        },
+        "wallColor": {
+          "label": "Wall Color",
+          "desc": "Sets the color of the container wall."
+        },
+        "handleColor": {
+          "label": "Handle Color",
+          "desc": "Sets the color of the handle."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "k": {
+          "label": "Spring Constant",
+          "desc": "Sets the spring constant."
+        },
+        "naturalLen": {
+          "label": "Natural Length",
+          "desc": "Sets the spring's natural length."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "extension": "Current spring extension.",
+            "force": "Current force value."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "extension": "Current spring extension.",
+            "force": "Current force value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.spring.interactive" role="img" aria-label="弹簧（交互式）">

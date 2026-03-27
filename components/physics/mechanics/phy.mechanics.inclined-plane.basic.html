@@ -1,23 +1,118 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.inclined-plane.basic",
   "name": "斜面",
   "nameEn": "Inclined Plane",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 100 },
-  "tags": ["physics", "mechanics", "inclined-plane", "friction", "force"],
+  "viewport": {
+    "w": 160,
+    "h": 100
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "inclined-plane",
+    "friction",
+    "force"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 160, "min": 100, "max": 240, "desc": "组件宽度" },
-    { "key": "angle", "type": "number", "default": 30, "min": 10, "max": 60, "desc": "倾斜角度" },
-    { "key": "surfaceColor", "type": "color", "default": "#8d6e63", "desc": "斜面颜色" },
-    { "key": "stroke", "type": "color", "default": "#5d4037", "desc": "描边颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 100,
+      "max": 240,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "angle",
+      "type": "number",
+      "default": 30,
+      "min": 10,
+      "max": 60,
+      "desc": "倾斜角度"
+    },
+    {
+      "key": "surfaceColor",
+      "type": "color",
+      "default": "#8d6e63",
+      "desc": "斜面颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#5d4037",
+      "desc": "描边颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "surfaceColor": "--cmp-surface",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "斜面",
+      "tags": [
+        "physics",
+        "mechanics",
+        "inclined-plane",
+        "friction",
+        "force"
+      ],
+      "ariaLabel": "斜面",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "倾斜角度"
+        },
+        "surfaceColor": {
+          "label": "surfaceColor",
+          "desc": "斜面颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Inclined Plane",
+      "tags": [
+        "physics",
+        "mechanics",
+        "inclined-plane",
+        "friction",
+        "force"
+      ],
+      "ariaLabel": "Inclined Plane",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Sets the angle in degrees."
+        },
+        "surfaceColor": {
+          "label": "Surface Color",
+          "desc": "Sets the color of the contact surface."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,33 +1,263 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.thermal.carnot-cycle.interactive",
   "name": "卡诺循环（交互式）",
-  "nameEn": "Carnot Cycle (Interactive)",
+  "nameEn": "Carnot Cycle Explorer",
   "category": "physics/thermal",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 440 },
-  "tags": ["thermodynamics","carnot","cycle","PV-diagram","heat-engine","interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 440
+  },
+  "tags": [
+    "thermodynamics",
+    "carnot",
+    "cycle",
+    "PV-diagram",
+    "heat-engine",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "hotColor",   "type": "color",  "default": "#e53935", "desc": "高温颜色" },
-    { "key": "coldColor",  "type": "color",  "default": "#1e88e5", "desc": "低温颜色" },
-    { "key": "curveColor", "type": "color",  "default": "#ff9800", "desc": "曲线颜色" },
-    { "key": "Th",         "type": "number", "default": 600, "min": 400, "max": 1000, "desc": "高温热源(K)" },
-    { "key": "Tc",         "type": "number", "default": 300, "min": 200, "max": 500, "desc": "低温热源(K)" },
-    { "key": "speed",      "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 440,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "hotColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "高温颜色"
+    },
+    {
+      "key": "coldColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "低温颜色"
+    },
+    {
+      "key": "curveColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "曲线颜色"
+    },
+    {
+      "key": "Th",
+      "type": "number",
+      "default": 600,
+      "min": 400,
+      "max": 1000,
+      "desc": "高温热源(K)"
+    },
+    {
+      "key": "Tc",
+      "type": "number",
+      "default": 300,
+      "min": 200,
+      "max": 500,
+      "desc": "低温热源(K)"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "hotColor": "--cmp-hot", "coldColor": "--cmp-cold", "curveColor": "--cmp-curve", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "hotColor": "--cmp-hot",
+    "coldColor": "--cmp-cold",
+    "curveColor": "--cmp-curve",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "step", "values": { "step": "number", "stepName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "step",
+      "values": {
+        "step": "number",
+        "stepName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "卡诺循环（交互式）",
+      "tags": [
+        "thermodynamics",
+        "carnot",
+        "cycle",
+        "PV-diagram",
+        "heat-engine",
+        "interactive"
+      ],
+      "ariaLabel": "卡诺循环（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "hotColor": {
+          "label": "hotColor",
+          "desc": "高温颜色"
+        },
+        "coldColor": {
+          "label": "coldColor",
+          "desc": "低温颜色"
+        },
+        "curveColor": {
+          "label": "curveColor",
+          "desc": "曲线颜色"
+        },
+        "Th": {
+          "label": "Th",
+          "desc": "高温热源(K)"
+        },
+        "Tc": {
+          "label": "Tc",
+          "desc": "低温热源(K)"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "step": "number",
+            "stepName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Carnot Cycle Explorer",
+      "tags": [
+        "thermodynamics",
+        "carnot",
+        "cycle",
+        "PV-diagram",
+        "heat-engine",
+        "interactive"
+      ],
+      "ariaLabel": "Carnot Cycle Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "hotColor": {
+          "label": "Hot Color",
+          "desc": "Color setting for hot color."
+        },
+        "coldColor": {
+          "label": "Cold Color",
+          "desc": "Color setting for cold color."
+        },
+        "curveColor": {
+          "label": "Curve Color",
+          "desc": "Color setting for curve color."
+        },
+        "Th": {
+          "label": "Hot Reservoir Temperature",
+          "desc": "Sets the hot-reservoir temperature."
+        },
+        "Tc": {
+          "label": "Cold Reservoir Temperature",
+          "desc": "Sets the cold-reservoir temperature."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Numeric control for speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Select the show labels option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Step",
+          "desc": "Event emitted during step.",
+          "values": {
+            "step": "Value for step.",
+            "stepName": "Value for step name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.thermal.carnot-cycle.interactive" role="img" aria-label="卡诺循环（交互式）">

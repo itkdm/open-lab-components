@@ -1,28 +1,154 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.glass-rod.basic",
   "name": "玻璃棒",
   "nameEn": "Glass Rod",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 30, "h": 200 },
-  "tags": ["chemistry", "labware", "glass-rod", "stirring", "glass", "tool"],
+  "viewport": {
+    "w": 30,
+    "h": 200
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "glass-rod",
+    "stirring",
+    "glass",
+    "tool"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
-    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.4)", "desc": "玻璃底色" },
-    { "key": "stroke",      "type": "color",  "default": "#5a8a9a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 2.5, "desc": "描边粗细" },
-    { "key": "rotate",      "type": "number(deg)", "default": 0, "desc": "旋转角度" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(220,240,255,0.4)",
+      "desc": "玻璃底色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#5a8a9a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 2.5,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "rotate",
+      "type": "number(deg)",
+      "default": 0,
+      "desc": "旋转角度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "glassTint":   "--cmp-glass",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "glassTint": "--cmp-glass",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "rotate":      "--cmp-rotate",
-    "glow":        "--cmp-glow"
+    "rotate": "--cmp-rotate",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "玻璃棒",
+      "tags": [
+        "chemistry",
+        "labware",
+        "glass-rod",
+        "stirring",
+        "glass",
+        "tool"
+      ],
+      "ariaLabel": "玻璃棒",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "rotate": {
+          "label": "rotate",
+          "desc": "旋转角度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Glass Rod",
+      "tags": [
+        "chemistry",
+        "labware",
+        "glass-rod",
+        "stirring",
+        "glass",
+        "tool"
+      ],
+      "ariaLabel": "Glass Rod",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "rotate": {
+          "label": "Rotation",
+          "desc": "Rotates the component by the given angle."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,24 +1,152 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.dice.basic",
   "name": "骰子",
   "nameEn": "Dice",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 100 },
-  "tags": ["math", "geometry", "dice", "probability", "random", "cube"],
+  "viewport": {
+    "w": 100,
+    "h": 100
+  },
+  "tags": [
+    "math",
+    "geometry",
+    "dice",
+    "probability",
+    "random",
+    "cube"
+  ],
   "props": [
-    { "key": "size",      "type": "number(px)", "default": 100, "min": 40, "max": 200, "desc": "组件尺寸" },
-    { "key": "face",      "type": "number",     "default": 6, "min": 1, "max": 6, "desc": "显示点数" },
-    { "key": "bodyColor", "type": "color",  "default": "#fafafa", "desc": "骰子颜色" },
-    { "key": "dotColor",  "type": "color",  "default": "#263238", "desc": "点颜色" },
-    { "key": "stroke",    "type": "color",  "default": "#bdbdbd", "desc": "描边颜色" },
-    { "key": "rounded",   "type": "number", "default": 12, "min": 2, "max": 20, "desc": "圆角半径" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 100,
+      "min": 40,
+      "max": 200,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "face",
+      "type": "number",
+      "default": 6,
+      "min": 1,
+      "max": 6,
+      "desc": "显示点数"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#fafafa",
+      "desc": "骰子颜色"
+    },
+    {
+      "key": "dotColor",
+      "type": "color",
+      "default": "#263238",
+      "desc": "点颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#bdbdbd",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "rounded",
+      "type": "number",
+      "default": 12,
+      "min": 2,
+      "max": 20,
+      "desc": "圆角半径"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bodyColor": "--cmp-body",
-    "dotColor": "--cmp-dot", "stroke": "--cmp-stroke"
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "dotColor": "--cmp-dot",
+    "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "骰子",
+      "tags": [
+        "math",
+        "geometry",
+        "dice",
+        "probability",
+        "random",
+        "cube"
+      ],
+      "ariaLabel": "骰子",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "face": {
+          "label": "face",
+          "desc": "显示点数"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "骰子颜色"
+        },
+        "dotColor": {
+          "label": "dotColor",
+          "desc": "点颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "rounded": {
+          "label": "rounded",
+          "desc": "圆角半径"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Dice",
+      "tags": [
+        "math",
+        "geometry",
+        "dice",
+        "probability",
+        "random",
+        "cube"
+      ],
+      "ariaLabel": "Dice",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "face": {
+          "label": "Clock Face Style",
+          "desc": "Selects the clock face style."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Sets the main body color of the object."
+        },
+        "dotColor": {
+          "label": "Point Color",
+          "desc": "Sets the color of the plotted point."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "rounded": {
+          "label": "Rounded Corners",
+          "desc": "Toggles rounded corners."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

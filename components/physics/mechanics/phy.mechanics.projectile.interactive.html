@@ -1,36 +1,324 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.projectile.interactive",
   "name": "抛体运动（交互式）",
-  "nameEn": "Projectile Motion (Interactive)",
+  "nameEn": "Projectile Motion Explorer",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 380 },
-  "tags": ["mechanics", "projectile", "parabola", "gravity", "kinematics", "interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 380
+  },
+  "tags": [
+    "mechanics",
+    "projectile",
+    "parabola",
+    "gravity",
+    "kinematics",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 380, "min": 240, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "ballColor",   "type": "color",  "default": "#e53935", "desc": "球体颜色" },
-    { "key": "trailColor",  "type": "color",  "default": "#ef9a9a", "desc": "轨迹颜色" },
-    { "key": "groundColor", "type": "color",  "default": "#8d6e63", "desc": "地面颜色" },
-    { "key": "launchAngle", "type": "number", "default": 45, "min": 5, "max": 85, "desc": "发射角度(°)" },
-    { "key": "launchSpeed", "type": "number", "default": 20, "min": 5, "max": 50, "desc": "发射速度(m/s)" },
-    { "key": "gravity",     "type": "number", "default": 9.8, "min": 1, "max": 30, "desc": "重力加速度(m/s²)" },
-    { "key": "showTrail",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示轨迹" },
-    { "key": "showVectors", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示速度矢量" },
-    { "key": "showData",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示数据面板" },
-    { "key": "running",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "glow",        "type": "number", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 380,
+      "min": 240,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "ballColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "球体颜色"
+    },
+    {
+      "key": "trailColor",
+      "type": "color",
+      "default": "#ef9a9a",
+      "desc": "轨迹颜色"
+    },
+    {
+      "key": "groundColor",
+      "type": "color",
+      "default": "#8d6e63",
+      "desc": "地面颜色"
+    },
+    {
+      "key": "launchAngle",
+      "type": "number",
+      "default": 45,
+      "min": 5,
+      "max": 85,
+      "desc": "发射角度(°)"
+    },
+    {
+      "key": "launchSpeed",
+      "type": "number",
+      "default": 20,
+      "min": 5,
+      "max": 50,
+      "desc": "发射速度(m/s)"
+    },
+    {
+      "key": "gravity",
+      "type": "number",
+      "default": 9.8,
+      "min": 1,
+      "max": 30,
+      "desc": "重力加速度(m/s²)"
+    },
+    {
+      "key": "showTrail",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示轨迹"
+    },
+    {
+      "key": "showVectors",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示速度矢量"
+    },
+    {
+      "key": "showData",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示数据面板"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "glow",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "ballColor": "--cmp-ball", "trailColor": "--cmp-trail", "groundColor": "--cmp-ground"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "ballColor": "--cmp-ball",
+    "trailColor": "--cmp-trail",
+    "groundColor": "--cmp-ground"
   },
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "angle": "number", "speed": "number", "time": "number", "x": "number", "y": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "angle": "number",
+        "speed": "number",
+        "time": "number",
+        "x": "number",
+        "y": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "抛体运动（交互式）",
+      "tags": [
+        "mechanics",
+        "projectile",
+        "parabola",
+        "gravity",
+        "kinematics",
+        "interactive"
+      ],
+      "ariaLabel": "抛体运动（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "ballColor": {
+          "label": "ballColor",
+          "desc": "球体颜色"
+        },
+        "trailColor": {
+          "label": "trailColor",
+          "desc": "轨迹颜色"
+        },
+        "groundColor": {
+          "label": "groundColor",
+          "desc": "地面颜色"
+        },
+        "launchAngle": {
+          "label": "launchAngle",
+          "desc": "发射角度(°)"
+        },
+        "launchSpeed": {
+          "label": "launchSpeed",
+          "desc": "发射速度(m/s)"
+        },
+        "gravity": {
+          "label": "gravity",
+          "desc": "重力加速度(m/s²)"
+        },
+        "showTrail": {
+          "label": "showTrail",
+          "desc": "显示轨迹"
+        },
+        "showVectors": {
+          "label": "showVectors",
+          "desc": "显示速度矢量"
+        },
+        "showData": {
+          "label": "showData",
+          "desc": "显示数据面板"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number",
+            "speed": "number",
+            "time": "number",
+            "x": "number",
+            "y": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Projectile Motion Explorer",
+      "tags": [
+        "mechanics",
+        "projectile",
+        "parabola",
+        "gravity",
+        "kinematics",
+        "interactive"
+      ],
+      "ariaLabel": "Projectile Motion Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "ballColor": {
+          "label": "Ball Color",
+          "desc": "Sets the color of the ball."
+        },
+        "trailColor": {
+          "label": "Trail Color",
+          "desc": "Sets the color of the trajectory trail."
+        },
+        "groundColor": {
+          "label": "Ground Color",
+          "desc": "Sets the color of the ground line or base."
+        },
+        "launchAngle": {
+          "label": "Launch Angle",
+          "desc": "Sets the launch angle in degrees."
+        },
+        "launchSpeed": {
+          "label": "Launch Speed",
+          "desc": "Sets the initial launch speed."
+        },
+        "gravity": {
+          "label": "Gravity",
+          "desc": "Sets the gravitational acceleration value."
+        },
+        "showTrail": {
+          "label": "Show Trail",
+          "desc": "Shows or hides the motion trail."
+        },
+        "showVectors": {
+          "label": "Show Vectors",
+          "desc": "Shows or hides the vector arrows."
+        },
+        "showData": {
+          "label": "Show Data Panel",
+          "desc": "Shows or hides the data readout panel."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animated motion."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle value.",
+            "speed": "Current speed value.",
+            "time": "Elapsed time.",
+            "x": "Current horizontal position.",
+            "y": "Current vertical position."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.projectile.interactive" role="img" aria-label="抛体运动（交互式）">

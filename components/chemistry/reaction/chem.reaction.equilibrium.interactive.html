@@ -1,32 +1,256 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.reaction.equilibrium.interactive",
   "name": "化学平衡（交互式）",
-  "nameEn": "Chemical Equilibrium (Interactive)",
+  "nameEn": "Chemical Equilibrium Explorer",
   "category": "chemistry/reaction",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 430 },
-  "tags": ["chemistry","equilibrium","reaction","Le-Chatelier","concentration","rate","interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 430
+  },
+  "tags": [
+    "chemistry",
+    "equilibrium",
+    "reaction",
+    "Le-Chatelier",
+    "concentration",
+    "rate",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 430, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "reactantColor",  "type": "color",  "default": "#42a5f5", "desc": "反应物颜色" },
-    { "key": "productColor",   "type": "color",  "default": "#ef5350", "desc": "生成物颜色" },
-    { "key": "temperature",    "type": "number", "default": 300, "min": 200, "max": 500, "desc": "温度(K)" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showGraph",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示浓度图" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 430,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "reactantColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "反应物颜色"
+    },
+    {
+      "key": "productColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "生成物颜色"
+    },
+    {
+      "key": "temperature",
+      "type": "number",
+      "default": 300,
+      "min": 200,
+      "max": 500,
+      "desc": "温度(K)"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showGraph",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示浓度图"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "reactantColor": "--cmp-reactant", "productColor": "--cmp-product", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "reactantColor": "--cmp-reactant",
+    "productColor": "--cmp-product",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "state", "values": { "reactantConc": "number", "productConc": "number", "Keq": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "state",
+      "values": {
+        "reactantConc": "number",
+        "productConc": "number",
+        "Keq": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "化学平衡（交互式）",
+      "tags": [
+        "chemistry",
+        "equilibrium",
+        "reaction",
+        "Le-Chatelier",
+        "concentration",
+        "rate",
+        "interactive"
+      ],
+      "ariaLabel": "化学平衡（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "reactantColor": {
+          "label": "reactantColor",
+          "desc": "反应物颜色"
+        },
+        "productColor": {
+          "label": "productColor",
+          "desc": "生成物颜色"
+        },
+        "temperature": {
+          "label": "temperature",
+          "desc": "温度(K)"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showGraph": {
+          "label": "showGraph",
+          "desc": "显示浓度图"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "reactantConc": "number",
+            "productConc": "number",
+            "Keq": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Chemical Equilibrium Explorer",
+      "tags": [
+        "chemistry",
+        "equilibrium",
+        "reaction",
+        "Le-Chatelier",
+        "concentration",
+        "rate",
+        "interactive"
+      ],
+      "ariaLabel": "Chemical Equilibrium Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "reactantColor": {
+          "label": "Reactant Color",
+          "desc": "Sets the color used for reactants."
+        },
+        "productColor": {
+          "label": "Product Color",
+          "desc": "Sets the color used for products."
+        },
+        "temperature": {
+          "label": "Temperature",
+          "desc": "Sets the temperature used in the simulation."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showGraph": {
+          "label": "Show Graph",
+          "desc": "Shows or hides the graph panel."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "reactantConc": "Current reactant concentration.",
+            "productConc": "Current product concentration.",
+            "Keq": "Current equilibrium constant."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.reaction.equilibrium.interactive" role="img" aria-label="化学平衡（交互式）">

@@ -1,30 +1,169 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.tool.protractor.basic",
   "name": "量角器",
   "nameEn": "Protractor",
   "category": "math/tool",
   "version": "1.0.0",
-  "viewport": { "w": 260, "h": 145 },
-  "tags": ["math", "protractor", "angle", "measurement", "geometry", "tool"],
+  "viewport": {
+    "w": 260,
+    "h": 145
+  },
+  "tags": [
+    "math",
+    "protractor",
+    "angle",
+    "measurement",
+    "geometry",
+    "tool"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 260, "min": 140, "max": 500, "desc": "组件宽度" },
-    { "key": "fill",       "type": "color",  "default": "rgba(200,230,255,0.25)", "desc": "填充色" },
-    { "key": "stroke",     "type": "color",  "default": "#1976d2", "desc": "描边颜色" },
-    { "key": "scaleColor", "type": "color",  "default": "#1565c0", "desc": "刻度颜色" },
-    { "key": "opacity",    "type": "number(0-1)", "default": 0.92, "min": 0.3, "max": 1, "desc": "透明度" },
-    { "key": "rotate",     "type": "number(deg)", "default": 0, "desc": "旋转角度" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 260,
+      "min": 140,
+      "max": 500,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "fill",
+      "type": "color",
+      "default": "rgba(200,230,255,0.25)",
+      "desc": "填充色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#1976d2",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "scaleColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "刻度颜色"
+    },
+    {
+      "key": "opacity",
+      "type": "number(0-1)",
+      "default": 0.92,
+      "min": 0.3,
+      "max": 1,
+      "desc": "透明度"
+    },
+    {
+      "key": "rotate",
+      "type": "number(deg)",
+      "default": 0,
+      "desc": "旋转角度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
-    "fill":       "--cmp-fill",
-    "stroke":     "--cmp-stroke",
+    "size": "--cmp-size",
+    "fill": "--cmp-fill",
+    "stroke": "--cmp-stroke",
     "scaleColor": "--cmp-scale-color",
-    "opacity":    "--cmp-opacity",
-    "rotate":     "--cmp-rotate",
-    "glow":       "--cmp-glow"
+    "opacity": "--cmp-opacity",
+    "rotate": "--cmp-rotate",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "量角器",
+      "tags": [
+        "math",
+        "protractor",
+        "angle",
+        "measurement",
+        "geometry",
+        "tool"
+      ],
+      "ariaLabel": "量角器",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "fill": {
+          "label": "fill",
+          "desc": "填充色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "scaleColor": {
+          "label": "scaleColor",
+          "desc": "刻度颜色"
+        },
+        "opacity": {
+          "label": "opacity",
+          "desc": "透明度"
+        },
+        "rotate": {
+          "label": "rotate",
+          "desc": "旋转角度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Protractor",
+      "tags": [
+        "math",
+        "protractor",
+        "angle",
+        "measurement",
+        "geometry",
+        "tool"
+      ],
+      "ariaLabel": "Protractor",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "fill": {
+          "label": "Fill Color",
+          "desc": "Sets the fill color of the main shape."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "scaleColor": {
+          "label": "Scale Color",
+          "desc": "Sets the color of the measurement scale."
+        },
+        "opacity": {
+          "label": "Opacity",
+          "desc": "Sets the transparency level from 0 to 1."
+        },
+        "rotate": {
+          "label": "Rotation",
+          "desc": "Rotates the component by the given angle in degrees."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

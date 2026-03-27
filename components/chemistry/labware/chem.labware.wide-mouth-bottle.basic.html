@@ -1,32 +1,202 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.wide-mouth-bottle.basic",
   "name": "广口瓶",
   "nameEn": "Wide-Mouth Bottle",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 150 },
-  "tags": ["chemistry", "labware", "bottle", "wide-mouth", "reagent", "glass", "storage"],
+  "viewport": {
+    "w": 100,
+    "h": 150
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "bottle",
+    "wide-mouth",
+    "reagent",
+    "glass",
+    "storage"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 150, "min": 80, "max": 300, "desc": "组件高度" },
-    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.35)", "desc": "玻璃底色" },
-    { "key": "solidColor",  "type": "color",  "default": "#e0e0e0", "desc": "固体试剂颜色" },
-    { "key": "solidLevel",  "type": "number(0-1)", "default": 0.3, "min": 0, "max": 0.8, "desc": "固体填充量" },
-    { "key": "capColor",    "type": "color",  "default": "#5d4037", "desc": "瓶塞颜色" },
-    { "key": "showCap",     "type": "boolean", "default": true, "desc": "显示瓶塞" },
-    { "key": "stroke",      "type": "color",  "default": "#35586a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.8, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 150,
+      "min": 80,
+      "max": 300,
+      "desc": "组件高度"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(220,240,255,0.35)",
+      "desc": "玻璃底色"
+    },
+    {
+      "key": "solidColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "固体试剂颜色"
+    },
+    {
+      "key": "solidLevel",
+      "type": "number(0-1)",
+      "default": 0.3,
+      "min": 0,
+      "max": 0.8,
+      "desc": "固体填充量"
+    },
+    {
+      "key": "capColor",
+      "type": "color",
+      "default": "#5d4037",
+      "desc": "瓶塞颜色"
+    },
+    {
+      "key": "showCap",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示瓶塞"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#35586a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "glassTint":   "--cmp-glass",
-    "solidColor":  "--cmp-solid",
-    "capColor":    "--cmp-cap",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "glassTint": "--cmp-glass",
+    "solidColor": "--cmp-solid",
+    "capColor": "--cmp-cap",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "广口瓶",
+      "tags": [
+        "chemistry",
+        "labware",
+        "bottle",
+        "wide-mouth",
+        "reagent",
+        "glass",
+        "storage"
+      ],
+      "ariaLabel": "广口瓶",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        },
+        "solidColor": {
+          "label": "solidColor",
+          "desc": "固体试剂颜色"
+        },
+        "solidLevel": {
+          "label": "solidLevel",
+          "desc": "固体填充量"
+        },
+        "capColor": {
+          "label": "capColor",
+          "desc": "瓶塞颜色"
+        },
+        "showCap": {
+          "label": "showCap",
+          "desc": "显示瓶塞"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Wide-Mouth Bottle",
+      "tags": [
+        "chemistry",
+        "labware",
+        "bottle",
+        "wide-mouth",
+        "reagent",
+        "glass",
+        "storage"
+      ],
+      "ariaLabel": "Wide-Mouth Bottle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        },
+        "solidColor": {
+          "label": "Solid Color",
+          "desc": "Sets the color of the solid sample."
+        },
+        "solidLevel": {
+          "label": "Solid Fill Level",
+          "desc": "Sets the fill level of the solid sample."
+        },
+        "capColor": {
+          "label": "Cap Color",
+          "desc": "Sets the color of the cap or stopper."
+        },
+        "showCap": {
+          "label": "Show Cap",
+          "desc": "Shows or hides the cap."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

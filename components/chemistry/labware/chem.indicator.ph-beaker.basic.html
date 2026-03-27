@@ -1,22 +1,105 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.indicator.ph-beaker.basic",
   "name": "动态 pH 指示剂烧杯",
-  "nameEn": "Dynamic pH Indicator Beaker",
+  "nameEn": "pH Indicator Beaker",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 140 },
-  "tags": ["chemistry", "ph", "beaker", "indicator", "color", "labware"],
+  "viewport": {
+    "w": 100,
+    "h": 140
+  },
+  "tags": [
+    "chemistry",
+    "ph",
+    "beaker",
+    "indicator",
+    "color",
+    "labware"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 120, "min": 60, "max": 400, "desc": "组件宽度" },
-    { "key": "ph", "type": "number(0-14)", "default": 7, "desc": "溶液 pH 值，0-14 映射到红-绿-紫" },
-    { "key": "stroke", "type": "color", "default": "#2f4f5f", "desc": "器皿描边色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 120,
+      "min": 60,
+      "max": 400,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "ph",
+      "type": "number(0-14)",
+      "default": 7,
+      "desc": "溶液 pH 值，0-14 映射到红-绿-紫"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#2f4f5f",
+      "desc": "器皿描边色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
     "ph": "--cmp-ph",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "动态 pH 指示剂烧杯",
+      "tags": [
+        "chemistry",
+        "ph",
+        "beaker",
+        "indicator",
+        "color",
+        "labware"
+      ],
+      "ariaLabel": "动态 pH 指示剂烧杯",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "ph": {
+          "label": "ph",
+          "desc": "溶液 pH 值，0-14 映射到红-绿-紫"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "器皿描边色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "pH Indicator Beaker",
+      "tags": [
+        "chemistry",
+        "ph",
+        "beaker",
+        "indicator",
+        "color",
+        "labware"
+      ],
+      "ariaLabel": "pH Indicator Beaker",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "ph": {
+          "label": "pH Value",
+          "desc": "Sets the pH value."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

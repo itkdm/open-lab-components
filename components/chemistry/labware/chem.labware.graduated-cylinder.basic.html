@@ -1,38 +1,231 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.graduated-cylinder.basic",
   "name": "量筒",
   "nameEn": "Graduated Cylinder",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 70, "h": 200 },
-  "tags": ["chemistry", "labware", "cylinder", "graduated", "volume", "measurement"],
+  "viewport": {
+    "w": 70,
+    "h": 200
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "cylinder",
+    "graduated",
+    "volume",
+    "measurement"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 400, "desc": "组件高度" },
-    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.5, "min": 0, "max": 1, "desc": "液面高度占比" },
-    { "key": "scaleMin",    "type": "number", "default": 0,   "desc": "刻度最小值(mL)" },
-    { "key": "scaleMax",    "type": "number", "default": 100, "desc": "刻度最大值(mL)" },
-    { "key": "majorStep",   "type": "number", "default": 10,  "min": 1, "desc": "主刻度间隔" },
-    { "key": "minorStep",   "type": "number", "default": 2,   "min": 1, "desc": "次刻度间隔" },
-    { "key": "liquidColor", "type": "color",  "default": "#4db6ac", "desc": "液体颜色" },
-    { "key": "glassTint",   "type": "color",  "default": "rgba(226,242,255,0.45)", "desc": "玻璃底色" },
-    { "key": "stroke",      "type": "color",  "default": "#2f4f5f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "markColor",   "type": "color",  "default": "rgba(47,79,95,0.5)", "desc": "刻度线颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "desc": "液面高度占比"
+    },
+    {
+      "key": "scaleMin",
+      "type": "number",
+      "default": 0,
+      "desc": "刻度最小值(mL)"
+    },
+    {
+      "key": "scaleMax",
+      "type": "number",
+      "default": 100,
+      "desc": "刻度最大值(mL)"
+    },
+    {
+      "key": "majorStep",
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "desc": "主刻度间隔"
+    },
+    {
+      "key": "minorStep",
+      "type": "number",
+      "default": 2,
+      "min": 1,
+      "desc": "次刻度间隔"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#4db6ac",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(226,242,255,0.45)",
+      "desc": "玻璃底色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#2f4f5f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "markColor",
+      "type": "color",
+      "default": "rgba(47,79,95,0.5)",
+      "desc": "刻度线颜色"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
+    "size": "--cmp-size",
     "liquidLevel": "--cmp-liquid-level",
-    "scaleMin":    "--cmp-scale-min",
-    "scaleMax":    "--cmp-scale-max",
-    "majorStep":   "--cmp-scale-major-step",
-    "minorStep":   "--cmp-scale-minor-step",
+    "scaleMin": "--cmp-scale-min",
+    "scaleMax": "--cmp-scale-max",
+    "majorStep": "--cmp-scale-major-step",
+    "minorStep": "--cmp-scale-minor-step",
     "liquidColor": "--cmp-liquid-color",
-    "glassTint":   "--cmp-glass-tint",
-    "stroke":      "--cmp-stroke",
+    "glassTint": "--cmp-glass-tint",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "markColor":   "--cmp-mark-color"
+    "markColor": "--cmp-mark-color"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "量筒",
+      "tags": [
+        "chemistry",
+        "labware",
+        "cylinder",
+        "graduated",
+        "volume",
+        "measurement"
+      ],
+      "ariaLabel": "量筒",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液面高度占比"
+        },
+        "scaleMin": {
+          "label": "scaleMin",
+          "desc": "刻度最小值(mL)"
+        },
+        "scaleMax": {
+          "label": "scaleMax",
+          "desc": "刻度最大值(mL)"
+        },
+        "majorStep": {
+          "label": "majorStep",
+          "desc": "主刻度间隔"
+        },
+        "minorStep": {
+          "label": "minorStep",
+          "desc": "次刻度间隔"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "markColor": {
+          "label": "markColor",
+          "desc": "刻度线颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Graduated Cylinder",
+      "tags": [
+        "chemistry",
+        "labware",
+        "cylinder",
+        "graduated",
+        "volume",
+        "measurement"
+      ],
+      "ariaLabel": "Graduated Cylinder",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Sets the fill level as a fraction of the vessel height."
+        },
+        "scaleMin": {
+          "label": "Scale Minimum",
+          "desc": "Sets the lowest value shown on the scale."
+        },
+        "scaleMax": {
+          "label": "Scale Maximum",
+          "desc": "Sets the highest value shown on the scale."
+        },
+        "majorStep": {
+          "label": "Major Tick Interval",
+          "desc": "Sets the interval between major scale markings."
+        },
+        "minorStep": {
+          "label": "Minor Tick Interval",
+          "desc": "Sets the interval between minor scale markings."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "markColor": {
+          "label": "Scale Mark Color",
+          "desc": "Sets the color of the scale markings."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

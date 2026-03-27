@@ -1,38 +1,334 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.oscilloscope.interactive",
   "name": "示波器（交互式）",
-  "nameEn": "Oscilloscope (Interactive)",
+  "nameEn": "Oscilloscope Explorer",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 380 },
-  "tags": ["physics","circuit","oscilloscope","waveform","signal","interactive"],
+  "viewport": {
+    "w": 480,
+    "h": 380
+  },
+  "tags": [
+    "physics",
+    "circuit",
+    "oscilloscope",
+    "waveform",
+    "signal",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 380, "min": 260, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",     "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth","type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "bodyColor",  "type": "color",  "default": "#263238", "desc": "机身颜色" },
-    { "key": "screenColor","type": "color",  "default": "#1b5e20", "desc": "屏幕底色" },
-    { "key": "traceColor", "type": "color",  "default": "#76ff03", "desc": "波形颜色" },
-    { "key": "gridColor",  "type": "color",  "default": "#2e7d32", "desc": "网格颜色" },
-    { "key": "frequency",  "type": "number", "default": 5, "min": 1, "max": 20, "desc": "频率(Hz)" },
-    { "key": "amplitude",  "type": "number", "default": 0.7, "min": 0.1, "max": 1, "desc": "振幅(0-1)" },
-    { "key": "waveform",   "type": "enum",   "default": "sine", "enum": ["sine","square","triangle","sawtooth"], "desc": "波形类型" },
-    { "key": "timeDiv",    "type": "number", "default": 10, "min": 1, "max": 50, "desc": "时基(ms/div)" },
-    { "key": "voltDiv",    "type": "number", "default": 1, "min": 0.1, "max": 5, "desc": "电压(V/div)" },
-    { "key": "showGrid",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示网格" },
-    { "key": "running",    "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 380,
+      "min": 260,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#263238",
+      "desc": "机身颜色"
+    },
+    {
+      "key": "screenColor",
+      "type": "color",
+      "default": "#1b5e20",
+      "desc": "屏幕底色"
+    },
+    {
+      "key": "traceColor",
+      "type": "color",
+      "default": "#76ff03",
+      "desc": "波形颜色"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#2e7d32",
+      "desc": "网格颜色"
+    },
+    {
+      "key": "frequency",
+      "type": "number",
+      "default": 5,
+      "min": 1,
+      "max": 20,
+      "desc": "频率(Hz)"
+    },
+    {
+      "key": "amplitude",
+      "type": "number",
+      "default": 0.7,
+      "min": 0.1,
+      "max": 1,
+      "desc": "振幅(0-1)"
+    },
+    {
+      "key": "waveform",
+      "type": "enum",
+      "default": "sine",
+      "enum": [
+        "sine",
+        "square",
+        "triangle",
+        "sawtooth"
+      ],
+      "desc": "波形类型"
+    },
+    {
+      "key": "timeDiv",
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "max": 50,
+      "desc": "时基(ms/div)"
+    },
+    {
+      "key": "voltDiv",
+      "type": "number",
+      "default": 1,
+      "min": 0.1,
+      "max": 5,
+      "desc": "电压(V/div)"
+    },
+    {
+      "key": "showGrid",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示网格"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "bodyColor": "--cmp-body", "screenColor": "--cmp-screen",
-    "traceColor": "--cmp-trace", "gridColor": "--cmp-grid", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "bodyColor": "--cmp-body",
+    "screenColor": "--cmp-screen",
+    "traceColor": "--cmp-trace",
+    "gridColor": "--cmp-grid",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "signal", "values": { "frequency": "number(Hz)", "amplitude": "number(0-1)", "waveform": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "signal",
+      "values": {
+        "frequency": "number(Hz)",
+        "amplitude": "number(0-1)",
+        "waveform": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "示波器（交互式）",
+      "tags": [
+        "physics",
+        "circuit",
+        "oscilloscope",
+        "waveform",
+        "signal",
+        "interactive"
+      ],
+      "ariaLabel": "示波器（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "机身颜色"
+        },
+        "screenColor": {
+          "label": "screenColor",
+          "desc": "屏幕底色"
+        },
+        "traceColor": {
+          "label": "traceColor",
+          "desc": "波形颜色"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格颜色"
+        },
+        "frequency": {
+          "label": "frequency",
+          "desc": "频率(Hz)"
+        },
+        "amplitude": {
+          "label": "amplitude",
+          "desc": "振幅(0-1)"
+        },
+        "waveform": {
+          "label": "waveform",
+          "desc": "波形类型"
+        },
+        "timeDiv": {
+          "label": "timeDiv",
+          "desc": "时基(ms/div)"
+        },
+        "voltDiv": {
+          "label": "voltDiv",
+          "desc": "电压(V/div)"
+        },
+        "showGrid": {
+          "label": "showGrid",
+          "desc": "显示网格"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "frequency": "number(Hz)",
+            "amplitude": "number(0-1)",
+            "waveform": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Oscilloscope Explorer",
+      "tags": [
+        "physics",
+        "circuit",
+        "oscilloscope",
+        "waveform",
+        "signal",
+        "interactive"
+      ],
+      "ariaLabel": "Oscilloscope Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "screenColor": {
+          "label": "Screen Color",
+          "desc": "Color setting for screen color."
+        },
+        "traceColor": {
+          "label": "Trace Color",
+          "desc": "Color setting for trace color."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Color setting for grid color."
+        },
+        "frequency": {
+          "label": "Frequency",
+          "desc": "Numeric control for frequency."
+        },
+        "amplitude": {
+          "label": "Amplitude",
+          "desc": "Numeric control for amplitude."
+        },
+        "waveform": {
+          "label": "Waveform",
+          "desc": "Select the waveform option."
+        },
+        "timeDiv": {
+          "label": "Time Div",
+          "desc": "Numeric control for time div."
+        },
+        "voltDiv": {
+          "label": "Volt Div",
+          "desc": "Numeric control for volt div."
+        },
+        "showGrid": {
+          "label": "Show Grid",
+          "desc": "Select the show grid option."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Select the running option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Signal",
+          "desc": "Event emitted during signal.",
+          "values": {
+            "frequency": "Value for frequency.",
+            "amplitude": "Value for amplitude.",
+            "waveform": "Value for waveform."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.circuit.oscilloscope.interactive" role="img" aria-label="示波器（交互式）">

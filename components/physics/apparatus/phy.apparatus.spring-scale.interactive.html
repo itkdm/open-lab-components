@@ -1,44 +1,142 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.spring-scale.interactive",
   "name": "弹簧测力计（交互式）",
-  "nameEn": "Spring Scale (Interactive)",
+  "nameEn": "Spring Scale Explorer",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 80, "h": 320 },
+  "viewport": {
+    "w": 80,
+    "h": 320
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "force",       "type": "number",     "default": 0,   "min": 0,   "max": 5,   "desc": "初始力值（N）" },
-    { "key": "maxForce",    "type": "number",     "default": 5,   "min": 1,   "max": 20,  "desc": "最大量程（N）" },
-    { "key": "divisions",   "type": "number",     "default": 5,   "min": 1,   "max": 20,  "desc": "大刻度数量" },
-    { "key": "subDiv",      "type": "number",     "default": 5,   "min": 1,   "max": 10,  "desc": "每大格小刻度数" },
-    { "key": "unit",        "type": "string",     "default": "N", "desc": "单位标识" },
-
-    { "key": "shellColor",  "type": "color", "default": "#e8e0d0", "desc": "外壳颜色" },
-    { "key": "scaleColor",  "type": "color", "default": "#faf8f2", "desc": "刻度面板颜色" },
-    { "key": "stroke",      "type": "color", "default": "#333333", "desc": "刻度线颜色" },
-    { "key": "strokeWidth", "type": "number","default": 1.2, "min": 0.5, "max": 3, "desc": "刻度线粗细" },
-    { "key": "springColor", "type": "color", "default": "#555555", "desc": "弹簧颜色" },
-    { "key": "pointerColor","type": "color", "default": "#e53935", "desc": "指针颜色" },
-    { "key": "hookColor",   "type": "color", "default": "#444444", "desc": "挂钩颜色" },
-    { "key": "accent",      "type": "color", "default": "#1565c0", "desc": "强调色（标题/单位）" },
-
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "force",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 5,
+      "desc": "初始力值（N）"
+    },
+    {
+      "key": "maxForce",
+      "type": "number",
+      "default": 5,
+      "min": 1,
+      "max": 20,
+      "desc": "最大量程（N）"
+    },
+    {
+      "key": "divisions",
+      "type": "number",
+      "default": 5,
+      "min": 1,
+      "max": 20,
+      "desc": "大刻度数量"
+    },
+    {
+      "key": "subDiv",
+      "type": "number",
+      "default": 5,
+      "min": 1,
+      "max": 10,
+      "desc": "每大格小刻度数"
+    },
+    {
+      "key": "unit",
+      "type": "string",
+      "default": "N",
+      "desc": "单位标识"
+    },
+    {
+      "key": "shellColor",
+      "type": "color",
+      "default": "#e8e0d0",
+      "desc": "外壳颜色"
+    },
+    {
+      "key": "scaleColor",
+      "type": "color",
+      "default": "#faf8f2",
+      "desc": "刻度面板颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "刻度线颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "刻度线粗细"
+    },
+    {
+      "key": "springColor",
+      "type": "color",
+      "default": "#555555",
+      "desc": "弹簧颜色"
+    },
+    {
+      "key": "pointerColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "指针颜色"
+    },
+    {
+      "key": "hookColor",
+      "type": "color",
+      "default": "#444444",
+      "desc": "挂钩颜色"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色（标题/单位）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":         "--cmp-size",
-    "shellColor":   "--cmp-shell",
-    "scaleColor":   "--cmp-scale-bg",
-    "stroke":       "--cmp-stroke",
-    "strokeWidth":  "--cmp-stroke-width",
-    "springColor":  "--cmp-spring",
+    "size": "--cmp-size",
+    "shellColor": "--cmp-shell",
+    "scaleColor": "--cmp-scale-bg",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "springColor": "--cmp-spring",
     "pointerColor": "--cmp-pointer",
-    "hookColor":    "--cmp-hook",
-    "accent":       "--cmp-accent",
-    "glow":         "--cmp-glow"
+    "hookColor": "--cmp-hook",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
-  "tags": ["spring-scale", "dynamometer", "force", "apparatus", "measurement", "interactive", "draggable"],
+  "tags": [
+    "spring-scale",
+    "dynamometer",
+    "force",
+    "apparatus",
+    "measurement",
+    "interactive",
+    "draggable"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -54,7 +152,187 @@
         "force": "number(N) — 最终力值"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "弹簧测力计（交互式）",
+      "tags": [
+        "spring-scale",
+        "dynamometer",
+        "force",
+        "apparatus",
+        "measurement",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "弹簧测力计（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "force": {
+          "label": "force",
+          "desc": "初始力值（N）"
+        },
+        "maxForce": {
+          "label": "maxForce",
+          "desc": "最大量程（N）"
+        },
+        "divisions": {
+          "label": "divisions",
+          "desc": "大刻度数量"
+        },
+        "subDiv": {
+          "label": "subDiv",
+          "desc": "每大格小刻度数"
+        },
+        "unit": {
+          "label": "unit",
+          "desc": "单位标识"
+        },
+        "shellColor": {
+          "label": "shellColor",
+          "desc": "外壳颜色"
+        },
+        "scaleColor": {
+          "label": "scaleColor",
+          "desc": "刻度面板颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "刻度线颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "刻度线粗细"
+        },
+        "springColor": {
+          "label": "springColor",
+          "desc": "弹簧颜色"
+        },
+        "pointerColor": {
+          "label": "pointerColor",
+          "desc": "指针颜色"
+        },
+        "hookColor": {
+          "label": "hookColor",
+          "desc": "挂钩颜色"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（标题/单位）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "force": "number(N) — 当前力值"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "force": "number(N) — 最终力值"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Spring Scale Explorer",
+      "tags": [
+        "spring-scale",
+        "dynamometer",
+        "force",
+        "apparatus",
+        "measurement",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Spring Scale Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "force": {
+          "label": "Force",
+          "desc": "Numeric control for force."
+        },
+        "maxForce": {
+          "label": "Max Force",
+          "desc": "Numeric control for max force."
+        },
+        "divisions": {
+          "label": "Divisions",
+          "desc": "Numeric control for divisions."
+        },
+        "subDiv": {
+          "label": "Sub Div",
+          "desc": "Numeric control for sub div."
+        },
+        "unit": {
+          "label": "Unit",
+          "desc": "Configuration for unit."
+        },
+        "shellColor": {
+          "label": "Shell Color",
+          "desc": "Color setting for shell color."
+        },
+        "scaleColor": {
+          "label": "Scale Color",
+          "desc": "Color setting for scale color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "springColor": {
+          "label": "Spring Color",
+          "desc": "Color setting for spring color."
+        },
+        "pointerColor": {
+          "label": "Pointer Color",
+          "desc": "Color setting for pointer color."
+        },
+        "hookColor": {
+          "label": "Hook Color",
+          "desc": "Color setting for hook color."
+        },
+        "accent": {
+          "label": "Accent",
+          "desc": "Color setting for accent."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "force": "Value for force."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "force": "Value for force."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.spring-scale.interactive" role="img" aria-label="弹簧测力计（交互式）">

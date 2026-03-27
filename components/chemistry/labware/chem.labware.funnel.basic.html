@@ -1,32 +1,185 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.funnel.basic",
   "name": "漏斗",
   "nameEn": "Funnel",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 180 },
-  "tags": ["funnel", "filtration", "labware", "chemistry", "glass"],
+  "viewport": {
+    "w": 100,
+    "h": 180
+  },
+  "tags": [
+    "funnel",
+    "filtration",
+    "labware",
+    "chemistry",
+    "glass"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 180, "min": 100, "max": 320, "desc": "组件高度" },
-    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.45)", "desc": "玻璃底色" },
-    { "key": "liquidColor", "type": "color",  "default": "rgba(66,165,245,0.3)", "desc": "液体颜色" },
-    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.4, "min": 0, "max": 1, "desc": "液位" },
-    { "key": "stroke",      "type": "color",  "default": "#35586a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 2, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "highlight",   "type": "number(0-1)", "default": 0.3, "min": 0, "max": 1, "desc": "高光强度" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 100,
+      "max": 320,
+      "desc": "组件高度"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(220,240,255,0.45)",
+      "desc": "玻璃底色"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "rgba(66,165,245,0.3)",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.4,
+      "min": 0,
+      "max": 1,
+      "desc": "液位"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#35586a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "highlight",
+      "type": "number(0-1)",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "desc": "高光强度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "glassTint":   "--cmp-glass-tint",
+    "size": "--cmp-size",
+    "glassTint": "--cmp-glass-tint",
     "liquidColor": "--cmp-liquid-color",
     "liquidLevel": "--cmp-liquid-level",
-    "stroke":      "--cmp-stroke",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "highlight":   "--cmp-highlight",
-    "glow":        "--cmp-glow"
+    "highlight": "--cmp-highlight",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "漏斗",
+      "tags": [
+        "funnel",
+        "filtration",
+        "labware",
+        "chemistry",
+        "glass"
+      ],
+      "ariaLabel": "漏斗",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液位"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "highlight": {
+          "label": "highlight",
+          "desc": "高光强度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Funnel",
+      "tags": [
+        "funnel",
+        "filtration",
+        "labware",
+        "chemistry",
+        "glass"
+      ],
+      "ariaLabel": "Funnel",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Sets the fill level as a fraction of the vessel height."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "highlight": {
+          "label": "Highlight Intensity",
+          "desc": "Controls the strength of the specular highlight."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

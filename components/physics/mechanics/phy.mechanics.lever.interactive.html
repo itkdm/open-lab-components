@@ -1,44 +1,171 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.lever.interactive",
   "name": "杠杆（交互式）",
-  "nameEn": "Lever (Interactive)",
+  "nameEn": "Lever Equilibrium Model",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 480, "h": 320 },
+  "viewport": {
+    "w": 480,
+    "h": 320
+  },
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 320, "min": 240, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",        "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-
-    { "key": "beamColor",     "type": "color",  "default": "#8d6e63", "desc": "杠杆横梁颜色" },
-    { "key": "fulcrumColor",  "type": "color",  "default": "#616161", "desc": "支点颜色" },
-    { "key": "forceColor1",   "type": "color",  "default": "#e53935", "desc": "动力颜色" },
-    { "key": "forceColor2",   "type": "color",  "default": "#1e88e5", "desc": "阻力颜色" },
-    { "key": "armColor",      "type": "color",  "default": "#4caf50", "desc": "力臂标注颜色" },
-    { "key": "weightColor",   "type": "color",  "default": "#ff9800", "desc": "砝码颜色" },
-
-    { "key": "beamLen",       "type": "number", "default": 360, "min": 200, "max": 440, "desc": "横梁总长度" },
-    { "key": "f1",            "type": "number", "default": 2, "min": 0.5, "max": 10, "desc": "动力（N）" },
-    { "key": "l1",            "type": "number", "default": 0.6, "min": 0.1, "max": 0.9, "desc": "动力臂（占半梁比）" },
-    { "key": "f2",            "type": "number", "default": 3, "min": 0.5, "max": 10, "desc": "阻力（N）" },
-    { "key": "l2",            "type": "number", "default": 0.4, "min": 0.1, "max": 0.9, "desc": "阻力臂（占半梁比）" },
-
-    { "key": "showLabels",    "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "力臂标注" },
-    { "key": "showData",      "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "数据面板" },
-
-    { "key": "accent",        "type": "color",  "default": "#1565c0", "desc": "强调色" },
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 240,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "beamColor",
+      "type": "color",
+      "default": "#8d6e63",
+      "desc": "杠杆横梁颜色"
+    },
+    {
+      "key": "fulcrumColor",
+      "type": "color",
+      "default": "#616161",
+      "desc": "支点颜色"
+    },
+    {
+      "key": "forceColor1",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "动力颜色"
+    },
+    {
+      "key": "forceColor2",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "阻力颜色"
+    },
+    {
+      "key": "armColor",
+      "type": "color",
+      "default": "#4caf50",
+      "desc": "力臂标注颜色"
+    },
+    {
+      "key": "weightColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "砝码颜色"
+    },
+    {
+      "key": "beamLen",
+      "type": "number",
+      "default": 360,
+      "min": 200,
+      "max": 440,
+      "desc": "横梁总长度"
+    },
+    {
+      "key": "f1",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 10,
+      "desc": "动力（N）"
+    },
+    {
+      "key": "l1",
+      "type": "number",
+      "default": 0.6,
+      "min": 0.1,
+      "max": 0.9,
+      "desc": "动力臂（占半梁比）"
+    },
+    {
+      "key": "f2",
+      "type": "number",
+      "default": 3,
+      "min": 0.5,
+      "max": 10,
+      "desc": "阻力（N）"
+    },
+    {
+      "key": "l2",
+      "type": "number",
+      "default": 0.4,
+      "min": 0.1,
+      "max": 0.9,
+      "desc": "阻力臂（占半梁比）"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "力臂标注"
+    },
+    {
+      "key": "showData",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "数据面板"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "beamColor": "--cmp-beam", "fulcrumColor": "--cmp-fulcrum",
-    "forceColor1": "--cmp-f1", "forceColor2": "--cmp-f2",
-    "armColor": "--cmp-arm", "weightColor": "--cmp-weight",
-    "accent": "--cmp-accent", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "beamColor": "--cmp-beam",
+    "fulcrumColor": "--cmp-fulcrum",
+    "forceColor1": "--cmp-f1",
+    "forceColor2": "--cmp-f2",
+    "armColor": "--cmp-arm",
+    "weightColor": "--cmp-weight",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
-  "tags": ["lever","mechanics","force","torque","fulcrum","interactive","draggable"],
+  "tags": [
+    "lever",
+    "mechanics",
+    "force",
+    "torque",
+    "fulcrum",
+    "interactive",
+    "draggable"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -62,7 +189,227 @@
         "balanced": "boolean — 是否平衡"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "杠杆（交互式）",
+      "tags": [
+        "lever",
+        "mechanics",
+        "force",
+        "torque",
+        "fulcrum",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "杠杆（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "beamColor": {
+          "label": "beamColor",
+          "desc": "杠杆横梁颜色"
+        },
+        "fulcrumColor": {
+          "label": "fulcrumColor",
+          "desc": "支点颜色"
+        },
+        "forceColor1": {
+          "label": "forceColor1",
+          "desc": "动力颜色"
+        },
+        "forceColor2": {
+          "label": "forceColor2",
+          "desc": "阻力颜色"
+        },
+        "armColor": {
+          "label": "armColor",
+          "desc": "力臂标注颜色"
+        },
+        "weightColor": {
+          "label": "weightColor",
+          "desc": "砝码颜色"
+        },
+        "beamLen": {
+          "label": "beamLen",
+          "desc": "横梁总长度"
+        },
+        "f1": {
+          "label": "f1",
+          "desc": "动力（N）"
+        },
+        "l1": {
+          "label": "l1",
+          "desc": "动力臂（占半梁比）"
+        },
+        "f2": {
+          "label": "f2",
+          "desc": "阻力（N）"
+        },
+        "l2": {
+          "label": "l2",
+          "desc": "阻力臂（占半梁比）"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "力臂标注"
+        },
+        "showData": {
+          "label": "showData",
+          "desc": "数据面板"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "l1": "number(0-1) — 动力臂占半梁比",
+            "l2": "number(0-1) — 阻力臂占半梁比",
+            "torque1": "number — 动力矩 F₁·L₁",
+            "torque2": "number — 阻力矩 F₂·L₂",
+            "balanced": "boolean — 是否平衡"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "l1": "number(0-1) — 动力臂占半梁比",
+            "l2": "number(0-1) — 阻力臂占半梁比",
+            "torque1": "number — 动力矩 F₁·L₁",
+            "torque2": "number — 阻力矩 F₂·L₂",
+            "balanced": "boolean — 是否平衡"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Lever Equilibrium Model",
+      "tags": [
+        "lever",
+        "mechanics",
+        "force",
+        "torque",
+        "fulcrum",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Lever Equilibrium Model",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "beamColor": {
+          "label": "Beam Color",
+          "desc": "Sets the color of the beam."
+        },
+        "fulcrumColor": {
+          "label": "Fulcrum Color",
+          "desc": "Sets the color of the fulcrum."
+        },
+        "forceColor1": {
+          "label": "Force Arrow 1 Color",
+          "desc": "Sets the color of the first force arrow."
+        },
+        "forceColor2": {
+          "label": "Force Arrow 2 Color",
+          "desc": "Sets the color of the second force arrow."
+        },
+        "armColor": {
+          "label": "Arm Color",
+          "desc": "Sets the color of the lever arm."
+        },
+        "weightColor": {
+          "label": "Weight Color",
+          "desc": "Sets the color of the weight."
+        },
+        "beamLen": {
+          "label": "Beam Length",
+          "desc": "Sets the beam length."
+        },
+        "f1": {
+          "label": "Force 1",
+          "desc": "Sets the first applied force."
+        },
+        "l1": {
+          "label": "Distance L1",
+          "desc": "Sets the distance from the fulcrum to force 1."
+        },
+        "f2": {
+          "label": "Force 2",
+          "desc": "Sets the second applied force."
+        },
+        "l2": {
+          "label": "Distance L2",
+          "desc": "Sets the distance from the fulcrum to force 2."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides reference labels."
+        },
+        "showData": {
+          "label": "Show Data Panel",
+          "desc": "Shows or hides the data readout panel."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "l1": "Current distance from the fulcrum to force 1.",
+            "l2": "Current distance from the fulcrum to force 2.",
+            "torque1": "Calculated torque produced by force 1.",
+            "torque2": "Calculated torque produced by force 2.",
+            "balanced": "Whether the lever is in rotational equilibrium."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "l1": "Current distance from the fulcrum to force 1.",
+            "l2": "Current distance from the fulcrum to force 2.",
+            "torque1": "Calculated torque produced by force 1.",
+            "torque2": "Calculated torque produced by force 2.",
+            "balanced": "Whether the lever is in rotational equilibrium."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.lever.interactive" role="img" aria-label="杠杆（交互式）">

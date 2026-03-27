@@ -1,21 +1,122 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.tool.simple-circuit.interactive",
   "name": "简单电路",
   "nameEn": "Simple Circuit",
   "category": "science/tool",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 240 },
+  "viewport": {
+    "w": 300,
+    "h": 240
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 200, "max": 600, "desc": "组件宽度" },
-    { "key": "switchClosed", "type": "boolean", "default": false, "desc": "开关是否闭合" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 200,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "switchClosed",
+      "type": "boolean",
+      "default": false,
+      "desc": "开关是否闭合"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["circuit", "electricity", "battery", "bulb", "switch", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "circuit",
+    "electricity",
+    "battery",
+    "bulb",
+    "switch",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "switchClosed": "boolean", "bulbLit": "boolean" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "switchClosed": "boolean",
+        "bulbLit": "boolean"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "简单电路",
+      "tags": [
+        "circuit",
+        "electricity",
+        "battery",
+        "bulb",
+        "switch",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "简单电路",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "switchClosed": {
+          "label": "switchClosed",
+          "desc": "开关是否闭合"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "switchClosed": "boolean",
+            "bulbLit": "boolean"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Simple Circuit",
+      "tags": [
+        "circuit",
+        "electricity",
+        "battery",
+        "bulb",
+        "switch",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Simple Circuit",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "switchClosed": {
+          "label": "Switch Closed",
+          "desc": "Configuration for switch closed."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "switchClosed": "Value for switch closed.",
+            "bulbLit": "Value for bulb lit."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.tool.simple-circuit.interactive" role="img" aria-label="简单电路">

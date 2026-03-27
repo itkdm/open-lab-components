@@ -1,24 +1,153 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.vernier-caliper.basic",
   "name": "游标卡尺",
   "nameEn": "Vernier Caliper",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 400, "h": 100 },
-  "tags": ["apparatus", "vernier", "caliper", "measurement", "length", "precision"],
+  "viewport": {
+    "w": 400,
+    "h": 100
+  },
+  "tags": [
+    "apparatus",
+    "vernier",
+    "caliper",
+    "measurement",
+    "length",
+    "precision"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 100, "min": 60, "max": 180, "desc": "组件高度" },
-    { "key": "reading",     "type": "number",     "default": 0, "min": 0, "max": 100, "desc": "读数(mm)" },
-    { "key": "bodyColor",   "type": "color",  "default": "#b0bec5", "desc": "主尺颜色" },
-    { "key": "sliderColor", "type": "color",  "default": "#90a4ae", "desc": "游标颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 100,
+      "min": 60,
+      "max": 180,
+      "desc": "组件高度"
+    },
+    {
+      "key": "reading",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "desc": "读数(mm)"
+    },
+    {
+      "key": "bodyColor",
+      "type": "color",
+      "default": "#b0bec5",
+      "desc": "主尺颜色"
+    },
+    {
+      "key": "sliderColor",
+      "type": "color",
+      "default": "#90a4ae",
+      "desc": "游标颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "bodyColor": "--cmp-body", "sliderColor": "--cmp-slider",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "bodyColor": "--cmp-body",
+    "sliderColor": "--cmp-slider",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "游标卡尺",
+      "tags": [
+        "apparatus",
+        "vernier",
+        "caliper",
+        "measurement",
+        "length",
+        "precision"
+      ],
+      "ariaLabel": "游标卡尺",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "reading": {
+          "label": "reading",
+          "desc": "读数(mm)"
+        },
+        "bodyColor": {
+          "label": "bodyColor",
+          "desc": "主尺颜色"
+        },
+        "sliderColor": {
+          "label": "sliderColor",
+          "desc": "游标颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Vernier Caliper",
+      "tags": [
+        "apparatus",
+        "vernier",
+        "caliper",
+        "measurement",
+        "length",
+        "precision"
+      ],
+      "ariaLabel": "Vernier Caliper",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "reading": {
+          "label": "Reading",
+          "desc": "Numeric control for reading."
+        },
+        "bodyColor": {
+          "label": "Body Color",
+          "desc": "Color setting for body color."
+        },
+        "sliderColor": {
+          "label": "Slider Color",
+          "desc": "Color setting for slider color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,21 +1,125 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.earth.erosion.interactive",
   "name": "风化侵蚀",
   "nameEn": "Erosion",
   "category": "science/earth",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 260 },
+  "viewport": {
+    "w": 360,
+    "h": 260
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "type", "type": "enum(water,wind,ice)", "default": "water", "desc": "侵蚀类型" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "type",
+      "type": "enum(water,wind,ice)",
+      "default": "water",
+      "desc": "侵蚀类型"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["erosion", "weathering", "water", "wind", "glacier", "earth-science", "science", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "erosion",
+    "weathering",
+    "water",
+    "wind",
+    "glacier",
+    "earth-science",
+    "science",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "type": "string", "typeName": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "type": "string",
+        "typeName": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "风化侵蚀",
+      "tags": [
+        "erosion",
+        "weathering",
+        "water",
+        "wind",
+        "glacier",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "风化侵蚀",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "type": {
+          "label": "type",
+          "desc": "侵蚀类型"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "type": "string",
+            "typeName": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Erosion",
+      "tags": [
+        "erosion",
+        "weathering",
+        "water",
+        "wind",
+        "glacier",
+        "earth-science",
+        "science",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Erosion",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "type": {
+          "label": "Type",
+          "desc": "Configuration for type."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "type": "Value for type.",
+            "typeName": "Value for type name."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.earth.erosion.interactive" role="img" aria-label="风化侵蚀">

@@ -1,23 +1,159 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.measure.volume-model.interactive",
   "name": "体积模型",
   "nameEn": "Volume Model",
   "category": "math/measure",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 300 },
+  "viewport": {
+    "w": 320,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件宽度" },
-    { "key": "length", "type": "number", "default": 3, "min": 1, "max": 5, "desc": "长(格)" },
-    { "key": "width", "type": "number", "default": 2, "min": 1, "max": 5, "desc": "宽(格)" },
-    { "key": "height", "type": "number", "default": 2, "min": 1, "max": 5, "desc": "高(格)" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "length",
+      "type": "number",
+      "default": 3,
+      "min": 1,
+      "max": 5,
+      "desc": "长(格)"
+    },
+    {
+      "key": "width",
+      "type": "number",
+      "default": 2,
+      "min": 1,
+      "max": 5,
+      "desc": "宽(格)"
+    },
+    {
+      "key": "height",
+      "type": "number",
+      "default": 2,
+      "min": 1,
+      "max": 5,
+      "desc": "高(格)"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["volume", "cube", "3d", "measurement", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "volume",
+    "cube",
+    "3d",
+    "measurement",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "length": "number", "width": "number", "height": "number", "volume": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "length": "number",
+        "width": "number",
+        "height": "number",
+        "volume": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "体积模型",
+      "tags": [
+        "volume",
+        "cube",
+        "3d",
+        "measurement",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "体积模型",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "length": {
+          "label": "length",
+          "desc": "长(格)"
+        },
+        "width": {
+          "label": "width",
+          "desc": "宽(格)"
+        },
+        "height": {
+          "label": "height",
+          "desc": "高(格)"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "length": "number",
+            "width": "number",
+            "height": "number",
+            "volume": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Volume Model",
+      "tags": [
+        "volume",
+        "cube",
+        "3d",
+        "measurement",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Volume Model",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "length": {
+          "label": "Length",
+          "desc": "Sets the overall length."
+        },
+        "width": {
+          "label": "Width",
+          "desc": "Sets the width."
+        },
+        "height": {
+          "label": "Height",
+          "desc": "Sets the height."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "length": "Current length.",
+            "width": "Current width.",
+            "height": "Current height.",
+            "volume": "Current volume."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.measure.volume-model.interactive" role="img" aria-label="体积模型">

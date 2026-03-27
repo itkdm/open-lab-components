@@ -1,34 +1,281 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.solution.concentration.interactive",
   "name": "溶液浓度（交互式）",
-  "nameEn": "Solution Concentration (Interactive)",
+  "nameEn": "Solution Concentration Explorer",
   "category": "chemistry/solution",
   "version": "1.0.0",
-  "viewport": { "w": 520, "h": 440 },
-  "tags": ["chemistry","solution","concentration","molarity","dilution","interactive"],
+  "viewport": {
+    "w": 520,
+    "h": 440
+  },
+  "tags": [
+    "chemistry",
+    "solution",
+    "concentration",
+    "molarity",
+    "dilution",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",        "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "soluteColor",   "type": "color",  "default": "#1565c0", "desc": "溶质颜色" },
-    { "key": "solventColor",  "type": "color",  "default": "#e3f2fd", "desc": "溶剂颜色" },
-    { "key": "soluteMass",    "type": "number", "default": 10, "min": 1, "max": 50, "desc": "溶质质量(g)" },
-    { "key": "solventVolume", "type": "number", "default": 200, "min": 50, "max": 500, "desc": "溶剂体积(mL)" },
-    { "key": "molarMass",     "type": "number", "default": 58.44, "min": 10, "max": 300, "desc": "摩尔质量(g/mol)" },
-    { "key": "soluteName",    "type": "string", "default": "NaCl", "desc": "溶质名称" },
-    { "key": "running",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "speed",         "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "showParticles", "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示粒子" },
-    { "key": "glow",          "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 440,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "soluteColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "溶质颜色"
+    },
+    {
+      "key": "solventColor",
+      "type": "color",
+      "default": "#e3f2fd",
+      "desc": "溶剂颜色"
+    },
+    {
+      "key": "soluteMass",
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "max": 50,
+      "desc": "溶质质量(g)"
+    },
+    {
+      "key": "solventVolume",
+      "type": "number",
+      "default": 200,
+      "min": 50,
+      "max": 500,
+      "desc": "溶剂体积(mL)"
+    },
+    {
+      "key": "molarMass",
+      "type": "number",
+      "default": 58.44,
+      "min": 10,
+      "max": 300,
+      "desc": "摩尔质量(g/mol)"
+    },
+    {
+      "key": "soluteName",
+      "type": "string",
+      "default": "NaCl",
+      "desc": "溶质名称"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "showParticles",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示粒子"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "soluteColor": "--cmp-solute", "solventColor": "--cmp-solvent", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "soluteColor": "--cmp-solute",
+    "solventColor": "--cmp-solvent",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "update", "values": { "molarity": "number", "massPercent": "number", "moles": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "update",
+      "values": {
+        "molarity": "number",
+        "massPercent": "number",
+        "moles": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "溶液浓度（交互式）",
+      "tags": [
+        "chemistry",
+        "solution",
+        "concentration",
+        "molarity",
+        "dilution",
+        "interactive"
+      ],
+      "ariaLabel": "溶液浓度（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "soluteColor": {
+          "label": "soluteColor",
+          "desc": "溶质颜色"
+        },
+        "solventColor": {
+          "label": "solventColor",
+          "desc": "溶剂颜色"
+        },
+        "soluteMass": {
+          "label": "soluteMass",
+          "desc": "溶质质量(g)"
+        },
+        "solventVolume": {
+          "label": "solventVolume",
+          "desc": "溶剂体积(mL)"
+        },
+        "molarMass": {
+          "label": "molarMass",
+          "desc": "摩尔质量(g/mol)"
+        },
+        "soluteName": {
+          "label": "soluteName",
+          "desc": "溶质名称"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "showParticles": {
+          "label": "showParticles",
+          "desc": "显示粒子"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "molarity": "number",
+            "massPercent": "number",
+            "moles": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Solution Concentration Explorer",
+      "tags": [
+        "chemistry",
+        "solution",
+        "concentration",
+        "molarity",
+        "dilution",
+        "interactive"
+      ],
+      "ariaLabel": "Solution Concentration Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "soluteColor": {
+          "label": "Solute Color",
+          "desc": "Sets the color used for the solute."
+        },
+        "solventColor": {
+          "label": "Solvent Color",
+          "desc": "Sets the color used for the solvent."
+        },
+        "soluteMass": {
+          "label": "Solute Mass",
+          "desc": "Sets the mass of the solute."
+        },
+        "solventVolume": {
+          "label": "Solvent Volume",
+          "desc": "Sets the volume of the solvent."
+        },
+        "molarMass": {
+          "label": "Molar Mass",
+          "desc": "Sets the molar mass of the solute."
+        },
+        "soluteName": {
+          "label": "Solute Name",
+          "desc": "Sets the displayed solute name."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "showParticles": {
+          "label": "Show Particles",
+          "desc": "Shows or hides the particle view."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "molarity": "Current molarity.",
+            "massPercent": "Current mass percent.",
+            "moles": "Current number of moles."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.solution.concentration.interactive" role="img" aria-label="溶液浓度（交互式）">

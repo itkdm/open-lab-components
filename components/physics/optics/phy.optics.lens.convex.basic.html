@@ -1,30 +1,179 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.lens.convex.basic",
   "name": "凸透镜",
   "nameEn": "Convex Lens",
   "category": "physics/optics",
   "version": "1.0.0",
-  "viewport": { "w": 80, "h": 200 },
-  "tags": ["optics", "lens", "convex-lens", "converging", "refraction"],
+  "viewport": {
+    "w": 80,
+    "h": 200
+  },
+  "tags": [
+    "optics",
+    "lens",
+    "convex-lens",
+    "converging",
+    "refraction"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 100, "max": 400, "desc": "组件高度" },
-    { "key": "lensColor",   "type": "color",  "default": "#90caf9", "desc": "透镜颜色" },
-    { "key": "lensEdge",    "type": "color",  "default": "#42a5f5", "desc": "透镜边缘色" },
-    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "showAxis",    "type": "boolean", "default": true, "desc": "显示主光轴" },
-    { "key": "showArrows",  "type": "boolean", "default": true, "desc": "显示端部箭头" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 100,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "lensColor",
+      "type": "color",
+      "default": "#90caf9",
+      "desc": "透镜颜色"
+    },
+    {
+      "key": "lensEdge",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "透镜边缘色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showAxis",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示主光轴"
+    },
+    {
+      "key": "showArrows",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示端部箭头"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "lensColor":   "--cmp-lens",
-    "lensEdge":    "--cmp-lens-edge",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "lensColor": "--cmp-lens",
+    "lensEdge": "--cmp-lens-edge",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "凸透镜",
+      "tags": [
+        "optics",
+        "lens",
+        "convex-lens",
+        "converging",
+        "refraction"
+      ],
+      "ariaLabel": "凸透镜",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "lensColor": {
+          "label": "lensColor",
+          "desc": "透镜颜色"
+        },
+        "lensEdge": {
+          "label": "lensEdge",
+          "desc": "透镜边缘色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showAxis": {
+          "label": "showAxis",
+          "desc": "显示主光轴"
+        },
+        "showArrows": {
+          "label": "showArrows",
+          "desc": "显示端部箭头"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Convex Lens",
+      "tags": [
+        "optics",
+        "lens",
+        "convex-lens",
+        "converging",
+        "refraction"
+      ],
+      "ariaLabel": "Convex Lens",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "lensColor": {
+          "label": "Lens Fill Color",
+          "desc": "Sets the fill color of the lens."
+        },
+        "lensEdge": {
+          "label": "Lens Edge Color",
+          "desc": "Sets the outline color of the lens edge."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showAxis": {
+          "label": "Show Axes",
+          "desc": "Shows or hides the coordinate axes."
+        },
+        "showArrows": {
+          "label": "Show Arrows",
+          "desc": "Shows or hides directional arrows."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

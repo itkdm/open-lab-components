@@ -1,38 +1,311 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.cell.photosynthesis.interactive",
   "name": "光合作用（交互式）",
-  "nameEn": "Photosynthesis (Interactive)",
+  "nameEn": "Photosynthesis Explorer",
   "category": "biology/cell",
   "version": "1.0.0",
-  "viewport": { "w": 600, "h": 420 },
-  "tags": ["biology","cell","photosynthesis","chloroplast","light-reaction","calvin-cycle","interactive"],
+  "viewport": {
+    "w": 600,
+    "h": 420
+  },
+  "tags": [
+    "biology",
+    "cell",
+    "photosynthesis",
+    "chloroplast",
+    "light-reaction",
+    "calvin-cycle",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "lightColor",     "type": "color",  "default": "#fdd835", "desc": "光线颜色" },
-    { "key": "chloroplastColor","type": "color", "default": "#66bb6a", "desc": "叶绿体颜色" },
-    { "key": "waterColor",     "type": "color",  "default": "#42a5f5", "desc": "水分子颜色" },
-    { "key": "o2Color",        "type": "color",  "default": "#ef5350", "desc": "O₂颜色" },
-    { "key": "co2Color",       "type": "color",  "default": "#78909c", "desc": "CO₂颜色" },
-    { "key": "glucoseColor",   "type": "color",  "default": "#ff9800", "desc": "葡萄糖颜色" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showEquation",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示化学方程式" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 420,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "lightColor",
+      "type": "color",
+      "default": "#fdd835",
+      "desc": "光线颜色"
+    },
+    {
+      "key": "chloroplastColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "叶绿体颜色"
+    },
+    {
+      "key": "waterColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "水分子颜色"
+    },
+    {
+      "key": "o2Color",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "O₂颜色"
+    },
+    {
+      "key": "co2Color",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "CO₂颜色"
+    },
+    {
+      "key": "glucoseColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "葡萄糖颜色"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showEquation",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示化学方程式"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "lightColor": "--cmp-light", "chloroplastColor": "--cmp-chloro",
-    "waterColor": "--cmp-water", "o2Color": "--cmp-o2", "co2Color": "--cmp-co2",
-    "glucoseColor": "--cmp-glucose", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "lightColor": "--cmp-light",
+    "chloroplastColor": "--cmp-chloro",
+    "waterColor": "--cmp-water",
+    "o2Color": "--cmp-o2",
+    "co2Color": "--cmp-co2",
+    "glucoseColor": "--cmp-glucose",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "tick", "values": { "time": "number — 动画时间(s)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "tick",
+      "values": {
+        "time": "number — 动画时间(s)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "光合作用（交互式）",
+      "tags": [
+        "biology",
+        "cell",
+        "photosynthesis",
+        "chloroplast",
+        "light-reaction",
+        "calvin-cycle",
+        "interactive"
+      ],
+      "ariaLabel": "光合作用（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "lightColor": {
+          "label": "lightColor",
+          "desc": "光线颜色"
+        },
+        "chloroplastColor": {
+          "label": "chloroplastColor",
+          "desc": "叶绿体颜色"
+        },
+        "waterColor": {
+          "label": "waterColor",
+          "desc": "水分子颜色"
+        },
+        "o2Color": {
+          "label": "o2Color",
+          "desc": "O₂颜色"
+        },
+        "co2Color": {
+          "label": "co2Color",
+          "desc": "CO₂颜色"
+        },
+        "glucoseColor": {
+          "label": "glucoseColor",
+          "desc": "葡萄糖颜色"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showEquation": {
+          "label": "showEquation",
+          "desc": "显示化学方程式"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "time": "number — 动画时间(s)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Photosynthesis Explorer",
+      "tags": [
+        "biology",
+        "cell",
+        "photosynthesis",
+        "chloroplast",
+        "light-reaction",
+        "calvin-cycle",
+        "interactive"
+      ],
+      "ariaLabel": "Photosynthesis Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "lightColor": {
+          "label": "Highlight Color",
+          "desc": "Sets the highlight or illumination color."
+        },
+        "chloroplastColor": {
+          "label": "Chloroplast Color",
+          "desc": "Sets the color of the chloroplasts."
+        },
+        "waterColor": {
+          "label": "Water Color",
+          "desc": "Sets the color used for water."
+        },
+        "o2Color": {
+          "label": "Oxygen Color",
+          "desc": "Sets the color used for oxygen."
+        },
+        "co2Color": {
+          "label": "Carbon Dioxide Color",
+          "desc": "Sets the color used for carbon dioxide."
+        },
+        "glucoseColor": {
+          "label": "Glucose Color",
+          "desc": "Sets the color used for glucose."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showEquation": {
+          "label": "Show Equation",
+          "desc": "Shows or hides the summary equation."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "time": "Current time."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.cell.photosynthesis.interactive" role="img" aria-label="光合作用（交互式）">

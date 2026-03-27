@@ -1,20 +1,105 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.pattern-blocks.interactive",
   "name": "图案积木",
   "nameEn": "Pattern Blocks",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 320 },
+  "viewport": {
+    "w": 360,
+    "h": 320
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["pattern-blocks", "shapes", "tessellation", "geometry", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "pattern-blocks",
+    "shapes",
+    "tessellation",
+    "geometry",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "drag", "values": { "placedCount": "number", "shapes": "array" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "drag",
+      "values": {
+        "placedCount": "number",
+        "shapes": "array"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "图案积木",
+      "tags": [
+        "pattern-blocks",
+        "shapes",
+        "tessellation",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "图案积木",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "placedCount": "number",
+            "shapes": "array"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Pattern Blocks",
+      "tags": [
+        "pattern-blocks",
+        "shapes",
+        "tessellation",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Pattern Blocks",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "placedCount": "Current placed count.",
+            "shapes": "Current shapes."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.pattern-blocks.interactive" role="img" aria-label="图案积木">

@@ -1,28 +1,190 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.model.periodic-table.interactive",
   "name": "元素周期表（交互式）",
-  "nameEn": "Periodic Table (Interactive)",
+  "nameEn": "Periodic Table Explorer",
   "category": "chemistry/model",
   "version": "1.0.0",
-  "viewport": { "w": 720, "h": 420 },
+  "viewport": {
+    "w": 720,
+    "h": 420
+  },
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 420, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 0.5, "min": 0.2, "max": 2, "desc": "描边粗细" },
-    { "key": "highlightGroup", "type": "enum",   "default": "all", "enum": ["all","alkali","alkaline","transition","metalloid","nonmetal","noble","lanthanide","actinide","other-metal","post-transition"], "desc": "高亮元素族" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标签" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 420,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 0.5,
+      "min": 0.2,
+      "max": 2,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "highlightGroup",
+      "type": "enum",
+      "default": "all",
+      "enum": [
+        "all",
+        "alkali",
+        "alkaline",
+        "transition",
+        "metalloid",
+        "nonmetal",
+        "noble",
+        "lanthanide",
+        "actinide",
+        "other-metal",
+        "post-transition"
+      ],
+      "desc": "高亮元素族"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标签"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
     "glow": "--cmp-glow"
   },
-  "tags": ["chemistry","periodic-table","elements","interactive"],
+  "tags": [
+    "chemistry",
+    "periodic-table",
+    "elements",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "click", "values": { "element": "string — 元素符号", "atomicNumber": "number — 原子序数" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "click",
+      "values": {
+        "element": "string — 元素符号",
+        "atomicNumber": "number — 原子序数"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "元素周期表（交互式）",
+      "tags": [
+        "chemistry",
+        "periodic-table",
+        "elements",
+        "interactive"
+      ],
+      "ariaLabel": "元素周期表（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "highlightGroup": {
+          "label": "highlightGroup",
+          "desc": "高亮元素族"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标签"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "element": "string — 元素符号",
+            "atomicNumber": "number — 原子序数"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Periodic Table Explorer",
+      "tags": [
+        "chemistry",
+        "periodic-table",
+        "elements",
+        "interactive"
+      ],
+      "ariaLabel": "Periodic Table Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "highlightGroup": {
+          "label": "Highlight Group",
+          "desc": "Selects which element group is highlighted."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "element": "Selected chemical element symbol.",
+            "atomicNumber": "Selected atomic number."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.model.periodic-table.interactive" role="img" aria-label="元素周期表（交互式）">

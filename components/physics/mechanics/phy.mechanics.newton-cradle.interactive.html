@@ -1,30 +1,82 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.newton-cradle.interactive",
   "name": "牛顿摆（交互式）",
-  "nameEn": "Newton's Cradle (Interactive)",
+  "nameEn": "Newton's Cradle",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 200, "h": 180 },
-  "tags": ["newton","cradle","pendulum","momentum","mechanics","interactive","collision"],
+  "viewport": {
+    "w": 200,
+    "h": 180
+  },
+  "tags": [
+    "newton",
+    "cradle",
+    "pendulum",
+    "momentum",
+    "mechanics",
+    "interactive",
+    "collision"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 480, "desc": "组件高度" },
-    { "key": "ballColor",   "type": "color",  "default": "#b0bec5", "desc": "钢球颜色" },
-    { "key": "frameColor",  "type": "color",  "default": "#555555", "desc": "框架颜色" },
-    { "key": "stringColor", "type": "color",  "default": "#333333", "desc": "悬线颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#222222", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 480,
+      "desc": "组件高度"
+    },
+    {
+      "key": "ballColor",
+      "type": "color",
+      "default": "#b0bec5",
+      "desc": "钢球颜色"
+    },
+    {
+      "key": "frameColor",
+      "type": "color",
+      "default": "#555555",
+      "desc": "框架颜色"
+    },
+    {
+      "key": "stringColor",
+      "type": "color",
+      "default": "#333333",
+      "desc": "悬线颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#222222",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "ballColor":   "--cmp-ball",
-    "frameColor":  "--cmp-frame",
+    "size": "--cmp-size",
+    "ballColor": "--cmp-ball",
+    "frameColor": "--cmp-frame",
     "stringColor": "--cmp-string",
-    "stroke":      "--cmp-stroke",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
   },
   "events": [
     {
@@ -41,7 +93,123 @@
         "angle": "number(deg) — 释放时摆球角度"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "牛顿摆（交互式）",
+      "tags": [
+        "newton",
+        "cradle",
+        "pendulum",
+        "momentum",
+        "mechanics",
+        "interactive",
+        "collision"
+      ],
+      "ariaLabel": "牛顿摆（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "ballColor": {
+          "label": "ballColor",
+          "desc": "钢球颜色"
+        },
+        "frameColor": {
+          "label": "frameColor",
+          "desc": "框架颜色"
+        },
+        "stringColor": {
+          "label": "stringColor",
+          "desc": "悬线颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number(deg) — 当前摆球角度"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "angle": "number(deg) — 释放时摆球角度"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Newton's Cradle",
+      "tags": [
+        "newton",
+        "cradle",
+        "pendulum",
+        "momentum",
+        "mechanics",
+        "interactive",
+        "collision"
+      ],
+      "ariaLabel": "Newton's Cradle",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "ballColor": {
+          "label": "Ball Color",
+          "desc": "Sets the color of the ball."
+        },
+        "frameColor": {
+          "label": "Frame Color",
+          "desc": "Sets the color of the support frame."
+        },
+        "stringColor": {
+          "label": "String Color",
+          "desc": "Sets the color of the string."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle value."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "angle": "Current angle value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.newton-cradle.interactive" role="img" aria-label="牛顿摆（交互式）">

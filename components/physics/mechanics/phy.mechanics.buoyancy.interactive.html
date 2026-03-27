@@ -1,34 +1,286 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.buoyancy.interactive",
   "name": "浮力演示（交互式）",
-  "nameEn": "Buoyancy Demonstration (Interactive)",
+  "nameEn": "Buoyancy Demonstrator",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 400, "h": 450 },
-  "tags": ["physics","mechanics","buoyancy","archimedes","fluid","density","interactive"],
+  "viewport": {
+    "w": 400,
+    "h": 450
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "buoyancy",
+    "archimedes",
+    "fluid",
+    "density",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "waterColor",     "type": "color",  "default": "#42a5f5", "desc": "水颜色" },
-    { "key": "objectColor",    "type": "color",  "default": "#ff9800", "desc": "物体颜色" },
-    { "key": "objectDensity",  "type": "number", "default": 0.6, "min": 0.1, "max": 3, "desc": "物体密度(g/cm³)" },
-    { "key": "fluidDensity",   "type": "number", "default": 1.0, "min": 0.5, "max": 2, "desc": "液体密度(g/cm³)" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showForces",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示力" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 450,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "waterColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "水颜色"
+    },
+    {
+      "key": "objectColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "物体颜色"
+    },
+    {
+      "key": "objectDensity",
+      "type": "number",
+      "default": 0.6,
+      "min": 0.1,
+      "max": 3,
+      "desc": "物体密度(g/cm³)"
+    },
+    {
+      "key": "fluidDensity",
+      "type": "number",
+      "default": 1,
+      "min": 0.5,
+      "max": 2,
+      "desc": "液体密度(g/cm³)"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showForces",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示力"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "waterColor": "--cmp-water", "objectColor": "--cmp-object", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "waterColor": "--cmp-water",
+    "objectColor": "--cmp-object",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "density", "values": { "objectDensity": "number", "submergedRatio": "number(0-1)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "density",
+      "values": {
+        "objectDensity": "number",
+        "submergedRatio": "number(0-1)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "浮力演示（交互式）",
+      "tags": [
+        "physics",
+        "mechanics",
+        "buoyancy",
+        "archimedes",
+        "fluid",
+        "density",
+        "interactive"
+      ],
+      "ariaLabel": "浮力演示（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "waterColor": {
+          "label": "waterColor",
+          "desc": "水颜色"
+        },
+        "objectColor": {
+          "label": "objectColor",
+          "desc": "物体颜色"
+        },
+        "objectDensity": {
+          "label": "objectDensity",
+          "desc": "物体密度(g/cm³)"
+        },
+        "fluidDensity": {
+          "label": "fluidDensity",
+          "desc": "液体密度(g/cm³)"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showForces": {
+          "label": "showForces",
+          "desc": "显示力"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "objectDensity": "number",
+            "submergedRatio": "number(0-1)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Buoyancy Demonstrator",
+      "tags": [
+        "physics",
+        "mechanics",
+        "buoyancy",
+        "archimedes",
+        "fluid",
+        "density",
+        "interactive"
+      ],
+      "ariaLabel": "Buoyancy Demonstrator",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "waterColor": {
+          "label": "Water Color",
+          "desc": "Sets the color of the water."
+        },
+        "objectColor": {
+          "label": "Object Color",
+          "desc": "Sets the color of the immersed object."
+        },
+        "objectDensity": {
+          "label": "Object Density",
+          "desc": "Sets the density of the object."
+        },
+        "fluidDensity": {
+          "label": "Fluid Density",
+          "desc": "Sets the density of the surrounding fluid."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the motion speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animated motion."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides reference labels."
+        },
+        "showForces": {
+          "label": "Show Forces",
+          "desc": "Shows or hides force arrows."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "objectDensity": "Current object density.",
+            "submergedRatio": "Current submerged ratio."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.mechanics.buoyancy.interactive" role="img" aria-label="浮力演示（交互式）">

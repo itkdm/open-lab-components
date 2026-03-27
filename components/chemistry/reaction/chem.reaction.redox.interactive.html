@@ -1,32 +1,251 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.reaction.redox.interactive",
   "name": "氧化还原反应（交互式）",
-  "nameEn": "Redox Reaction (Interactive)",
+  "nameEn": "Redox Reaction Explorer",
   "category": "chemistry/reaction",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 420 },
-  "tags": ["chemistry","redox","oxidation","reduction","electron-transfer","galvanic","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 420
+  },
+  "tags": [
+    "chemistry",
+    "redox",
+    "oxidation",
+    "reduction",
+    "electron-transfer",
+    "galvanic",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "oxColor",        "type": "color",  "default": "#ef5350", "desc": "氧化颜色" },
-    { "key": "redColor",       "type": "color",  "default": "#42a5f5", "desc": "还原颜色" },
-    { "key": "electronColor",  "type": "color",  "default": "#ffeb3b", "desc": "电子颜色" },
-    { "key": "preset",         "type": "enum",   "default": "zn-cu", "enum": ["zn-cu","fe-cu","mg-hcl","na-cl"], "desc": "反应类型" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 420,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "oxColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "氧化颜色"
+    },
+    {
+      "key": "redColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "还原颜色"
+    },
+    {
+      "key": "electronColor",
+      "type": "color",
+      "default": "#ffeb3b",
+      "desc": "电子颜色"
+    },
+    {
+      "key": "preset",
+      "type": "enum",
+      "default": "zn-cu",
+      "enum": [
+        "zn-cu",
+        "fe-cu",
+        "mg-hcl",
+        "na-cl"
+      ],
+      "desc": "反应类型"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "oxColor": "--cmp-ox", "redColor": "--cmp-red", "electronColor": "--cmp-electron", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "oxColor": "--cmp-ox",
+    "redColor": "--cmp-red",
+    "electronColor": "--cmp-electron",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "preset", "values": { "preset": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "preset",
+      "values": {
+        "preset": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "氧化还原反应（交互式）",
+      "tags": [
+        "chemistry",
+        "redox",
+        "oxidation",
+        "reduction",
+        "electron-transfer",
+        "galvanic",
+        "interactive"
+      ],
+      "ariaLabel": "氧化还原反应（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "oxColor": {
+          "label": "oxColor",
+          "desc": "氧化颜色"
+        },
+        "redColor": {
+          "label": "redColor",
+          "desc": "还原颜色"
+        },
+        "electronColor": {
+          "label": "electronColor",
+          "desc": "电子颜色"
+        },
+        "preset": {
+          "label": "preset",
+          "desc": "反应类型"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "preset": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Redox Reaction Explorer",
+      "tags": [
+        "chemistry",
+        "redox",
+        "oxidation",
+        "reduction",
+        "electron-transfer",
+        "galvanic",
+        "interactive"
+      ],
+      "ariaLabel": "Redox Reaction Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "oxColor": {
+          "label": "Oxidized Species Color",
+          "desc": "Sets the color used for the oxidized species."
+        },
+        "redColor": {
+          "label": "Reduced Species Color",
+          "desc": "Sets the color used for the reduced species."
+        },
+        "electronColor": {
+          "label": "Electron Color",
+          "desc": "Sets the color used for electrons."
+        },
+        "preset": {
+          "label": "Reaction Preset",
+          "desc": "Selects the preset reaction system."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "preset": "Current preset reaction system."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.reaction.redox.interactive" role="img" aria-label="氧化还原反应（交互式）">

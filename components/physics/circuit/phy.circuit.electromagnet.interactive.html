@@ -1,39 +1,241 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.electromagnet.interactive",
   "name": "电磁铁（交互式）",
-  "nameEn": "Electromagnet (Interactive)",
+  "nameEn": "Electromagnet Explorer",
   "category": "physics/circuit",
   "version": "1.1.0",
-  "viewport": { "w": 300, "h": 200 },
-  "tags": ["electromagnet", "magnet", "coil", "circuit", "interactive", "magnetic-field"],
+  "viewport": {
+    "w": 300,
+    "h": 200
+  },
+  "tags": [
+    "electromagnet",
+    "magnet",
+    "coil",
+    "circuit",
+    "interactive",
+    "magnetic-field"
+  ],
   "props": [
-    { "key": "size",       "type": "number(px)", "default": 200, "min": 120, "max": 400, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "coilColor",  "type": "color",  "default": "#b87333", "desc": "线圈颜色（铜色）" },
-    { "key": "coreColor",  "type": "color",  "default": "#666666", "desc": "铁芯颜色" },
-    { "key": "fieldColor", "type": "color",  "default": "#2196f3", "desc": "磁力线颜色" },
-    { "key": "nailColor",  "type": "color",  "default": "#888888", "desc": "铁钉颜色" },
-    { "key": "wireColor",  "type": "color",  "default": "#d32f2f", "desc": "导线颜色" },
-    { "key": "stroke",     "type": "color",  "default": "#222222", "desc": "描边颜色" },
-    { "key": "strokeWidth","type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "powered",    "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "初始通电状态" },
-    { "key": "glow",       "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 400,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "coilColor",
+      "type": "color",
+      "default": "#b87333",
+      "desc": "线圈颜色（铜色）"
+    },
+    {
+      "key": "coreColor",
+      "type": "color",
+      "default": "#666666",
+      "desc": "铁芯颜色"
+    },
+    {
+      "key": "fieldColor",
+      "type": "color",
+      "default": "#2196f3",
+      "desc": "磁力线颜色"
+    },
+    {
+      "key": "nailColor",
+      "type": "color",
+      "default": "#888888",
+      "desc": "铁钉颜色"
+    },
+    {
+      "key": "wireColor",
+      "type": "color",
+      "default": "#d32f2f",
+      "desc": "导线颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#222222",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "powered",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "初始通电状态"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":       "--cmp-size",
-    "coilColor":  "--cmp-coil",
-    "coreColor":  "--cmp-core",
+    "size": "--cmp-size",
+    "coilColor": "--cmp-coil",
+    "coreColor": "--cmp-core",
     "fieldColor": "--cmp-field",
-    "nailColor":  "--cmp-nail",
-    "wireColor":  "--cmp-wire",
-    "stroke":     "--cmp-stroke",
-    "strokeWidth":"--cmp-stroke-width",
-    "glow":       "--cmp-glow"
+    "nailColor": "--cmp-nail",
+    "wireColor": "--cmp-wire",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "powered": "boolean — 是否通电" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "powered": "boolean — 是否通电"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "电磁铁（交互式）",
+      "tags": [
+        "electromagnet",
+        "magnet",
+        "coil",
+        "circuit",
+        "interactive",
+        "magnetic-field"
+      ],
+      "ariaLabel": "电磁铁（断电）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "coilColor": {
+          "label": "coilColor",
+          "desc": "线圈颜色（铜色）"
+        },
+        "coreColor": {
+          "label": "coreColor",
+          "desc": "铁芯颜色"
+        },
+        "fieldColor": {
+          "label": "fieldColor",
+          "desc": "磁力线颜色"
+        },
+        "nailColor": {
+          "label": "nailColor",
+          "desc": "铁钉颜色"
+        },
+        "wireColor": {
+          "label": "wireColor",
+          "desc": "导线颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "powered": {
+          "label": "powered",
+          "desc": "初始通电状态"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "powered": "boolean — 是否通电"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Electromagnet Explorer",
+      "tags": [
+        "electromagnet",
+        "magnet",
+        "coil",
+        "circuit",
+        "interactive",
+        "magnetic-field"
+      ],
+      "ariaLabel": "Electromagnet Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "coilColor": {
+          "label": "Coil Color",
+          "desc": "Color setting for coil color."
+        },
+        "coreColor": {
+          "label": "Core Color",
+          "desc": "Color setting for core color."
+        },
+        "fieldColor": {
+          "label": "Field Color",
+          "desc": "Color setting for field color."
+        },
+        "nailColor": {
+          "label": "Nail Color",
+          "desc": "Color setting for nail color."
+        },
+        "wireColor": {
+          "label": "Wire Color",
+          "desc": "Color setting for wire color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "powered": {
+          "label": "Powered",
+          "desc": "Select the powered option."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Toggle",
+          "desc": "Event emitted during toggle.",
+          "values": {
+            "powered": "Value for powered."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.circuit.electromagnet.interactive" role="img" aria-label="电磁铁（断电）">

@@ -1,20 +1,111 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.statistics.pie-chart.interactive",
   "name": "扇形统计图",
   "nameEn": "Pie Chart",
   "category": "math/statistics",
   "version": "1.0.0",
-  "viewport": { "w": 340, "h": 300 },
+  "viewport": {
+    "w": 340,
+    "h": 300
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 340, "min": 220, "max": 600, "desc": "组件宽度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 340,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["pie-chart", "statistics", "percentage", "data", "graph", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "pie-chart",
+    "statistics",
+    "percentage",
+    "data",
+    "graph",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "data": "object", "selected": "string", "percentage": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "data": "object",
+        "selected": "string",
+        "percentage": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "扇形统计图",
+      "tags": [
+        "pie-chart",
+        "statistics",
+        "percentage",
+        "data",
+        "graph",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "扇形统计图",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "data": "object",
+            "selected": "string",
+            "percentage": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Pie Chart",
+      "tags": [
+        "pie-chart",
+        "statistics",
+        "percentage",
+        "data",
+        "graph",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Pie Chart",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "data": "Current data.",
+            "selected": "Current selected.",
+            "percentage": "Current percentage."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.statistics.pie-chart.interactive" role="img" aria-label="扇形统计图">

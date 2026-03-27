@@ -1,35 +1,311 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.trigonometry.unit-circle.interactive",
   "name": "三角函数单位圆（交互式）",
-  "nameEn": "Trigonometric Unit Circle (Interactive)",
+  "nameEn": "Unit Circle Explorer",
   "category": "math/trigonometry",
   "version": "1.0.0",
-  "viewport": { "w": 500, "h": 420 },
-  "tags": ["math","trigonometry","unit-circle","sin","cos","tan","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 420
+  },
+  "tags": [
+    "math",
+    "trigonometry",
+    "unit-circle",
+    "sin",
+    "cos",
+    "tan",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 420, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "sinColor",       "type": "color",  "default": "#ef5350", "desc": "sin颜色" },
-    { "key": "cosColor",       "type": "color",  "default": "#42a5f5", "desc": "cos颜色" },
-    { "key": "tanColor",       "type": "color",  "default": "#66bb6a", "desc": "tan颜色" },
-    { "key": "angle",          "type": "number", "default": 45, "min": 0, "max": 360, "desc": "角度(°)" },
-    { "key": "showSin",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示sin" },
-    { "key": "showCos",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示cos" },
-    { "key": "showTan",        "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示tan" },
-    { "key": "showWave",       "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示波形" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 420,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "sinColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "sin颜色"
+    },
+    {
+      "key": "cosColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "cos颜色"
+    },
+    {
+      "key": "tanColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "tan颜色"
+    },
+    {
+      "key": "angle",
+      "type": "number",
+      "default": 45,
+      "min": 0,
+      "max": 360,
+      "desc": "角度(°)"
+    },
+    {
+      "key": "showSin",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示sin"
+    },
+    {
+      "key": "showCos",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示cos"
+    },
+    {
+      "key": "showTan",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示tan"
+    },
+    {
+      "key": "showWave",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示波形"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "sinColor": "--cmp-sin", "cosColor": "--cmp-cos", "tanColor": "--cmp-tan", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "sinColor": "--cmp-sin",
+    "cosColor": "--cmp-cos",
+    "tanColor": "--cmp-tan",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "angle", "values": { "angle": "number(°)", "sin": "number", "cos": "number", "tan": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "angle",
+      "values": {
+        "angle": "number(°)",
+        "sin": "number",
+        "cos": "number",
+        "tan": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "三角函数单位圆（交互式）",
+      "tags": [
+        "math",
+        "trigonometry",
+        "unit-circle",
+        "sin",
+        "cos",
+        "tan",
+        "interactive"
+      ],
+      "ariaLabel": "三角函数单位圆（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "sinColor": {
+          "label": "sinColor",
+          "desc": "sin颜色"
+        },
+        "cosColor": {
+          "label": "cosColor",
+          "desc": "cos颜色"
+        },
+        "tanColor": {
+          "label": "tanColor",
+          "desc": "tan颜色"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "角度(°)"
+        },
+        "showSin": {
+          "label": "showSin",
+          "desc": "显示sin"
+        },
+        "showCos": {
+          "label": "showCos",
+          "desc": "显示cos"
+        },
+        "showTan": {
+          "label": "showTan",
+          "desc": "显示tan"
+        },
+        "showWave": {
+          "label": "showWave",
+          "desc": "显示波形"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number(°)",
+            "sin": "number",
+            "cos": "number",
+            "tan": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Unit Circle Explorer",
+      "tags": [
+        "math",
+        "trigonometry",
+        "unit-circle",
+        "sin",
+        "cos",
+        "tan",
+        "interactive"
+      ],
+      "ariaLabel": "Unit Circle Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "sinColor": {
+          "label": "Sine Color",
+          "desc": "Sets the color of the sine curve or segment."
+        },
+        "cosColor": {
+          "label": "Cosine Color",
+          "desc": "Sets the color of the cosine curve or segment."
+        },
+        "tanColor": {
+          "label": "Tangent Color",
+          "desc": "Sets the color of the tangent curve or segment."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Sets the angle in degrees."
+        },
+        "showSin": {
+          "label": "Show Sine",
+          "desc": "Shows or hides the sine component."
+        },
+        "showCos": {
+          "label": "Show Cosine",
+          "desc": "Shows or hides the cosine component."
+        },
+        "showTan": {
+          "label": "Show Tangent",
+          "desc": "Shows or hides the tangent component."
+        },
+        "showWave": {
+          "label": "Show Wave",
+          "desc": "Shows or hides the wave illustration."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle in degrees.",
+            "sin": "Current sin.",
+            "cos": "Current cos.",
+            "tan": "Current tan."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.trigonometry.unit-circle.interactive" role="img" aria-label="三角函数单位圆（交互式）">

@@ -1,35 +1,307 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.reaction.acid-base.interactive",
   "name": "酸碱中和反应（交互式）",
-  "nameEn": "Acid-Base Neutralization (Interactive)",
+  "nameEn": "Acid-Base Neutralization Explorer",
   "category": "chemistry/reaction",
   "version": "1.1.0",
-  "viewport": { "w": 500, "h": 440 },
-  "tags": ["chemistry","reaction","acid-base","neutralization","pH","indicator","interactive"],
+  "viewport": {
+    "w": 500,
+    "h": 440
+  },
+  "tags": [
+    "chemistry",
+    "reaction",
+    "acid-base",
+    "neutralization",
+    "pH",
+    "indicator",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 440, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "acidColor",      "type": "color",  "default": "#ef5350", "desc": "酸性颜色" },
-    { "key": "baseColor",      "type": "color",  "default": "#5c6bc0", "desc": "碱性颜色" },
-    { "key": "neutralColor",   "type": "color",  "default": "#66bb6a", "desc": "中性颜色" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "滴落速度" },
-    { "key": "amount",         "type": "number", "default": 0, "min": 0, "max": 100, "desc": "碱添加量(%)" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "showEquation",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示方程式" },
-    { "key": "showParticles",  "type": "enum",   "default": "off", "enum": ["on","off"], "desc": "显示粒子" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 440,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "acidColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "酸性颜色"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "碱性颜色"
+    },
+    {
+      "key": "neutralColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "中性颜色"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "滴落速度"
+    },
+    {
+      "key": "amount",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "desc": "碱添加量(%)"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "showEquation",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示方程式"
+    },
+    {
+      "key": "showParticles",
+      "type": "enum",
+      "default": "off",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示粒子"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "acidColor": "--cmp-acid", "baseColor": "--cmp-base", "neutralColor": "--cmp-neutral", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "acidColor": "--cmp-acid",
+    "baseColor": "--cmp-base",
+    "neutralColor": "--cmp-neutral",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "amount": "number(0-100)", "pH": "number(0-14)" } },
-    { "name": "cmp:changeend", "type": "slide", "values": { "amount": "number(0-100)", "pH": "number(0-14)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "amount": "number(0-100)",
+        "pH": "number(0-14)"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "amount": "number(0-100)",
+        "pH": "number(0-14)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "酸碱中和反应（交互式）",
+      "tags": [
+        "chemistry",
+        "reaction",
+        "acid-base",
+        "neutralization",
+        "pH",
+        "indicator",
+        "interactive"
+      ],
+      "ariaLabel": "酸碱中和反应（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "acidColor": {
+          "label": "acidColor",
+          "desc": "酸性颜色"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "碱性颜色"
+        },
+        "neutralColor": {
+          "label": "neutralColor",
+          "desc": "中性颜色"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "滴落速度"
+        },
+        "amount": {
+          "label": "amount",
+          "desc": "碱添加量(%)"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "showEquation": {
+          "label": "showEquation",
+          "desc": "显示方程式"
+        },
+        "showParticles": {
+          "label": "showParticles",
+          "desc": "显示粒子"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "amount": "number(0-100)",
+            "pH": "number(0-14)"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "amount": "number(0-100)",
+            "pH": "number(0-14)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Acid-Base Neutralization Explorer",
+      "tags": [
+        "chemistry",
+        "reaction",
+        "acid-base",
+        "neutralization",
+        "pH",
+        "indicator",
+        "interactive"
+      ],
+      "ariaLabel": "Acid-Base Neutralization Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "acidColor": {
+          "label": "Acid Color",
+          "desc": "Sets the color used for the acidic solution."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Sets the color used for the basic solution."
+        },
+        "neutralColor": {
+          "label": "Neutral Solution Color",
+          "desc": "Sets the color used at neutral pH."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "amount": {
+          "label": "Amount Added",
+          "desc": "Sets the amount of reagent added."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showEquation": {
+          "label": "Show Equation",
+          "desc": "Shows or hides the chemical equation."
+        },
+        "showParticles": {
+          "label": "Show Particles",
+          "desc": "Shows or hides the particle view."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "amount": "Current amount added.",
+            "pH": "Current pH value."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "amount": "Current amount added.",
+            "pH": "Current pH value."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.reaction.acid-base.interactive" role="img" aria-label="酸碱中和反应（交互式）">

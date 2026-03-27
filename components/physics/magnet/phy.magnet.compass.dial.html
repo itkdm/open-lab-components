@@ -1,33 +1,200 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.magnet.compass.dial",
   "name": "指南针",
   "nameEn": "Compass",
   "category": "physics/magnet",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 160 },
-  "tags": ["compass", "magnet", "needle", "direction", "NESW", "navigation"],
+  "viewport": {
+    "w": 160,
+    "h": 160
+  },
+  "tags": [
+    "compass",
+    "magnet",
+    "needle",
+    "direction",
+    "NESW",
+    "navigation"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 160, "min": 80, "max": 400, "desc": "组件尺寸" },
-    { "key": "northColor",  "type": "color",  "default": "#e53935", "desc": "N极颜色" },
-    { "key": "southColor",  "type": "color",  "default": "#1e88e5", "desc": "S极颜色" },
-    { "key": "dialColor",   "type": "color",  "default": "#fafafa", "desc": "表盘颜色" },
-    { "key": "rimColor",    "type": "color",  "default": "#b0bec5", "desc": "外圈颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "angle",       "type": "number", "default": 0, "min": -180, "max": 180, "desc": "磁针旋转角度(°)" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 80,
+      "max": 400,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "northColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "N极颜色"
+    },
+    {
+      "key": "southColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "S极颜色"
+    },
+    {
+      "key": "dialColor",
+      "type": "color",
+      "default": "#fafafa",
+      "desc": "表盘颜色"
+    },
+    {
+      "key": "rimColor",
+      "type": "color",
+      "default": "#b0bec5",
+      "desc": "外圈颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "angle",
+      "type": "number",
+      "default": 0,
+      "min": -180,
+      "max": 180,
+      "desc": "磁针旋转角度(°)"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "northColor":  "--cmp-north",
-    "southColor":  "--cmp-south",
-    "dialColor":   "--cmp-dial",
-    "rimColor":    "--cmp-rim",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "northColor": "--cmp-north",
+    "southColor": "--cmp-south",
+    "dialColor": "--cmp-dial",
+    "rimColor": "--cmp-rim",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "指南针",
+      "tags": [
+        "compass",
+        "magnet",
+        "needle",
+        "direction",
+        "NESW",
+        "navigation"
+      ],
+      "ariaLabel": "指南针",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "northColor": {
+          "label": "northColor",
+          "desc": "N极颜色"
+        },
+        "southColor": {
+          "label": "southColor",
+          "desc": "S极颜色"
+        },
+        "dialColor": {
+          "label": "dialColor",
+          "desc": "表盘颜色"
+        },
+        "rimColor": {
+          "label": "rimColor",
+          "desc": "外圈颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "磁针旋转角度(°)"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Compass",
+      "tags": [
+        "compass",
+        "magnet",
+        "needle",
+        "direction",
+        "NESW",
+        "navigation"
+      ],
+      "ariaLabel": "Compass",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "northColor": {
+          "label": "North Color",
+          "desc": "Color setting for north color."
+        },
+        "southColor": {
+          "label": "South Color",
+          "desc": "Color setting for south color."
+        },
+        "dialColor": {
+          "label": "Dial Color",
+          "desc": "Color setting for dial color."
+        },
+        "rimColor": {
+          "label": "Rim Color",
+          "desc": "Color setting for rim color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Numeric control for angle."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

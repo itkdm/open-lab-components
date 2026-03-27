@@ -500,7 +500,19 @@
       }
     };
 
-    let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+    function resolveInitialLang() {
+      const params = new URLSearchParams(window.location.search);
+      const queryLang = (params.get('lang') || '').toLowerCase();
+      if (queryLang === 'en') return 'en';
+      if (queryLang === 'zh' || queryLang === 'zh-cn') return 'zh';
+      const stored = (localStorage.getItem(LANG_KEY) || '').toLowerCase();
+      if (stored === 'en') return 'en';
+      if (stored === 'zh' || stored === 'zh-cn') return 'zh';
+      const browserLang = (navigator.language || '').toLowerCase();
+      return browserLang.startsWith('en') ? 'en' : 'zh';
+    }
+
+    let currentLang = resolveInitialLang();
     let currentDoc = 'spec';
 
     function t(key) {

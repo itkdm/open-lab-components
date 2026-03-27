@@ -228,3 +228,16 @@ Manifest 顶层字段（v1）：
 
 - v1 的 schema 固定为 `cmp-manifest/v1`
 - 不兼容变更必须升级 schema（例如 v2），并在仓库 `docs/` 内提供迁移说明
+
+
+---
+
+## 10. Localization (`cmp-manifest/v2`)
+
+`cmp-manifest/v2` adds machine-readable locale metadata without changing the DOM contract.
+
+- Language-neutral fields stay at the top level: `id`, `schema`, `category`, `version`, `viewport`, `props[].key`, `cssVars`
+- Locale-specific fields move into `locales[locale]`: `name`, `tags`, `ariaLabel`, optional `description`, localized prop text, and localized event text
+- Default locale is `zh-CN`
+- Hosts and tools must fall back field-by-field to `zh-CN`
+- Legacy `cmp-manifest/v1` remains valid during migration

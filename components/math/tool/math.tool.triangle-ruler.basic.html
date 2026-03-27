@@ -1,21 +1,71 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.tool.triangle-ruler.basic",
   "name": "三角尺",
   "nameEn": "Triangle Ruler",
   "category": "math/tool",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 180 },
-  "tags": ["math", "ruler", "triangle", "measurement", "geometry"],
+  "viewport": {
+    "w": 300,
+    "h": 180
+  },
+  "tags": [
+    "math",
+    "ruler",
+    "triangle",
+    "measurement",
+    "geometry"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 150, "max": 500, "desc": "组件宽度" },
-    { "key": "type", "type": "enum", "default": "45", "enum": ["45", "60"], "desc": "三角尺类型(45°或60°)" },
-    { "key": "rotate", "type": "number(deg)", "default": 0, "desc": "旋转角度" },
-    { "key": "opacity", "type": "number(0-1)", "default": 0.9, "desc": "透明度" },
-    { "key": "fill", "type": "color", "default": "rgba(200,230,255,0.3)", "desc": "填充色" },
-    { "key": "stroke", "type": "color", "default": "#1976d2", "desc": "描边颜色" },
-    { "key": "scaleColor", "type": "color", "default": "#1565c0", "desc": "刻度颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 150,
+      "max": 500,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "type",
+      "type": "enum",
+      "default": "45",
+      "enum": [
+        "45",
+        "60"
+      ],
+      "desc": "三角尺类型(45°或60°)"
+    },
+    {
+      "key": "rotate",
+      "type": "number(deg)",
+      "default": 0,
+      "desc": "旋转角度"
+    },
+    {
+      "key": "opacity",
+      "type": "number(0-1)",
+      "default": 0.9,
+      "desc": "透明度"
+    },
+    {
+      "key": "fill",
+      "type": "color",
+      "default": "rgba(200,230,255,0.3)",
+      "desc": "填充色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#1976d2",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "scaleColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "刻度颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -24,6 +74,92 @@
     "fill": "--cmp-fill",
     "stroke": "--cmp-stroke",
     "scaleColor": "--cmp-scale-color"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "三角尺",
+      "tags": [
+        "math",
+        "ruler",
+        "triangle",
+        "measurement",
+        "geometry"
+      ],
+      "ariaLabel": "三角尺",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "type": {
+          "label": "type",
+          "desc": "三角尺类型(45°或60°)"
+        },
+        "rotate": {
+          "label": "rotate",
+          "desc": "旋转角度"
+        },
+        "opacity": {
+          "label": "opacity",
+          "desc": "透明度"
+        },
+        "fill": {
+          "label": "fill",
+          "desc": "填充色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "scaleColor": {
+          "label": "scaleColor",
+          "desc": "刻度颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Triangle Ruler",
+      "tags": [
+        "math",
+        "ruler",
+        "triangle",
+        "measurement",
+        "geometry"
+      ],
+      "ariaLabel": "Triangle Ruler",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "type": {
+          "label": "Type",
+          "desc": "Selects the type or mode."
+        },
+        "rotate": {
+          "label": "Rotation",
+          "desc": "Rotates the component by the given angle in degrees."
+        },
+        "opacity": {
+          "label": "Opacity",
+          "desc": "Sets the transparency level from 0 to 1."
+        },
+        "fill": {
+          "label": "Fill Color",
+          "desc": "Sets the fill color of the main shape."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "scaleColor": {
+          "label": "Scale Color",
+          "desc": "Sets the color of the measurement scale."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,18 +1,90 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "sci.life.seed-structure.basic",
   "name": "种子结构",
   "nameEn": "Seed Structure",
   "category": "science/life",
   "version": "1.0.0",
-  "viewport": { "w": 280, "h": 240 },
+  "viewport": {
+    "w": 280,
+    "h": 240
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 280, "min": 180, "max": 500, "desc": "组件宽度" },
-    { "key": "showLabels", "type": "boolean", "default": true, "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 280,
+      "min": 180,
+      "max": 500,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "showLabels",
+      "type": "boolean",
+      "default": true,
+      "desc": "显示标注"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["seed", "structure", "plant", "germination", "science", "primary"]
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "seed",
+    "structure",
+    "plant",
+    "germination",
+    "science",
+    "primary"
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "种子结构",
+      "tags": [
+        "seed",
+        "structure",
+        "plant",
+        "germination",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "种子结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Seed Structure",
+      "tags": [
+        "seed",
+        "structure",
+        "plant",
+        "germination",
+        "science",
+        "primary"
+      ],
+      "ariaLabel": "Seed Structure",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Configuration for show labels."
+        }
+      },
+      "events": {}
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="sci.life.seed-structure.basic" role="img" aria-label="种子结构">

@@ -1,33 +1,272 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.cell.respiration.interactive",
   "name": "细胞呼吸（交互式）",
-  "nameEn": "Cellular Respiration (Interactive)",
+  "nameEn": "Cellular Respiration Explorer",
   "category": "biology/cell",
   "version": "1.0.0",
-  "viewport": { "w": 600, "h": 540 },
-  "tags": ["biology","cell","respiration","ATP","glycolysis","krebs","mitochondria","interactive"],
+  "viewport": {
+    "w": 600,
+    "h": 540
+  },
+  "tags": [
+    "biology",
+    "cell",
+    "respiration",
+    "ATP",
+    "glycolysis",
+    "krebs",
+    "mitochondria",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 540, "min": 300, "max": 700, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "glucoseColor",   "type": "color",  "default": "#ff9800", "desc": "葡萄糖颜色" },
-    { "key": "atpColor",       "type": "color",  "default": "#66bb6a", "desc": "ATP颜色" },
-    { "key": "o2Color",        "type": "color",  "default": "#42a5f5", "desc": "O₂颜色" },
-    { "key": "co2Color",       "type": "color",  "default": "#78909c", "desc": "CO₂颜色" },
-    { "key": "stage",          "type": "enum",   "default": "all", "enum": ["all","glycolysis","krebs","etc"], "desc": "显示阶段" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 540,
+      "min": 300,
+      "max": 700,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "glucoseColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "葡萄糖颜色"
+    },
+    {
+      "key": "atpColor",
+      "type": "color",
+      "default": "#66bb6a",
+      "desc": "ATP颜色"
+    },
+    {
+      "key": "o2Color",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "O₂颜色"
+    },
+    {
+      "key": "co2Color",
+      "type": "color",
+      "default": "#78909c",
+      "desc": "CO₂颜色"
+    },
+    {
+      "key": "stage",
+      "type": "enum",
+      "default": "all",
+      "enum": [
+        "all",
+        "glycolysis",
+        "krebs",
+        "etc"
+      ],
+      "desc": "显示阶段"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "glucoseColor": "--cmp-glucose", "atpColor": "--cmp-atp", "o2Color": "--cmp-o2", "co2Color": "--cmp-co2", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "glucoseColor": "--cmp-glucose",
+    "atpColor": "--cmp-atp",
+    "o2Color": "--cmp-o2",
+    "co2Color": "--cmp-co2",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "stage", "values": { "stage": "string", "atpCount": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "stage",
+      "values": {
+        "stage": "string",
+        "atpCount": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "细胞呼吸（交互式）",
+      "tags": [
+        "biology",
+        "cell",
+        "respiration",
+        "ATP",
+        "glycolysis",
+        "krebs",
+        "mitochondria",
+        "interactive"
+      ],
+      "ariaLabel": "细胞呼吸（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "glucoseColor": {
+          "label": "glucoseColor",
+          "desc": "葡萄糖颜色"
+        },
+        "atpColor": {
+          "label": "atpColor",
+          "desc": "ATP颜色"
+        },
+        "o2Color": {
+          "label": "o2Color",
+          "desc": "O₂颜色"
+        },
+        "co2Color": {
+          "label": "co2Color",
+          "desc": "CO₂颜色"
+        },
+        "stage": {
+          "label": "stage",
+          "desc": "显示阶段"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "stage": "string",
+            "atpCount": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Cellular Respiration Explorer",
+      "tags": [
+        "biology",
+        "cell",
+        "respiration",
+        "ATP",
+        "glycolysis",
+        "krebs",
+        "mitochondria",
+        "interactive"
+      ],
+      "ariaLabel": "Cellular Respiration Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "glucoseColor": {
+          "label": "Glucose Color",
+          "desc": "Sets the color used for glucose."
+        },
+        "atpColor": {
+          "label": "ATP Color",
+          "desc": "Sets the color used for ATP."
+        },
+        "o2Color": {
+          "label": "Oxygen Color",
+          "desc": "Sets the color used for oxygen."
+        },
+        "co2Color": {
+          "label": "Carbon Dioxide Color",
+          "desc": "Sets the color used for carbon dioxide."
+        },
+        "stage": {
+          "label": "Stage",
+          "desc": "Selects the stage to display."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "stage": "Current stage.",
+            "atpCount": "Current atp count."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.cell.respiration.interactive" role="img" aria-label="细胞呼吸（交互式）">

@@ -1,26 +1,185 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.burette.basic",
   "name": "酸式滴定管",
   "nameEn": "Burette",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 40, "h": 240 },
-  "tags": ["chemistry", "labware", "burette", "titration", "volume", "measurement"],
+  "viewport": {
+    "w": 40,
+    "h": 240
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "burette",
+    "titration",
+    "volume",
+    "measurement"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 240, "min": 160, "max": 400, "desc": "组件高度" },
-    { "key": "liquidLevel", "type": "number(0-1)", "default": 0.8, "min": 0, "max": 1, "desc": "液面高度" },
-    { "key": "liquidColor", "type": "color",  "default": "#ef9a9a", "desc": "液体颜色" },
-    { "key": "scaleMax",    "type": "number", "default": 50, "desc": "刻度最大值(mL)" },
-    { "key": "majorStep",   "type": "number", "default": 10, "min": 1, "desc": "主刻度间隔" },
-    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "stopcock",    "type": "enum",   "default": "closed", "enum": ["open","closed"], "desc": "活塞状态" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 240,
+      "min": 160,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "liquidLevel",
+      "type": "number(0-1)",
+      "default": 0.8,
+      "min": 0,
+      "max": 1,
+      "desc": "液面高度"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#ef9a9a",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "scaleMax",
+      "type": "number",
+      "default": 50,
+      "desc": "刻度最大值(mL)"
+    },
+    {
+      "key": "majorStep",
+      "type": "number",
+      "default": 10,
+      "min": 1,
+      "desc": "主刻度间隔"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "stopcock",
+      "type": "enum",
+      "default": "closed",
+      "enum": [
+        "open",
+        "closed"
+      ],
+      "desc": "活塞状态"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "liquidColor": "--cmp-liquid",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "liquidColor": "--cmp-liquid",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "酸式滴定管",
+      "tags": [
+        "chemistry",
+        "labware",
+        "burette",
+        "titration",
+        "volume",
+        "measurement"
+      ],
+      "ariaLabel": "酸式滴定管",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "liquidLevel": {
+          "label": "liquidLevel",
+          "desc": "液面高度"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "scaleMax": {
+          "label": "scaleMax",
+          "desc": "刻度最大值(mL)"
+        },
+        "majorStep": {
+          "label": "majorStep",
+          "desc": "主刻度间隔"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "stopcock": {
+          "label": "stopcock",
+          "desc": "活塞状态"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Burette",
+      "tags": [
+        "chemistry",
+        "labware",
+        "burette",
+        "titration",
+        "volume",
+        "measurement"
+      ],
+      "ariaLabel": "Burette",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "liquidLevel": {
+          "label": "Liquid Level",
+          "desc": "Sets the fill level as a fraction of the vessel height."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "scaleMax": {
+          "label": "Scale Maximum",
+          "desc": "Sets the highest value shown on the scale."
+        },
+        "majorStep": {
+          "label": "Major Tick Interval",
+          "desc": "Sets the interval between major scale markings."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "stopcock": {
+          "label": "Stopcock Position",
+          "desc": "Sets the stopcock position."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

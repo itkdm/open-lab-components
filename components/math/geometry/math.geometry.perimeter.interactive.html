@@ -1,24 +1,175 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.perimeter.interactive",
   "name": "周长探索",
   "nameEn": "Perimeter Explorer",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 320 },
+  "viewport": {
+    "w": 320,
+    "h": 320
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件尺寸" },
-    { "key": "gridColor", "type": "color", "default": "#E0E0E0", "desc": "网格颜色" },
-    { "key": "shapeColor", "type": "color", "default": "#1E88E5", "desc": "图形颜色" },
-    { "key": "measureColor", "type": "color", "default": "#F44336", "desc": "测量标注颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件尺寸"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#E0E0E0",
+      "desc": "网格颜色"
+    },
+    {
+      "key": "shapeColor",
+      "type": "color",
+      "default": "#1E88E5",
+      "desc": "图形颜色"
+    },
+    {
+      "key": "measureColor",
+      "type": "color",
+      "default": "#F44336",
+      "desc": "测量标注颜色"
+    }
   ],
-  "cssVars": { "size": "--cmp-size", "gridColor": "--cmp-grid", "shapeColor": "--cmp-shape", "measureColor": "--cmp-measure" },
-  "tags": ["perimeter", "measurement", "geometry", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size",
+    "gridColor": "--cmp-grid",
+    "shapeColor": "--cmp-shape",
+    "measureColor": "--cmp-measure"
+  },
+  "tags": [
+    "perimeter",
+    "measurement",
+    "geometry",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "points": "array", "perimeter": "number", "sides": "number" } },
-    { "name": "cmp:changeend", "type": "adjust", "values": { "points": "array", "perimeter": "number", "sides": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "points": "array",
+        "perimeter": "number",
+        "sides": "number"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "adjust",
+      "values": {
+        "points": "array",
+        "perimeter": "number",
+        "sides": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "周长探索",
+      "tags": [
+        "perimeter",
+        "measurement",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "周长探索",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件尺寸"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格颜色"
+        },
+        "shapeColor": {
+          "label": "shapeColor",
+          "desc": "图形颜色"
+        },
+        "measureColor": {
+          "label": "measureColor",
+          "desc": "测量标注颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "points": "array",
+            "perimeter": "number",
+            "sides": "number"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "points": "array",
+            "perimeter": "number",
+            "sides": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Perimeter Explorer",
+      "tags": [
+        "perimeter",
+        "measurement",
+        "geometry",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Perimeter Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Sets the color of the grid lines."
+        },
+        "shapeColor": {
+          "label": "Shape Color",
+          "desc": "Sets the color of the geometric shape."
+        },
+        "measureColor": {
+          "label": "Measurement Color",
+          "desc": "Sets the color of measurement guides."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "points": "Current points.",
+            "perimeter": "Current perimeter.",
+            "sides": "Current sides."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "points": "Current points.",
+            "perimeter": "Current perimeter.",
+            "sides": "Current sides."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.perimeter.interactive" role="img" aria-label="周长探索">

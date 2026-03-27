@@ -1,37 +1,323 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.geometry.conic-section.interactive",
   "name": "圆锥曲线（交互式）",
-  "nameEn": "Conic Section (Interactive)",
+  "nameEn": "Conic Section Explorer",
   "category": "math/geometry",
   "version": "1.0.0",
-  "viewport": { "w": 440, "h": 400 },
-  "tags": ["math","geometry","conic","ellipse","parabola","hyperbola","interactive"],
+  "viewport": {
+    "w": 440,
+    "h": 400
+  },
+  "tags": [
+    "math",
+    "geometry",
+    "conic",
+    "ellipse",
+    "parabola",
+    "hyperbola",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 400, "min": 280, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",       "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "axisColor",    "type": "color",  "default": "#37474f", "desc": "坐标轴颜色" },
-    { "key": "gridColor",    "type": "color",  "default": "#e0e0e0", "desc": "网格颜色" },
-    { "key": "curveColor",   "type": "color",  "default": "#1565c0", "desc": "曲线颜色" },
-    { "key": "focusColor",   "type": "color",  "default": "#e53935", "desc": "焦点颜色" },
-    { "key": "curveType",    "type": "enum",   "default": "ellipse", "enum": ["circle","ellipse","parabola","hyperbola"], "desc": "曲线类型" },
-    { "key": "paramA",       "type": "number", "default": 3, "min": 0.5, "max": 8, "desc": "参数a" },
-    { "key": "paramB",       "type": "number", "default": 2, "min": 0.5, "max": 8, "desc": "参数b" },
-    { "key": "showFoci",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示焦点" },
-    { "key": "showDirectrix","type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示准线" },
-    { "key": "showLabels",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 400,
+      "min": 280,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "axisColor",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "坐标轴颜色"
+    },
+    {
+      "key": "gridColor",
+      "type": "color",
+      "default": "#e0e0e0",
+      "desc": "网格颜色"
+    },
+    {
+      "key": "curveColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "曲线颜色"
+    },
+    {
+      "key": "focusColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "焦点颜色"
+    },
+    {
+      "key": "curveType",
+      "type": "enum",
+      "default": "ellipse",
+      "enum": [
+        "circle",
+        "ellipse",
+        "parabola",
+        "hyperbola"
+      ],
+      "desc": "曲线类型"
+    },
+    {
+      "key": "paramA",
+      "type": "number",
+      "default": 3,
+      "min": 0.5,
+      "max": 8,
+      "desc": "参数a"
+    },
+    {
+      "key": "paramB",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 8,
+      "desc": "参数b"
+    },
+    {
+      "key": "showFoci",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示焦点"
+    },
+    {
+      "key": "showDirectrix",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示准线"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "axisColor": "--cmp-axis", "gridColor": "--cmp-grid",
-    "curveColor": "--cmp-curve", "focusColor": "--cmp-focus", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "axisColor": "--cmp-axis",
+    "gridColor": "--cmp-grid",
+    "curveColor": "--cmp-curve",
+    "focusColor": "--cmp-focus",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "curveType": "string", "paramA": "number", "paramB": "number" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "curveType": "string",
+        "paramA": "number",
+        "paramB": "number"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "圆锥曲线（交互式）",
+      "tags": [
+        "math",
+        "geometry",
+        "conic",
+        "ellipse",
+        "parabola",
+        "hyperbola",
+        "interactive"
+      ],
+      "ariaLabel": "圆锥曲线（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "axisColor": {
+          "label": "axisColor",
+          "desc": "坐标轴颜色"
+        },
+        "gridColor": {
+          "label": "gridColor",
+          "desc": "网格颜色"
+        },
+        "curveColor": {
+          "label": "curveColor",
+          "desc": "曲线颜色"
+        },
+        "focusColor": {
+          "label": "focusColor",
+          "desc": "焦点颜色"
+        },
+        "curveType": {
+          "label": "curveType",
+          "desc": "曲线类型"
+        },
+        "paramA": {
+          "label": "paramA",
+          "desc": "参数a"
+        },
+        "paramB": {
+          "label": "paramB",
+          "desc": "参数b"
+        },
+        "showFoci": {
+          "label": "showFoci",
+          "desc": "显示焦点"
+        },
+        "showDirectrix": {
+          "label": "showDirectrix",
+          "desc": "显示准线"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "curveType": "string",
+            "paramA": "number",
+            "paramB": "number"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Conic Section Explorer",
+      "tags": [
+        "math",
+        "geometry",
+        "conic",
+        "ellipse",
+        "parabola",
+        "hyperbola",
+        "interactive"
+      ],
+      "ariaLabel": "Conic Section Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "axisColor": {
+          "label": "Axis Color",
+          "desc": "Sets the color of the coordinate or optical axis."
+        },
+        "gridColor": {
+          "label": "Grid Color",
+          "desc": "Sets the color of the grid lines."
+        },
+        "curveColor": {
+          "label": "Curve Color",
+          "desc": "Sets the color of the plotted curve."
+        },
+        "focusColor": {
+          "label": "Focus Marker Color",
+          "desc": "Sets the color of the focus marker."
+        },
+        "curveType": {
+          "label": "Curve Type",
+          "desc": "Selects the curve type."
+        },
+        "paramA": {
+          "label": "Parameter a",
+          "desc": "Sets parameter a of the selected function."
+        },
+        "paramB": {
+          "label": "Parameter b",
+          "desc": "Sets parameter b of the selected function."
+        },
+        "showFoci": {
+          "label": "Show Foci",
+          "desc": "Shows or hides the foci."
+        },
+        "showDirectrix": {
+          "label": "Show Directrix",
+          "desc": "Shows or hides the directrix."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "curveType": "Current curve type.",
+            "paramA": "Current value of parameter a.",
+            "paramB": "Current value of parameter b."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.geometry.conic-section.interactive" role="img" aria-label="圆锥曲线（交互式）">

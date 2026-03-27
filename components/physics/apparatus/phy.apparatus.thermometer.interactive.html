@@ -1,24 +1,92 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.apparatus.thermometer.interactive",
   "name": "温度计（交互式）",
-  "nameEn": "Thermometer (Interactive)",
+  "nameEn": "Thermometer Explorer",
   "category": "physics/apparatus",
   "version": "1.0.0",
-  "viewport": { "w": 150, "h": 420 },
+  "viewport": {
+    "w": 150,
+    "h": 420
+  },
   "props": [
-    { "key": "height", "type": "number(px)", "default": 420, "min": 260, "max": 720, "desc": "温度计总高度" },
-    { "key": "width", "type": "number(px)", "default": 140, "min": 80, "max": 260, "desc": "温度计区域宽度（含刻度）" },
-    { "key": "minTemp", "type": "number", "default": -10, "min": -50, "max": 0, "desc": "刻度最小温度（摄氏度）" },
-    { "key": "maxTemp", "type": "number", "default": 50, "min": 10, "max": 100, "desc": "刻度最大温度（摄氏度）" },
-    { "key": "temperature", "type": "number", "default": 26, "min": -50, "max": 100, "desc": "当前温度（摄氏度）" },
-    { "key": "tubeFill", "type": "color", "default": "rgba(245,245,245,0.9)", "desc": "玻璃管背景色" },
-    { "key": "tubeStroke", "type": "color", "default": "#333333", "desc": "玻璃管描边颜色" },
-    { "key": "mercuryColor", "type": "color", "default": "#DC2626", "desc": "液柱主颜色" },
-    { "key": "scaleColor", "type": "color", "default": "#333333", "desc": "主刻度线颜色" },
-    { "key": "scaleMinorColor", "type": "color", "default": "#666666", "desc": "次刻度线颜色" },
-    { "key": "labelColor", "type": "color", "default": "#004737", "desc": "数字刻度文字颜色" }
+    {
+      "key": "height",
+      "type": "number(px)",
+      "default": 420,
+      "min": 260,
+      "max": 720,
+      "desc": "温度计总高度"
+    },
+    {
+      "key": "width",
+      "type": "number(px)",
+      "default": 140,
+      "min": 80,
+      "max": 260,
+      "desc": "温度计区域宽度（含刻度）"
+    },
+    {
+      "key": "minTemp",
+      "type": "number",
+      "default": -10,
+      "min": -50,
+      "max": 0,
+      "desc": "刻度最小温度（摄氏度）"
+    },
+    {
+      "key": "maxTemp",
+      "type": "number",
+      "default": 50,
+      "min": 10,
+      "max": 100,
+      "desc": "刻度最大温度（摄氏度）"
+    },
+    {
+      "key": "temperature",
+      "type": "number",
+      "default": 26,
+      "min": -50,
+      "max": 100,
+      "desc": "当前温度（摄氏度）"
+    },
+    {
+      "key": "tubeFill",
+      "type": "color",
+      "default": "rgba(245,245,245,0.9)",
+      "desc": "玻璃管背景色"
+    },
+    {
+      "key": "tubeStroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "玻璃管描边颜色"
+    },
+    {
+      "key": "mercuryColor",
+      "type": "color",
+      "default": "#DC2626",
+      "desc": "液柱主颜色"
+    },
+    {
+      "key": "scaleColor",
+      "type": "color",
+      "default": "#333333",
+      "desc": "主刻度线颜色"
+    },
+    {
+      "key": "scaleMinorColor",
+      "type": "color",
+      "default": "#666666",
+      "desc": "次刻度线颜色"
+    },
+    {
+      "key": "labelColor",
+      "type": "color",
+      "default": "#004737",
+      "desc": "数字刻度文字颜色"
+    }
   ],
   "cssVars": {
     "height": "--cmp-height",
@@ -33,7 +101,13 @@
     "scaleMinorColor": "--cmp-scale-minor-color",
     "labelColor": "--cmp-label-color"
   },
-  "tags": ["thermometer", "temperature", "apparatus", "interactive", "measurement"],
+  "tags": [
+    "thermometer",
+    "temperature",
+    "apparatus",
+    "interactive",
+    "measurement"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -49,7 +123,151 @@
         "temperature": "number(°C) — 最终温度"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "温度计（交互式）",
+      "tags": [
+        "thermometer",
+        "temperature",
+        "apparatus",
+        "interactive",
+        "measurement"
+      ],
+      "ariaLabel": "温度计（交互式）",
+      "props": {
+        "height": {
+          "label": "height",
+          "desc": "温度计总高度"
+        },
+        "width": {
+          "label": "width",
+          "desc": "温度计区域宽度（含刻度）"
+        },
+        "minTemp": {
+          "label": "minTemp",
+          "desc": "刻度最小温度（摄氏度）"
+        },
+        "maxTemp": {
+          "label": "maxTemp",
+          "desc": "刻度最大温度（摄氏度）"
+        },
+        "temperature": {
+          "label": "temperature",
+          "desc": "当前温度（摄氏度）"
+        },
+        "tubeFill": {
+          "label": "tubeFill",
+          "desc": "玻璃管背景色"
+        },
+        "tubeStroke": {
+          "label": "tubeStroke",
+          "desc": "玻璃管描边颜色"
+        },
+        "mercuryColor": {
+          "label": "mercuryColor",
+          "desc": "液柱主颜色"
+        },
+        "scaleColor": {
+          "label": "scaleColor",
+          "desc": "主刻度线颜色"
+        },
+        "scaleMinorColor": {
+          "label": "scaleMinorColor",
+          "desc": "次刻度线颜色"
+        },
+        "labelColor": {
+          "label": "labelColor",
+          "desc": "数字刻度文字颜色"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "temperature": "number(°C) — 当前温度"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "temperature": "number(°C) — 最终温度"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Thermometer Explorer",
+      "tags": [
+        "thermometer",
+        "temperature",
+        "apparatus",
+        "interactive",
+        "measurement"
+      ],
+      "ariaLabel": "Thermometer Explorer",
+      "props": {
+        "height": {
+          "label": "Height",
+          "desc": "Numeric control for height."
+        },
+        "width": {
+          "label": "Width",
+          "desc": "Numeric control for width."
+        },
+        "minTemp": {
+          "label": "Min Temp",
+          "desc": "Numeric control for min temp."
+        },
+        "maxTemp": {
+          "label": "Max Temp",
+          "desc": "Numeric control for max temp."
+        },
+        "temperature": {
+          "label": "Temperature",
+          "desc": "Numeric control for temperature."
+        },
+        "tubeFill": {
+          "label": "Tube Fill",
+          "desc": "Color setting for tube fill."
+        },
+        "tubeStroke": {
+          "label": "Tube Stroke",
+          "desc": "Color setting for tube stroke."
+        },
+        "mercuryColor": {
+          "label": "Mercury Color",
+          "desc": "Color setting for mercury color."
+        },
+        "scaleColor": {
+          "label": "Scale Color",
+          "desc": "Color setting for scale color."
+        },
+        "scaleMinorColor": {
+          "label": "Scale Minor Color",
+          "desc": "Color setting for scale minor color."
+        },
+        "labelColor": {
+          "label": "Label Color",
+          "desc": "Color setting for label color."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "temperature": "Value for temperature."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Slide",
+          "desc": "Event emitted during slide.",
+          "values": {
+            "temperature": "Value for temperature."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.apparatus.thermometer.interactive" role="img" aria-label="温度计（交互式）">

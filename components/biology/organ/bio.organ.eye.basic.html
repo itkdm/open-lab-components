@@ -1,25 +1,170 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.organ.eye.basic",
   "name": "眼球结构",
   "nameEn": "Eye Anatomy",
   "category": "biology/organ",
   "version": "1.0.0",
-  "viewport": { "w": 260, "h": 200 },
-  "tags": ["biology", "organ", "eye", "anatomy", "vision", "optics"],
+  "viewport": {
+    "w": 260,
+    "h": 200
+  },
+  "tags": [
+    "biology",
+    "organ",
+    "eye",
+    "anatomy",
+    "vision",
+    "optics"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 140, "max": 400, "desc": "组件高度" },
-    { "key": "scleraColor", "type": "color",  "default": "#f5f5f5", "desc": "巩膜颜色" },
-    { "key": "irisColor",   "type": "color",  "default": "#5d4037", "desc": "虹膜颜色" },
-    { "key": "retinaColor", "type": "color",  "default": "#ff8a65", "desc": "视网膜颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "showLabels",  "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 140,
+      "max": 400,
+      "desc": "组件高度"
+    },
+    {
+      "key": "scleraColor",
+      "type": "color",
+      "default": "#f5f5f5",
+      "desc": "巩膜颜色"
+    },
+    {
+      "key": "irisColor",
+      "type": "color",
+      "default": "#5d4037",
+      "desc": "虹膜颜色"
+    },
+    {
+      "key": "retinaColor",
+      "type": "color",
+      "default": "#ff8a65",
+      "desc": "视网膜颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "scleraColor": "--cmp-sclera", "irisColor": "--cmp-iris",
-    "retinaColor": "--cmp-retina", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "scleraColor": "--cmp-sclera",
+    "irisColor": "--cmp-iris",
+    "retinaColor": "--cmp-retina",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "眼球结构",
+      "tags": [
+        "biology",
+        "organ",
+        "eye",
+        "anatomy",
+        "vision",
+        "optics"
+      ],
+      "ariaLabel": "眼球结构",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "scleraColor": {
+          "label": "scleraColor",
+          "desc": "巩膜颜色"
+        },
+        "irisColor": {
+          "label": "irisColor",
+          "desc": "虹膜颜色"
+        },
+        "retinaColor": {
+          "label": "retinaColor",
+          "desc": "视网膜颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Eye Anatomy",
+      "tags": [
+        "biology",
+        "organ",
+        "eye",
+        "anatomy",
+        "vision",
+        "optics"
+      ],
+      "ariaLabel": "Eye Anatomy",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "scleraColor": {
+          "label": "Sclera Color",
+          "desc": "Sets the color of the sclera."
+        },
+        "irisColor": {
+          "label": "Iris Color",
+          "desc": "Sets the color of the iris."
+        },
+        "retinaColor": {
+          "label": "Retina Color",
+          "desc": "Sets the color of the retina."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

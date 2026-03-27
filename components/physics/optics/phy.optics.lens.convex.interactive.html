@@ -1,58 +1,397 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.optics.lens.convex.interactive",
   "name": "凸透镜成像（交互式）",
-  "nameEn": "Convex Lens Imaging (Interactive)",
+  "nameEn": "Convex Lens Imaging",
   "category": "physics/optics",
   "version": "1.0.0",
-  "viewport": { "w": 640, "h": 320 },
+  "viewport": {
+    "w": 640,
+    "h": 320
+  },
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 320, "min": 200, "max": 600, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "stroke",       "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth",  "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-
-    { "key": "lensColor",    "type": "color",  "default": "#90caf9", "desc": "透镜颜色" },
-    { "key": "lensEdge",     "type": "color",  "default": "#42a5f5", "desc": "透镜边缘色" },
-    { "key": "axisColor",    "type": "color",  "default": "#999999", "desc": "主光轴颜色" },
-
-    { "key": "rayColor",     "type": "color",  "default": "#ff9800", "desc": "光线颜色" },
-    { "key": "rayExtColor",  "type": "color",  "default": "#ffcc80", "desc": "光线反向延长线颜色" },
-    { "key": "rayWidth",     "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "光线粗细" },
-
-    { "key": "objectColor",  "type": "color",  "default": "#e53935", "desc": "物体颜色" },
-    { "key": "imageColor",   "type": "color",  "default": "#1e88e5", "desc": "像颜色" },
-
-    { "key": "focalLength",  "type": "number", "default": 80, "min": 30, "max": 150, "desc": "焦距 f（viewBox 坐标单位）" },
-    { "key": "objectDist",   "type": "number", "default": 200, "min": 20, "max": 300, "desc": "初始物距 u（viewBox 坐标单位）" },
-    { "key": "objectHeight", "type": "number", "default": 60,  "min": 20, "max": 100, "desc": "物体高度（viewBox 坐标单位）" },
-
-    { "key": "showLabels",   "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示 F/2F/u/v 标注" },
-    { "key": "showData",     "type": "enum",  "default": "on", "enum": ["on","off"], "desc": "是否显示数据面板" },
-
-    { "key": "accent",       "type": "color",  "default": "#1565c0", "desc": "强调色（标注文字）" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 320,
+      "min": 200,
+      "max": 600,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "lensColor",
+      "type": "color",
+      "default": "#90caf9",
+      "desc": "透镜颜色"
+    },
+    {
+      "key": "lensEdge",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "透镜边缘色"
+    },
+    {
+      "key": "axisColor",
+      "type": "color",
+      "default": "#999999",
+      "desc": "主光轴颜色"
+    },
+    {
+      "key": "rayColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "光线颜色"
+    },
+    {
+      "key": "rayExtColor",
+      "type": "color",
+      "default": "#ffcc80",
+      "desc": "光线反向延长线颜色"
+    },
+    {
+      "key": "rayWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 4,
+      "desc": "光线粗细"
+    },
+    {
+      "key": "objectColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "物体颜色"
+    },
+    {
+      "key": "imageColor",
+      "type": "color",
+      "default": "#1e88e5",
+      "desc": "像颜色"
+    },
+    {
+      "key": "focalLength",
+      "type": "number",
+      "default": 80,
+      "min": 30,
+      "max": 150,
+      "desc": "焦距 f（viewBox 坐标单位）"
+    },
+    {
+      "key": "objectDist",
+      "type": "number",
+      "default": 200,
+      "min": 20,
+      "max": 300,
+      "desc": "初始物距 u（viewBox 坐标单位）"
+    },
+    {
+      "key": "objectHeight",
+      "type": "number",
+      "default": 60,
+      "min": 20,
+      "max": 100,
+      "desc": "物体高度（viewBox 坐标单位）"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示 F/2F/u/v 标注"
+    },
+    {
+      "key": "showData",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示数据面板"
+    },
+    {
+      "key": "accent",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "强调色（标注文字）"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":         "--cmp-size",
-    "stroke":       "--cmp-stroke",
-    "strokeWidth":  "--cmp-stroke-width",
-    "lensColor":    "--cmp-lens",
-    "lensEdge":     "--cmp-lens-edge",
-    "axisColor":    "--cmp-axis",
-    "rayColor":     "--cmp-ray",
-    "rayExtColor":  "--cmp-ray-ext",
-    "rayWidth":     "--cmp-ray-width",
-    "objectColor":  "--cmp-object",
-    "imageColor":   "--cmp-image",
-    "accent":       "--cmp-accent",
-    "glow":         "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "lensColor": "--cmp-lens",
+    "lensEdge": "--cmp-lens-edge",
+    "axisColor": "--cmp-axis",
+    "rayColor": "--cmp-ray",
+    "rayExtColor": "--cmp-ray-ext",
+    "rayWidth": "--cmp-ray-width",
+    "objectColor": "--cmp-object",
+    "imageColor": "--cmp-image",
+    "accent": "--cmp-accent",
+    "glow": "--cmp-glow"
   },
-  "tags": ["optics", "lens", "convex-lens", "imaging", "refraction", "interactive", "draggable"],
+  "tags": [
+    "optics",
+    "lens",
+    "convex-lens",
+    "imaging",
+    "refraction",
+    "interactive",
+    "draggable"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "slide", "values": { "objectDist": "number — 物距 u", "imageDist": "number — 像距 v" } },
-    { "name": "cmp:changeend", "type": "slide", "values": { "objectDist": "number — 物距 u", "imageDist": "number — 像距 v" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "slide",
+      "values": {
+        "objectDist": "number — 物距 u",
+        "imageDist": "number — 像距 v"
+      }
+    },
+    {
+      "name": "cmp:changeend",
+      "type": "slide",
+      "values": {
+        "objectDist": "number — 物距 u",
+        "imageDist": "number — 像距 v"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "凸透镜成像（交互式）",
+      "tags": [
+        "optics",
+        "lens",
+        "convex-lens",
+        "imaging",
+        "refraction",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "凸透镜成像（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "lensColor": {
+          "label": "lensColor",
+          "desc": "透镜颜色"
+        },
+        "lensEdge": {
+          "label": "lensEdge",
+          "desc": "透镜边缘色"
+        },
+        "axisColor": {
+          "label": "axisColor",
+          "desc": "主光轴颜色"
+        },
+        "rayColor": {
+          "label": "rayColor",
+          "desc": "光线颜色"
+        },
+        "rayExtColor": {
+          "label": "rayExtColor",
+          "desc": "光线反向延长线颜色"
+        },
+        "rayWidth": {
+          "label": "rayWidth",
+          "desc": "光线粗细"
+        },
+        "objectColor": {
+          "label": "objectColor",
+          "desc": "物体颜色"
+        },
+        "imageColor": {
+          "label": "imageColor",
+          "desc": "像颜色"
+        },
+        "focalLength": {
+          "label": "focalLength",
+          "desc": "焦距 f（viewBox 坐标单位）"
+        },
+        "objectDist": {
+          "label": "objectDist",
+          "desc": "初始物距 u（viewBox 坐标单位）"
+        },
+        "objectHeight": {
+          "label": "objectHeight",
+          "desc": "物体高度（viewBox 坐标单位）"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "是否显示 F/2F/u/v 标注"
+        },
+        "showData": {
+          "label": "showData",
+          "desc": "是否显示数据面板"
+        },
+        "accent": {
+          "label": "accent",
+          "desc": "强调色（标注文字）"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "objectDist": "number — 物距 u",
+            "imageDist": "number — 像距 v"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "objectDist": "number — 物距 u",
+            "imageDist": "number — 像距 v"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Convex Lens Imaging",
+      "tags": [
+        "optics",
+        "lens",
+        "convex-lens",
+        "imaging",
+        "refraction",
+        "interactive",
+        "draggable"
+      ],
+      "ariaLabel": "Convex Lens Imaging",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "lensColor": {
+          "label": "Lens Fill Color",
+          "desc": "Sets the fill color of the lens."
+        },
+        "lensEdge": {
+          "label": "Lens Edge Color",
+          "desc": "Sets the outline color of the lens edge."
+        },
+        "axisColor": {
+          "label": "Axis Color",
+          "desc": "Sets the color of the coordinate or optical axis."
+        },
+        "rayColor": {
+          "label": "Ray Color",
+          "desc": "Sets the color of the main light rays."
+        },
+        "rayExtColor": {
+          "label": "Extension Ray Color",
+          "desc": "Sets the color of the ray extensions."
+        },
+        "rayWidth": {
+          "label": "Ray Width",
+          "desc": "Sets the line width of the rays."
+        },
+        "objectColor": {
+          "label": "Object Color",
+          "desc": "Sets the color of the object marker or arrow."
+        },
+        "imageColor": {
+          "label": "Image Color",
+          "desc": "Sets the color of the image indicator."
+        },
+        "focalLength": {
+          "label": "Focal Length",
+          "desc": "Sets the focal length in viewBox units."
+        },
+        "objectDist": {
+          "label": "Object Distance",
+          "desc": "Sets the object distance in viewBox units."
+        },
+        "objectHeight": {
+          "label": "Object Height",
+          "desc": "Sets the object height in viewBox units."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "showData": {
+          "label": "Show Data Panel",
+          "desc": "Shows or hides the data readout panel."
+        },
+        "accent": {
+          "label": "Accent Color",
+          "desc": "Sets the accent color used for emphasis details."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "objectDist": "Current object distance in viewBox units.",
+            "imageDist": "Current image distance in viewBox units."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the current adjustment is finished.",
+          "values": {
+            "objectDist": "Current object distance in viewBox units.",
+            "imageDist": "Current image distance in viewBox units."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.optics.lens.convex.interactive" role="img" aria-label="凸透镜成像（交互式）">

@@ -1,27 +1,152 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.condenser.basic",
   "name": "冷凝管",
-  "nameEn": "Condenser Tube",
+  "nameEn": "Condenser",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 50, "h": 200 },
-  "tags": ["chemistry", "labware", "condenser", "distillation", "cooling"],
+  "viewport": {
+    "w": 50,
+    "h": 200
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "condenser",
+    "distillation",
+    "cooling"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 360, "desc": "组件高度" },
-    { "key": "waterFlow",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "冷却水流动" },
-    { "key": "waterColor",  "type": "color",  "default": "#bbdefb", "desc": "冷却水颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.25)", "desc": "玻璃底色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 360,
+      "desc": "组件高度"
+    },
+    {
+      "key": "waterFlow",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "冷却水流动"
+    },
+    {
+      "key": "waterColor",
+      "type": "color",
+      "default": "#bbdefb",
+      "desc": "冷却水颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(220,240,255,0.25)",
+      "desc": "玻璃底色"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "waterColor":  "--cmp-water",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "waterColor": "--cmp-water",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glassTint":   "--cmp-glass-tint"
+    "glassTint": "--cmp-glass-tint"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "冷凝管",
+      "tags": [
+        "chemistry",
+        "labware",
+        "condenser",
+        "distillation",
+        "cooling"
+      ],
+      "ariaLabel": "冷凝管",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "waterFlow": {
+          "label": "waterFlow",
+          "desc": "冷却水流动"
+        },
+        "waterColor": {
+          "label": "waterColor",
+          "desc": "冷却水颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Condenser",
+      "tags": [
+        "chemistry",
+        "labware",
+        "condenser",
+        "distillation",
+        "cooling"
+      ],
+      "ariaLabel": "Condenser",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "waterFlow": {
+          "label": "Water Flow",
+          "desc": "Controls the water flow intensity."
+        },
+        "waterColor": {
+          "label": "Water Color",
+          "desc": "Sets the color of the water."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

@@ -1,32 +1,183 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.gas-jar.basic",
   "name": "集气瓶",
   "nameEn": "Gas Jar",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 140 },
-  "tags": ["gas-jar", "collection-bottle", "labware", "chemistry", "glass"],
+  "viewport": {
+    "w": 100,
+    "h": 140
+  },
+  "tags": [
+    "gas-jar",
+    "collection-bottle",
+    "labware",
+    "chemistry",
+    "glass"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 140, "min": 80, "max": 280, "desc": "组件高度" },
-    { "key": "gasColor",    "type": "color",  "default": "rgba(255,235,59,0.15)", "desc": "气体颜色（透明度表示浓度）" },
-    { "key": "glassTint",   "type": "color",  "default": "rgba(220,240,255,0.4)", "desc": "玻璃底色" },
-    { "key": "coverColor",  "type": "color",  "default": "rgba(200,230,255,0.7)", "desc": "玻璃片颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#35586a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 2, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "highlight",   "type": "number(0-1)", "default": 0.3, "min": 0, "max": 1, "desc": "高光强度" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 140,
+      "min": 80,
+      "max": 280,
+      "desc": "组件高度"
+    },
+    {
+      "key": "gasColor",
+      "type": "color",
+      "default": "rgba(255,235,59,0.15)",
+      "desc": "气体颜色（透明度表示浓度）"
+    },
+    {
+      "key": "glassTint",
+      "type": "color",
+      "default": "rgba(220,240,255,0.4)",
+      "desc": "玻璃底色"
+    },
+    {
+      "key": "coverColor",
+      "type": "color",
+      "default": "rgba(200,230,255,0.7)",
+      "desc": "玻璃片颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#35586a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "highlight",
+      "type": "number(0-1)",
+      "default": 0.3,
+      "min": 0,
+      "max": 1,
+      "desc": "高光强度"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "gasColor":    "--cmp-gas",
-    "glassTint":   "--cmp-glass-tint",
-    "coverColor":  "--cmp-cover",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "gasColor": "--cmp-gas",
+    "glassTint": "--cmp-glass-tint",
+    "coverColor": "--cmp-cover",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "highlight":   "--cmp-highlight",
-    "glow":        "--cmp-glow"
+    "highlight": "--cmp-highlight",
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "集气瓶",
+      "tags": [
+        "gas-jar",
+        "collection-bottle",
+        "labware",
+        "chemistry",
+        "glass"
+      ],
+      "ariaLabel": "集气瓶",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "gasColor": {
+          "label": "gasColor",
+          "desc": "气体颜色（透明度表示浓度）"
+        },
+        "glassTint": {
+          "label": "glassTint",
+          "desc": "玻璃底色"
+        },
+        "coverColor": {
+          "label": "coverColor",
+          "desc": "玻璃片颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "highlight": {
+          "label": "highlight",
+          "desc": "高光强度"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Gas Jar",
+      "tags": [
+        "gas-jar",
+        "collection-bottle",
+        "labware",
+        "chemistry",
+        "glass"
+      ],
+      "ariaLabel": "Gas Jar",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "gasColor": {
+          "label": "Gas Color",
+          "desc": "Sets the color used for the gas region."
+        },
+        "glassTint": {
+          "label": "Glass Tint",
+          "desc": "Sets the tint color of the glass body."
+        },
+        "coverColor": {
+          "label": "Cover Color",
+          "desc": "Sets the color of the cover."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "highlight": {
+          "label": "Highlight Intensity",
+          "desc": "Controls the strength of the specular highlight."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

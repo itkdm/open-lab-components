@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Open Lab Components - 210+ 零依赖 STEM 教育交互组件库，覆盖物理、化学、生物、数学、科学五大学科。纯 HTML Fragment，即插即用，支持 npm 安装。">
-  <meta name="keywords" content="Open Lab Components,HTML Fragment,STEM教育,物理实验,化学实验,生物,数学,科学,组件库,开源组件,实验器材,可视化组件,交互组件,npm">
+  <meta name="description" content="Open Lab Components：面向宿主系统与 AI 的 STEM 交互对象开放协议与组件基础设施。提供 210+ 零依赖 HTML 组件、locale-aware manifest、registry、MCP 与 JS API。">
+  <meta name="keywords" content="Open Lab Components,STEM,interactive objects,manifest,registry,MCP,AI,HTML Fragment,教育组件,物理实验,化学实验,生物,数学,交互组件,npm">
   <meta name="author" content="布吉岛 (itkdm)">
   <meta name="robots" content="index, follow">
   <meta name="language" content="zh-CN">
@@ -13,8 +13,8 @@
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://itkdm.github.io/open-lab-components/">
-  <meta property="og:title" content="Open Lab Components - 210+ STEM 教育交互组件库">
-  <meta property="og:description" content="210+ 零依赖 STEM 教育交互组件库，覆盖物理、化学、生物、数学、科学。纯 HTML Fragment，即插即用。">
+  <meta property="og:title" content="Open Lab Components - STEM 交互对象开放协议与组件基础设施">
+  <meta property="og:description" content="面向宿主系统与 AI 的 STEM 交互对象开放协议与组件基础设施。提供 210+ 零依赖 HTML 组件、locale-aware manifest、registry、MCP 与 JS API。">
   <meta property="og:image" content="https://itkdm.github.io/open-lab-components/logo.png">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="Open Lab Components">
@@ -22,8 +22,8 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://itkdm.github.io/open-lab-components/">
-  <meta name="twitter:title" content="Open Lab Components - 210+ STEM 教育交互组件库">
-  <meta name="twitter:description" content="210+ 零依赖 STEM 教育交互组件库，覆盖物理、化学、生物、数学、科学。纯 HTML Fragment，即插即用。">
+  <meta name="twitter:title" content="Open Lab Components - STEM 交互对象开放协议与组件基础设施">
+  <meta name="twitter:description" content="面向宿主系统与 AI 的 STEM 交互对象开放协议与组件基础设施。提供 210+ 零依赖 HTML 组件、locale-aware manifest、registry、MCP 与 JS API。">
   <meta name="twitter:image" content="https://itkdm.github.io/open-lab-components/logo.png">
   
   <!-- Baidu Site Verification -->
@@ -33,7 +33,7 @@
   <meta name="msvalidate.01" content="8369F75782EB856615D12EF9B5706E82" />
   
   <link rel="icon" type="image/png" href="./logo.png">
-  <title>Open Lab Components - 210+ STEM 教育交互组件库</title>
+  <title>Open Lab Components - STEM 交互对象开放协议与组件基础设施</title>
   
   <!-- JSON-LD Structured Data -->
   <script type="application/ld+json">
@@ -43,7 +43,7 @@
     "name": "Open Lab Components",
     "alternateName": "OLC",
     "url": "https://itkdm.github.io/open-lab-components/",
-    "description": "210+ 零依赖 STEM 教育交互组件库，覆盖物理、化学、生物、数学、科学五大学科",
+    "description": "面向宿主系统与 AI 的 STEM 交互对象开放协议与组件基础设施，提供 210+ 零依赖 HTML 组件、locale-aware manifest、registry、MCP 与 JS API",
     "inLanguage": ["zh-CN", "en"],
     "potentialAction": {
       "@type": "SearchAction",
@@ -64,7 +64,7 @@
       "price": "0",
       "priceCurrency": "CNY"
     },
-    "description": "210+ 零依赖 STEM 教育交互组件库，覆盖物理、化学、生物、数学、科学。纯 HTML Fragment，即插即用，支持 npm 安装。",
+    "description": "面向宿主系统与 AI 的 STEM 交互对象开放协议与组件基础设施，提供 210+ 零依赖 HTML 组件、locale-aware manifest、registry、MCP 与 JS API。",
     "programmingLanguage": "HTML, CSS, JavaScript",
     "license": "https://github.com/itkdm/open-lab-components/blob/main/LICENSE",
     "codeRepository": "https://github.com/itkdm/open-lab-components",
@@ -775,7 +775,19 @@
       }
     };
 
-    let currentLang = localStorage.getItem(LANG_KEY) || 'zh';
+    function resolveInitialLang() {
+      const params = new URLSearchParams(window.location.search);
+      const queryLang = (params.get('lang') || '').toLowerCase();
+      if (queryLang === 'en') return 'en';
+      if (queryLang === 'zh' || queryLang === 'zh-cn') return 'zh';
+      const stored = (localStorage.getItem(LANG_KEY) || '').toLowerCase();
+      if (stored === 'en') return 'en';
+      if (stored === 'zh' || stored === 'zh-cn') return 'zh';
+      const browserLang = (navigator.language || '').toLowerCase();
+      return browserLang.startsWith('en') ? 'en' : 'zh';
+    }
+
+    let currentLang = resolveInitialLang();
     let typewriterTimer = null;
 
     function t(key) {
@@ -783,19 +795,11 @@
     }
 
     function getComponentName(component) {
-      // 优先使用 registry 中的 nameEn 字段
-      if (currentLang === 'en' && component.nameEn) {
-        return component.nameEn;
-      }
-      return component.name;
+      return component.name || component.nameEn || component.id;
     }
 
     function getCategoryName(component) {
-      // 优先使用 registry 中的 categoryNameEn 字段
-      if (currentLang === 'en' && component.categoryNameEn) {
-        return component.categoryNameEn;
-      }
-      return component.categoryName || component.category;
+      return component.categoryName || component.categoryNameEn || component.category;
     }
 
     function applyStaticTexts() {
@@ -844,7 +848,8 @@
 
     async function loadRegistry() {
       try {
-        const res = await fetch('./registry/registry.json');
+        const locale = currentLang === 'en' ? 'en' : 'zh-CN';
+        const res = await fetch(`./registry/registry.${locale}.json`);
         const data = await res.json();
         registry = Array.isArray(data.items) ? data.items : (Array.isArray(data) ? data : []);
         render();
@@ -1027,7 +1032,7 @@ ${componentHtml}
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
       localStorage.setItem(LANG_KEY, currentLang);
       applyStaticTexts();
-      render(); // re-render text blocks using t()
+      loadRegistry();
     }
 
     const langToggle = document.getElementById('langToggle');

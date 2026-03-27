@@ -1,22 +1,152 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.time.calendar.interactive",
   "name": "日历",
   "nameEn": "Calendar",
   "category": "math/time",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 320 },
+  "viewport": {
+    "w": 300,
+    "h": 320
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 300, "min": 200, "max": 500, "desc": "组件宽度" },
-    { "key": "year", "type": "number", "default": 2025, "min": 2000, "max": 2099, "desc": "年份" },
-    { "key": "month", "type": "number", "default": 1, "min": 1, "max": 12, "desc": "月份" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 300,
+      "min": 200,
+      "max": 500,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "year",
+      "type": "number",
+      "default": 2025,
+      "min": 2000,
+      "max": 2099,
+      "desc": "年份"
+    },
+    {
+      "key": "month",
+      "type": "number",
+      "default": 1,
+      "min": 1,
+      "max": 12,
+      "desc": "月份"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["calendar", "date", "year", "month", "day", "time", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "calendar",
+    "date",
+    "year",
+    "month",
+    "day",
+    "time",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "year": "number", "month": "number", "day": "number", "daysInMonth": "number", "isLeapYear": "boolean" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "year": "number",
+        "month": "number",
+        "day": "number",
+        "daysInMonth": "number",
+        "isLeapYear": "boolean"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "日历",
+      "tags": [
+        "calendar",
+        "date",
+        "year",
+        "month",
+        "day",
+        "time",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "日历",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "year": {
+          "label": "year",
+          "desc": "年份"
+        },
+        "month": {
+          "label": "month",
+          "desc": "月份"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "year": "number",
+            "month": "number",
+            "day": "number",
+            "daysInMonth": "number",
+            "isLeapYear": "boolean"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Calendar",
+      "tags": [
+        "calendar",
+        "date",
+        "year",
+        "month",
+        "day",
+        "time",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Calendar",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "year": {
+          "label": "Year",
+          "desc": "Sets the year."
+        },
+        "month": {
+          "label": "Month",
+          "desc": "Sets the month."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "year": "Current year.",
+            "month": "Current month.",
+            "day": "Current day.",
+            "daysInMonth": "Current days in month.",
+            "isLeapYear": "Current is leap year."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.time.calendar.interactive" role="img" aria-label="日历">

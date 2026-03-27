@@ -1,22 +1,140 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "math.number.balance.interactive",
   "name": "等式天平",
   "nameEn": "Equation Balance",
   "category": "math/number",
   "version": "1.0.0",
-  "viewport": { "w": 360, "h": 240 },
+  "viewport": {
+    "w": 360,
+    "h": 240
+  },
   "props": [
-    { "key": "size", "type": "number(px)", "default": 360, "min": 220, "max": 600, "desc": "组件宽度" },
-    { "key": "leftValue", "type": "number", "default": 0, "min": 0, "max": 20, "desc": "左盘数值" },
-    { "key": "rightValue", "type": "number", "default": 0, "min": 0, "max": 20, "desc": "右盘数值" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 360,
+      "min": 220,
+      "max": 600,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "leftValue",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 20,
+      "desc": "左盘数值"
+    },
+    {
+      "key": "rightValue",
+      "type": "number",
+      "default": 0,
+      "min": 0,
+      "max": 20,
+      "desc": "右盘数值"
+    }
   ],
-  "cssVars": { "size": "--cmp-size" },
-  "tags": ["balance", "equation", "equal", "number", "math", "primary", "interactive"],
+  "cssVars": {
+    "size": "--cmp-size"
+  },
+  "tags": [
+    "balance",
+    "equation",
+    "equal",
+    "number",
+    "math",
+    "primary",
+    "interactive"
+  ],
   "events": [
-    { "name": "cmp:change", "type": "adjust", "values": { "leftValue": "number", "rightValue": "number", "balanced": "boolean" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "adjust",
+      "values": {
+        "leftValue": "number",
+        "rightValue": "number",
+        "balanced": "boolean"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "等式天平",
+      "tags": [
+        "balance",
+        "equation",
+        "equal",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "等式天平",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "leftValue": {
+          "label": "leftValue",
+          "desc": "左盘数值"
+        },
+        "rightValue": {
+          "label": "rightValue",
+          "desc": "右盘数值"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "leftValue": "number",
+            "rightValue": "number",
+            "balanced": "boolean"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Equation Balance",
+      "tags": [
+        "balance",
+        "equation",
+        "equal",
+        "number",
+        "math",
+        "primary",
+        "interactive"
+      ],
+      "ariaLabel": "Equation Balance",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "leftValue": {
+          "label": "Left Value",
+          "desc": "Sets the value shown on the left side."
+        },
+        "rightValue": {
+          "label": "Right Value",
+          "desc": "Sets the value shown on the right side."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "leftValue": "Current left-side value.",
+            "rightValue": "Current right-side value.",
+            "balanced": "Current balanced."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="math.number.balance.interactive" role="img" aria-label="等式天平">

@@ -1,34 +1,190 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.dropper.basic",
   "name": "胶头滴管",
   "nameEn": "Dropper",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 60, "h": 200 },
-  "tags": ["dropper", "pipette", "labware", "chemistry", "interactive"],
+  "viewport": {
+    "w": 60,
+    "h": 200
+  },
+  "tags": [
+    "dropper",
+    "pipette",
+    "labware",
+    "chemistry",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 200, "min": 120, "max": 360, "desc": "组件高度" },
-    { "key": "bulbColor",   "type": "color",  "default": "#e57373", "desc": "胶头颜色" },
-    { "key": "tubeColor",   "type": "color",  "default": "rgba(200,230,255,0.6)", "desc": "玻璃管颜色" },
-    { "key": "liquidColor", "type": "color",  "default": "#42a5f5", "desc": "液体颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#333333", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 360,
+      "desc": "组件高度"
+    },
+    {
+      "key": "bulbColor",
+      "type": "color",
+      "default": "#e57373",
+      "desc": "胶头颜色"
+    },
+    {
+      "key": "tubeColor",
+      "type": "color",
+      "default": "rgba(200,230,255,0.6)",
+      "desc": "玻璃管颜色"
+    },
+    {
+      "key": "liquidColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "液体颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#333333",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "bulbColor":   "--cmp-bulb",
-    "tubeColor":   "--cmp-tube",
+    "size": "--cmp-size",
+    "bulbColor": "--cmp-bulb",
+    "tubeColor": "--cmp-tube",
     "liquidColor": "--cmp-liquid",
-    "stroke":      "--cmp-stroke",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "toggle", "values": { "squeezing": "boolean — 是否挤压中" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "toggle",
+      "values": {
+        "squeezing": "boolean — 是否挤压中"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "胶头滴管",
+      "tags": [
+        "dropper",
+        "pipette",
+        "labware",
+        "chemistry",
+        "interactive"
+      ],
+      "ariaLabel": "胶头滴管",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "bulbColor": {
+          "label": "bulbColor",
+          "desc": "胶头颜色"
+        },
+        "tubeColor": {
+          "label": "tubeColor",
+          "desc": "玻璃管颜色"
+        },
+        "liquidColor": {
+          "label": "liquidColor",
+          "desc": "液体颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "squeezing": "boolean — 是否挤压中"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Dropper",
+      "tags": [
+        "dropper",
+        "pipette",
+        "labware",
+        "chemistry",
+        "interactive"
+      ],
+      "ariaLabel": "Dropper",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "bulbColor": {
+          "label": "Bulb Color",
+          "desc": "Sets the color of the flask bulb."
+        },
+        "tubeColor": {
+          "label": "Tube Color",
+          "desc": "Sets the color of the tube."
+        },
+        "liquidColor": {
+          "label": "Liquid Color",
+          "desc": "Sets the color of the liquid."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "squeezing": "Current squeezing."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="chem.labware.dropper.basic" role="img" aria-label="胶头滴管">

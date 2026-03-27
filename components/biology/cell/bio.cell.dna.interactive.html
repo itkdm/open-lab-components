@@ -1,34 +1,263 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.cell.dna.interactive",
   "name": "DNA双螺旋结构（交互式）",
-  "nameEn": "DNA Double Helix (Interactive)",
+  "nameEn": "DNA Double Helix Explorer",
   "category": "biology/cell",
   "version": "1.0.0",
-  "viewport": { "w": 300, "h": 500 },
-  "tags": ["biology","cell","DNA","double-helix","genetics","nucleotide","interactive"],
+  "viewport": {
+    "w": 300,
+    "h": 500
+  },
+  "tags": [
+    "biology",
+    "cell",
+    "DNA",
+    "double-helix",
+    "genetics",
+    "nucleotide",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",           "type": "number(px)", "default": 500, "min": 300, "max": 700, "desc": "组件高度" },
-    { "key": "stroke",         "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "strokeWidth",    "type": "number", "default": 1.2, "min": 0.5, "max": 3, "desc": "描边粗细" },
-    { "key": "backbone1",      "type": "color",  "default": "#5c6bc0", "desc": "链1颜色（糖-磷酸骨架）" },
-    { "key": "backbone2",      "type": "color",  "default": "#26a69a", "desc": "链2颜色（糖-磷酸骨架）" },
-    { "key": "atColor",        "type": "color",  "default": "#ef5350", "desc": "A-T碱基对颜色" },
-    { "key": "gcColor",        "type": "color",  "default": "#42a5f5", "desc": "G-C碱基对颜色" },
-    { "key": "speed",          "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "旋转速度" },
-    { "key": "running",        "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "showLabels",     "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",           "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 500,
+      "min": 300,
+      "max": 700,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.2,
+      "min": 0.5,
+      "max": 3,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "backbone1",
+      "type": "color",
+      "default": "#5c6bc0",
+      "desc": "链1颜色（糖-磷酸骨架）"
+    },
+    {
+      "key": "backbone2",
+      "type": "color",
+      "default": "#26a69a",
+      "desc": "链2颜色（糖-磷酸骨架）"
+    },
+    {
+      "key": "atColor",
+      "type": "color",
+      "default": "#ef5350",
+      "desc": "A-T碱基对颜色"
+    },
+    {
+      "key": "gcColor",
+      "type": "color",
+      "default": "#42a5f5",
+      "desc": "G-C碱基对颜色"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "旋转速度"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width",
-    "backbone1": "--cmp-bb1", "backbone2": "--cmp-bb2",
-    "atColor": "--cmp-at", "gcColor": "--cmp-gc", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width",
+    "backbone1": "--cmp-bb1",
+    "backbone2": "--cmp-bb2",
+    "atColor": "--cmp-at",
+    "gcColor": "--cmp-gc",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "rotate", "values": { "angle": "number — 当前旋转角度(°)" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "rotate",
+      "values": {
+        "angle": "number — 当前旋转角度(°)"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "DNA双螺旋结构（交互式）",
+      "tags": [
+        "biology",
+        "cell",
+        "DNA",
+        "double-helix",
+        "genetics",
+        "nucleotide",
+        "interactive"
+      ],
+      "ariaLabel": "DNA双螺旋结构（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "backbone1": {
+          "label": "backbone1",
+          "desc": "链1颜色（糖-磷酸骨架）"
+        },
+        "backbone2": {
+          "label": "backbone2",
+          "desc": "链2颜色（糖-磷酸骨架）"
+        },
+        "atColor": {
+          "label": "atColor",
+          "desc": "A-T碱基对颜色"
+        },
+        "gcColor": {
+          "label": "gcColor",
+          "desc": "G-C碱基对颜色"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "旋转速度"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "angle": "number — 当前旋转角度(°)"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "DNA Double Helix Explorer",
+      "tags": [
+        "biology",
+        "cell",
+        "DNA",
+        "double-helix",
+        "genetics",
+        "nucleotide",
+        "interactive"
+      ],
+      "ariaLabel": "DNA Double Helix Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "backbone1": {
+          "label": "Backbone 1 Color",
+          "desc": "Sets the color of the first sugar-phosphate backbone."
+        },
+        "backbone2": {
+          "label": "Backbone 2 Color",
+          "desc": "Sets the color of the second sugar-phosphate backbone."
+        },
+        "atColor": {
+          "label": "A-T Pair Color",
+          "desc": "Sets the color used for adenine-thymine pairs."
+        },
+        "gcColor": {
+          "label": "G-C Pair Color",
+          "desc": "Sets the color used for guanine-cytosine pairs."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "angle": "Current angle in degrees."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.cell.dna.interactive" role="img" aria-label="DNA双螺旋结构（交互式）">

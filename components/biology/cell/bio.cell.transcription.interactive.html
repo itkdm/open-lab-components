@@ -1,34 +1,269 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "bio.cell.transcription.interactive",
   "name": "RNA转录与翻译（交互式）",
-  "nameEn": "RNA Transcription & Translation (Interactive)",
+  "nameEn": "Transcription and Translation Explorer",
   "category": "biology/cell",
   "version": "1.0.0",
-  "viewport": { "w": 560, "h": 450 },
-  "tags": ["biology","RNA","transcription","translation","DNA","ribosome","protein","interactive"],
+  "viewport": {
+    "w": 560,
+    "h": 450
+  },
+  "tags": [
+    "biology",
+    "RNA",
+    "transcription",
+    "translation",
+    "DNA",
+    "ribosome",
+    "protein",
+    "interactive"
+  ],
   "props": [
-    { "key": "size",         "type": "number(px)", "default": 450, "min": 300, "max": 600, "desc": "组件高度" },
-    { "key": "stroke",       "type": "color",  "default": "#37474f", "desc": "描边颜色" },
-    { "key": "dnaColor",     "type": "color",  "default": "#1565c0", "desc": "DNA颜色" },
-    { "key": "rnaColor",     "type": "color",  "default": "#e53935", "desc": "mRNA颜色" },
-    { "key": "ribosomeColor","type": "color",  "default": "#ff9800", "desc": "核糖体颜色" },
-    { "key": "proteinColor", "type": "color",  "default": "#43a047", "desc": "蛋白质颜色" },
-    { "key": "sequence",     "type": "string", "default": "TACGCTAGGATC", "desc": "DNA模板链序列(3→5)" },
-    { "key": "running",      "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "运行/暂停" },
-    { "key": "speed",        "type": "number", "default": 1, "min": 0.2, "max": 3, "desc": "动画速度" },
-    { "key": "showLabels",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "显示标注" },
-    { "key": "glow",         "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "发光强度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 450,
+      "min": 300,
+      "max": 600,
+      "desc": "组件高度"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "dnaColor",
+      "type": "color",
+      "default": "#1565c0",
+      "desc": "DNA颜色"
+    },
+    {
+      "key": "rnaColor",
+      "type": "color",
+      "default": "#e53935",
+      "desc": "mRNA颜色"
+    },
+    {
+      "key": "ribosomeColor",
+      "type": "color",
+      "default": "#ff9800",
+      "desc": "核糖体颜色"
+    },
+    {
+      "key": "proteinColor",
+      "type": "color",
+      "default": "#43a047",
+      "desc": "蛋白质颜色"
+    },
+    {
+      "key": "sequence",
+      "type": "string",
+      "default": "TACGCTAGGATC",
+      "desc": "DNA模板链序列(3→5)"
+    },
+    {
+      "key": "running",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "运行/暂停"
+    },
+    {
+      "key": "speed",
+      "type": "number",
+      "default": 1,
+      "min": 0.2,
+      "max": 3,
+      "desc": "动画速度"
+    },
+    {
+      "key": "showLabels",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "显示标注"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "发光强度"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "stroke": "--cmp-stroke",
-    "dnaColor": "--cmp-dna", "rnaColor": "--cmp-rna", "ribosomeColor": "--cmp-ribosome",
-    "proteinColor": "--cmp-protein", "glow": "--cmp-glow"
+    "size": "--cmp-size",
+    "stroke": "--cmp-stroke",
+    "dnaColor": "--cmp-dna",
+    "rnaColor": "--cmp-rna",
+    "ribosomeColor": "--cmp-ribosome",
+    "proteinColor": "--cmp-protein",
+    "glow": "--cmp-glow"
   },
   "events": [
-    { "name": "cmp:change", "type": "step", "values": { "phase": "string", "codon": "string", "aminoAcid": "string" } }
-  ]
+    {
+      "name": "cmp:change",
+      "type": "step",
+      "values": {
+        "phase": "string",
+        "codon": "string",
+        "aminoAcid": "string"
+      }
+    }
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "RNA转录与翻译（交互式）",
+      "tags": [
+        "biology",
+        "RNA",
+        "transcription",
+        "translation",
+        "DNA",
+        "ribosome",
+        "protein",
+        "interactive"
+      ],
+      "ariaLabel": "RNA转录与翻译（交互式）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "dnaColor": {
+          "label": "dnaColor",
+          "desc": "DNA颜色"
+        },
+        "rnaColor": {
+          "label": "rnaColor",
+          "desc": "mRNA颜色"
+        },
+        "ribosomeColor": {
+          "label": "ribosomeColor",
+          "desc": "核糖体颜色"
+        },
+        "proteinColor": {
+          "label": "proteinColor",
+          "desc": "蛋白质颜色"
+        },
+        "sequence": {
+          "label": "sequence",
+          "desc": "DNA模板链序列(3→5)"
+        },
+        "running": {
+          "label": "running",
+          "desc": "运行/暂停"
+        },
+        "speed": {
+          "label": "speed",
+          "desc": "动画速度"
+        },
+        "showLabels": {
+          "label": "showLabels",
+          "desc": "显示标注"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "发光强度"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "phase": "string",
+            "codon": "string",
+            "aminoAcid": "string"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Transcription and Translation Explorer",
+      "tags": [
+        "biology",
+        "RNA",
+        "transcription",
+        "translation",
+        "DNA",
+        "ribosome",
+        "protein",
+        "interactive"
+      ],
+      "ariaLabel": "Transcription and Translation Explorer",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "dnaColor": {
+          "label": "DNA Color",
+          "desc": "Sets the color of the DNA strand."
+        },
+        "rnaColor": {
+          "label": "RNA Color",
+          "desc": "Sets the color of the RNA strand."
+        },
+        "ribosomeColor": {
+          "label": "Ribosome Color",
+          "desc": "Sets the color of the ribosomes."
+        },
+        "proteinColor": {
+          "label": "Protein Color",
+          "desc": "Sets the color of the protein product."
+        },
+        "sequence": {
+          "label": "Sequence",
+          "desc": "Sets the nucleotide sequence or example sequence."
+        },
+        "running": {
+          "label": "Running",
+          "desc": "Starts or pauses the animation."
+        },
+        "speed": {
+          "label": "Speed",
+          "desc": "Sets the animation speed."
+        },
+        "showLabels": {
+          "label": "Show Labels",
+          "desc": "Shows or hides labels and annotations."
+        },
+        "glow": {
+          "label": "Glow Intensity",
+          "desc": "Controls the intensity of the highlight or glow effect."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "phase": "Current biological phase.",
+            "codon": "Current codon.",
+            "aminoAcid": "Current amino acid."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="bio.cell.transcription.interactive" role="img" aria-label="RNA转录与翻译（交互式）">

@@ -1,46 +1,137 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.rheostat.slide.interactive",
   "name": "滑动变阻器",
-  "nameEn": "Slide Rheostat",
+  "nameEn": "Sliding Rheostat",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 320, "h": 180 },
+  "viewport": {
+    "w": 320,
+    "h": 180
+  },
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 180, "min": 80,  "max": 400, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "aspect",      "type": "number",     "default": 1.78,"min": 1.4, "max": 2.4, "desc": "宽高比（width = size × aspect）" },
-
-    { "key": "stroke",      "type": "color",  "default": "#111827", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 2.2, "min": 0.5, "max": 5, "desc": "描边粗细" },
-
-    { "key": "coilColor",   "type": "color", "default": "#b87333", "desc": "电阻丝/线圈颜色（铜色）" },
-    { "key": "tubeColor",   "type": "color", "default": "#e8dcc8", "desc": "瓷管颜色（米白）" },
-    { "key": "railColor",   "type": "color", "default": "#a0a0a0", "desc": "金属滑杆颜色（银灰）" },
-    { "key": "sliderColor", "type": "color", "default": "#555555", "desc": "滑块颜色（深灰）" },
-    { "key": "termColor",   "type": "color", "default": "#d4a017", "desc": "接线柱颜色（黄铜）" },
-    { "key": "baseColor",   "type": "color", "default": "#f5f0e6", "desc": "底座颜色（浅米白）" },
-
-    { "key": "maxR",        "type": "number",     "default": 50,  "min": 1,   "max": 9999, "desc": "最大电阻值（Ω）" },
-    { "key": "position",    "type": "number(0-1)","default": 0.5, "min": 0,   "max": 1,    "desc": "滑块位置（0=最左，1=最右）" },
-    { "key": "showLabel",   "type": "enum",   "default": "on", "enum": ["on","off"], "desc": "是否显示铭牌" },
-
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度（可选）" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 180,
+      "min": 80,
+      "max": 400,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "aspect",
+      "type": "number",
+      "default": 1.78,
+      "min": 1.4,
+      "max": 2.4,
+      "desc": "宽高比（width = size × aspect）"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#111827",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 2.2,
+      "min": 0.5,
+      "max": 5,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "coilColor",
+      "type": "color",
+      "default": "#b87333",
+      "desc": "电阻丝/线圈颜色（铜色）"
+    },
+    {
+      "key": "tubeColor",
+      "type": "color",
+      "default": "#e8dcc8",
+      "desc": "瓷管颜色（米白）"
+    },
+    {
+      "key": "railColor",
+      "type": "color",
+      "default": "#a0a0a0",
+      "desc": "金属滑杆颜色（银灰）"
+    },
+    {
+      "key": "sliderColor",
+      "type": "color",
+      "default": "#555555",
+      "desc": "滑块颜色（深灰）"
+    },
+    {
+      "key": "termColor",
+      "type": "color",
+      "default": "#d4a017",
+      "desc": "接线柱颜色（黄铜）"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#f5f0e6",
+      "desc": "底座颜色（浅米白）"
+    },
+    {
+      "key": "maxR",
+      "type": "number",
+      "default": 50,
+      "min": 1,
+      "max": 9999,
+      "desc": "最大电阻值（Ω）"
+    },
+    {
+      "key": "position",
+      "type": "number(0-1)",
+      "default": 0.5,
+      "min": 0,
+      "max": 1,
+      "desc": "滑块位置（0=最左，1=最右）"
+    },
+    {
+      "key": "showLabel",
+      "type": "enum",
+      "default": "on",
+      "enum": [
+        "on",
+        "off"
+      ],
+      "desc": "是否显示铭牌"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度（可选）"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "aspect":      "--cmp-aspect",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "aspect": "--cmp-aspect",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "coilColor":   "--cmp-coil",
-    "tubeColor":   "--cmp-tube",
-    "railColor":   "--cmp-rail",
+    "coilColor": "--cmp-coil",
+    "tubeColor": "--cmp-tube",
+    "railColor": "--cmp-rail",
     "sliderColor": "--cmp-slider",
-    "termColor":   "--cmp-term",
-    "baseColor":   "--cmp-base",
-    "glow":        "--cmp-glow"
+    "termColor": "--cmp-term",
+    "baseColor": "--cmp-base",
+    "glow": "--cmp-glow"
   },
-  "tags": ["rheostat", "variable-resistor", "slider", "circuit", "interactive"],
+  "tags": [
+    "rheostat",
+    "variable-resistor",
+    "slider",
+    "circuit",
+    "interactive"
+  ],
   "events": [
     {
       "name": "cmp:change",
@@ -58,7 +149,179 @@
         "resistance": "number(Ω) — 当前电阻值"
       }
     }
-  ]
+  ],
+  "locales": {
+    "zh-CN": {
+      "name": "滑动变阻器",
+      "tags": [
+        "rheostat",
+        "variable-resistor",
+        "slider",
+        "circuit",
+        "interactive"
+      ],
+      "ariaLabel": "滑动变阻器 50Ω",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "aspect": {
+          "label": "aspect",
+          "desc": "宽高比（width = size × aspect）"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "coilColor": {
+          "label": "coilColor",
+          "desc": "电阻丝/线圈颜色（铜色）"
+        },
+        "tubeColor": {
+          "label": "tubeColor",
+          "desc": "瓷管颜色（米白）"
+        },
+        "railColor": {
+          "label": "railColor",
+          "desc": "金属滑杆颜色（银灰）"
+        },
+        "sliderColor": {
+          "label": "sliderColor",
+          "desc": "滑块颜色（深灰）"
+        },
+        "termColor": {
+          "label": "termColor",
+          "desc": "接线柱颜色（黄铜）"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "底座颜色（浅米白）"
+        },
+        "maxR": {
+          "label": "maxR",
+          "desc": "最大电阻值（Ω）"
+        },
+        "position": {
+          "label": "position",
+          "desc": "滑块位置（0=最左，1=最右）"
+        },
+        "showLabel": {
+          "label": "showLabel",
+          "desc": "是否显示铭牌"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度（可选）"
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "values": {
+            "position": "number(0-1) — 滑块位置（0=最左，1=最右）",
+            "resistance": "number(Ω) — 当前电阻值"
+          }
+        },
+        "cmp:changeend": {
+          "values": {
+            "position": "number(0-1) — 滑块位置",
+            "resistance": "number(Ω) — 当前电阻值"
+          }
+        }
+      }
+    },
+    "en": {
+      "name": "Sliding Rheostat",
+      "tags": [
+        "rheostat",
+        "variable-resistor",
+        "slider",
+        "circuit",
+        "interactive"
+      ],
+      "ariaLabel": "Sliding rheostat",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Overall component size in pixels."
+        },
+        "aspect": {
+          "label": "Aspect Ratio",
+          "desc": "Width-to-height ratio."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Outline color."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Outline width."
+        },
+        "coilColor": {
+          "label": "Coil Color",
+          "desc": "Color of the resistance coil."
+        },
+        "tubeColor": {
+          "label": "Tube Color",
+          "desc": "Color of the ceramic tube."
+        },
+        "railColor": {
+          "label": "Rail Color",
+          "desc": "Color of the guide rail."
+        },
+        "sliderColor": {
+          "label": "Slider Color",
+          "desc": "Color of the slider handle."
+        },
+        "termColor": {
+          "label": "Terminal Color",
+          "desc": "Color of the terminals."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Color of the base section."
+        },
+        "maxR": {
+          "label": "Maximum Resistance",
+          "desc": "Maximum resistance in ohms."
+        },
+        "position": {
+          "label": "Position",
+          "desc": "Normalized slider position from 0 to 1."
+        },
+        "showLabel": {
+          "label": "Show Label",
+          "desc": "Show the printed label."
+        },
+        "glow": {
+          "label": "Highlight Intensity",
+          "desc": "Glow or highlight intensity from 0 to 1."
+        }
+      },
+      "events": {
+        "cmp:change": {
+          "label": "Live Update",
+          "desc": "Emitted continuously while the component is being adjusted.",
+          "values": {
+            "position": "Current position value.",
+            "resistance": "Current resistance in ohms."
+          }
+        },
+        "cmp:changeend": {
+          "label": "Interaction Complete",
+          "desc": "Emitted once when the interaction ends.",
+          "values": {
+            "position": "Current position value.",
+            "resistance": "Current resistance in ohms."
+          }
+        }
+      }
+    }
+  }
 }
 -->
 <div class="cmp" data-cmp-id="phy.rheostat.slide.interactive" role="img" aria-label="滑动变阻器 50Ω">

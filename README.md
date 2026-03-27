@@ -110,3 +110,28 @@ npm run build         # 构建全部
 ---
 
 Made by **布吉岛** · ⭐ 觉得有用就给个 Star
+## Localization
+
+Open Lab Components now ships locale-aware metadata across the component registry, site, MCP server, and JS API.
+
+- Default locale: `zh-CN`
+- Current locales: `zh-CN`, `en`
+- Raw multi-locale registry: `registry/registry.json`
+- Localized registry views:
+  - `registry/registry.zh-CN.json`
+  - `registry/registry.en.json`
+- JS API:
+  - `lab.list(filter, { locale: 'en' })`
+  - `lab.get(id, { locale: 'en' })`
+- MCP tools:
+  - `get_categories({ locale })`
+  - `list_components({ ..., locale })`
+  - `search_components({ ..., locale })`
+  - `get_component({ id, locale })`
+
+Legacy `cmp-manifest/v1` components remain supported during migration. New bilingual samples use `cmp-manifest/v2`.
+
+See [release notes](./docs/RELEASE-2026-03-I18N.md) for the migration summary, output changes, and consumer guidance.
+
+发布前检查和发版步骤见 [PUBLISHING.md](./docs/PUBLISHING.md)、[RELEASE-CHECKLIST-0.2.0.md](./docs/RELEASE-CHECKLIST-0.2.0.md)、[GITHUB-RELEASE-0.2.0.md](./docs/GITHUB-RELEASE-0.2.0.md)。
+中文对外公告可直接参考 [ANNOUNCEMENT-0.2.0.zh-CN.md](./docs/ANNOUNCEMENT-0.2.0.zh-CN.md)。

@@ -1,19 +1,56 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.mechanics.inclined-plane.adjustable",
   "name": "斜面（可调节）",
   "nameEn": "Adjustable Inclined Plane",
   "category": "physics/mechanics",
   "version": "1.0.0",
-  "viewport": { "w": 160, "h": 110 },
-  "tags": ["physics", "mechanics", "inclined-plane", "adjustable"],
+  "viewport": {
+    "w": 160,
+    "h": 110
+  },
+  "tags": [
+    "physics",
+    "mechanics",
+    "inclined-plane",
+    "adjustable"
+  ],
   "props": [
-    { "key": "size", "type": "number(px)", "default": 160, "min": 100, "max": 240, "desc": "组件宽度" },
-    { "key": "angle", "type": "number", "default": 30, "min": 10, "max": 60, "desc": "倾斜角度" },
-    { "key": "boardColor", "type": "color", "default": "#a1887f", "desc": "板面颜色" },
-    { "key": "frameColor", "type": "color", "default": "#546e7a", "desc": "支架颜色" },
-    { "key": "stroke", "type": "color", "default": "#37474f", "desc": "描边颜色" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 160,
+      "min": 100,
+      "max": 240,
+      "desc": "组件宽度"
+    },
+    {
+      "key": "angle",
+      "type": "number",
+      "default": 30,
+      "min": 10,
+      "max": 60,
+      "desc": "倾斜角度"
+    },
+    {
+      "key": "boardColor",
+      "type": "color",
+      "default": "#a1887f",
+      "desc": "板面颜色"
+    },
+    {
+      "key": "frameColor",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "支架颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#37474f",
+      "desc": "描边颜色"
+    }
   ],
   "cssVars": {
     "size": "--cmp-size",
@@ -21,6 +58,74 @@
     "boardColor": "--cmp-board",
     "frameColor": "--cmp-frame",
     "stroke": "--cmp-stroke"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "斜面（可调节）",
+      "tags": [
+        "physics",
+        "mechanics",
+        "inclined-plane",
+        "adjustable"
+      ],
+      "ariaLabel": "斜面（可调节）",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件宽度"
+        },
+        "angle": {
+          "label": "angle",
+          "desc": "倾斜角度"
+        },
+        "boardColor": {
+          "label": "boardColor",
+          "desc": "板面颜色"
+        },
+        "frameColor": {
+          "label": "frameColor",
+          "desc": "支架颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Adjustable Inclined Plane",
+      "tags": [
+        "physics",
+        "mechanics",
+        "inclined-plane",
+        "adjustable"
+      ],
+      "ariaLabel": "Adjustable Inclined Plane",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "angle": {
+          "label": "Angle",
+          "desc": "Sets the angle in degrees."
+        },
+        "boardColor": {
+          "label": "Board Color",
+          "desc": "Sets the color of the board."
+        },
+        "frameColor": {
+          "label": "Frame Color",
+          "desc": "Sets the color of the support frame."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

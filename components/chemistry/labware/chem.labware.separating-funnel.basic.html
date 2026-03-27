@@ -1,26 +1,187 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "chem.labware.separating-funnel.basic",
   "name": "分液漏斗",
   "nameEn": "Separating Funnel",
   "category": "chemistry/labware",
   "version": "1.0.0",
-  "viewport": { "w": 80, "h": 200 },
-  "tags": ["chemistry", "labware", "funnel", "separating", "extraction", "liquid"],
+  "viewport": {
+    "w": 80,
+    "h": 200
+  },
+  "tags": [
+    "chemistry",
+    "labware",
+    "funnel",
+    "separating",
+    "extraction",
+    "liquid"
+  ],
   "props": [
-    { "key": "size",          "type": "number(px)", "default": 200, "min": 120, "max": 360, "desc": "组件高度" },
-    { "key": "upperLevel",    "type": "number(0-1)", "default": 0.7, "min": 0, "max": 0.95, "desc": "上层液面" },
-    { "key": "lowerLevel",    "type": "number(0-1)", "default": 0.35, "min": 0, "max": 0.95, "desc": "下层液面（相对于上层底部）" },
-    { "key": "upperColor",    "type": "color",  "default": "#fff9c4", "desc": "上层液体颜色" },
-    { "key": "lowerColor",    "type": "color",  "default": "#81d4fa", "desc": "下层液体颜色" },
-    { "key": "stroke",        "type": "color",  "default": "#546e7a", "desc": "描边颜色" },
-    { "key": "strokeWidth",   "type": "number", "default": 1.8, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "stopcock",      "type": "enum",   "default": "closed", "enum": ["open","closed"], "desc": "活塞状态" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 200,
+      "min": 120,
+      "max": 360,
+      "desc": "组件高度"
+    },
+    {
+      "key": "upperLevel",
+      "type": "number(0-1)",
+      "default": 0.7,
+      "min": 0,
+      "max": 0.95,
+      "desc": "上层液面"
+    },
+    {
+      "key": "lowerLevel",
+      "type": "number(0-1)",
+      "default": 0.35,
+      "min": 0,
+      "max": 0.95,
+      "desc": "下层液面（相对于上层底部）"
+    },
+    {
+      "key": "upperColor",
+      "type": "color",
+      "default": "#fff9c4",
+      "desc": "上层液体颜色"
+    },
+    {
+      "key": "lowerColor",
+      "type": "color",
+      "default": "#81d4fa",
+      "desc": "下层液体颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#546e7a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.8,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "stopcock",
+      "type": "enum",
+      "default": "closed",
+      "enum": [
+        "open",
+        "closed"
+      ],
+      "desc": "活塞状态"
+    }
   ],
   "cssVars": {
-    "size": "--cmp-size", "upperColor": "--cmp-upper", "lowerColor": "--cmp-lower",
-    "stroke": "--cmp-stroke", "strokeWidth": "--cmp-stroke-width"
+    "size": "--cmp-size",
+    "upperColor": "--cmp-upper",
+    "lowerColor": "--cmp-lower",
+    "stroke": "--cmp-stroke",
+    "strokeWidth": "--cmp-stroke-width"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "分液漏斗",
+      "tags": [
+        "chemistry",
+        "labware",
+        "funnel",
+        "separating",
+        "extraction",
+        "liquid"
+      ],
+      "ariaLabel": "分液漏斗",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度"
+        },
+        "upperLevel": {
+          "label": "upperLevel",
+          "desc": "上层液面"
+        },
+        "lowerLevel": {
+          "label": "lowerLevel",
+          "desc": "下层液面（相对于上层底部）"
+        },
+        "upperColor": {
+          "label": "upperColor",
+          "desc": "上层液体颜色"
+        },
+        "lowerColor": {
+          "label": "lowerColor",
+          "desc": "下层液体颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "stopcock": {
+          "label": "stopcock",
+          "desc": "活塞状态"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Separating Funnel",
+      "tags": [
+        "chemistry",
+        "labware",
+        "funnel",
+        "separating",
+        "extraction",
+        "liquid"
+      ],
+      "ariaLabel": "Separating Funnel",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Sets the overall rendered size of the component in pixels."
+        },
+        "upperLevel": {
+          "label": "Upper Layer Level",
+          "desc": "Sets the level of the upper layer."
+        },
+        "lowerLevel": {
+          "label": "Lower Layer Level",
+          "desc": "Sets the level of the lower layer."
+        },
+        "upperColor": {
+          "label": "Upper Layer Color",
+          "desc": "Sets the color of the upper liquid layer."
+        },
+        "lowerColor": {
+          "label": "Lower Layer Color",
+          "desc": "Sets the color of the lower liquid layer."
+        },
+        "stroke": {
+          "label": "Outline Color",
+          "desc": "Sets the outline color used for the main shape."
+        },
+        "strokeWidth": {
+          "label": "Outline Width",
+          "desc": "Sets the outline width in pixels."
+        },
+        "stopcock": {
+          "label": "Stopcock Position",
+          "desc": "Sets the stopcock position."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->

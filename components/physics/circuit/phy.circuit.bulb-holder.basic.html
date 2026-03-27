@@ -1,30 +1,169 @@
 <!-- @cmp-manifest
 {
-  "schema": "cmp-manifest/v1",
+  "schema": "cmp-manifest/v2",
   "id": "phy.circuit.bulb-holder.basic",
   "name": "小灯泡底座",
   "nameEn": "Bulb Holder",
   "category": "physics/circuit",
   "version": "1.0.0",
-  "viewport": { "w": 100, "h": 80 },
-  "tags": ["bulb", "holder", "socket", "lamp", "circuit", "static"],
+  "viewport": {
+    "w": 100,
+    "h": 80
+  },
+  "tags": [
+    "bulb",
+    "holder",
+    "socket",
+    "lamp",
+    "circuit",
+    "static"
+  ],
   "props": [
-    { "key": "size",        "type": "number(px)", "default": 80,  "min": 48, "max": 200, "desc": "组件高度（宽度按比例缩放）" },
-    { "key": "baseColor",   "type": "color",  "default": "#3e2723", "desc": "底座颜色（胶木）" },
-    { "key": "metalColor",  "type": "color",  "default": "#b0b0b0", "desc": "金属片颜色" },
-    { "key": "screwColor",  "type": "color",  "default": "#888888", "desc": "接线柱颜色" },
-    { "key": "stroke",      "type": "color",  "default": "#1a1a1a", "desc": "描边颜色" },
-    { "key": "strokeWidth", "type": "number", "default": 1.5, "min": 0.5, "max": 4, "desc": "描边粗细" },
-    { "key": "glow",        "type": "number(0-1)", "default": 0, "min": 0, "max": 1, "desc": "强调/亮度" }
+    {
+      "key": "size",
+      "type": "number(px)",
+      "default": 80,
+      "min": 48,
+      "max": 200,
+      "desc": "组件高度（宽度按比例缩放）"
+    },
+    {
+      "key": "baseColor",
+      "type": "color",
+      "default": "#3e2723",
+      "desc": "底座颜色（胶木）"
+    },
+    {
+      "key": "metalColor",
+      "type": "color",
+      "default": "#b0b0b0",
+      "desc": "金属片颜色"
+    },
+    {
+      "key": "screwColor",
+      "type": "color",
+      "default": "#888888",
+      "desc": "接线柱颜色"
+    },
+    {
+      "key": "stroke",
+      "type": "color",
+      "default": "#1a1a1a",
+      "desc": "描边颜色"
+    },
+    {
+      "key": "strokeWidth",
+      "type": "number",
+      "default": 1.5,
+      "min": 0.5,
+      "max": 4,
+      "desc": "描边粗细"
+    },
+    {
+      "key": "glow",
+      "type": "number(0-1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "desc": "强调/亮度"
+    }
   ],
   "cssVars": {
-    "size":        "--cmp-size",
-    "baseColor":   "--cmp-base",
-    "metalColor":  "--cmp-metal",
-    "screwColor":  "--cmp-screw",
-    "stroke":      "--cmp-stroke",
+    "size": "--cmp-size",
+    "baseColor": "--cmp-base",
+    "metalColor": "--cmp-metal",
+    "screwColor": "--cmp-screw",
+    "stroke": "--cmp-stroke",
     "strokeWidth": "--cmp-stroke-width",
-    "glow":        "--cmp-glow"
+    "glow": "--cmp-glow"
+  },
+  "locales": {
+    "zh-CN": {
+      "name": "小灯泡底座",
+      "tags": [
+        "bulb",
+        "holder",
+        "socket",
+        "lamp",
+        "circuit",
+        "static"
+      ],
+      "ariaLabel": "小灯泡底座",
+      "props": {
+        "size": {
+          "label": "size",
+          "desc": "组件高度（宽度按比例缩放）"
+        },
+        "baseColor": {
+          "label": "baseColor",
+          "desc": "底座颜色（胶木）"
+        },
+        "metalColor": {
+          "label": "metalColor",
+          "desc": "金属片颜色"
+        },
+        "screwColor": {
+          "label": "screwColor",
+          "desc": "接线柱颜色"
+        },
+        "stroke": {
+          "label": "stroke",
+          "desc": "描边颜色"
+        },
+        "strokeWidth": {
+          "label": "strokeWidth",
+          "desc": "描边粗细"
+        },
+        "glow": {
+          "label": "glow",
+          "desc": "强调/亮度"
+        }
+      },
+      "events": {}
+    },
+    "en": {
+      "name": "Bulb Holder",
+      "tags": [
+        "bulb",
+        "holder",
+        "socket",
+        "lamp",
+        "circuit",
+        "static"
+      ],
+      "ariaLabel": "Bulb Holder",
+      "props": {
+        "size": {
+          "label": "Size",
+          "desc": "Numeric control for size."
+        },
+        "baseColor": {
+          "label": "Base Color",
+          "desc": "Color setting for base color."
+        },
+        "metalColor": {
+          "label": "Metal Color",
+          "desc": "Color setting for metal color."
+        },
+        "screwColor": {
+          "label": "Screw Color",
+          "desc": "Color setting for screw color."
+        },
+        "stroke": {
+          "label": "Stroke",
+          "desc": "Color setting for stroke."
+        },
+        "strokeWidth": {
+          "label": "Stroke Width",
+          "desc": "Numeric control for stroke width."
+        },
+        "glow": {
+          "label": "Glow",
+          "desc": "Numeric control for glow."
+        }
+      },
+      "events": {}
+    }
   }
 }
 -->
