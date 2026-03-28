@@ -21,7 +21,7 @@
     "start": "node ./src/cli.js",
     "start:http": "node ./src/http-cli.js",
     "token:generate": "node ./src/token-cli.js",
-    "test": "node --test ./tests/**/*.test.js",
+    "test": "node --test ./tests/catalog.test.js ./tests/server.test.js ./tests/remote.test.js",
     "test:remote": "node --test ./tests/remote.test.js"
   },
   "dependencies": {
