@@ -643,35 +643,91 @@ async function createRemoteApp(options = {}) {
 
   const mcpGetHandler = async (req, res) => {
     const sessionId = req.headers["mcp-session-id"];
-    const session = sessionId ? sessions.touch(sessionId) : null;
+    try {
+      const session = sessionId ? sessions.touch(sessionId) : null;
 
-    if (!session) {
-      recordRemoteMcpRejection(metrics, "invalid_session");
-      unauthorized(res, 400, {
-        error: "invalid_session",
-        message: "Invalid or missing session ID"
+      if (!session) {
+        recordRemoteMcpRejection(metrics, "invalid_session");
+        unauthorized(res, 400, {
+          error: "invalid_session",
+          message: "Invalid or missing session ID"
+        });
+        return;
+      }
+
+      try {
+        await session.transport.handleRequest(req, res);
+      } catch (error) {
+        throw ensureRemoteMcpError(error, "transport_stream_failed");
+      }
+    } catch (error) {
+      const normalizedError = ensureRemoteMcpError(error, "remote_mcp_runtime_error");
+      const category = classifyRemoteMcpError(normalizedError);
+      metrics.recordRemoteMcpError({ category, code: normalizedError.code });
+      logger.error({
+        event: "remote_mcp_error",
+        requestId: req.requestId || null,
+        customerId: req.customer ? req.customer.customerId : null,
+        method: req.method,
+        path: req.path,
+        tool: null,
+        sessionId: typeof sessionId === "string" ? sessionId : null,
+        category,
+        message: normalizedError.message,
+        code: normalizedError.code
       });
-      return;
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: "internal_error",
+          message: "Internal server error"
+        });
+      }
     }
-
-    await session.transport.handleRequest(req, res);
   };
 
   const mcpDeleteHandler = async (req, res) => {
     const sessionId = req.headers["mcp-session-id"];
-    const session = sessionId ? sessions.touch(sessionId) : null;
+    try {
+      const session = sessionId ? sessions.touch(sessionId) : null;
 
-    if (!session) {
-      recordRemoteMcpRejection(metrics, "invalid_session");
-      unauthorized(res, 400, {
-        error: "invalid_session",
-        message: "Invalid or missing session ID"
+      if (!session) {
+        recordRemoteMcpRejection(metrics, "invalid_session");
+        unauthorized(res, 400, {
+          error: "invalid_session",
+          message: "Invalid or missing session ID"
+        });
+        return;
+      }
+
+      try {
+        await session.transport.handleRequest(req, res);
+      } catch (error) {
+        throw ensureRemoteMcpError(error, "transport_stream_failed");
+      }
+      await sessions.deleteSession(sessionId, "client_disconnect");
+    } catch (error) {
+      const normalizedError = ensureRemoteMcpError(error, "remote_mcp_runtime_error");
+      const category = classifyRemoteMcpError(normalizedError);
+      metrics.recordRemoteMcpError({ category, code: normalizedError.code });
+      logger.error({
+        event: "remote_mcp_error",
+        requestId: req.requestId || null,
+        customerId: req.customer ? req.customer.customerId : null,
+        method: req.method,
+        path: req.path,
+        tool: null,
+        sessionId: typeof sessionId === "string" ? sessionId : null,
+        category,
+        message: normalizedError.message,
+        code: normalizedError.code
       });
-      return;
+      if (!res.headersSent) {
+        res.status(500).json({
+          error: "internal_error",
+          message: "Internal server error"
+        });
+      }
     }
-
-    await session.transport.handleRequest(req, res);
-    await sessions.deleteSession(sessionId, "client_disconnect");
   };
 
   app.post("/mcp", mcpPostHandler);

@@ -891,3 +891,86 @@ test("transport request failures are classified with an explicit runtime code", 
     }
   ]);
 });
+
+test("transport stream failures on GET and DELETE are classified with an explicit runtime code", async () => {
+  const entries = [];
+  const logger = {
+    info() {},
+    debug() {},
+    error(payload) {
+      entries.push(payload);
+    },
+    sizeBucket() {
+      return "none";
+    }
+  };
+
+  await withRemoteServerOptions(
+    {
+      logger
+    },
+    async ({ remote, port }) => {
+      const fakeSession = {
+        customerId: "vip-test",
+        transport: {
+          async handleRequest() {
+            throw new Error("simulated_stream_failure");
+          }
+        }
+      };
+      remote.sessions.touch = () => fakeSession;
+
+      const failedGet = await fetch(`http://127.0.0.1:${port}/mcp`, {
+        method: "GET",
+        headers: {
+          "mcp-session-id": "existing-session",
+          ...authHeaders("test-token")
+        }
+      });
+      assert.equal(failedGet.status, 500);
+
+      const failedDelete = await fetch(`http://127.0.0.1:${port}/mcp`, {
+        method: "DELETE",
+        headers: {
+          "mcp-session-id": "existing-session",
+          ...authHeaders("test-token")
+        }
+      });
+      assert.equal(failedDelete.status, 500);
+
+      const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+      assert.equal(metrics.status, 200);
+      const metricsPayload = await metrics.json();
+      assert.equal(metricsPayload.remoteMcpErrors.runtime, 2);
+      assert.equal(metricsPayload.remoteMcpErrorCodes.transport_stream_failed, 2);
+    }
+  );
+
+  const mcpErrors = entries.filter((entry) => entry.event === "remote_mcp_error");
+  assert.deepEqual(mcpErrors, [
+    {
+      event: "remote_mcp_error",
+      requestId: entries[0].requestId,
+      customerId: "vip-test",
+      method: "GET",
+      path: "/mcp",
+      tool: null,
+      sessionId: "existing-session",
+      category: "runtime",
+      code: "transport_stream_failed",
+      message: "simulated_stream_failure"
+    },
+    {
+      event: "remote_mcp_error",
+      requestId: entries[1].requestId,
+      customerId: "vip-test",
+      method: "DELETE",
+      path: "/mcp",
+      tool: null,
+      sessionId: "existing-session",
+      category: "runtime",
+      code: "transport_stream_failed",
+      message: "simulated_stream_failure"
+    }
+  ]);
+});
