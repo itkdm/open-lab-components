@@ -70,6 +70,8 @@ Status: completed
 
 ### Batch 2: Runtime lifecycle coverage
 
+Status: completed
+
 - Goal:
   Add browser/runtime coverage for `mount`, `unmount`, and `updateProps`.
 - Scope:
@@ -85,9 +87,11 @@ Status: completed
   - targeted runtime test command
   - `npm run validate`
 - Rollback:
-  - `git revert <batch-2-commit>`
+  - `git revert ed65add`
 
 ### Batch 3: Runtime module split
+
+Status: completed
 
 - Goal:
   Reduce risk in `index.js` by separating registry API and browser runtime code.
@@ -102,9 +106,11 @@ Status: completed
   - runtime tests
   - `npm run validate`
 - Rollback:
-  - `git revert <batch-3-commit>`
+  - `git revert 103c5a6`
 
 ### Batch 4: Encoding normalization
+
+Status: partially completed
 
 - Goal:
   Eliminate visible text corruption in docs, comments, and admin console UI.
@@ -120,9 +126,22 @@ Status: completed
   - targeted text diff review
   - existing validation/test commands
 - Rollback:
-  - `git revert <batch-4-commit>`
+  - `git revert 5a6284c`
+
+Current scope completed:
+
+- added `.editorconfig` to standardize UTF-8 and newline defaults
+- added `.gitattributes` to normalize text files to LF in Git
+- corrected the root API mount example in `index.js`
+
+Remaining scope:
+
+- clean up user-facing text in the admin console and public-facing docs where
+  needed, without overlapping unrelated in-progress work
 
 ### Batch 5: Root quality entrypoints
+
+Status: completed
 
 - Goal:
   Provide one stable entrypoint for root-library quality checks.
@@ -130,10 +149,10 @@ Status: completed
   - add root-level test/check scripts
   - keep package responsibilities explicit
 - Verification:
-  - root checks command
+  - `node tools/check-root/index.js`
   - existing MCP checks remain green
 - Rollback:
-  - `git revert <batch-5-commit>`
+  - `git revert 3620705`
 
 ### Batch 6: CI hardening
 
