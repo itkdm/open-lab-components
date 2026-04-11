@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { createToken, hashToken } from "./auth.js";
+import { createToken, hashToken, secureEqual } from "./auth.js";
 import { resolveConfigPath } from "./config.js";
 
 function normalizeText(value) {
@@ -107,7 +107,7 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
     let customer = null;
 
     for (const [expectedHash, candidate] of byHash.entries()) {
-      if (expectedHash === tokenHash) {
+      if (secureEqual(expectedHash, tokenHash)) {
         customer = candidate;
         break;
       }
