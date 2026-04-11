@@ -146,6 +146,7 @@ For admin traffic:
   - `adminWriteSummary`
   - `remoteMcpErrors`
   - `remoteMcpErrorSummary`
+  - `remoteMcpErrorCodes`
 
 For error diagnosis:
 
@@ -153,6 +154,7 @@ For error diagnosis:
 - search logs by `requestId`
 - confirm the matching `adminWriteSummary` counter increases
 - if `/mcp` requests are being rejected, check whether `remoteMcpErrors` is rising in `auth`, `session`, `policy`, or `runtime`
+- if you need the exact rejection cause, inspect `remoteMcpErrorCodes` for values like `missing_token`, `invalid_session`, `tool_not_allowed`, or `rate_limited`
 
 More detail:
 
