@@ -3,6 +3,8 @@ import path from "node:path";
 import { createToken, hashToken, secureEqual } from "./auth.js";
 import { resolveConfigPath } from "./config.js";
 
+const validCustomerStatuses = new Set(["active", "disabled"]);
+
 function normalizeText(value) {
   return String(value || "").trim();
 }
@@ -67,6 +69,67 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
       byHash.set(customer.tokenHash, customer);
     }
     return { byHash, byId };
+  }
+
+  function validateLabel(value, fallback) {
+    if (value === undefined) return fallback;
+    const label = normalizeText(value);
+    if (!label) throw registryError("invalid_customer", "label must be a non-empty string");
+    return label;
+  }
+
+  function validateStatus(value, fallback) {
+    if (value === undefined) return fallback;
+    const status = normalizeText(value).toLowerCase();
+    if (!validCustomerStatuses.has(status)) {
+      throw registryError("invalid_customer", "status must be one of: active, disabled");
+    }
+    return status;
+  }
+
+  function validateAllowedTools(value, fallback) {
+    if (value === undefined) return fallback;
+    if (!Array.isArray(value) || value.length === 0) {
+      throw registryError("invalid_customer", "allowedTools must be a non-empty array of tool names");
+    }
+    const allowedTools = value.map((item) => normalizeText(item));
+    if (allowedTools.some((toolName) => !toolName)) {
+      throw registryError("invalid_customer", "allowedTools must only contain non-empty tool names");
+    }
+    return allowedTools;
+  }
+
+  function validateRateLimit(value, fallback) {
+    if (value === undefined) return fallback || normalizeRateLimit();
+    if (!value || typeof value !== "object" || Array.isArray(value)) {
+      throw registryError("invalid_customer", "rateLimit must be an object");
+    }
+
+    const base = fallback || normalizeRateLimit();
+    const requestsPerMinuteSource =
+      Object.prototype.hasOwnProperty.call(value, "requestsPerMinute") ? value.requestsPerMinute : base.requestsPerMinute;
+    const burstSource = Object.prototype.hasOwnProperty.call(value, "burst") ? value.burst : base.burst;
+    const requestsPerMinute = Number(requestsPerMinuteSource);
+    const burst = Number(burstSource);
+
+    if (!Number.isInteger(requestsPerMinute) || requestsPerMinute <= 0) {
+      throw registryError("invalid_customer", "rateLimit.requestsPerMinute must be a positive integer");
+    }
+    if (!Number.isInteger(burst) || burst < 0) {
+      throw registryError("invalid_customer", "rateLimit.burst must be a non-negative integer");
+    }
+
+    return { requestsPerMinute, burst };
+  }
+
+  function validateExpiresAt(value, fallback) {
+    if (value === undefined) return fallback;
+    if (value === null) return null;
+    const expiresAt = String(value);
+    if (Number.isNaN(Date.parse(expiresAt))) {
+      throw registryError("invalid_customer", "expiresAt must be a valid datetime string");
+    }
+    return expiresAt;
   }
 
   function loadFromDisk() {
@@ -147,14 +210,18 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
     if (!customerId) throw new Error("customerId is required");
 
     const existing = findCustomer(customerId);
+    const fallbackRateLimit = existing?.rateLimit || normalizeRateLimit();
     const nextRecord = normalizeCustomerRecord({
       customerId,
-      label: input.label || existing?.label || customerId,
+      label: validateLabel(input.label, existing?.label || customerId),
       tokenHash: input.tokenHash || existing?.tokenHash || hashToken(createToken()),
-      status: input.status || existing?.status || "active",
-      rateLimit: input.rateLimit || existing?.rateLimit,
-      allowedTools: input.allowedTools || existing?.allowedTools,
-      expiresAt: Object.prototype.hasOwnProperty.call(input, "expiresAt") ? input.expiresAt : existing?.expiresAt
+      status: validateStatus(input.status, existing?.status || "active"),
+      rateLimit: validateRateLimit(input.rateLimit, fallbackRateLimit),
+      allowedTools: validateAllowedTools(input.allowedTools, existing?.allowedTools || ["*"]),
+      expiresAt: validateExpiresAt(
+        Object.prototype.hasOwnProperty.call(input, "expiresAt") ? input.expiresAt : undefined,
+        existing?.expiresAt || null
+      )
     });
 
     if (existing) {
@@ -196,11 +263,18 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
   function updateCustomer(customerId, patch = {}) {
     const existing = findCustomer(customerId);
     if (!existing) throw registryError("customer_not_found", `Customer not found: ${customerId}`);
+    const fallbackRateLimit = existing.rateLimit || normalizeRateLimit();
     const next = normalizeCustomerRecord({
-      ...existing,
-      ...patch,
       customerId: existing.customerId,
-      tokenHash: existing.tokenHash
+      label: validateLabel(patch.label, existing.label),
+      tokenHash: existing.tokenHash,
+      status: validateStatus(patch.status, existing.status),
+      rateLimit: validateRateLimit(patch.rateLimit, fallbackRateLimit),
+      allowedTools: validateAllowedTools(patch.allowedTools, existing.allowedTools),
+      expiresAt: validateExpiresAt(
+        Object.prototype.hasOwnProperty.call(patch, "expiresAt") ? patch.expiresAt : undefined,
+        existing.expiresAt
+      )
     });
     persistRecords(records.map((customer) => (customer.customerId === existing.customerId ? next : customer)));
     return next;

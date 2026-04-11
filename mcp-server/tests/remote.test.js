@@ -188,12 +188,14 @@ test("remote tool restrictions and rate limiting are enforced", async () => {
     const rateLimitedClient = new Client({ name: "remote-test-client", version: "0.1.0" });
     const rateLimitedTransport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/mcp`), {
       requestInit: {
-        headers: authHeaders("test-token")
+        headers: authHeaders("restricted-token")
       }
     });
 
     try {
       await rateLimitedClient.connect(rateLimitedTransport);
+      await rateLimitedClient.callTool({ name: "get_categories", arguments: {} });
+      await rateLimitedClient.callTool({ name: "get_categories", arguments: {} });
       await rateLimitedClient.callTool({ name: "get_categories", arguments: {} });
       await rateLimitedClient.callTool({ name: "get_categories", arguments: {} });
       await assert.rejects(
@@ -374,6 +376,55 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     assert.deepEqual(await invalid.json(), {
       error: "invalid_customer",
       message: "customerId is required"
+    });
+
+    const invalidStatus = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        customerId: "bad-status-school",
+        status: "paused"
+      })
+    });
+    assert.equal(invalidStatus.status, 400);
+    assert.deepEqual(await invalidStatus.json(), {
+      error: "invalid_customer",
+      message: "status must be one of: active, disabled"
+    });
+
+    const invalidAllowedTools = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        customerId: "bad-tools-school",
+        allowedTools: [""]
+      })
+    });
+    assert.equal(invalidAllowedTools.status, 400);
+    assert.deepEqual(await invalidAllowedTools.json(), {
+      error: "invalid_customer",
+      message: "allowedTools must only contain non-empty tool names"
+    });
+
+    const invalidRateLimit = await fetch(`http://127.0.0.1:${port}/admin/customers/vip-test`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        rateLimit: {
+          requestsPerMinute: 0
+        }
+      })
+    });
+    assert.equal(invalidRateLimit.status, 400);
+    assert.deepEqual(await invalidRateLimit.json(), {
+      error: "invalid_customer",
+      message: "rateLimit.requestsPerMinute must be a positive integer"
     });
   });
 });
