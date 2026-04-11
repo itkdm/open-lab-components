@@ -69,6 +69,13 @@ function createRemoteMcpError(code, message) {
   return error;
 }
 
+function ensureRemoteMcpError(error, fallbackCode) {
+  if (error && typeof error.code === "string") return error;
+  const wrapped = new Error(error && error.message ? error.message : String(error));
+  wrapped.code = fallbackCode;
+  return wrapped;
+}
+
 function classifyRemoteMcpError(error) {
   if (error && typeof error.code === "string") {
     if (error.code.startsWith("session_")) {
@@ -547,7 +554,11 @@ async function createRemoteApp(options = {}) {
     const sessionId = req.headers["mcp-session-id"];
 
     try {
-      await sessions.cleanupExpiredSessions();
+      try {
+        await sessions.cleanupExpiredSessions();
+      } catch (error) {
+        throw ensureRemoteMcpError(error, "session_cleanup_failed");
+      }
       let session = sessionId ? sessions.getSession(sessionId) : null;
 
       if (!session && isInitializeRequest(req.body)) {
@@ -598,8 +609,9 @@ async function createRemoteApp(options = {}) {
 
       await session.transport.handleRequest(req, res, req.body);
     } catch (error) {
-      const category = classifyRemoteMcpError(error);
-      metrics.recordRemoteMcpError({ category, code: error && error.code ? error.code : null });
+      const normalizedError = ensureRemoteMcpError(error, "remote_mcp_runtime_error");
+      const category = classifyRemoteMcpError(normalizedError);
+      metrics.recordRemoteMcpError({ category, code: normalizedError.code });
       logger.error({
         event: "remote_mcp_error",
         requestId: req.requestId || null,
@@ -609,7 +621,8 @@ async function createRemoteApp(options = {}) {
         tool: req.mcpToolName || null,
         sessionId: typeof sessionId === "string" ? sessionId : null,
         category,
-        message: error && error.message ? error.message : String(error)
+        message: normalizedError.message,
+        code: normalizedError.code
       });
       if (!res.headersSent) {
         res.status(500).json({

@@ -770,7 +770,8 @@ test("remote MCP errors emit request context in logs", async () => {
       path: "/mcp",
       tool: null,
       sessionId: null,
-      category: "runtime",
+      category: "session",
+      code: "session_cleanup_failed",
       message: "simulated_mcp_cleanup_failure"
     }
   ]);
@@ -806,7 +807,7 @@ test("remote MCP error metrics are exposed in metrics and admin overview", async
     const metricsPayload = await metrics.json();
     assert.equal(metricsPayload.remoteMcpErrors.session, 1);
     assert.equal(metricsPayload.remoteMcpErrorSummary.session, 1);
-    assert.equal(metricsPayload.remoteMcpErrorCodes.simulated_session_failure, undefined);
+    assert.equal(metricsPayload.remoteMcpErrorCodes.session_cleanup_failed, 1);
 
     const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
     assert.equal(overview.status, 200);
@@ -814,5 +815,6 @@ test("remote MCP error metrics are exposed in metrics and admin overview", async
     assert.equal(overviewPayload.remoteMcpErrors.session, 1);
     assert.equal(overviewPayload.remoteMcpErrorSummary.session, 1);
     assert.equal(typeof overviewPayload.remoteMcpErrorCodes, "object");
+    assert.equal(overviewPayload.remoteMcpErrorCodes.session_cleanup_failed, 1);
   });
 });
