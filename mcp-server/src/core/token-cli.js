@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createToken, hashToken } from "./auth.js";
+import { createToken, hashToken } from "../runtime/auth.js";
 
 const token = createToken();
 const tokenHash = hashToken(token);

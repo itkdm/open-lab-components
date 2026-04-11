@@ -4,7 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
-import { startHttpServer } from "../src/remote-server.js";
+import { startHttpServer } from "../src/core/remote-server.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -42,7 +42,48 @@ test("remote health endpoint responds", async () => {
     const response = await fetch(`http://127.0.0.1:${port}/healthz`);
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), { ok: true });
+
+    const readiness = await fetch(`http://127.0.0.1:${port}/readyz`);
+    assert.equal(readiness.status, 200);
+    const payload = await readiness.json();
+    assert.equal(payload.ok, true);
+    assert.equal(payload.feedback.ok, true);
+    assert.equal(payload.feedback.backend, "file");
   });
+});
+
+test("remote server emits cors headers for allowed origins", async () => {
+  const origin = "https://console.example.com";
+  const remote = await startHttpServer({
+    runtime: {
+      host: "127.0.0.1",
+      port: 0,
+      configPath: fixturePath,
+      logLevel: "error",
+      allowedHosts: [],
+      allowedOrigins: [origin]
+    }
+  });
+
+  const port = remote.server.address().port;
+
+  try {
+    const preflight = await fetch(`http://127.0.0.1:${port}/metrics`, {
+      method: "OPTIONS",
+      headers: { Origin: origin }
+    });
+    assert.equal(preflight.status, 204);
+    assert.equal(preflight.headers.get("access-control-allow-origin"), origin);
+
+    const metrics = await fetch(`http://127.0.0.1:${port}/metrics`, {
+      headers: {
+        Origin: origin
+      }
+    });
+    assert.equal(metrics.headers.get("access-control-allow-origin"), origin);
+  } finally {
+    await remote.close();
+  }
 });
 
 test("remote server supports authenticated MCP over Streamable HTTP", async () => {
@@ -139,5 +180,44 @@ test("remote tool restrictions and rate limiting are enforced", async () => {
     } finally {
       await rateLimitedClient.close();
     }
+  });
+});
+
+test("remote metrics endpoint returns aggregated operational data", async () => {
+  await withRemoteServer(async ({ port }) => {
+    const client = new Client({ name: "remote-test-client", version: "0.1.0" });
+    const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/mcp`), {
+      requestInit: {
+        headers: authHeaders("test-token")
+      }
+    });
+    await client.connect(transport);
+    await client.callTool({
+      name: "submit_recommendation_feedback",
+      arguments: {
+        componentId: "phy.resistor.axial.basic",
+        feedbackType: "clicked",
+        subject: "physics",
+        lessonGoal: "resistance lesson"
+      }
+    });
+    await client.close();
+
+    const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+    assert.equal(metrics.status, 200);
+    const payload = await metrics.json();
+    assert.equal(typeof payload.activeSessions, "number");
+    assert.equal(typeof payload.uptimeSeconds, "number");
+    assert.equal(typeof payload.requestsByRoute, "object");
+    assert.equal(payload.feedbackEvents.clicked >= 1, true);
+    assert.equal(payload.requestsByCustomer["vip-test"] >= 1, true);
+    assert.equal(payload.feedbackBackend.kind, "file");
+    assert.equal(payload.feedbackBackend.ok, true);
+    assert.equal(typeof payload.feedbackStoreSummary.tenantCount, "number");
+    assert.equal(typeof payload.feedbackStoreSummary.trackedComponents, "number");
+    assert.equal(payload.feedbackStoreSummary.backend, "file");
+    assert.equal(typeof payload.feedbackStore.tenantCount, "number");
+    assert.equal(typeof payload.feedbackStore.trackedComponents, "number");
+    assert.equal(payload.feedbackStore.backend, "file");
   });
 });

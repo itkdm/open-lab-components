@@ -7,17 +7,39 @@ This package supports:
 - local `stdio` mode for VS Code and local MCP clients
 - remote `Streamable HTTP` mode for hosted access
 - locale-aware summaries and component lookup
+- MCP tools, prompts, and reference resources
+- bearer auth, per-customer tool permissions, rate limiting, and session governance
+- health, readiness, metrics, and structured request logging
 
 ## What it exposes
 
-The v1 server exposes these tools over `stdio`:
+### Tools
 
 - `get_categories`
 - `list_components`
 - `search_components`
+- `recommend_components`
+- `submit_recommendation_feedback`
+- `get_recommendation_feedback_stats`
+- `build_experiment_page`
+- `compose_experiment_bundle`
 - `get_component`
 
 All public tools accept an optional `locale` parameter.
+
+### Prompts
+
+- `component-recommendation-brief`
+- `component-page-builder`
+- `experiment-page-executor`
+- `experiment-bundle-integrator`
+
+### Resources
+
+- `openlab://catalog/overview`
+- `openlab://catalog/categories`
+- `openlab://catalog/featured`
+- `openlab://component/phy.resistor.axial.basic`
 
 This release remains intentionally read-only. It does not create, edit, or validate components through MCP.
 
@@ -34,6 +56,12 @@ From the repo root:
 ```bash
 npm run mcp:start
 ```
+
+Optional backend integration tests:
+
+- set `REDIS_URL` to run the Redis feedback backend test
+- set `POSTGRES_URL` to run the PostgreSQL feedback backend test
+- run `npm run mcp:test`
 
 ## Remote HTTP usage
 
@@ -62,7 +90,19 @@ Environment variables:
 - `CUSTOMERS_CONFIG_PATH`
 - `LOG_LEVEL`
 - `ALLOWED_HOSTS`
+- `ALLOWED_ORIGINS`
 - `TRUST_PROXY`
+- `SESSION_TTL_MS`
+- `MAX_SESSIONS_PER_CUSTOMER`
+- `METRICS_BEARER_TOKEN`
+- `FEEDBACK_STORE_PATH`
+- `FEEDBACK_HALF_LIFE_DAYS`
+- `FEEDBACK_STORE_BACKEND`
+- `REDIS_URL`
+- `REDIS_FEEDBACK_KEY`
+- `POSTGRES_URL`
+- `POSTGRES_FEEDBACK_TABLE`
+- `POSTGRES_FEEDBACK_STORE_KEY`
 
 ## Claude Desktop example
 
@@ -73,11 +113,11 @@ Use the published binary or a local repo checkout. Example local command:
   "mcpServers": {
     "open-lab-components": {
       "command": "node",
-      "args": [
-        "D:/develop/project/edu-html/组件库/open-lab-components/mcp-server/src/cli.js"
-      ]
+        "args": [
+        "D:/develop/project/edu-html/组件库/open-lab-components/mcp-server/src/core/cli.js"
+        ]
+      }
     }
-  }
 }
 ```
 
@@ -95,9 +135,44 @@ Returns filtered component summaries resolved for the requested locale. It never
 
 Runs deterministic lexical matching over ids, names, tags, and category metadata across supported locales.
 
+### `recommend_components`
+
+Returns explainable recommendations for lesson and product scenarios using subject, goal, audience, category, tag, and interaction signals.
+For remote clients, authenticated customer ids are injected automatically so reranking stays tenant-isolated.
+
+### `submit_recommendation_feedback`
+
+Records click, selection, save, dismiss, or hide signals so future recommendations can rerank dynamically.
+
+### `get_recommendation_feedback_stats`
+
+Returns feedback aggregates used by the in-memory reranking layer.
+
+### `build_experiment_page`
+
+Returns a structured lesson or experiment page plan with sections, selected component ids, implementation notes, and assembly steps.
+
+### `compose_experiment_bundle`
+
+Returns a render-ready bundle with component HTML, layout hints, render order, and host integration instructions.
+
 ### `get_component`
 
 Returns a full registry item plus complete HTML for a single component id.
+
+## Enterprise runtime behavior
+
+- customer-scoped bearer token authentication
+- per-customer tool allowlists
+- in-memory per-customer rate limiting with response headers
+- session TTL and max concurrent sessions per customer
+- request IDs and structured JSON logs
+- `/healthz`, `/readyz`, and `/metrics` operational endpoints
+- feedback event counters for recommendation tuning
+- persistent feedback store for recommendation reranking recovery after restart
+- time-decayed feedback scoring so stale interactions lose influence over time
+- tenant-isolated reranking so one customer's behavior does not affect another customer's results
+- pluggable persistence backends: file, Redis, PostgreSQL
 
 ## Locale behavior
 

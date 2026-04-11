@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "open-lab-components-mcp": "./src/cli.js",
-    "open-lab-components-mcp-http": "./src/http-cli.js"
+    "open-lab-components-mcp": "./src/core/cli.js",
+    "open-lab-components-mcp-http": "./src/core/http-cli.js"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -18,14 +18,16 @@
     "README.md"
   ],
   "scripts": {
-    "start": "node ./src/cli.js",
-    "start:http": "node ./src/http-cli.js",
-    "token:generate": "node ./src/token-cli.js",
-    "test": "node --test ./tests/catalog.test.js ./tests/server.test.js ./tests/remote.test.js",
+    "start": "node ./src/core/cli.js",
+    "start:http": "node ./src/core/http-cli.js",
+    "token:generate": "node ./src/core/token-cli.js",
+    "test": "node --test ./tests/catalog.test.js ./tests/feedback-backends.test.js ./tests/server.test.js ./tests/remote.test.js",
     "test:remote": "node --test ./tests/remote.test.js"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
+    "pg": "^8.20.0",
+    "redis": "^5.11.0",
     "zod": "^3.25.76"
   }
 }

@@ -8,7 +8,17 @@
       "requestsPerMinute": 2,
       "burst": 0
     },
-    "allowedTools": ["get_categories", "list_components", "search_components", "get_component"],
+    "allowedTools": [
+      "get_categories",
+      "list_components",
+      "search_components",
+      "recommend_components",
+      "submit_recommendation_feedback",
+      "get_recommendation_feedback_stats",
+      "build_experiment_page",
+      "compose_experiment_bundle",
+      "get_component"
+    ],
     "expiresAt": "2099-12-31T23:59:59.000Z"
   },
   {
@@ -20,7 +30,9 @@
       "requestsPerMinute": 2,
       "burst": 0
     },
-    "allowedTools": ["*"],
+    "allowedTools": [
+      "*"
+    ],
     "expiresAt": "2099-12-31T23:59:59.000Z"
   },
   {
@@ -32,7 +44,9 @@
       "requestsPerMinute": 5,
       "burst": 0
     },
-    "allowedTools": ["get_categories"],
+    "allowedTools": [
+      "get_categories"
+    ],
     "expiresAt": "2099-12-31T23:59:59.000Z"
   },
   {
@@ -44,7 +58,9 @@
       "requestsPerMinute": 5,
       "burst": 0
     },
-    "allowedTools": ["*"],
+    "allowedTools": [
+      "*"
+    ],
     "expiresAt": "2000-01-01T00:00:00.000Z"
   }
 ]
