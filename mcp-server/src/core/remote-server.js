@@ -177,7 +177,7 @@ async function createRemoteApp(options = {}) {
   }
 
   app.get("/healthz", (_req, res) => {
-    res.status(200).json({ ok: true });
+    res.status(200).json({ ok: true, status: "ok" });
   });
 
   app.get("/readyz", async (_req, res) => {
@@ -186,6 +186,7 @@ async function createRemoteApp(options = {}) {
 
     res.status(ok ? 200 : 503).json({
       ok,
+      status: ok ? "ok" : "degraded",
       customers: getCustomerCount(),
       sessionTtlMs: runtime.sessionTtlMs,
       maxSessionsPerCustomer: runtime.maxSessionsPerCustomer,
