@@ -141,6 +141,11 @@ Remaining scope:
 - if the console is no longer part of the repo, treat only the remaining
   public-facing docs as scope
 
+Follow-up completed:
+
+- `mcp-server/README.md` now describes the control console as an external host
+  concern rather than a committed in-repo app
+
 ### Batch 5: Root quality entrypoints
 
 Status: completed
