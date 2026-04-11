@@ -72,3 +72,59 @@ test("customer registry create, rotate, update, and remove persist to disk", () 
   assert.equal(removed, true);
   assert.equal(reloaded.snapshot().length, 0);
 });
+
+test("customer registry rolls back in-memory mutations when persistence fails", () => {
+  const configPath = createTempConfigPath();
+  const registry = createCustomerRegistry({
+    configPath,
+    customers: [
+      {
+        customerId: "tenant-c",
+        label: "Tenant C",
+        tokenHash: hashToken("tenant-c-token"),
+        status: "active",
+        rateLimit: { requestsPerMinute: 20, burst: 2 },
+        allowedTools: ["get_categories"]
+      }
+    ]
+  });
+  registry.saveToDisk();
+
+  const beforeSnapshot = registry.snapshot();
+  const originalRenameSync = fs.renameSync;
+  fs.renameSync = () => {
+    throw new Error("simulated_persist_failure");
+  };
+
+  try {
+    assert.throws(
+      () =>
+        registry.createCustomer({
+          customerId: "tenant-d",
+          label: "Tenant D"
+        }),
+      /simulated_persist_failure/
+    );
+    assert.deepEqual(registry.snapshot(), beforeSnapshot);
+    assert.equal(fs.existsSync(`${configPath}.tmp`), false);
+
+    assert.throws(
+      () =>
+        registry.updateCustomer("tenant-c", {
+          status: "disabled"
+        }),
+      /simulated_persist_failure/
+    );
+    assert.deepEqual(registry.snapshot(), beforeSnapshot);
+
+    assert.throws(() => registry.rotateCustomerToken("tenant-c"), /simulated_persist_failure/);
+    const auth = registry.authenticateToken("tenant-c-token");
+    assert.equal(auth.ok, true);
+    assert.equal(auth.customer.customerId, "tenant-c");
+
+    assert.throws(() => registry.removeCustomer("tenant-c"), /simulated_persist_failure/);
+    assert.deepEqual(registry.snapshot(), beforeSnapshot);
+  } finally {
+    fs.renameSync = originalRenameSync;
+  }
+});

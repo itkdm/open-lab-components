@@ -81,11 +81,25 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
   }
 
   function saveToDisk() {
+    persistRecords(records);
+  }
+
+  function persistRecords(nextRecords) {
     ensureFileDir();
     const tempPath = `${resolvedPath}.tmp`;
-    const payload = JSON.stringify(records.map(serializeCustomerRecord), null, 2);
-    fs.writeFileSync(tempPath, payload, "utf8");
-    fs.renameSync(tempPath, resolvedPath);
+    const payload = JSON.stringify(nextRecords.map(serializeCustomerRecord), null, 2);
+    try {
+      fs.writeFileSync(tempPath, payload, "utf8");
+      fs.renameSync(tempPath, resolvedPath);
+      records = nextRecords;
+    } catch (error) {
+      try {
+        if (fs.existsSync(tempPath)) {
+          fs.unlinkSync(tempPath);
+        }
+      } catch {}
+      throw error;
+    }
   }
 
   function snapshot() {
@@ -144,11 +158,10 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
     });
 
     if (existing) {
-      records = records.map((customer) => (customer.customerId === customerId ? nextRecord : customer));
+      persistRecords(records.map((customer) => (customer.customerId === customerId ? nextRecord : customer)));
     } else {
-      records = [...records, nextRecord];
+      persistRecords([...records, nextRecord]);
     }
-    saveToDisk();
     return nextRecord;
   }
 
@@ -176,8 +189,7 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
       ...existing,
       tokenHash: hashToken(rawToken)
     });
-    records = records.map((customer) => (customer.customerId === existing.customerId ? next : customer));
-    saveToDisk();
+    persistRecords(records.map((customer) => (customer.customerId === existing.customerId ? next : customer)));
     return { customer: next, rawToken };
   }
 
@@ -190,16 +202,14 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
       customerId: existing.customerId,
       tokenHash: existing.tokenHash
     });
-    records = records.map((customer) => (customer.customerId === existing.customerId ? next : customer));
-    saveToDisk();
+    persistRecords(records.map((customer) => (customer.customerId === existing.customerId ? next : customer)));
     return next;
   }
 
   function removeCustomer(customerId) {
     const existing = findCustomer(customerId);
     if (!existing) return false;
-    records = records.filter((customer) => customer.customerId !== existing.customerId);
-    saveToDisk();
+    persistRecords(records.filter((customer) => customer.customerId !== existing.customerId));
     return true;
   }
 
