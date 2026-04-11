@@ -1,0 +1,17 @@
+services:
+  open-lab-components-mcp:
+    image: node:20-bookworm-slim
+    working_dir: /app
+    command: ["node", "./src/core/http-cli.js"]
+    restart: unless-stopped
+    env_file:
+      - ../../.env
+    environment:
+      CUSTOMERS_CONFIG_PATH: /app/config/customers.json
+      FEEDBACK_STORE_PATH: /app/data/feedback-store.json
+      HOST: 0.0.0.0
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../../:/app

@@ -1,0 +1,16 @@
+[Unit]
+Description=Open Lab Components MCP Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/open-lab-components/mcp-server
+EnvironmentFile=/opt/open-lab-components/mcp-server/.env
+ExecStart=/usr/bin/node ./src/core/http-cli.js
+Restart=always
+RestartSec=5
+User=openlab
+Group=openlab
+
+[Install]
+WantedBy=multi-user.target

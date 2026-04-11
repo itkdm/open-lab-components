@@ -1,4 +1,5 @@
 node_modules/
+tools/runtime-harness/node_modules/
 .DS_Store
 *.log
 
@@ -19,3 +20,5 @@ docs/GITHUB_PAGES_SETUP.md
 
 # Demo folder
 demo/
+tmp-run/
+mcp-server/data/

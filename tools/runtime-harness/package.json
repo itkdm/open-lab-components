@@ -1,0 +1,12 @@
+{
+  "name": "open-lab-runtime-harness",
+  "private": true,
+  "version": "0.0.0",
+  "type": "commonjs",
+  "scripts": {
+    "test": "node ./runtime-lifecycle.test.js"
+  },
+  "dependencies": {
+    "jsdom": "^27.0.0"
+  }
+}

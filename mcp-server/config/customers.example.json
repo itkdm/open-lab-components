@@ -1,8 +1,8 @@
 [
   {
-    "customerId": "vip-demo",
-    "label": "Demo VIP",
-    "tokenHash": "replace-with-sha256-hash",
+    "customerId": "school-district-a",
+    "label": "School District A",
+    "tokenHash": "replace-with-sha256-hash-for-school-district-a",
     "status": "active",
     "rateLimit": {
       "requestsPerMinute": 60,
@@ -10,5 +10,22 @@
     },
     "allowedTools": ["*"],
     "expiresAt": "2099-12-31T23:59:59.000Z"
+  },
+  {
+    "customerId": "pilot-lab-b",
+    "label": "Pilot Lab B",
+    "tokenHash": "replace-with-sha256-hash-for-pilot-lab-b",
+    "status": "active",
+    "rateLimit": {
+      "requestsPerMinute": 20,
+      "burst": 5
+    },
+    "allowedTools": [
+      "get_categories",
+      "list_components",
+      "search_components",
+      "get_component"
+    ],
+    "expiresAt": "2027-12-31T23:59:59.000Z"
   }
 ]

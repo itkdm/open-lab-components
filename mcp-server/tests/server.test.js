@@ -8,7 +8,7 @@ import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const repoRoot = path.resolve(__dirname, "..", "..");
-const cliPath = path.resolve(repoRoot, "mcp-server", "src", "cli.js");
+const cliPath = path.resolve(repoRoot, "mcp-server", "src", "core", "cli.js");
 
 async function withClient(run) {
   const transport = new StdioClientTransport({
@@ -36,10 +36,16 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
     const names = tools.tools.map((tool) => tool.name).sort();
 
     assert.deepEqual(names, [
+      "build_experiment_page",
+      "compose_experiment_bundle",
       "get_categories",
       "get_component",
+      "get_recommendation_feedback_stats",
       "list_components",
+      "recommend_components",
       "search_components"
+      ,
+      "submit_recommendation_feedback"
     ]);
 
     const result = await client.callTool({
@@ -69,5 +75,92 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
     });
     const componentPayload = JSON.parse(getResult.content[0].text);
     assert.equal(componentPayload.component.name, "Axial Resistor");
+
+    const resources = await client.listResources();
+    assert.ok(resources.resources.length >= 3);
+    assert.ok(resources.resources.some((resource) => resource.uri === "openlab://catalog/overview"));
+
+    const resourcePayload = await client.readResource({ uri: "openlab://catalog/overview" });
+    assert.match(resourcePayload.contents[0].text, /componentCount/);
+
+    const prompt = await client.getPrompt({
+      name: "component-recommendation-brief",
+      arguments: {
+        subject: "physics",
+        lessonGoal: "help teachers find suitable demonstration components",
+        locale: "en"
+      }
+    });
+    assert.equal(prompt.messages[0].role, "user");
+    assert.match(prompt.messages[0].content.text, /physics/);
+
+    const recommendResult = await client.callTool({
+      name: "recommend_components",
+      arguments: {
+        subject: "physics",
+        lessonGoal: "interactive resistor explanation",
+        preferredCategories: ["physics/circuit"],
+        mustIncludeTags: ["resistor"],
+        locale: "en"
+      }
+    });
+    const recommendPayload = JSON.parse(recommendResult.content[0].text);
+    assert.ok(Array.isArray(recommendPayload.items));
+    assert.ok(recommendPayload.items.length > 0);
+    assert.ok(recommendPayload.items[0].recommendationScore > 0);
+
+    const pagePlanResult = await client.callTool({
+      name: "build_experiment_page",
+      arguments: {
+        subject: "physics",
+        lessonGoal: "interactive resistor explanation",
+        audience: "middle-school students",
+        pageType: "lesson",
+        preferredCategories: ["physics/circuit"],
+        mustIncludeTags: ["resistor"],
+        locale: "en"
+      }
+    });
+    const pagePlanPayload = JSON.parse(pagePlanResult.content[0].text);
+    assert.ok(Array.isArray(pagePlanPayload.sections));
+    assert.ok(pagePlanPayload.sections.length > 0);
+    assert.ok(Array.isArray(pagePlanPayload.assemblySteps));
+
+    const bundleResult = await client.callTool({
+      name: "compose_experiment_bundle",
+      arguments: {
+        subject: "physics",
+        lessonGoal: "interactive resistor explanation",
+        audience: "middle-school students",
+        preferredCategories: ["physics/circuit"],
+        mustIncludeTags: ["resistor"],
+        locale: "en"
+      }
+    });
+    const bundlePayload = JSON.parse(bundleResult.content[0].text);
+    assert.ok(Array.isArray(bundlePayload.items));
+    assert.ok(bundlePayload.items.length > 0);
+    assert.match(bundlePayload.items[0].html, /data-cmp-id=/);
+
+    const feedbackResult = await client.callTool({
+      name: "submit_recommendation_feedback",
+      arguments: {
+        componentId: "phy.resistor.axial.basic",
+        customerId: "tenant-a",
+        feedbackType: "selected",
+        subject: "physics",
+        lessonGoal: "interactive resistor explanation",
+        preferredCategories: ["physics/circuit"]
+      }
+    });
+    const feedbackPayload = JSON.parse(feedbackResult.content[0].text);
+    assert.equal(feedbackPayload.feedback.componentId, "phy.resistor.axial.basic");
+
+    const statsResult = await client.callTool({
+      name: "get_recommendation_feedback_stats",
+      arguments: {}
+    });
+    const statsPayload = JSON.parse(statsResult.content[0].text);
+    assert.equal(statsPayload.feedback.tenantCount >= 1, true);
   });
 });

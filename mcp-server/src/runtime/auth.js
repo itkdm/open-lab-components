@@ -59,4 +59,4 @@ function toolAllowed(customer, toolName) {
   return customer.allowedTools.includes(toolName);
 }
 
-export { hashToken, createToken, readBearerToken, createCustomerStore, toolAllowed };
+export { hashToken, createToken, readBearerToken, secureEqual, createCustomerStore, toolAllowed };
