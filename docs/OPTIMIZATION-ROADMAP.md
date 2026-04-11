@@ -235,6 +235,12 @@ Status: completed
 - Rollback:
   - `git revert a33645a`
 
+Follow-up completed:
+
+- `docs/PUBLISHING.md` now places root checks and release smoke checks ahead of
+  the broader release flow
+- `docs/TESTING.md` now points release work to `tools/release-smoke/index.js`
+
 ## Commit Message Policy
 
 Use short conventional commit messages:
