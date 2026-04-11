@@ -142,6 +142,18 @@ async function createRemoteApp(options = {}) {
     });
   }
 
+  function logAdminWriteSuccess(req, action, details = {}) {
+    logger.info({
+      event: "admin_customer_write_succeeded",
+      action,
+      route: req.path,
+      method: req.method,
+      customerId: req.params && typeof req.params.customerId === "string" ? req.params.customerId : details.customerId || null,
+      status: details.status,
+      outcome: details.outcome || "success"
+    });
+  }
+
   app.get("/healthz", (_req, res) => {
     res.status(200).json({ ok: true });
   });
@@ -267,6 +279,10 @@ async function createRemoteApp(options = {}) {
     if (!requireAdmin(req, res)) return;
     try {
       const created = customerRegistry.createCustomer(req.body || {});
+      logAdminWriteSuccess(req, "create", {
+        customerId: created.customer.customerId,
+        status: 201
+      });
       res.status(201).json({
         customer: created.customer,
         rawToken: created.rawToken
@@ -284,6 +300,10 @@ async function createRemoteApp(options = {}) {
     if (!requireAdmin(req, res)) return;
     try {
       const updated = customerRegistry.updateCustomer(req.params.customerId, req.body || {});
+      logAdminWriteSuccess(req, "update", {
+        customerId: updated.customerId,
+        status: 200
+      });
       res.status(200).json({ customer: updated });
     } catch (error) {
       handleAdminWriteError(req, res, "update", error, {
@@ -298,6 +318,10 @@ async function createRemoteApp(options = {}) {
     if (!requireAdmin(req, res)) return;
     try {
       const rotated = customerRegistry.rotateCustomerToken(req.params.customerId);
+      logAdminWriteSuccess(req, "rotate_token", {
+        customerId: rotated.customer.customerId,
+        status: 200
+      });
       res.status(200).json({
         customer: rotated.customer,
         rawToken: rotated.rawToken
@@ -319,6 +343,10 @@ async function createRemoteApp(options = {}) {
         res.status(404).json({ error: "customer_not_found", category: "not_found", message: "Customer not found" });
         return;
       }
+      logAdminWriteSuccess(req, "delete", {
+        customerId: req.params.customerId,
+        status: 204
+      });
       res.status(204).end();
     } catch (error) {
       handleAdminWriteError(req, res, "delete", error, {

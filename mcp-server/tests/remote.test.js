@@ -602,3 +602,59 @@ test("admin customer write failures emit structured error logs", async () => {
     message: "Customer already exists: vip-test"
   });
 });
+
+test("admin customer writes emit structured success logs", async () => {
+  const entries = [];
+  const logger = {
+    info(payload) {
+      entries.push(payload);
+    },
+    debug() {},
+    error() {},
+    sizeBucket() {
+      return "none";
+    }
+  };
+
+  await withRemoteServerOptions({ logger }, async ({ port }) => {
+    const createResponse = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        customerId: "audit-school",
+        label: "Audit School",
+        allowedTools: ["get_categories"]
+      })
+    });
+    assert.equal(createResponse.status, 201);
+
+    const removeResponse = await fetch(`http://127.0.0.1:${port}/admin/customers/audit-school`, {
+      method: "DELETE"
+    });
+    assert.equal(removeResponse.status, 204);
+  });
+
+  const auditEntries = entries.filter((entry) => entry.event === "admin_customer_write_succeeded");
+  assert.deepEqual(auditEntries, [
+    {
+      event: "admin_customer_write_succeeded",
+      action: "create",
+      route: "/admin/customers",
+      method: "POST",
+      customerId: "audit-school",
+      status: 201,
+      outcome: "success"
+    },
+    {
+      event: "admin_customer_write_succeeded",
+      action: "delete",
+      route: "/admin/customers/audit-school",
+      method: "DELETE",
+      customerId: "audit-school",
+      status: 204,
+      outcome: "success"
+    }
+  ]);
+});
