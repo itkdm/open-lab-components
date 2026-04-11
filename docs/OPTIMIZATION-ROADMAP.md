@@ -138,6 +138,8 @@ Remaining scope:
 
 - clean up user-facing text in the admin console and public-facing docs where
   needed, without overlapping unrelated in-progress work
+- if the console is no longer part of the repo, treat only the remaining
+  public-facing docs as scope
 
 ### Batch 5: Root quality entrypoints
 
