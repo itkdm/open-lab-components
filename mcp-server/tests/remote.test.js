@@ -697,3 +697,64 @@ test("admin customer writes emit structured success logs", async () => {
     }
   ]);
 });
+
+test("remote MCP errors emit request context in logs", async () => {
+  const entries = [];
+  const logger = {
+    info() {},
+    debug() {},
+    error(payload) {
+      entries.push(payload);
+    },
+    sizeBucket() {
+      return "none";
+    }
+  };
+
+  await withRemoteServerOptions(
+    {
+      logger
+    },
+    async ({ remote, port }) => {
+      remote.sessions.cleanupExpiredSessions = async () => {
+        throw new Error("simulated_mcp_cleanup_failure");
+      };
+
+      const response = await fetch(`http://127.0.0.1:${port}/mcp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-request-id": "mcp-error-request",
+          ...authHeaders("test-token")
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          method: "initialize",
+          params: {
+            protocolVersion: "2025-03-26",
+            capabilities: {},
+            clientInfo: { name: "x", version: "1" }
+          }
+        })
+      });
+
+      assert.equal(response.status >= 400, true);
+      assert.equal(response.headers.get("x-request-id"), "mcp-error-request");
+    }
+  );
+
+  const mcpErrors = entries.filter((entry) => entry.event === "remote_mcp_error");
+  assert.deepEqual(mcpErrors, [
+    {
+      event: "remote_mcp_error",
+      requestId: "mcp-error-request",
+      customerId: "vip-test",
+      method: "POST",
+      path: "/mcp",
+      tool: null,
+      sessionId: null,
+      message: "simulated_mcp_cleanup_failure"
+    }
+  ]);
+});

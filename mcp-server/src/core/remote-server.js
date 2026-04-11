@@ -548,6 +548,12 @@ async function createRemoteApp(options = {}) {
     } catch (error) {
       logger.error({
         event: "remote_mcp_error",
+        requestId: req.requestId || null,
+        customerId: req.customer ? req.customer.customerId : null,
+        method: req.method,
+        path: req.path,
+        tool: req.mcpToolName || null,
+        sessionId: typeof sessionId === "string" ? sessionId : null,
         message: error && error.message ? error.message : String(error)
       });
       if (!res.headersSent) {
