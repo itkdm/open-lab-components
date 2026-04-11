@@ -77,6 +77,14 @@ Each customer record supports:
 npm run start:http
 ```
 
+If you run under `systemd`, start from:
+
+- `deploy/systemd/open-lab-components-mcp.service.example`
+
+If you place the service behind Nginx, start from:
+
+- `deploy/nginx/open-lab-components-mcp.conf.example`
+
 Expected operational routes:
 
 - `/healthz`
@@ -131,3 +139,4 @@ More detail:
 
 - request tracing, audit logs, and admin metric semantics are documented in [OPERATIONS.md](./OPERATIONS.md)
 - rollout checks are listed in [DEPLOYMENT-CHECKLIST.md](./DEPLOYMENT-CHECKLIST.md)
+- reusable deployment templates live under [`deploy/`](./deploy)

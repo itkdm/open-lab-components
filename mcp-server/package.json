@@ -14,6 +14,7 @@
   "files": [
     "src/**/*",
     "config/**/*.json",
+    "deploy/**/*",
     ".env.example",
     "README.md",
     "DEPLOYMENT.md",
