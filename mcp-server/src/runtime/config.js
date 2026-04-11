@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { z } from "zod";
+import { parseCustomerRecord } from "./customer-schema.js";
 
 function resolveConfigPath(configPath) {
   if (!configPath) return path.resolve(process.cwd(), "config", "customers.json");
@@ -12,53 +12,17 @@ function resolveFeedbackStorePath(storePath) {
   return path.isAbsolute(storePath) ? storePath : path.resolve(process.cwd(), storePath);
 }
 
-const customerSchema = z.object({
-  customerId: z.string().min(1),
-  label: z.string().optional(),
-  tokenHash: z.string().min(32),
-  status: z.string().optional(),
-  rateLimit: z
-    .object({
-      requestsPerMinute: z.coerce.number().positive().optional(),
-      burst: z.coerce.number().min(0).optional()
-    })
-    .optional(),
-  allowedTools: z.array(z.string().min(1)).optional(),
-  expiresAt: z.string().datetime().optional()
-});
-
-const customersSchema = z.array(customerSchema);
-
-function normalizeAllowedTools(value) {
-  if (!Array.isArray(value) || value.length === 0) return ["*"];
-  return value.map((item) => String(item));
-}
-
-function normalizeRateLimit(value) {
-  const requestsPerMinute = Number(value && value.requestsPerMinute);
-  const burst = Number(value && value.burst);
-  return {
-    requestsPerMinute: Number.isFinite(requestsPerMinute) && requestsPerMinute > 0 ? Math.floor(requestsPerMinute) : 60,
-    burst: Number.isFinite(burst) && burst >= 0 ? Math.floor(burst) : 0
-  };
-}
-
 function loadCustomers(configPath) {
   const resolvedPath = resolveConfigPath(configPath);
   const raw = fs.readFileSync(resolvedPath, "utf8");
-  const parsed = customersSchema.parse(JSON.parse(raw));
+  const parsed = JSON.parse(raw);
+  if (!Array.isArray(parsed)) {
+    throw new Error("Customer registry file must contain an array");
+  }
 
   return {
     path: resolvedPath,
-    customers: parsed.map((customer) => ({
-      customerId: String(customer.customerId),
-      label: String(customer.label || customer.customerId),
-      tokenHash: String(customer.tokenHash),
-      status: String(customer.status || "active"),
-      rateLimit: normalizeRateLimit(customer.rateLimit),
-      allowedTools: normalizeAllowedTools(customer.allowedTools),
-      expiresAt: customer.expiresAt ? String(customer.expiresAt) : null
-    }))
+    customers: parsed.map((customer) => parseCustomerRecord(customer))
   };
 }
 
