@@ -57,6 +57,9 @@ function customerRegistryFailure(error, fallback) {
   if (error && error.code === "invalid_customer") {
     return { status: 400, error: "invalid_customer" };
   }
+  if (error && error.code === "persist_failed") {
+    return { status: 500, error: "customer_persist_failed" };
+  }
   return fallback;
 }
 
@@ -249,7 +252,7 @@ async function createRemoteApp(options = {}) {
         rawToken: created.rawToken
       });
     } catch (error) {
-      const failure = customerRegistryFailure(error, { status: 400, error: "customer_create_failed" });
+      const failure = customerRegistryFailure(error, { status: 500, error: "customer_create_failed" });
       res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
     }
   });
@@ -260,7 +263,7 @@ async function createRemoteApp(options = {}) {
       const updated = customerRegistry.updateCustomer(req.params.customerId, req.body || {});
       res.status(200).json({ customer: updated });
     } catch (error) {
-      const failure = customerRegistryFailure(error, { status: 404, error: "customer_not_found" });
+      const failure = customerRegistryFailure(error, { status: 500, error: "customer_update_failed" });
       res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
     }
   });
@@ -274,19 +277,24 @@ async function createRemoteApp(options = {}) {
         rawToken: rotated.rawToken
       });
     } catch (error) {
-      const failure = customerRegistryFailure(error, { status: 404, error: "customer_not_found" });
+      const failure = customerRegistryFailure(error, { status: 500, error: "customer_rotate_failed" });
       res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
     }
   });
 
   app.delete("/admin/customers/:customerId", (req, res) => {
     if (!requireAdmin(req, res)) return;
-    const removed = customerRegistry.removeCustomer(req.params.customerId);
-    if (!removed) {
-      res.status(404).json({ error: "customer_not_found", message: "Customer not found" });
-      return;
+    try {
+      const removed = customerRegistry.removeCustomer(req.params.customerId);
+      if (!removed) {
+        res.status(404).json({ error: "customer_not_found", message: "Customer not found" });
+        return;
+      }
+      res.status(204).end();
+    } catch (error) {
+      const failure = customerRegistryFailure(error, { status: 500, error: "customer_delete_failed" });
+      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
     }
-    res.status(204).end();
   });
 
   app.use("/mcp", (req, res, next) => {

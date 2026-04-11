@@ -98,7 +98,7 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
           fs.unlinkSync(tempPath);
         }
       } catch {}
-      throw error;
+      throw registryError("persist_failed", error && error.message ? error.message : "Failed to persist customer registry");
     }
   }
 

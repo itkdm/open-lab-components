@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
@@ -411,5 +412,67 @@ test("admin customer update, rotate, and delete return not found for unknown ids
       error: "customer_not_found",
       message: "Customer not found"
     });
+  });
+});
+
+test("admin customer writes return 500 when registry persistence fails", async () => {
+  await withRemoteServer(async ({ port }) => {
+    const originalRenameSync = fs.renameSync;
+    fs.renameSync = () => {
+      throw new Error("simulated_persist_failure");
+    };
+
+    try {
+      const create = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          customerId: "persist-fail-school",
+          label: "Persist Fail School"
+        })
+      });
+      assert.equal(create.status, 500);
+      assert.deepEqual(await create.json(), {
+        error: "customer_persist_failed",
+        message: "simulated_persist_failure"
+      });
+
+      const update = await fetch(`http://127.0.0.1:${port}/admin/customers/vip-test`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          status: "disabled"
+        })
+      });
+      assert.equal(update.status, 500);
+      assert.deepEqual(await update.json(), {
+        error: "customer_persist_failed",
+        message: "simulated_persist_failure"
+      });
+
+      const rotate = await fetch(`http://127.0.0.1:${port}/admin/customers/vip-test/rotate-token`, {
+        method: "POST"
+      });
+      assert.equal(rotate.status, 500);
+      assert.deepEqual(await rotate.json(), {
+        error: "customer_persist_failed",
+        message: "simulated_persist_failure"
+      });
+
+      const remove = await fetch(`http://127.0.0.1:${port}/admin/customers/vip-test`, {
+        method: "DELETE"
+      });
+      assert.equal(remove.status, 500);
+      assert.deepEqual(await remove.json(), {
+        error: "customer_persist_failed",
+        message: "simulated_persist_failure"
+      });
+    } finally {
+      fs.renameSync = originalRenameSync;
+    }
   });
 });
