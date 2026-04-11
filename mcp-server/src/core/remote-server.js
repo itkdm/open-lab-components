@@ -97,6 +97,13 @@ function remoteRejectionCategory(code) {
   return "runtime";
 }
 
+function recordRemoteMcpRejection(metrics, code) {
+  metrics.recordRemoteMcpError({
+    category: remoteRejectionCategory(code),
+    code
+  });
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -472,7 +479,7 @@ async function createRemoteApp(options = {}) {
     });
 
     if (!authResult.ok) {
-      metrics.recordRemoteMcpError({ category: remoteRejectionCategory(authResult.code) });
+      recordRemoteMcpRejection(metrics, authResult.code);
       unauthorized(
         res,
         authResult.status,
@@ -489,7 +496,7 @@ async function createRemoteApp(options = {}) {
     if (sessionId) {
       const session = sessions.touch(sessionId);
       if (!session) {
-        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
+        recordRemoteMcpRejection(metrics, "invalid_session");
         unauthorized(res, 400, {
           error: "invalid_session",
           message: "No valid session ID provided"
@@ -498,7 +505,7 @@ async function createRemoteApp(options = {}) {
       }
 
       if (session.customerId !== req.customer.customerId) {
-        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("session_customer_mismatch") });
+        recordRemoteMcpRejection(metrics, "session_customer_mismatch");
         unauthorized(res, 403, {
           error: "session_customer_mismatch",
           message: "Session does not belong to the authenticated customer"
@@ -509,7 +516,7 @@ async function createRemoteApp(options = {}) {
 
     if (req.method === "POST" && req.mcpToolName) {
       if (!toolAllowed(req.customer, req.mcpToolName)) {
-        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("tool_not_allowed") });
+        recordRemoteMcpRejection(metrics, "tool_not_allowed");
         unauthorized(res, 403, {
           error: "tool_not_allowed",
           message: `Tool not allowed: ${req.mcpToolName}`
@@ -521,7 +528,7 @@ async function createRemoteApp(options = {}) {
       res.setHeader("x-ratelimit-limit", String(limit.limit));
       res.setHeader("x-ratelimit-remaining", String(limit.remaining));
       if (!limit.allowed) {
-        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("rate_limited") });
+        recordRemoteMcpRejection(metrics, "rate_limited");
         unauthorized(
           res,
           429,
@@ -553,7 +560,7 @@ async function createRemoteApp(options = {}) {
             });
             if (!created.ok) {
               const code = created.code || "session_create_failed";
-              metrics.recordRemoteMcpError({ category: classifyRemoteMcpError({ code }) });
+              metrics.recordRemoteMcpError({ category: classifyRemoteMcpError({ code }), code });
               throw createRemoteMcpError(code, "Session limit exceeded for customer");
             }
             metrics.recordSessionCreated();
@@ -580,7 +587,7 @@ async function createRemoteApp(options = {}) {
       }
 
       if (!session) {
-        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
+        recordRemoteMcpRejection(metrics, "invalid_session");
         unauthorized(res, 400, {
           error: "invalid_session",
           message: "No valid session ID provided"
@@ -591,7 +598,7 @@ async function createRemoteApp(options = {}) {
       await session.transport.handleRequest(req, res, req.body);
     } catch (error) {
       const category = classifyRemoteMcpError(error);
-      metrics.recordRemoteMcpError({ category });
+      metrics.recordRemoteMcpError({ category, code: error && error.code ? error.code : null });
       logger.error({
         event: "remote_mcp_error",
         requestId: req.requestId || null,
@@ -617,7 +624,7 @@ async function createRemoteApp(options = {}) {
     const session = sessionId ? sessions.touch(sessionId) : null;
 
     if (!session) {
-      metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
+      recordRemoteMcpRejection(metrics, "invalid_session");
       unauthorized(res, 400, {
         error: "invalid_session",
         message: "Invalid or missing session ID"
@@ -633,7 +640,7 @@ async function createRemoteApp(options = {}) {
     const session = sessionId ? sessions.touch(sessionId) : null;
 
     if (!session) {
-      metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
+      recordRemoteMcpRejection(metrics, "invalid_session");
       unauthorized(res, 400, {
         error: "invalid_session",
         message: "Invalid or missing session ID"

@@ -30,6 +30,7 @@ function createMetricsStore() {
   const feedbackEvents = new Map();
   const adminWrites = new Map();
   const remoteMcpErrors = new Map();
+  const remoteMcpErrorCodes = new Map();
   let activeSessions = 0;
   let totalSessionsCreated = 0;
 
@@ -47,8 +48,9 @@ function createMetricsStore() {
       if (!action || !outcome) return;
       incrementCounter(adminWrites, `${action}:${outcome}:${category || "none"}`);
     },
-    recordRemoteMcpError({ category }) {
+    recordRemoteMcpError({ category, code }) {
       incrementCounter(remoteMcpErrors, category || "runtime");
+      if (code) incrementCounter(remoteMcpErrorCodes, String(code));
     },
     recordSessionCreated() {
       activeSessions += 1;
@@ -71,6 +73,7 @@ function createMetricsStore() {
         adminWriteSummary: buildAdminWriteSummary(adminWrites),
         remoteMcpErrors: mapToObject(remoteMcpErrors),
         remoteMcpErrorSummary: buildCounterSummary(remoteMcpErrors),
+        remoteMcpErrorCodes: mapToObject(remoteMcpErrorCodes),
         errorCounts: mapToObject(errorCounts),
         ...extra
       };

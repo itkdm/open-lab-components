@@ -166,6 +166,7 @@ test("remote auth rejects missing token", async () => {
     assert.equal(metrics.status, 200);
     const payload = await metrics.json();
     assert.equal(payload.remoteMcpErrors.auth, 1);
+    assert.equal(payload.remoteMcpErrorCodes.missing_token, 1);
   });
 });
 
@@ -239,6 +240,8 @@ test("remote tool restrictions and rate limiting are enforced", async () => {
     assert.equal(metrics.status, 200);
     const payload = await metrics.json();
     assert.equal(payload.remoteMcpErrors.policy, 2);
+    assert.equal(payload.remoteMcpErrorCodes.tool_not_allowed, 1);
+    assert.equal(payload.remoteMcpErrorCodes.rate_limited, 1);
   });
 });
 
@@ -282,6 +285,7 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(typeof payload.adminWriteSummary, "object");
     assert.equal(typeof payload.remoteMcpErrors, "object");
     assert.equal(typeof payload.remoteMcpErrorSummary, "object");
+    assert.equal(typeof payload.remoteMcpErrorCodes, "object");
   });
 });
 
@@ -802,11 +806,13 @@ test("remote MCP error metrics are exposed in metrics and admin overview", async
     const metricsPayload = await metrics.json();
     assert.equal(metricsPayload.remoteMcpErrors.session, 1);
     assert.equal(metricsPayload.remoteMcpErrorSummary.session, 1);
+    assert.equal(metricsPayload.remoteMcpErrorCodes.simulated_session_failure, undefined);
 
     const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
     assert.equal(overview.status, 200);
     const overviewPayload = await overview.json();
     assert.equal(overviewPayload.remoteMcpErrors.session, 1);
     assert.equal(overviewPayload.remoteMcpErrorSummary.session, 1);
+    assert.equal(overviewPayload.remoteMcpErrorCodes, undefined);
   });
 });
