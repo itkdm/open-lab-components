@@ -49,6 +49,12 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
   const resolvedPath = resolveConfigPath(configPath);
   let records = customers.map(normalizeCustomerRecord);
 
+  function registryError(code, message) {
+    const error = new Error(message);
+    error.code = code;
+    return error;
+  }
+
   function ensureFileDir() {
     fs.mkdirSync(path.dirname(resolvedPath), { recursive: true });
   }
@@ -147,10 +153,16 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
   }
 
   function createCustomer(input = {}) {
+    const customerId = normalizeText(input.customerId);
+    if (!customerId) throw registryError("invalid_customer", "customerId is required");
+    if (findCustomer(customerId)) {
+      throw registryError("customer_exists", `Customer already exists: ${customerId}`);
+    }
     const rawToken = createToken();
     const tokenHash = hashToken(rawToken);
     const record = upsertCustomer({
       ...input,
+      customerId,
       tokenHash
     });
     return { customer: record, rawToken };
@@ -158,7 +170,7 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
 
   function rotateCustomerToken(customerId) {
     const existing = findCustomer(customerId);
-    if (!existing) throw new Error(`Customer not found: ${customerId}`);
+    if (!existing) throw registryError("customer_not_found", `Customer not found: ${customerId}`);
     const rawToken = createToken();
     const next = normalizeCustomerRecord({
       ...existing,
@@ -171,7 +183,7 @@ function createCustomerRegistry({ configPath, customers = [] } = {}) {
 
   function updateCustomer(customerId, patch = {}) {
     const existing = findCustomer(customerId);
-    if (!existing) throw new Error(`Customer not found: ${customerId}`);
+    if (!existing) throw registryError("customer_not_found", `Customer not found: ${customerId}`);
     const next = normalizeCustomerRecord({
       ...existing,
       ...patch,

@@ -341,3 +341,38 @@ test("admin customer lifecycle updates ready and metrics customer counts", async
     assert.equal(finalReadyPayload.customers, 4);
   });
 });
+
+test("admin customer writes reject invalid payloads and duplicate ids", async () => {
+  await withRemoteServer(async ({ port }) => {
+    const duplicate = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        customerId: "vip-test",
+        label: "Duplicate VIP"
+      })
+    });
+    assert.equal(duplicate.status, 409);
+    assert.deepEqual(await duplicate.json(), {
+      error: "customer_exists",
+      message: "Customer already exists: vip-test"
+    });
+
+    const invalid = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        label: "Missing ID"
+      })
+    });
+    assert.equal(invalid.status, 400);
+    assert.deepEqual(await invalid.json(), {
+      error: "invalid_customer",
+      message: "customerId is required"
+    });
+  });
+});

@@ -47,6 +47,19 @@ function tokenMatches(candidate, expected) {
   return secureEqual(candidate, expected);
 }
 
+function customerRegistryFailure(error, fallback) {
+  if (error && error.code === "customer_exists") {
+    return { status: 409, error: "customer_exists" };
+  }
+  if (error && error.code === "customer_not_found") {
+    return { status: 404, error: "customer_not_found" };
+  }
+  if (error && error.code === "invalid_customer") {
+    return { status: 400, error: "invalid_customer" };
+  }
+  return fallback;
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -236,7 +249,8 @@ async function createRemoteApp(options = {}) {
         rawToken: created.rawToken
       });
     } catch (error) {
-      res.status(400).json({ error: "customer_create_failed", message: error.message || String(error) });
+      const failure = customerRegistryFailure(error, { status: 400, error: "customer_create_failed" });
+      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
     }
   });
 
@@ -246,7 +260,8 @@ async function createRemoteApp(options = {}) {
       const updated = customerRegistry.updateCustomer(req.params.customerId, req.body || {});
       res.status(200).json({ customer: updated });
     } catch (error) {
-      res.status(404).json({ error: "customer_not_found", message: error.message || String(error) });
+      const failure = customerRegistryFailure(error, { status: 404, error: "customer_not_found" });
+      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
     }
   });
 
@@ -259,7 +274,8 @@ async function createRemoteApp(options = {}) {
         rawToken: rotated.rawToken
       });
     } catch (error) {
-      res.status(404).json({ error: "customer_not_found", message: error.message || String(error) });
+      const failure = customerRegistryFailure(error, { status: 404, error: "customer_not_found" });
+      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
     }
   });
 
