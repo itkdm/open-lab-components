@@ -56,6 +56,11 @@ Then replace the placeholder `tokenHash` with a real SHA-256 token hash generate
 npm run token:generate
 ```
 
+The example file includes:
+
+- one full-access customer using `allowedTools: ["*"]`
+- one restricted customer showing a smaller tool allowlist and tighter rate limit
+
 Each customer record supports:
 
 - `customerId`

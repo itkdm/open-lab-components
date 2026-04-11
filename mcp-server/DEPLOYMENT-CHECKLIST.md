@@ -7,6 +7,7 @@ Use this before exposing the hosted MCP endpoint to real clients.
 - `CUSTOMERS_CONFIG_PATH` points to a real writable file
 - `config/customers.json` was copied from `config/customers.example.json`
 - every customer has a real `tokenHash`, not `replace-with-sha256-hash`
+- demo customer ids and labels were replaced with deployment-specific values
 - `ADMIN_BEARER_TOKEN` is set
 - `METRICS_BEARER_TOKEN` is set if metrics should not share the admin token
 - `ALLOWED_ORIGINS` only includes browser origins that actually need cross-origin access
