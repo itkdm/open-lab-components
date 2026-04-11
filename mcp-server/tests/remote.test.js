@@ -818,3 +818,76 @@ test("remote MCP error metrics are exposed in metrics and admin overview", async
     assert.equal(overviewPayload.remoteMcpErrorCodes.session_cleanup_failed, 1);
   });
 });
+
+test("transport request failures are classified with an explicit runtime code", async () => {
+  const entries = [];
+  const logger = {
+    info() {},
+    debug() {},
+    error(payload) {
+      entries.push(payload);
+    },
+    sizeBucket() {
+      return "none";
+    }
+  };
+
+  await withRemoteServerOptions(
+    {
+      logger
+    },
+    async ({ remote, port }) => {
+      const fakeSession = {
+        customerId: "vip-test",
+        transport: {
+          async handleRequest() {
+            throw new Error("simulated_transport_failure");
+          }
+        }
+      };
+      remote.sessions.touch = () => fakeSession;
+      remote.sessions.getSession = () => fakeSession;
+
+      const failed = await fetch(`http://127.0.0.1:${port}/mcp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "mcp-session-id": "existing-session",
+          ...authHeaders("test-token")
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          method: "tools/call",
+          params: {
+            name: "get_categories",
+            arguments: {}
+          }
+        })
+      });
+      assert.equal(failed.status, 500);
+
+      const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+      assert.equal(metrics.status, 200);
+      const metricsPayload = await metrics.json();
+      assert.equal(metricsPayload.remoteMcpErrors.runtime, 1);
+      assert.equal(metricsPayload.remoteMcpErrorCodes.transport_request_failed, 1);
+    }
+  );
+
+  const mcpErrors = entries.filter((entry) => entry.event === "remote_mcp_error");
+  assert.deepEqual(mcpErrors, [
+    {
+      event: "remote_mcp_error",
+      requestId: entries[0].requestId,
+      customerId: "vip-test",
+      method: "POST",
+      path: "/mcp",
+      tool: "get_categories",
+      sessionId: "existing-session",
+      category: "runtime",
+      code: "transport_request_failed",
+      message: "simulated_transport_failure"
+    }
+  ]);
+});

@@ -594,7 +594,11 @@ async function createRemoteApp(options = {}) {
         };
 
         await server.connect(transport);
-        await transport.handleRequest(req, res, req.body);
+        try {
+          await transport.handleRequest(req, res, req.body);
+        } catch (error) {
+          throw ensureRemoteMcpError(error, "transport_request_failed");
+        }
         return;
       }
 
@@ -607,7 +611,11 @@ async function createRemoteApp(options = {}) {
         return;
       }
 
-      await session.transport.handleRequest(req, res, req.body);
+      try {
+        await session.transport.handleRequest(req, res, req.body);
+      } catch (error) {
+        throw ensureRemoteMcpError(error, "transport_request_failed");
+      }
     } catch (error) {
       const normalizedError = ensureRemoteMcpError(error, "remote_mcp_runtime_error");
       const category = classifyRemoteMcpError(normalizedError);
