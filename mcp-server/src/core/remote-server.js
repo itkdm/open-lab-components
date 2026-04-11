@@ -83,6 +83,20 @@ function classifyRemoteMcpError(error) {
   return "runtime";
 }
 
+function remoteRejectionCategory(code) {
+  if (!code) return "runtime";
+  if (String(code).startsWith("session_") || code === "invalid_session") {
+    return "session";
+  }
+  if (code === "tool_not_allowed" || code === "rate_limited") {
+    return "policy";
+  }
+  if (code === "missing_token" || code === "invalid_token" || code === "inactive_customer" || code === "expired_token") {
+    return "auth";
+  }
+  return "runtime";
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -458,6 +472,7 @@ async function createRemoteApp(options = {}) {
     });
 
     if (!authResult.ok) {
+      metrics.recordRemoteMcpError({ category: remoteRejectionCategory(authResult.code) });
       unauthorized(
         res,
         authResult.status,
@@ -474,6 +489,7 @@ async function createRemoteApp(options = {}) {
     if (sessionId) {
       const session = sessions.touch(sessionId);
       if (!session) {
+        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
         unauthorized(res, 400, {
           error: "invalid_session",
           message: "No valid session ID provided"
@@ -482,6 +498,7 @@ async function createRemoteApp(options = {}) {
       }
 
       if (session.customerId !== req.customer.customerId) {
+        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("session_customer_mismatch") });
         unauthorized(res, 403, {
           error: "session_customer_mismatch",
           message: "Session does not belong to the authenticated customer"
@@ -492,6 +509,7 @@ async function createRemoteApp(options = {}) {
 
     if (req.method === "POST" && req.mcpToolName) {
       if (!toolAllowed(req.customer, req.mcpToolName)) {
+        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("tool_not_allowed") });
         unauthorized(res, 403, {
           error: "tool_not_allowed",
           message: `Tool not allowed: ${req.mcpToolName}`
@@ -503,6 +521,7 @@ async function createRemoteApp(options = {}) {
       res.setHeader("x-ratelimit-limit", String(limit.limit));
       res.setHeader("x-ratelimit-remaining", String(limit.remaining));
       if (!limit.allowed) {
+        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("rate_limited") });
         unauthorized(
           res,
           429,
@@ -561,6 +580,7 @@ async function createRemoteApp(options = {}) {
       }
 
       if (!session) {
+        metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
         unauthorized(res, 400, {
           error: "invalid_session",
           message: "No valid session ID provided"
@@ -597,6 +617,7 @@ async function createRemoteApp(options = {}) {
     const session = sessionId ? sessions.touch(sessionId) : null;
 
     if (!session) {
+      metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
       unauthorized(res, 400, {
         error: "invalid_session",
         message: "Invalid or missing session ID"
@@ -612,6 +633,7 @@ async function createRemoteApp(options = {}) {
     const session = sessionId ? sessions.touch(sessionId) : null;
 
     if (!session) {
+      metrics.recordRemoteMcpError({ category: remoteRejectionCategory("invalid_session") });
       unauthorized(res, 400, {
         error: "invalid_session",
         message: "Invalid or missing session ID"

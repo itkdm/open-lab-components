@@ -161,6 +161,11 @@ test("remote auth rejects missing token", async () => {
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize", params: { protocolVersion: "2025-03-26", capabilities: {}, clientInfo: { name: "x", version: "1" } } })
     });
     assert.equal(response.status, 401);
+
+    const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+    assert.equal(metrics.status, 200);
+    const payload = await metrics.json();
+    assert.equal(payload.remoteMcpErrors.auth, 1);
   });
 });
 
@@ -229,6 +234,11 @@ test("remote tool restrictions and rate limiting are enforced", async () => {
     } finally {
       await rateLimitedClient.close();
     }
+
+    const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+    assert.equal(metrics.status, 200);
+    const payload = await metrics.json();
+    assert.equal(payload.remoteMcpErrors.policy, 2);
   });
 });
 
