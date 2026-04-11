@@ -144,12 +144,15 @@ For admin traffic:
 - `/metrics` and `/admin/overview` expose:
   - `adminWrites`
   - `adminWriteSummary`
+  - `remoteMcpErrors`
+  - `remoteMcpErrorSummary`
 
 For error diagnosis:
 
 - inspect response `category`
 - search logs by `requestId`
 - confirm the matching `adminWriteSummary` counter increases
+- if `/mcp` requests are being rejected, check whether `remoteMcpErrors` is rising in `auth`, `session`, `policy`, or `runtime`
 
 More detail:
 

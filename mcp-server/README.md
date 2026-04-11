@@ -117,6 +117,7 @@ Environment variables:
 Operational guidance for admin tracing, error categories, and metrics:
 
 - see [OPERATIONS.md](./OPERATIONS.md)
+  This includes the `remoteMcpErrors` buckets for auth, session, policy, and runtime failures.
 
 Remote deployment walkthrough:
 

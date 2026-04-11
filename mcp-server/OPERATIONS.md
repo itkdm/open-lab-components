@@ -1,6 +1,6 @@
 # MCP Server Operations
 
-This note documents the operational signals exposed by the hosted MCP server and how to use them when diagnosing admin traffic.
+This note documents the operational signals exposed by the hosted MCP server and how to use them when diagnosing admin and remote MCP traffic.
 
 ## Admin request tracing
 
@@ -94,6 +94,32 @@ Nested summary:
 Use `adminWrites` when you want a compact flat map for quick dashboards.
 Use `adminWriteSummary` when you want direct structured access without splitting composite keys.
 
+Remote MCP failures are exposed in two additional fields:
+
+```json
+{
+  "remoteMcpErrors": {
+    "auth": 2,
+    "policy": 3,
+    "runtime": 1,
+    "session": 4
+  },
+  "remoteMcpErrorSummary": {
+    "auth": 2,
+    "policy": 3,
+    "runtime": 1,
+    "session": 4
+  }
+}
+```
+
+Current `remoteMcpErrors` buckets:
+
+- `auth`: bearer token missing, invalid, disabled, or expired
+- `session`: invalid session id, session/customer mismatch, session limit, or session lifecycle failures
+- `policy`: tool allowlist rejection or rate limiting
+- `runtime`: transport or handler failures that are not request-policy rejections
+
 ## Recommended checks
 
 When an admin action fails:
@@ -108,3 +134,10 @@ When repeated failures appear:
 - rising `validation` counts usually mean a caller-side contract bug
 - rising `conflict` counts usually mean id generation or retry logic needs work
 - rising `infrastructure` counts mean the customer registry write path needs immediate attention
+
+When remote MCP failures rise:
+
+- rising `auth` counts usually mean token rollout, expiry, or client header issues
+- rising `session` counts usually mean stale session reuse, session churn, or server-side session lifecycle problems
+- rising `policy` counts usually mean the caller is exceeding rate limits or asking for tools outside its allowlist
+- rising `runtime` counts mean the hosted MCP path itself is failing and should be treated as server-side incidents
