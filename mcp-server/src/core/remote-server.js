@@ -63,7 +63,19 @@ function customerRegistryFailure(error, fallback) {
   return fallback;
 }
 
+function createRemoteMcpError(code, message) {
+  const error = new Error(message);
+  error.code = code;
+  return error;
+}
+
 function classifyRemoteMcpError(error) {
+  if (error && typeof error.code === "string") {
+    if (error.code.startsWith("session_")) {
+      return "session";
+    }
+    return "runtime";
+  }
   const message = error && error.message ? String(error.message).toLowerCase() : String(error || "").toLowerCase();
   if (message.includes("session")) {
     return "session";
@@ -521,7 +533,8 @@ async function createRemoteApp(options = {}) {
               server
             });
             if (!created.ok) {
-              throw new Error("Session limit exceeded for customer");
+              metrics.recordRemoteMcpError({ category: "session" });
+              throw createRemoteMcpError("session_limit_exceeded", "Session limit exceeded for customer");
             }
             metrics.recordSessionCreated();
             logger.info({
