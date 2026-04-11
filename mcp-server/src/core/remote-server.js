@@ -125,6 +125,7 @@ async function createRemoteApp(options = {}) {
   customerRegistry.loadFromDisk();
   const limiter = createRateLimiter();
   const logger = options.logger || createLogger(runtime.logLevel);
+  const mcpServerFactory = options.createMcpServer || createMcpServer;
   const metrics = createMetricsStore();
   const sessions = createSessionStore({
     ttlMs: runtime.sessionTtlMs,
@@ -584,7 +585,7 @@ async function createRemoteApp(options = {}) {
             });
           }
         });
-        const server = createMcpServer();
+        const server = mcpServerFactory();
 
         transport.onclose = () => {
           const activeSessionId = transport.sessionId;
@@ -593,7 +594,11 @@ async function createRemoteApp(options = {}) {
           }
         };
 
-        await server.connect(transport);
+        try {
+          await server.connect(transport);
+        } catch (error) {
+          throw ensureRemoteMcpError(error, "transport_connect_failed");
+        }
         try {
           await transport.handleRequest(req, res, req.body);
         } catch (error) {

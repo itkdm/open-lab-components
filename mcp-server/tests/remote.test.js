@@ -71,7 +71,8 @@ async function withRemoteServerOptions(options, run) {
       trustProxy: false,
       ...(options.runtime || {})
     },
-    logger: options.logger
+    logger: options.logger,
+    createMcpServer: options.createMcpServer
   });
 
   const port = remote.server.address().port;
@@ -971,6 +972,75 @@ test("transport stream failures on GET and DELETE are classified with an explici
       category: "runtime",
       code: "transport_stream_failed",
       message: "simulated_stream_failure"
+    }
+  ]);
+});
+
+test("transport connect failures are classified with an explicit runtime code", async () => {
+  const entries = [];
+  const logger = {
+    info() {},
+    debug() {},
+    error(payload) {
+      entries.push(payload);
+    },
+    sizeBucket() {
+      return "none";
+    }
+  };
+
+  await withRemoteServerOptions(
+    {
+      logger,
+      createMcpServer() {
+        return {
+          async connect() {
+            throw new Error("simulated_connect_failure");
+          }
+        };
+      }
+    },
+    async ({ port }) => {
+      const failed = await fetch(`http://127.0.0.1:${port}/mcp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...authHeaders("test-token")
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          id: 1,
+          method: "initialize",
+          params: {
+            protocolVersion: "2025-03-26",
+            capabilities: {},
+            clientInfo: { name: "x", version: "1" }
+          }
+        })
+      });
+      assert.equal(failed.status, 500);
+
+      const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+      assert.equal(metrics.status, 200);
+      const metricsPayload = await metrics.json();
+      assert.equal(metricsPayload.remoteMcpErrors.runtime, 1);
+      assert.equal(metricsPayload.remoteMcpErrorCodes.transport_connect_failed, 1);
+    }
+  );
+
+  const mcpErrors = entries.filter((entry) => entry.event === "remote_mcp_error");
+  assert.deepEqual(mcpErrors, [
+    {
+      event: "remote_mcp_error",
+      requestId: entries[0].requestId,
+      customerId: "vip-test",
+      method: "POST",
+      path: "/mcp",
+      tool: null,
+      sessionId: null,
+      category: "runtime",
+      code: "transport_connect_failed",
+      message: "simulated_connect_failure"
     }
   ]);
 });
