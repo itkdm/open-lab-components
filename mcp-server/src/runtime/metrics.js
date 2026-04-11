@@ -6,6 +6,17 @@ function mapToObject(store) {
   return Object.fromEntries(Array.from(store.entries()).sort(([a], [b]) => a.localeCompare(b)));
 }
 
+function buildAdminWriteSummary(store) {
+  const summary = {};
+  for (const [key, count] of store.entries()) {
+    const [action, outcome, category] = String(key).split(":");
+    if (!summary[action]) summary[action] = {};
+    if (!summary[action][outcome]) summary[action][outcome] = {};
+    summary[action][outcome][category || "none"] = count;
+  }
+  return Object.fromEntries(Object.entries(summary).sort(([a], [b]) => a.localeCompare(b)));
+}
+
 function createMetricsStore() {
   const startedAt = Date.now();
   const requestsByRoute = new Map();
@@ -49,6 +60,7 @@ function createMetricsStore() {
         toolCalls: mapToObject(toolCalls),
         feedbackEvents: mapToObject(feedbackEvents),
         adminWrites: mapToObject(adminWrites),
+        adminWriteSummary: buildAdminWriteSummary(adminWrites),
         errorCounts: mapToObject(errorCounts),
         ...extra
       };

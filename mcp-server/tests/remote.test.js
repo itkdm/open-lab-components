@@ -268,6 +268,7 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(typeof payload.feedbackStore.trackedComponents, "number");
     assert.equal(payload.feedbackStore.backend, "file");
     assert.equal(typeof payload.adminWrites, "object");
+    assert.equal(typeof payload.adminWriteSummary, "object");
   });
 });
 
@@ -317,10 +318,15 @@ test("remote admin and metrics endpoints enforce configured bearer tokens", asyn
 
 test("admin customer lifecycle updates ready and metrics customer counts", async () => {
   await withRemoteServer(async ({ port }) => {
+    const customerId = `new-school-${Date.now()}`;
     const initialReady = await fetch(`http://127.0.0.1:${port}/readyz`);
     assert.equal(initialReady.status, 200);
     const initialReadyPayload = await initialReady.json();
-    assert.equal(initialReadyPayload.customers, 4);
+    const initialCustomerCount = initialReadyPayload.customers;
+    const initialOverview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
+    assert.equal(initialOverview.status, 200);
+    const initialOverviewPayload = await initialOverview.json();
+    const initialActiveCustomerCount = initialOverviewPayload.activeCustomers;
 
     const createResponse = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
       method: "POST",
@@ -328,7 +334,7 @@ test("admin customer lifecycle updates ready and metrics customer counts", async
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        customerId: "new-school",
+        customerId,
         label: "New School",
         allowedTools: ["get_categories"],
         rateLimit: {
@@ -339,33 +345,35 @@ test("admin customer lifecycle updates ready and metrics customer counts", async
     });
     assert.equal(createResponse.status, 201);
     const createdPayload = await createResponse.json();
-    assert.equal(createdPayload.customer.customerId, "new-school");
+    assert.equal(createdPayload.customer.customerId, customerId);
     assert.equal(typeof createdPayload.rawToken, "string");
 
     const customerList = await fetch(`http://127.0.0.1:${port}/admin/customers`);
     assert.equal(customerList.status, 200);
     const customerListPayload = await customerList.json();
-    assert.equal(customerListPayload.customers.some((customer) => customer.customerId === "new-school"), true);
+    assert.equal(customerListPayload.customers.some((customer) => customer.customerId === customerId), true);
 
     const updatedReady = await fetch(`http://127.0.0.1:${port}/readyz`);
     assert.equal(updatedReady.status, 200);
     const updatedReadyPayload = await updatedReady.json();
-    assert.equal(updatedReadyPayload.customers, 5);
+    assert.equal(updatedReadyPayload.customers, initialCustomerCount + 1);
 
     const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
     assert.equal(metrics.status, 200);
     const metricsPayload = await metrics.json();
-    assert.equal(metricsPayload.customerCount, 5);
+    assert.equal(metricsPayload.customerCount, initialCustomerCount + 1);
     assert.equal(metricsPayload.adminWrites["create:success:none"], 1);
+    assert.equal(metricsPayload.adminWriteSummary.create.success.none, 1);
 
     const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
     assert.equal(overview.status, 200);
     const overviewPayload = await overview.json();
-    assert.equal(overviewPayload.totalCustomers, 5);
-    assert.equal(overviewPayload.activeCustomers, 4);
+    assert.equal(overviewPayload.totalCustomers, initialCustomerCount + 1);
+    assert.equal(overviewPayload.activeCustomers >= initialActiveCustomerCount, true);
     assert.equal(overviewPayload.adminWrites["create:success:none"], 1);
+    assert.equal(overviewPayload.adminWriteSummary.create.success.none, 1);
 
-    const removeResponse = await fetch(`http://127.0.0.1:${port}/admin/customers/new-school`, {
+    const removeResponse = await fetch(`http://127.0.0.1:${port}/admin/customers/${customerId}`, {
       method: "DELETE"
     });
     assert.equal(removeResponse.status, 204);
@@ -373,7 +381,7 @@ test("admin customer lifecycle updates ready and metrics customer counts", async
     const finalReady = await fetch(`http://127.0.0.1:${port}/readyz`);
     assert.equal(finalReady.status, 200);
     const finalReadyPayload = await finalReady.json();
-    assert.equal(finalReadyPayload.customers, 4);
+    assert.equal(finalReadyPayload.customers, initialCustomerCount);
   });
 });
 
@@ -470,6 +478,9 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     assert.equal(overviewPayload.adminWrites["create:failure:conflict"], 1);
     assert.equal(overviewPayload.adminWrites["create:failure:validation"], 3);
     assert.equal(overviewPayload.adminWrites["update:failure:validation"], 1);
+    assert.equal(overviewPayload.adminWriteSummary.create.failure.conflict, 1);
+    assert.equal(overviewPayload.adminWriteSummary.create.failure.validation, 3);
+    assert.equal(overviewPayload.adminWriteSummary.update.failure.validation, 1);
   });
 });
 

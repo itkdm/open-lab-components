@@ -271,6 +271,7 @@ async function createRemoteApp(options = {}) {
       activeSessions: metricsSnapshot.activeSessions,
       totalSessionsCreated: metricsSnapshot.totalSessionsCreated,
       adminWrites: metricsSnapshot.adminWrites,
+      adminWriteSummary: metricsSnapshot.adminWriteSummary,
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });
