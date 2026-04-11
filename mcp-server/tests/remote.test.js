@@ -281,16 +281,22 @@ test("remote admin and metrics endpoints enforce configured bearer tokens", asyn
       const adminWithoutToken = await fetch(`http://127.0.0.1:${port}/admin/overview`);
       assert.equal(adminWithoutToken.status, 401);
       assert.equal(adminWithoutToken.headers.get("www-authenticate"), "Bearer");
+      assert.equal(typeof adminWithoutToken.headers.get("x-request-id"), "string");
 
       const adminWithWrongToken = await fetch(`http://127.0.0.1:${port}/admin/overview`, {
         headers: authHeaders("wrong-admin-token")
       });
       assert.equal(adminWithWrongToken.status, 401);
+      assert.equal(typeof adminWithWrongToken.headers.get("x-request-id"), "string");
 
       const adminWithToken = await fetch(`http://127.0.0.1:${port}/admin/overview`, {
-        headers: authHeaders("admin-secret")
+        headers: {
+          ...authHeaders("admin-secret"),
+          "x-request-id": "admin-overview-request"
+        }
       });
       assert.equal(adminWithToken.status, 200);
+      assert.equal(adminWithToken.headers.get("x-request-id"), "admin-overview-request");
 
       const metricsWithoutToken = await fetch(`http://127.0.0.1:${port}/metrics`);
       assert.equal(metricsWithoutToken.status, 401);
@@ -590,13 +596,15 @@ test("admin customer write failures emit structured error logs", async () => {
     const response = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-request-id": "admin-failure-request"
       },
       body: JSON.stringify({
         customerId: "vip-test"
       })
     });
     assert.equal(response.status, 409);
+    assert.equal(response.headers.get("x-request-id"), "admin-failure-request");
   });
 
   assert.equal(entries.length, 1);
@@ -605,6 +613,7 @@ test("admin customer write failures emit structured error logs", async () => {
     action: "create",
     route: "/admin/customers",
     method: "POST",
+    requestId: "admin-failure-request",
     customerId: null,
     status: 409,
     error: "customer_exists",
@@ -630,7 +639,8 @@ test("admin customer writes emit structured success logs", async () => {
     const createResponse = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "x-request-id": "admin-success-create"
       },
       body: JSON.stringify({
         customerId: "audit-school",
@@ -639,11 +649,16 @@ test("admin customer writes emit structured success logs", async () => {
       })
     });
     assert.equal(createResponse.status, 201);
+    assert.equal(createResponse.headers.get("x-request-id"), "admin-success-create");
 
     const removeResponse = await fetch(`http://127.0.0.1:${port}/admin/customers/audit-school`, {
-      method: "DELETE"
+      method: "DELETE",
+      headers: {
+        "x-request-id": "admin-success-delete"
+      }
     });
     assert.equal(removeResponse.status, 204);
+    assert.equal(removeResponse.headers.get("x-request-id"), "admin-success-delete");
   });
 
   const auditEntries = entries.filter((entry) => entry.event === "admin_customer_write_succeeded");
@@ -653,6 +668,7 @@ test("admin customer writes emit structured success logs", async () => {
       action: "create",
       route: "/admin/customers",
       method: "POST",
+      requestId: "admin-success-create",
       customerId: "audit-school",
       status: 201,
       outcome: "success"
@@ -662,6 +678,7 @@ test("admin customer writes emit structured success logs", async () => {
       action: "delete",
       route: "/admin/customers/audit-school",
       method: "DELETE",
+      requestId: "admin-success-delete",
       customerId: "audit-school",
       status: 204,
       outcome: "success"

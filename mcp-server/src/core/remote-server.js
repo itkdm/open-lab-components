@@ -109,6 +109,16 @@ async function createRemoteApp(options = {}) {
     return getCustomerSnapshot().length;
   }
 
+  function ensureAdminRequestId(req, res) {
+    const requestId =
+      typeof req.headers["x-request-id"] === "string" && req.headers["x-request-id"].trim()
+        ? req.headers["x-request-id"].trim()
+        : randomUUID();
+    req.requestId = requestId;
+    res.setHeader("x-request-id", requestId);
+    return requestId;
+  }
+
   function requireAdmin(req, res) {
     if (runtime.adminBearerToken) {
       const token = readBearerToken(req);
@@ -134,6 +144,7 @@ async function createRemoteApp(options = {}) {
       action,
       route: req.path,
       method: req.method,
+      requestId: req.requestId || null,
       customerId: req.params && typeof req.params.customerId === "string" ? req.params.customerId : null,
       status: failure.status,
       error: failure.error,
@@ -158,6 +169,7 @@ async function createRemoteApp(options = {}) {
       action,
       route: req.path,
       method: req.method,
+      requestId: req.requestId || null,
       customerId: req.params && typeof req.params.customerId === "string" ? req.params.customerId : details.customerId || null,
       status: details.status,
       outcome: details.outcome || "success"
@@ -229,6 +241,7 @@ async function createRemoteApp(options = {}) {
   });
 
   app.get("/admin/overview", (req, res) => {
+    ensureAdminRequestId(req, res);
     if (!requireAdmin(req, res)) return;
     const customerSummary = customerRegistry.summary();
     const feedbackSnapshot = feedbackStore.snapshot();
@@ -264,6 +277,7 @@ async function createRemoteApp(options = {}) {
   });
 
   app.get("/admin/customers", (req, res) => {
+    ensureAdminRequestId(req, res);
     if (!requireAdmin(req, res)) return;
     const metricsSnapshot = metrics.snapshot();
     const customersSnapshot = getCustomerSnapshot();
@@ -287,6 +301,7 @@ async function createRemoteApp(options = {}) {
   });
 
   app.post("/admin/customers", (req, res) => {
+    ensureAdminRequestId(req, res);
     if (!requireAdmin(req, res)) return;
     try {
       const created = customerRegistry.createCustomer(req.body || {});
@@ -308,6 +323,7 @@ async function createRemoteApp(options = {}) {
   });
 
   app.patch("/admin/customers/:customerId", (req, res) => {
+    ensureAdminRequestId(req, res);
     if (!requireAdmin(req, res)) return;
     try {
       const updated = customerRegistry.updateCustomer(req.params.customerId, req.body || {});
@@ -326,6 +342,7 @@ async function createRemoteApp(options = {}) {
   });
 
   app.post("/admin/customers/:customerId/rotate-token", (req, res) => {
+    ensureAdminRequestId(req, res);
     if (!requireAdmin(req, res)) return;
     try {
       const rotated = customerRegistry.rotateCustomerToken(req.params.customerId);
@@ -347,6 +364,7 @@ async function createRemoteApp(options = {}) {
   });
 
   app.delete("/admin/customers/:customerId", (req, res) => {
+    ensureAdminRequestId(req, res);
     if (!requireAdmin(req, res)) return;
     try {
       const removed = customerRegistry.removeCustomer(req.params.customerId);
