@@ -27,6 +27,7 @@ Use this before exposing the hosted MCP endpoint to real clients.
 - `GET /metrics` succeeds with the configured metrics bearer token
 - `GET /admin/overview` succeeds with the configured admin bearer token
 - admin responses echo `x-request-id`
+- `node ./deploy/smoke/verify-remote.mjs` passes against the hosted endpoint
 
 ## Operational Signals
 

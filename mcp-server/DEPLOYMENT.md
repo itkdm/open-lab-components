@@ -85,6 +85,10 @@ If you place the service behind Nginx, start from:
 
 - `deploy/nginx/open-lab-components-mcp.conf.example`
 
+If you prefer a single-host container deployment, start from:
+
+- `deploy/docker-compose/docker-compose.example.yml`
+
 Expected operational routes:
 
 - `/healthz`
@@ -118,6 +122,18 @@ curl \
   -H "Authorization: Bearer $METRICS_BEARER_TOKEN" \
   http://127.0.0.1:3000/metrics
 ```
+
+Automated smoke check:
+
+```bash
+node ./deploy/smoke/verify-remote.mjs
+```
+
+Environment overrides:
+
+- `MCP_BASE_URL`
+- `MCP_ADMIN_BEARER_TOKEN`
+- `MCP_METRICS_BEARER_TOKEN`
 
 ## 6. Operational signals to watch
 
