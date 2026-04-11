@@ -156,6 +156,8 @@ Status: completed
 
 ### Batch 6: CI hardening
 
+Status: partially completed
+
 - Goal:
   Ensure the repository enforces validation automatically on remote changes.
 - Scope:
@@ -171,7 +173,19 @@ Status: completed
   - local dry run of each command
   - workflow syntax review
 - Rollback:
-  - `git revert <batch-6-commit>`
+  - `git revert 6f03c15`
+
+Current scope completed:
+
+- added `.github/workflows/root-quality.yml`
+- root workflow installs only root and runtime harness dependencies
+- root workflow runs `node tools/check-root/index.js` on `main`, `master`, and
+  `codex/**` pushes plus pull requests targeting `main` and `master`
+
+Remaining scope:
+
+- decide later whether MCP-specific checks should be merged into the new
+  workflow or continue to live only in the existing CI pipeline
 
 ### Batch 7: Workspace and script consolidation
 
