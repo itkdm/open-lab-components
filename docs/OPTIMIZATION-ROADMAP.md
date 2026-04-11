@@ -118,7 +118,7 @@ Status: partially completed
   - `README.md`
   - root source comments
   - `tools/build-site/index.js`
-  - `mcp-console/src/App.vue`
+- user-facing admin/control surfaces if they remain part of the repository
 - Constraints:
   - text-only cleanup
   - no logic changes in the same commit
@@ -165,7 +165,7 @@ Status: partially completed
   - runtime tests
   - `npm run validate`
   - `npm run mcp:test`
-  - optional `mcp-console` build smoke check
+- optional admin/control UI build smoke check if such a UI remains in-repo
 - Constraints:
   - CI-only changes
   - do not mix with code refactors
@@ -192,8 +192,8 @@ Remaining scope:
 Status: partially completed
 
 - Goal:
-  Reduce coordination cost across root package, `mcp-server`, and
-  `mcp-console`.
+  Reduce coordination cost across the root package and other maintained
+  subpackages.
 - Scope:
   - review workspace migration feasibility
   - unify repetitive scripts

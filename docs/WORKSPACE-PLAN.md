@@ -5,12 +5,12 @@ without mixing that migration into the current quality-hardening batches.
 
 ## Current layout
 
-The repository currently contains four independent npm boundaries:
+The repository currently contains three active npm boundaries plus one optional
+quality-only harness:
 
 1. root package
 2. `mcp-server/`
-3. `mcp-console/`
-4. `tools/runtime-harness/`
+3. `tools/runtime-harness/`
 
 Current coordination is mostly manual from the root package through
 `npm --prefix ...`.
@@ -20,7 +20,6 @@ Current coordination is mostly manual from the root package through
 - The root package is the publishable library and must keep its package metadata
   stable.
 - `mcp-server/` is also publishable and has its own release surface.
-- `mcp-console/` is private and front-end oriented.
 - `tools/runtime-harness/` exists only to support quality checks.
 - The repository already contains multiple `package-lock.json` files, so a
   workspace migration would change install behavior and lockfile ownership.
@@ -33,8 +32,8 @@ Do not perform workspace migration until the following are true:
 
 1. the root quality path is stable in CI
 2. the MCP pipeline ownership is clear
-3. unrelated local changes in `package.json`, `mcp-server/`, and `mcp-console/`
-   are either merged or intentionally parked
+3. unrelated local changes in `package.json` and `mcp-server/` are either
+   merged or intentionally parked
 
 ## Recommended target structure
 
@@ -46,7 +45,6 @@ boundaries explicit:
   "private": true,
   "workspaces": [
     "mcp-server",
-    "mcp-console",
     "tools/runtime-harness"
   ]
 }
@@ -81,8 +79,6 @@ The root library should remain the repository package, not move under
 
 - decide whether `tools/runtime-harness/` stays as a standalone workspace or is
   folded into root dev dependencies
-- decide whether `mcp-console/` should share TypeScript/Vite versions from a
-  higher level or remain isolated
 - only then revisit lockfile strategy
 
 ## Risks
@@ -100,7 +96,6 @@ merge:
 ```bash
 node tools/check-root/index.js
 npm run mcp:test
-npm --prefix mcp-console run build
 npm pack --dry-run
 npm --prefix mcp-server pack --dry-run
 ```
