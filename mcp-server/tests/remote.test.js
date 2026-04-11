@@ -813,6 +813,6 @@ test("remote MCP error metrics are exposed in metrics and admin overview", async
     const overviewPayload = await overview.json();
     assert.equal(overviewPayload.remoteMcpErrors.session, 1);
     assert.equal(overviewPayload.remoteMcpErrorSummary.session, 1);
-    assert.equal(overviewPayload.remoteMcpErrorCodes, undefined);
+    assert.equal(typeof overviewPayload.remoteMcpErrorCodes, "object");
   });
 });

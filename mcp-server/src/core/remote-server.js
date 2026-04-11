@@ -316,6 +316,7 @@ async function createRemoteApp(options = {}) {
       adminWriteSummary: metricsSnapshot.adminWriteSummary,
       remoteMcpErrors: metricsSnapshot.remoteMcpErrors,
       remoteMcpErrorSummary: metricsSnapshot.remoteMcpErrorSummary,
+      remoteMcpErrorCodes: metricsSnapshot.remoteMcpErrorCodes,
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });

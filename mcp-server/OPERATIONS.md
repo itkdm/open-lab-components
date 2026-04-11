@@ -109,6 +109,11 @@ Remote MCP failures are exposed in two additional fields:
     "policy": 3,
     "runtime": 1,
     "session": 4
+  },
+  "remoteMcpErrorCodes": {
+    "missing_token": 2,
+    "rate_limited": 1,
+    "tool_not_allowed": 2
   }
 }
 ```
@@ -119,6 +124,13 @@ Current `remoteMcpErrors` buckets:
 - `session`: invalid session id, session/customer mismatch, session limit, or session lifecycle failures
 - `policy`: tool allowlist rejection or rate limiting
 - `runtime`: transport or handler failures that are not request-policy rejections
+
+`remoteMcpErrorCodes` keeps the raw rejection or failure code when one exists.
+Use it when you need to distinguish specific causes inside a larger bucket, for example:
+
+- `missing_token` vs `expired_token` inside `auth`
+- `invalid_session` vs `session_customer_mismatch` inside `session`
+- `tool_not_allowed` vs `rate_limited` inside `policy`
 
 ## Recommended checks
 
@@ -141,3 +153,4 @@ When remote MCP failures rise:
 - rising `session` counts usually mean stale session reuse, session churn, or server-side session lifecycle problems
 - rising `policy` counts usually mean the caller is exceeding rate limits or asking for tools outside its allowlist
 - rising `runtime` counts mean the hosted MCP path itself is failing and should be treated as server-side incidents
+- use `remoteMcpErrorCodes` when you need the exact reason instead of just the bucket
