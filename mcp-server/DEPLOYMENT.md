@@ -48,6 +48,8 @@ Copy the example file:
 cp ./config/customers.example.json ./config/customers.json
 ```
 
+If you are deploying from the published package instead of a git checkout, the same example file is included in the tarball.
+
 Then replace the placeholder `tokenHash` with a real SHA-256 token hash generated from:
 
 ```bash
@@ -123,3 +125,4 @@ For error diagnosis:
 More detail:
 
 - request tracing, audit logs, and admin metric semantics are documented in [OPERATIONS.md](./OPERATIONS.md)
+- rollout checks are listed in [DEPLOYMENT-CHECKLIST.md](./DEPLOYMENT-CHECKLIST.md)

@@ -15,7 +15,10 @@
     "src/**/*",
     "config/**/*.json",
     ".env.example",
-    "README.md"
+    "README.md",
+    "DEPLOYMENT.md",
+    "DEPLOYMENT-CHECKLIST.md",
+    "OPERATIONS.md"
   ],
   "scripts": {
     "start": "node ./src/core/cli.js",

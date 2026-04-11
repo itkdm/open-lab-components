@@ -71,6 +71,8 @@ Create a customer config file from the example:
 cp ./config/customers.example.json ./config/customers.json
 ```
 
+The published package also ships `config/customers.example.json` as the baseline hosted config template.
+
 Generate a bearer token and config entry:
 
 ```bash
@@ -112,6 +114,10 @@ Operational guidance for admin tracing, error categories, and metrics:
 Remote deployment walkthrough:
 
 - see [DEPLOYMENT.md](./DEPLOYMENT.md)
+
+Deployment readiness checklist:
+
+- see [DEPLOYMENT-CHECKLIST.md](./DEPLOYMENT-CHECKLIST.md)
 
 ## Claude Desktop example
 
