@@ -1,4 +1,5 @@
 node_modules/
+tools/runtime-harness/node_modules/
 .DS_Store
 *.log
 
