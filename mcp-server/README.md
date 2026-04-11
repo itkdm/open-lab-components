@@ -92,6 +92,7 @@ Environment variables:
 - `ALLOWED_HOSTS`
 - `ALLOWED_ORIGINS`
 - `TRUST_PROXY`
+- `ADMIN_BEARER_TOKEN`
 - `SESSION_TTL_MS`
 - `MAX_SESSIONS_PER_CUSTOMER`
 - `METRICS_BEARER_TOKEN`
@@ -107,6 +108,10 @@ Environment variables:
 Operational guidance for admin tracing, error categories, and metrics:
 
 - see [OPERATIONS.md](./OPERATIONS.md)
+
+Remote deployment walkthrough:
+
+- see [DEPLOYMENT.md](./DEPLOYMENT.md)
 
 ## Claude Desktop example
 
