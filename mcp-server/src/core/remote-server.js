@@ -63,6 +63,14 @@ function customerRegistryFailure(error, fallback) {
   return fallback;
 }
 
+function classifyRemoteMcpError(error) {
+  const message = error && error.message ? String(error.message).toLowerCase() : String(error || "").toLowerCase();
+  if (message.includes("session")) {
+    return "session";
+  }
+  return "runtime";
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -273,6 +281,8 @@ async function createRemoteApp(options = {}) {
       totalSessionsCreated: metricsSnapshot.totalSessionsCreated,
       adminWrites: metricsSnapshot.adminWrites,
       adminWriteSummary: metricsSnapshot.adminWriteSummary,
+      remoteMcpErrors: metricsSnapshot.remoteMcpErrors,
+      remoteMcpErrorSummary: metricsSnapshot.remoteMcpErrorSummary,
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });
@@ -546,6 +556,8 @@ async function createRemoteApp(options = {}) {
 
       await session.transport.handleRequest(req, res, req.body);
     } catch (error) {
+      const category = classifyRemoteMcpError(error);
+      metrics.recordRemoteMcpError({ category });
       logger.error({
         event: "remote_mcp_error",
         requestId: req.requestId || null,
@@ -554,6 +566,7 @@ async function createRemoteApp(options = {}) {
         path: req.path,
         tool: req.mcpToolName || null,
         sessionId: typeof sessionId === "string" ? sessionId : null,
+        category,
         message: error && error.message ? error.message : String(error)
       });
       if (!res.headersSent) {

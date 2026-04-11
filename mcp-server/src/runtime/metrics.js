@@ -17,6 +17,10 @@ function buildAdminWriteSummary(store) {
   return Object.fromEntries(Object.entries(summary).sort(([a], [b]) => a.localeCompare(b)));
 }
 
+function buildCounterSummary(store) {
+  return Object.fromEntries(Array.from(store.entries()).sort(([a], [b]) => a.localeCompare(b)));
+}
+
 function createMetricsStore() {
   const startedAt = Date.now();
   const requestsByRoute = new Map();
@@ -25,6 +29,7 @@ function createMetricsStore() {
   const errorCounts = new Map();
   const feedbackEvents = new Map();
   const adminWrites = new Map();
+  const remoteMcpErrors = new Map();
   let activeSessions = 0;
   let totalSessionsCreated = 0;
 
@@ -41,6 +46,9 @@ function createMetricsStore() {
     recordAdminWrite({ action, outcome, category }) {
       if (!action || !outcome) return;
       incrementCounter(adminWrites, `${action}:${outcome}:${category || "none"}`);
+    },
+    recordRemoteMcpError({ category }) {
+      incrementCounter(remoteMcpErrors, category || "runtime");
     },
     recordSessionCreated() {
       activeSessions += 1;
@@ -61,6 +69,8 @@ function createMetricsStore() {
         feedbackEvents: mapToObject(feedbackEvents),
         adminWrites: mapToObject(adminWrites),
         adminWriteSummary: buildAdminWriteSummary(adminWrites),
+        remoteMcpErrors: mapToObject(remoteMcpErrors),
+        remoteMcpErrorSummary: buildCounterSummary(remoteMcpErrors),
         errorCounts: mapToObject(errorCounts),
         ...extra
       };

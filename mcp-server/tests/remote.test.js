@@ -270,6 +270,8 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(payload.feedbackStore.backend, "file");
     assert.equal(typeof payload.adminWrites, "object");
     assert.equal(typeof payload.adminWriteSummary, "object");
+    assert.equal(typeof payload.remoteMcpErrors, "object");
+    assert.equal(typeof payload.remoteMcpErrorSummary, "object");
   });
 });
 
@@ -754,7 +756,47 @@ test("remote MCP errors emit request context in logs", async () => {
       path: "/mcp",
       tool: null,
       sessionId: null,
+      category: "runtime",
       message: "simulated_mcp_cleanup_failure"
     }
   ]);
+});
+
+test("remote MCP error metrics are exposed in metrics and admin overview", async () => {
+  await withRemoteServer(async ({ remote, port }) => {
+    remote.sessions.cleanupExpiredSessions = async () => {
+      throw new Error("simulated_session_failure");
+    };
+
+    const failed = await fetch(`http://127.0.0.1:${port}/mcp`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...authHeaders("test-token")
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        id: 1,
+        method: "initialize",
+        params: {
+          protocolVersion: "2025-03-26",
+          capabilities: {},
+          clientInfo: { name: "x", version: "1" }
+        }
+      })
+    });
+    assert.equal(failed.status >= 400, true);
+
+    const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+    assert.equal(metrics.status, 200);
+    const metricsPayload = await metrics.json();
+    assert.equal(metricsPayload.remoteMcpErrors.session, 1);
+    assert.equal(metricsPayload.remoteMcpErrorSummary.session, 1);
+
+    const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
+    assert.equal(overview.status, 200);
+    const overviewPayload = await overview.json();
+    assert.equal(overviewPayload.remoteMcpErrors.session, 1);
+    assert.equal(overviewPayload.remoteMcpErrorSummary.session, 1);
+  });
 });
