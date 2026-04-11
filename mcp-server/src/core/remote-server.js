@@ -4,7 +4,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { createServer as createHttpServer } from "node:http";
 import { createServer as createMcpServer, initializeFeedbackRuntime } from "./server.js";
 import { loadCustomers, loadRuntimeConfig } from "../runtime/config.js";
-import { readBearerToken, toolAllowed } from "../runtime/auth.js";
+import { readBearerToken, secureEqual, toolAllowed } from "../runtime/auth.js";
 import { createRateLimiter } from "../runtime/rate-limit.js";
 import { createLogger } from "../runtime/logger.js";
 import { createMetricsStore } from "../runtime/metrics.js";
@@ -40,6 +40,11 @@ function unauthorized(res, status, payload, headers = {}) {
     res.setHeader(key, value);
   }
   res.status(status).json(payload);
+}
+
+function tokenMatches(candidate, expected) {
+  if (!candidate || !expected) return false;
+  return secureEqual(candidate, expected);
 }
 
 async function createRemoteApp(options = {}) {
@@ -91,7 +96,7 @@ async function createRemoteApp(options = {}) {
   function requireAdmin(req, res) {
     if (runtime.adminBearerToken) {
       const token = readBearerToken(req);
-      if (token !== runtime.adminBearerToken) {
+      if (!tokenMatches(token, runtime.adminBearerToken)) {
         unauthorized(res, 401, { error: "missing_admin_token", message: "Missing or invalid admin token" }, {
           "WWW-Authenticate": "Bearer"
         });
@@ -122,7 +127,7 @@ async function createRemoteApp(options = {}) {
     if (runtime.metricsBearerToken || runtime.adminBearerToken) {
       const token = readBearerToken(req);
       const validTokens = [runtime.metricsBearerToken, runtime.adminBearerToken].filter(Boolean);
-      if (!validTokens.includes(token)) {
+      if (!validTokens.some((expectedToken) => tokenMatches(token, expectedToken))) {
         unauthorized(res, 401, { error: "missing_metrics_token", message: "Missing or invalid metrics token" }, {
           "WWW-Authenticate": "Bearer"
         });

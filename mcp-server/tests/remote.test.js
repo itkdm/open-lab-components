@@ -37,6 +37,28 @@ async function withRemoteServer(run) {
   }
 }
 
+async function withRemoteServerRuntime(runtime, run) {
+  const remote = await startHttpServer({
+    runtime: {
+      host: "127.0.0.1",
+      port: 0,
+      configPath: fixturePath,
+      logLevel: "error",
+      allowedHosts: [],
+      trustProxy: false,
+      ...runtime
+    }
+  });
+
+  const port = remote.server.address().port;
+
+  try {
+    await run({ remote, port });
+  } finally {
+    await remote.close();
+  }
+}
+
 test("remote health endpoint responds", async () => {
   await withRemoteServer(async ({ port }) => {
     const response = await fetch(`http://127.0.0.1:${port}/healthz`);
@@ -220,6 +242,44 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(typeof payload.feedbackStore.trackedComponents, "number");
     assert.equal(payload.feedbackStore.backend, "file");
   });
+});
+
+test("remote admin and metrics endpoints enforce configured bearer tokens", async () => {
+  await withRemoteServerRuntime(
+    {
+      adminBearerToken: "admin-secret",
+      metricsBearerToken: "metrics-secret"
+    },
+    async ({ port }) => {
+      const adminWithoutToken = await fetch(`http://127.0.0.1:${port}/admin/overview`);
+      assert.equal(adminWithoutToken.status, 401);
+      assert.equal(adminWithoutToken.headers.get("www-authenticate"), "Bearer");
+
+      const adminWithWrongToken = await fetch(`http://127.0.0.1:${port}/admin/overview`, {
+        headers: authHeaders("wrong-admin-token")
+      });
+      assert.equal(adminWithWrongToken.status, 401);
+
+      const adminWithToken = await fetch(`http://127.0.0.1:${port}/admin/overview`, {
+        headers: authHeaders("admin-secret")
+      });
+      assert.equal(adminWithToken.status, 200);
+
+      const metricsWithoutToken = await fetch(`http://127.0.0.1:${port}/metrics`);
+      assert.equal(metricsWithoutToken.status, 401);
+      assert.equal(metricsWithoutToken.headers.get("www-authenticate"), "Bearer");
+
+      const metricsWithMetricsToken = await fetch(`http://127.0.0.1:${port}/metrics`, {
+        headers: authHeaders("metrics-secret")
+      });
+      assert.equal(metricsWithMetricsToken.status, 200);
+
+      const metricsWithAdminToken = await fetch(`http://127.0.0.1:${port}/metrics`, {
+        headers: authHeaders("admin-secret")
+      });
+      assert.equal(metricsWithAdminToken.status, 200);
+    }
+  );
 });
 
 test("admin customer lifecycle updates ready and metrics customer counts", async () => {
