@@ -124,6 +124,11 @@ async function createRemoteApp(options = {}) {
 
   function handleAdminWriteError(req, res, action, error, fallback) {
     const failure = customerRegistryFailure(error, fallback);
+    metrics.recordAdminWrite({
+      action,
+      outcome: "failure",
+      category: failure.category || "unknown"
+    });
     logger.error({
       event: "admin_customer_write_failed",
       action,
@@ -143,6 +148,11 @@ async function createRemoteApp(options = {}) {
   }
 
   function logAdminWriteSuccess(req, action, details = {}) {
+    metrics.recordAdminWrite({
+      action,
+      outcome: "success",
+      category: details.category || "none"
+    });
     logger.info({
       event: "admin_customer_write_succeeded",
       action,
@@ -247,6 +257,7 @@ async function createRemoteApp(options = {}) {
       rateLimitSnapshot,
       activeSessions: metricsSnapshot.activeSessions,
       totalSessionsCreated: metricsSnapshot.totalSessionsCreated,
+      adminWrites: metricsSnapshot.adminWrites,
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });

@@ -13,6 +13,7 @@ function createMetricsStore() {
   const toolCalls = new Map();
   const errorCounts = new Map();
   const feedbackEvents = new Map();
+  const adminWrites = new Map();
   let activeSessions = 0;
   let totalSessionsCreated = 0;
 
@@ -25,6 +26,10 @@ function createMetricsStore() {
     },
     recordFeedbackEvent(feedbackType) {
       if (feedbackType) incrementCounter(feedbackEvents, String(feedbackType));
+    },
+    recordAdminWrite({ action, outcome, category }) {
+      if (!action || !outcome) return;
+      incrementCounter(adminWrites, `${action}:${outcome}:${category || "none"}`);
     },
     recordSessionCreated() {
       activeSessions += 1;
@@ -43,6 +48,7 @@ function createMetricsStore() {
         requestsByCustomer: mapToObject(requestsByCustomer),
         toolCalls: mapToObject(toolCalls),
         feedbackEvents: mapToObject(feedbackEvents),
+        adminWrites: mapToObject(adminWrites),
         errorCounts: mapToObject(errorCounts),
         ...extra
       };

@@ -267,6 +267,7 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(typeof payload.feedbackStore.tenantCount, "number");
     assert.equal(typeof payload.feedbackStore.trackedComponents, "number");
     assert.equal(payload.feedbackStore.backend, "file");
+    assert.equal(typeof payload.adminWrites, "object");
   });
 });
 
@@ -349,12 +350,14 @@ test("admin customer lifecycle updates ready and metrics customer counts", async
     assert.equal(metrics.status, 200);
     const metricsPayload = await metrics.json();
     assert.equal(metricsPayload.customerCount, 5);
+    assert.equal(metricsPayload.adminWrites["create:success:none"], 1);
 
     const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
     assert.equal(overview.status, 200);
     const overviewPayload = await overview.json();
     assert.equal(overviewPayload.totalCustomers, 5);
     assert.equal(overviewPayload.activeCustomers, 4);
+    assert.equal(overviewPayload.adminWrites["create:success:none"], 1);
 
     const removeResponse = await fetch(`http://127.0.0.1:${port}/admin/customers/new-school`, {
       method: "DELETE"
@@ -454,6 +457,13 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
       category: "validation",
       message: "rateLimit.requestsPerMinute must be a positive integer"
     });
+
+    const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
+    assert.equal(overview.status, 200);
+    const overviewPayload = await overview.json();
+    assert.equal(overviewPayload.adminWrites["create:failure:conflict"], 1);
+    assert.equal(overviewPayload.adminWrites["create:failure:validation"], 3);
+    assert.equal(overviewPayload.adminWrites["update:failure:validation"], 1);
   });
 });
 
