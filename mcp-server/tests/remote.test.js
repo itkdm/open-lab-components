@@ -60,6 +60,29 @@ async function withRemoteServerRuntime(runtime, run) {
   }
 }
 
+async function withRemoteServerOptions(options, run) {
+  const remote = await startHttpServer({
+    runtime: {
+      host: "127.0.0.1",
+      port: 0,
+      configPath: fixturePath,
+      logLevel: "error",
+      allowedHosts: [],
+      trustProxy: false,
+      ...(options.runtime || {})
+    },
+    logger: options.logger
+  });
+
+  const port = remote.server.address().port;
+
+  try {
+    await run({ remote, port });
+  } finally {
+    await remote.close();
+  }
+}
+
 test("remote health endpoint responds", async () => {
   await withRemoteServer(async ({ port }) => {
     const response = await fetch(`http://127.0.0.1:${port}/healthz`);
@@ -360,6 +383,7 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     assert.equal(duplicate.status, 409);
     assert.deepEqual(await duplicate.json(), {
       error: "customer_exists",
+      category: "conflict",
       message: "Customer already exists: vip-test"
     });
 
@@ -375,6 +399,7 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     assert.equal(invalid.status, 400);
     assert.deepEqual(await invalid.json(), {
       error: "invalid_customer",
+      category: "validation",
       message: "customerId is required"
     });
 
@@ -391,6 +416,7 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     assert.equal(invalidStatus.status, 400);
     assert.deepEqual(await invalidStatus.json(), {
       error: "invalid_customer",
+      category: "validation",
       message: "status must be one of: active, disabled"
     });
 
@@ -407,6 +433,7 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     assert.equal(invalidAllowedTools.status, 400);
     assert.deepEqual(await invalidAllowedTools.json(), {
       error: "invalid_customer",
+      category: "validation",
       message: "allowedTools must only contain non-empty tool names"
     });
 
@@ -424,6 +451,7 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     assert.equal(invalidRateLimit.status, 400);
     assert.deepEqual(await invalidRateLimit.json(), {
       error: "invalid_customer",
+      category: "validation",
       message: "rateLimit.requestsPerMinute must be a positive integer"
     });
   });
@@ -443,6 +471,7 @@ test("admin customer update, rotate, and delete return not found for unknown ids
     assert.equal(update.status, 404);
     assert.deepEqual(await update.json(), {
       error: "customer_not_found",
+      category: "not_found",
       message: "Customer not found: missing-school"
     });
 
@@ -452,6 +481,7 @@ test("admin customer update, rotate, and delete return not found for unknown ids
     assert.equal(rotate.status, 404);
     assert.deepEqual(await rotate.json(), {
       error: "customer_not_found",
+      category: "not_found",
       message: "Customer not found: missing-school"
     });
 
@@ -461,6 +491,7 @@ test("admin customer update, rotate, and delete return not found for unknown ids
     assert.equal(remove.status, 404);
     assert.deepEqual(await remove.json(), {
       error: "customer_not_found",
+      category: "not_found",
       message: "Customer not found"
     });
   });
@@ -487,6 +518,7 @@ test("admin customer writes return 500 when registry persistence fails", async (
       assert.equal(create.status, 500);
       assert.deepEqual(await create.json(), {
         error: "customer_persist_failed",
+        category: "infrastructure",
         message: "simulated_persist_failure"
       });
 
@@ -502,6 +534,7 @@ test("admin customer writes return 500 when registry persistence fails", async (
       assert.equal(update.status, 500);
       assert.deepEqual(await update.json(), {
         error: "customer_persist_failed",
+        category: "infrastructure",
         message: "simulated_persist_failure"
       });
 
@@ -511,6 +544,7 @@ test("admin customer writes return 500 when registry persistence fails", async (
       assert.equal(rotate.status, 500);
       assert.deepEqual(await rotate.json(), {
         error: "customer_persist_failed",
+        category: "infrastructure",
         message: "simulated_persist_failure"
       });
 
@@ -520,10 +554,51 @@ test("admin customer writes return 500 when registry persistence fails", async (
       assert.equal(remove.status, 500);
       assert.deepEqual(await remove.json(), {
         error: "customer_persist_failed",
+        category: "infrastructure",
         message: "simulated_persist_failure"
       });
     } finally {
       fs.renameSync = originalRenameSync;
     }
+  });
+});
+
+test("admin customer write failures emit structured error logs", async () => {
+  const entries = [];
+  const logger = {
+    info() {},
+    debug() {},
+    error(payload) {
+      entries.push(payload);
+    },
+    sizeBucket() {
+      return "none";
+    }
+  };
+
+  await withRemoteServerOptions({ logger }, async ({ port }) => {
+    const response = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        customerId: "vip-test"
+      })
+    });
+    assert.equal(response.status, 409);
+  });
+
+  assert.equal(entries.length, 1);
+  assert.deepEqual(entries[0], {
+    event: "admin_customer_write_failed",
+    action: "create",
+    route: "/admin/customers",
+    method: "POST",
+    customerId: null,
+    status: 409,
+    error: "customer_exists",
+    category: "conflict",
+    message: "Customer already exists: vip-test"
   });
 });

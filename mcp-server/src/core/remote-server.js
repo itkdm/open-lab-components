@@ -49,16 +49,16 @@ function tokenMatches(candidate, expected) {
 
 function customerRegistryFailure(error, fallback) {
   if (error && error.code === "customer_exists") {
-    return { status: 409, error: "customer_exists" };
+    return { status: 409, error: "customer_exists", category: "conflict" };
   }
   if (error && error.code === "customer_not_found") {
-    return { status: 404, error: "customer_not_found" };
+    return { status: 404, error: "customer_not_found", category: "not_found" };
   }
   if (error && error.code === "invalid_customer") {
-    return { status: 400, error: "invalid_customer" };
+    return { status: 400, error: "invalid_customer", category: "validation" };
   }
   if (error && error.code === "persist_failed") {
-    return { status: 500, error: "customer_persist_failed" };
+    return { status: 500, error: "customer_persist_failed", category: "infrastructure" };
   }
   return fallback;
 }
@@ -76,7 +76,7 @@ async function createRemoteApp(options = {}) {
   });
   customerRegistry.loadFromDisk();
   const limiter = createRateLimiter();
-  const logger = createLogger(runtime.logLevel);
+  const logger = options.logger || createLogger(runtime.logLevel);
   const metrics = createMetricsStore();
   const sessions = createSessionStore({
     ttlMs: runtime.sessionTtlMs,
@@ -120,6 +120,26 @@ async function createRemoteApp(options = {}) {
       }
     }
     return true;
+  }
+
+  function handleAdminWriteError(req, res, action, error, fallback) {
+    const failure = customerRegistryFailure(error, fallback);
+    logger.error({
+      event: "admin_customer_write_failed",
+      action,
+      route: req.path,
+      method: req.method,
+      customerId: req.params && typeof req.params.customerId === "string" ? req.params.customerId : null,
+      status: failure.status,
+      error: failure.error,
+      category: failure.category || "unknown",
+      message: error && error.message ? error.message : String(error)
+    });
+    res.status(failure.status).json({
+      error: failure.error,
+      category: failure.category || "unknown",
+      message: error.message || String(error)
+    });
   }
 
   app.get("/healthz", (_req, res) => {
@@ -252,8 +272,11 @@ async function createRemoteApp(options = {}) {
         rawToken: created.rawToken
       });
     } catch (error) {
-      const failure = customerRegistryFailure(error, { status: 500, error: "customer_create_failed" });
-      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
+      handleAdminWriteError(req, res, "create", error, {
+        status: 500,
+        error: "customer_create_failed",
+        category: "unknown"
+      });
     }
   });
 
@@ -263,8 +286,11 @@ async function createRemoteApp(options = {}) {
       const updated = customerRegistry.updateCustomer(req.params.customerId, req.body || {});
       res.status(200).json({ customer: updated });
     } catch (error) {
-      const failure = customerRegistryFailure(error, { status: 500, error: "customer_update_failed" });
-      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
+      handleAdminWriteError(req, res, "update", error, {
+        status: 500,
+        error: "customer_update_failed",
+        category: "unknown"
+      });
     }
   });
 
@@ -277,8 +303,11 @@ async function createRemoteApp(options = {}) {
         rawToken: rotated.rawToken
       });
     } catch (error) {
-      const failure = customerRegistryFailure(error, { status: 500, error: "customer_rotate_failed" });
-      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
+      handleAdminWriteError(req, res, "rotate_token", error, {
+        status: 500,
+        error: "customer_rotate_failed",
+        category: "unknown"
+      });
     }
   });
 
@@ -287,13 +316,16 @@ async function createRemoteApp(options = {}) {
     try {
       const removed = customerRegistry.removeCustomer(req.params.customerId);
       if (!removed) {
-        res.status(404).json({ error: "customer_not_found", message: "Customer not found" });
+        res.status(404).json({ error: "customer_not_found", category: "not_found", message: "Customer not found" });
         return;
       }
       res.status(204).end();
     } catch (error) {
-      const failure = customerRegistryFailure(error, { status: 500, error: "customer_delete_failed" });
-      res.status(failure.status).json({ error: failure.error, message: error.message || String(error) });
+      handleAdminWriteError(req, res, "delete", error, {
+        status: 500,
+        error: "customer_delete_failed",
+        category: "unknown"
+      });
     }
   });
 
