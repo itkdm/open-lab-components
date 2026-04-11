@@ -533,8 +533,9 @@ async function createRemoteApp(options = {}) {
               server
             });
             if (!created.ok) {
-              metrics.recordRemoteMcpError({ category: "session" });
-              throw createRemoteMcpError("session_limit_exceeded", "Session limit exceeded for customer");
+              const code = created.code || "session_create_failed";
+              metrics.recordRemoteMcpError({ category: classifyRemoteMcpError({ code }) });
+              throw createRemoteMcpError(code, "Session limit exceeded for customer");
             }
             metrics.recordSessionCreated();
             logger.info({
