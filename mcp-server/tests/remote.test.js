@@ -376,3 +376,40 @@ test("admin customer writes reject invalid payloads and duplicate ids", async ()
     });
   });
 });
+
+test("admin customer update, rotate, and delete return not found for unknown ids", async () => {
+  await withRemoteServer(async ({ port }) => {
+    const update = await fetch(`http://127.0.0.1:${port}/admin/customers/missing-school`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        status: "disabled"
+      })
+    });
+    assert.equal(update.status, 404);
+    assert.deepEqual(await update.json(), {
+      error: "customer_not_found",
+      message: "Customer not found: missing-school"
+    });
+
+    const rotate = await fetch(`http://127.0.0.1:${port}/admin/customers/missing-school/rotate-token`, {
+      method: "POST"
+    });
+    assert.equal(rotate.status, 404);
+    assert.deepEqual(await rotate.json(), {
+      error: "customer_not_found",
+      message: "Customer not found: missing-school"
+    });
+
+    const remove = await fetch(`http://127.0.0.1:${port}/admin/customers/missing-school`, {
+      method: "DELETE"
+    });
+    assert.equal(remove.status, 404);
+    assert.deepEqual(await remove.json(), {
+      error: "customer_not_found",
+      message: "Customer not found"
+    });
+  });
+});
