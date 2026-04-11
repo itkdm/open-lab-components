@@ -126,7 +126,7 @@ curl \
 Automated smoke check:
 
 ```bash
-node ./deploy/smoke/verify-remote.mjs
+npm run smoke:remote
 ```
 
 Environment overrides:

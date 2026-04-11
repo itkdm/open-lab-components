@@ -85,6 +85,13 @@ Start the remote server:
 npm run start:http
 ```
 
+Useful verification commands:
+
+```bash
+npm run smoke:remote
+npm run pack:check
+```
+
 Environment variables:
 
 - `HOST`
