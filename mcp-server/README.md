@@ -115,3 +115,9 @@ For release preparation and package publishing, see [`../docs/PUBLISHING.md`](..
 ## Remote deployment
 
 See [`../docs/MCP_REMOTE.md`](../docs/MCP_REMOTE.md) for Nginx, HTTPS, customer config, and Linux service guidance.
+
+## Control console
+
+If you host a separate browser-based control console, configure `ALLOWED_ORIGINS`
+to include that console origin so the browser can read `/healthz`, `/readyz`,
+and `/metrics`.
