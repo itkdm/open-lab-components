@@ -189,6 +189,8 @@ Remaining scope:
 
 ### Batch 7: Workspace and script consolidation
 
+Status: partially completed
+
 - Goal:
   Reduce coordination cost across root package, `mcp-server`, and
   `mcp-console`.
@@ -203,7 +205,35 @@ Remaining scope:
   - MCP tests
   - console build check
 - Rollback:
-  - `git revert <batch-7-commit>`
+  - `git revert 3d24927`
+
+Current scope completed:
+
+- added `docs/WORKSPACE-PLAN.md` to document the recommended migration path
+- deferred npm workspace migration until root CI and package boundaries are
+  stable enough to absorb lockfile and install-flow changes
+
+Remaining scope:
+
+- optional future script consolidation once the root `package.json` is no
+  longer carrying unrelated in-progress changes
+
+### Batch 8: Release smoke checks
+
+Status: completed
+
+- Goal:
+  Ensure both publishable packages still produce sane npm pack output before
+  release or tagging.
+- Scope:
+  - root package pack dry-run
+  - MCP package pack dry-run
+  - assert presence of critical published files
+- Verification:
+  - `node tools/release-smoke/index.js`
+  - `node tools/check-root/index.js`
+- Rollback:
+  - `git revert a33645a`
 
 ## Commit Message Policy
 
