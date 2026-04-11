@@ -1,0 +1,213 @@
+# Optimization Roadmap
+
+This roadmap defines how to improve the repository in small, reversible batches.
+Each batch must be validated locally, committed independently, and pushed to the
+remote branch before the next batch starts.
+
+## Execution Rules
+
+1. One batch, one goal, one commit.
+2. Do not mix runtime changes, refactors, documentation cleanup, and build
+   system work in the same commit.
+3. Each batch must include:
+   - change scope
+   - verification command(s)
+   - rollback command
+   - expected follow-up
+4. Prefer additive changes before structural refactors.
+5. Use `git revert <commit>` for rollback. Do not rewrite shared history.
+
+## Working Branch
+
+- Branch: `codex/root-quality-hardening`
+- Remote: `gitee`
+- Push after every completed batch:
+
+```bash
+git push
+```
+
+## Batch Workflow
+
+For every batch, follow this sequence:
+
+```bash
+node <targeted-check>
+git add <scoped files>
+git commit -m "<type(scope): summary>"
+git push
+```
+
+If verification fails:
+
+1. Stop the batch.
+2. Fix only the failing scope.
+3. Re-run the same verification.
+4. Commit only after the check is green.
+
+If a pushed batch must be undone:
+
+```bash
+git revert <commit>
+git push
+```
+
+## Priority Order
+
+### Batch 1: Root Node API smoke coverage
+
+Status: completed
+
+- Goal:
+  Lock down the current behavior of the root package Node-facing API.
+- Files:
+  - `tests/root-api.test.js`
+- Verification:
+  - `node ./tests/root-api.test.js`
+  - `npm run validate`
+- Rollback:
+  - `git revert 61e015f`
+
+### Batch 2: Runtime lifecycle coverage
+
+- Goal:
+  Add browser/runtime coverage for `mount`, `unmount`, and `updateProps`.
+- Scope:
+  - script re-activation
+  - cleanup registration
+  - event listener wrapping and release
+  - timer cleanup
+  - mutation observer cleanup
+- Deliverables:
+  - isolated runtime test harness
+  - one runtime-focused test file
+- Verification:
+  - targeted runtime test command
+  - `npm run validate`
+- Rollback:
+  - `git revert <batch-2-commit>`
+
+### Batch 3: Runtime module split
+
+- Goal:
+  Reduce risk in `index.js` by separating registry API and browser runtime code.
+- Scope:
+  - extract registry access helpers
+  - extract mount/runtime helpers
+  - keep public API stable
+- Constraints:
+  - no behavior changes unless forced by failing tests
+- Verification:
+  - root API tests
+  - runtime tests
+  - `npm run validate`
+- Rollback:
+  - `git revert <batch-3-commit>`
+
+### Batch 4: Encoding normalization
+
+- Goal:
+  Eliminate visible text corruption in docs, comments, and admin console UI.
+- Scope:
+  - `README.md`
+  - root source comments
+  - `tools/build-site/index.js`
+  - `mcp-console/src/App.vue`
+- Constraints:
+  - text-only cleanup
+  - no logic changes in the same commit
+- Verification:
+  - targeted text diff review
+  - existing validation/test commands
+- Rollback:
+  - `git revert <batch-4-commit>`
+
+### Batch 5: Root quality entrypoints
+
+- Goal:
+  Provide one stable entrypoint for root-library quality checks.
+- Scope:
+  - add root-level test/check scripts
+  - keep package responsibilities explicit
+- Verification:
+  - root checks command
+  - existing MCP checks remain green
+- Rollback:
+  - `git revert <batch-5-commit>`
+
+### Batch 6: CI hardening
+
+- Goal:
+  Ensure the repository enforces validation automatically on remote changes.
+- Scope:
+  - root API tests
+  - runtime tests
+  - `npm run validate`
+  - `npm run mcp:test`
+  - optional `mcp-console` build smoke check
+- Constraints:
+  - CI-only changes
+  - do not mix with code refactors
+- Verification:
+  - local dry run of each command
+  - workflow syntax review
+- Rollback:
+  - `git revert <batch-6-commit>`
+
+### Batch 7: Workspace and script consolidation
+
+- Goal:
+  Reduce coordination cost across root package, `mcp-server`, and
+  `mcp-console`.
+- Scope:
+  - review workspace migration feasibility
+  - unify repetitive scripts
+  - keep package boundaries explicit
+- Constraints:
+  - only start after tests and CI are stable
+- Verification:
+  - root checks
+  - MCP tests
+  - console build check
+- Rollback:
+  - `git revert <batch-7-commit>`
+
+## Commit Message Policy
+
+Use short conventional commit messages:
+
+- `test(root): add node api smoke coverage`
+- `test(runtime): cover mount lifecycle cleanup`
+- `refactor(runtime): extract browser lifecycle helpers`
+- `fix(encoding): normalize utf8 text assets`
+- `build(root): add quality entrypoints`
+- `ci(repo): enforce root and mcp validation`
+
+## Staging Policy
+
+Only stage files that belong to the current batch.
+
+Examples:
+
+```bash
+git add tests/root-api.test.js
+git add docs/OPTIMIZATION-ROADMAP.md
+git add index.js lib/runtime.js tests/runtime-lifecycle.test.js
+```
+
+Avoid broad staging commands such as:
+
+```bash
+git add .
+git add -A
+```
+
+## Completion Criteria
+
+The optimization project is complete when:
+
+1. Root API behavior is covered by executable tests.
+2. Browser/runtime lifecycle is covered by executable tests.
+3. `index.js` is no longer the single high-risk runtime bucket.
+4. Text encoding issues are removed from user-facing surfaces.
+5. Root checks and remote CI enforce the critical quality path.
