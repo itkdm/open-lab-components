@@ -221,3 +221,63 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(payload.feedbackStore.backend, "file");
   });
 });
+
+test("admin customer lifecycle updates ready and metrics customer counts", async () => {
+  await withRemoteServer(async ({ port }) => {
+    const initialReady = await fetch(`http://127.0.0.1:${port}/readyz`);
+    assert.equal(initialReady.status, 200);
+    const initialReadyPayload = await initialReady.json();
+    assert.equal(initialReadyPayload.customers, 4);
+
+    const createResponse = await fetch(`http://127.0.0.1:${port}/admin/customers`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        customerId: "new-school",
+        label: "New School",
+        allowedTools: ["get_categories"],
+        rateLimit: {
+          requestsPerMinute: 10,
+          burst: 2
+        }
+      })
+    });
+    assert.equal(createResponse.status, 201);
+    const createdPayload = await createResponse.json();
+    assert.equal(createdPayload.customer.customerId, "new-school");
+    assert.equal(typeof createdPayload.rawToken, "string");
+
+    const customerList = await fetch(`http://127.0.0.1:${port}/admin/customers`);
+    assert.equal(customerList.status, 200);
+    const customerListPayload = await customerList.json();
+    assert.equal(customerListPayload.customers.some((customer) => customer.customerId === "new-school"), true);
+
+    const updatedReady = await fetch(`http://127.0.0.1:${port}/readyz`);
+    assert.equal(updatedReady.status, 200);
+    const updatedReadyPayload = await updatedReady.json();
+    assert.equal(updatedReadyPayload.customers, 5);
+
+    const metrics = await fetch(`http://127.0.0.1:${port}/metrics`);
+    assert.equal(metrics.status, 200);
+    const metricsPayload = await metrics.json();
+    assert.equal(metricsPayload.customerCount, 5);
+
+    const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
+    assert.equal(overview.status, 200);
+    const overviewPayload = await overview.json();
+    assert.equal(overviewPayload.totalCustomers, 5);
+    assert.equal(overviewPayload.activeCustomers, 4);
+
+    const removeResponse = await fetch(`http://127.0.0.1:${port}/admin/customers/new-school`, {
+      method: "DELETE"
+    });
+    assert.equal(removeResponse.status, 204);
+
+    const finalReady = await fetch(`http://127.0.0.1:${port}/readyz`);
+    assert.equal(finalReady.status, 200);
+    const finalReadyPayload = await finalReady.json();
+    assert.equal(finalReadyPayload.customers, 4);
+  });
+});

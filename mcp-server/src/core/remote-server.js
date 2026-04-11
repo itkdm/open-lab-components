@@ -80,6 +80,14 @@ async function createRemoteApp(options = {}) {
 
   app.use(createCorsMiddleware(runtime.allowedOrigins));
 
+  function getCustomerSnapshot() {
+    return customerRegistry.snapshot();
+  }
+
+  function getCustomerCount() {
+    return getCustomerSnapshot().length;
+  }
+
   function requireAdmin(req, res) {
     if (runtime.adminBearerToken) {
       const token = readBearerToken(req);
@@ -103,7 +111,7 @@ async function createRemoteApp(options = {}) {
 
     res.status(ok ? 200 : 503).json({
       ok,
-      customers: customerConfig.customers.length,
+      customers: getCustomerCount(),
       sessionTtlMs: runtime.sessionTtlMs,
       maxSessionsPerCustomer: runtime.maxSessionsPerCustomer,
       feedback
@@ -127,7 +135,7 @@ async function createRemoteApp(options = {}) {
 
     res.status(200).json(
       metrics.snapshot({
-        customerCount: customerConfig.customers.length,
+        customerCount: getCustomerCount(),
         sessions: sessions.snapshot(),
         feedbackStoreSummary: {
           backend: feedbackSnapshot.backend,
@@ -163,11 +171,11 @@ async function createRemoteApp(options = {}) {
     const feedbackSnapshot = feedbackStore.snapshot();
     const rateLimitSnapshot = limiter.snapshot(
       Object.fromEntries(
-        customerRegistry.snapshot().map((customer) => [customer.customerId, customer.rateLimit])
+        getCustomerSnapshot().map((customer) => [customer.customerId, customer.rateLimit])
       )
     );
     const metricsSnapshot = metrics.snapshot({
-      customerCount: customerConfig.customers.length,
+      customerCount: getCustomerCount(),
       sessions: sessions.snapshot(),
       feedbackStoreSummary: {
         backend: feedbackSnapshot.backend,
@@ -194,12 +202,13 @@ async function createRemoteApp(options = {}) {
   app.get("/admin/customers", (req, res) => {
     if (!requireAdmin(req, res)) return;
     const metricsSnapshot = metrics.snapshot();
+    const customersSnapshot = getCustomerSnapshot();
     const rateLimitSnapshot = limiter.snapshot(
       Object.fromEntries(
-        customerRegistry.snapshot().map((customer) => [customer.customerId, customer.rateLimit])
+        customersSnapshot.map((customer) => [customer.customerId, customer.rateLimit])
       )
     );
-    const customers = customerRegistry.snapshot().map((customer) => ({
+    const customers = customersSnapshot.map((customer) => ({
       ...customer,
       usageCount: metricsSnapshot.requestsByCustomer[customer.customerId] || 0,
       quota: rateLimitSnapshot[customer.customerId] || {
