@@ -242,6 +242,8 @@ Follow-up completed:
 - `docs/PUBLISHING.md` now places root checks and release smoke checks ahead of
   the broader release flow
 - `docs/TESTING.md` now points release work to `tools/release-smoke/index.js`
+- `tmp-run/` is now ignored and old generated control-page residue has been
+  cleared from `site/dist` by rebuilding the site
 
 ## Commit Message Policy
 
