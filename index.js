@@ -17,8 +17,8 @@
  * // Read component HTML (Node.js)
  * const html = lab.readSync('phy.apparatus.bulb.basic');
  *
- * // Load into DOM (browser)
- * lab.load('phy.apparatus.bulb.basic', document.getElementById('container'));
+ * // Mount into the DOM (browser)
+ * lab.mount(html, document.getElementById('container'));
  */
 
 'use strict';
