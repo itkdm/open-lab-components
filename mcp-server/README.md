@@ -104,6 +104,10 @@ Environment variables:
 - `POSTGRES_FEEDBACK_TABLE`
 - `POSTGRES_FEEDBACK_STORE_KEY`
 
+Operational guidance for admin tracing, error categories, and metrics:
+
+- see [OPERATIONS.md](./OPERATIONS.md)
+
 ## Claude Desktop example
 
 Use the published binary or a local repo checkout. Example local command:
