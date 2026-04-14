@@ -21,6 +21,8 @@ does not use npm workspaces yet.
 - `lib/`
   Shared runtime and i18n logic consumed by the root library.
   This includes the registry loader boundary used by the root package APIs.
+  Registry filenames and generated artifact names are shared here so the root
+  package and tooling do not drift on file-contract details.
 - `tests/`
   Root-package smoke tests.
 

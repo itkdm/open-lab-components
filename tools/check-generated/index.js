@@ -6,13 +6,14 @@ const path = require("node:path");
 const { projectPathsFrom } = require("../_lib/paths");
 const { listGeneratedRegistryFiles } = require("../_lib/registry");
 const { listExpectedSiteDistEntries, SITE_REPUBLISHED_ROOT_DIRS } = require("../_lib/site");
+const registryMetadata = require("../../lib/registry-metadata");
 const { ensureFile, runNodeScript } = require("../_lib/checks");
 const { SUPPORTED_LOCALES } = require("../../lib/i18n");
 
 const PATHS = projectPathsFrom(__dirname);
 
 function ensureGeneratedOutputs() {
-  const registryPath = path.join(PATHS.registryDir, "registry.json");
+  const registryPath = path.join(PATHS.registryDir, registryMetadata.DEFAULT_REGISTRY_FILE);
   const distNoJekyllPath = path.join(PATHS.siteDistDir, ".nojekyll");
 
   ensureFile("build registry", registryPath, () => {
@@ -50,7 +51,10 @@ function checkSiteArtifacts() {
     }
   }
 
-  assertExists(path.join(PATHS.siteDistDir, "registry", "registry.json"), "site dist registry copy");
+  assertExists(
+    path.join(PATHS.siteDistDir, "registry", registryMetadata.DEFAULT_REGISTRY_FILE),
+    "site dist registry copy"
+  );
   for (const dir of SITE_REPUBLISHED_ROOT_DIRS) {
     assertExists(path.join(PATHS.siteDistDir, dir), `site dist ${dir} copy`);
   }

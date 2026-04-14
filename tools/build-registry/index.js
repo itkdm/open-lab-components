@@ -7,6 +7,7 @@ const { walkDir } = require("../_lib/walk");
 const { extractManifest } = require("../_lib/manifest");
 const { projectRootFrom, toPosixRel } = require("../_lib/paths");
 const { getRegistryPaths, loadCategoryNames, pruneGeneratedRegistryFiles } = require("../_lib/registry");
+const registryMetadata = require("../../lib/registry-metadata");
 const {
   BILINGUAL_SAMPLE_IDS,
   DEFAULT_LOCALE,
@@ -238,7 +239,11 @@ function main() {
     count: items.length,
     items
   };
-  fs.writeFileSync(path.join(registryDir, "registry.json"), JSON.stringify(rawRegistry, null, 2), "utf8");
+  fs.writeFileSync(
+    path.join(registryDir, registryMetadata.DEFAULT_REGISTRY_FILE),
+    JSON.stringify(rawRegistry, null, 2),
+    "utf8"
+  );
 
   for (const locale of SUPPORTED_LOCALES) {
     const localizedRegistry = {
@@ -251,19 +256,19 @@ function main() {
       items: items.map((item) => localizeRegistryItem(item, locale))
     };
     fs.writeFileSync(
-      path.join(registryDir, `registry.${locale}.json`),
+      path.join(registryDir, registryMetadata.getLocalizedRegistryFile(locale)),
       JSON.stringify(localizedRegistry, null, 2),
       "utf8"
     );
 
     fs.writeFileSync(
-      path.join(registryDir, `categories.${locale}.json`),
+      path.join(registryDir, registryMetadata.getLocalizedCategoriesFile(locale)),
       JSON.stringify(buildCategories(items, locale, categoryNames), null, 2),
       "utf8"
     );
 
     fs.writeFileSync(
-      path.join(registryDir, `tags.${locale}.json`),
+      path.join(registryDir, registryMetadata.getLocalizedTagsFile(locale)),
       JSON.stringify(buildTags(items, locale), null, 2),
       "utf8"
     );
@@ -271,13 +276,25 @@ function main() {
 
   const defaultCategories = buildCategories(items, DEFAULT_LOCALE, categoryNames);
   const defaultTags = buildTags(items, DEFAULT_LOCALE);
-  fs.writeFileSync(path.join(registryDir, "categories.json"), JSON.stringify(defaultCategories, null, 2), "utf8");
-  fs.writeFileSync(path.join(registryDir, "tags.json"), JSON.stringify(defaultTags, null, 2), "utf8");
+  fs.writeFileSync(
+    path.join(registryDir, registryMetadata.DEFAULT_CATEGORIES_FILE),
+    JSON.stringify(defaultCategories, null, 2),
+    "utf8"
+  );
+  fs.writeFileSync(
+    path.join(registryDir, registryMetadata.DEFAULT_TAGS_FILE),
+    JSON.stringify(defaultTags, null, 2),
+    "utf8"
+  );
 
   const report = createCoverageReport(items);
   report.generatedAt = generatedAt;
   report.warnings = warnings;
-  fs.writeFileSync(path.join(registryDir, "i18n-report.json"), JSON.stringify(report, null, 2), "utf8");
+  fs.writeFileSync(
+    path.join(registryDir, registryMetadata.I18N_REPORT_FILE),
+    JSON.stringify(report, null, 2),
+    "utf8"
+  );
 
   if (warnings.length) {
     console.warn(`[build-registry] ${warnings.length} warning(s)`);

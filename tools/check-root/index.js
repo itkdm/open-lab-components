@@ -4,10 +4,11 @@
 const path = require("node:path");
 const { projectPathsFrom } = require("../_lib/paths");
 const { ensureFile, logStep, runCommand, runNodeScript } = require("../_lib/checks");
+const registryMetadata = require("../../lib/registry-metadata");
 
 const PATHS = projectPathsFrom(__dirname);
 const rootDir = PATHS.root;
-const registryPath = path.join(PATHS.registryDir, "registry.json");
+const registryPath = path.join(PATHS.registryDir, registryMetadata.DEFAULT_REGISTRY_FILE);
 const buildRegistryScript = path.join(PATHS.toolsDir, "build-registry", "index.js");
 
 function ensureRegistryBuilt() {

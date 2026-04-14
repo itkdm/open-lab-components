@@ -2,20 +2,21 @@ const fs = require("fs");
 const path = require("path");
 
 const { normalizeCategoryNames } = require("../../lib/i18n");
+const registryMetadata = require("../../lib/registry-metadata");
 
-const REGISTRY_SOURCE_FILES = new Set([".gitkeep", "category-names.json"]);
+const REGISTRY_SOURCE_FILES = new Set(registryMetadata.REGISTRY_SOURCE_FILES);
 
 function getRegistryPaths(rootDir) {
   const registryDir = path.join(rootDir, "registry");
   return {
     registryDir: registryDir,
-    registryPath: path.join(registryDir, "registry.json"),
-    categoryNamesPath: path.join(registryDir, "category-names.json")
+    registryPath: path.join(registryDir, registryMetadata.DEFAULT_REGISTRY_FILE),
+    categoryNamesPath: path.join(registryDir, registryMetadata.CATEGORY_NAMES_FILE)
   };
 }
 
 function loadCategoryNames(registryDir) {
-  const categoryNamesPath = path.join(registryDir, "category-names.json");
+  const categoryNamesPath = path.join(registryDir, registryMetadata.CATEGORY_NAMES_FILE);
   if (!fs.existsSync(categoryNamesPath)) return {};
   try {
     return normalizeCategoryNames(JSON.parse(fs.readFileSync(categoryNamesPath, "utf8")));
@@ -29,13 +30,7 @@ function readRegistryFile(registryPath) {
 }
 
 function listGeneratedRegistryFiles(locales) {
-  const files = new Set(["categories.json", "i18n-report.json", "registry.json", "tags.json"]);
-  for (const locale of locales) {
-    files.add(`categories.${locale}.json`);
-    files.add(`registry.${locale}.json`);
-    files.add(`tags.${locale}.json`);
-  }
-  return Array.from(files).sort();
+  return registryMetadata.listGeneratedRegistryFiles(locales);
 }
 
 function pruneGeneratedRegistryFiles(registryDir, locales) {
