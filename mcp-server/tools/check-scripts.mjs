@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { listDeclaredScripts } from "../src/runtime/script-manifest.js";
+import { MCP_PACKAGE_FILE_GLOBS } from "../../tools/_lib/publish-assets.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -28,6 +29,19 @@ function main() {
   for (const name of Object.keys(actual)) {
     if (!(name in expected)) {
       failures.push(`undeclared script in package.json: ${name}`);
+    }
+  }
+
+  const actualFiles = pkg.files || [];
+  for (const glob of MCP_PACKAGE_FILE_GLOBS) {
+    if (!actualFiles.includes(glob)) {
+      failures.push(`missing package file glob: ${glob}`);
+    }
+  }
+
+  for (const glob of actualFiles) {
+    if (!MCP_PACKAGE_FILE_GLOBS.includes(glob)) {
+      failures.push(`undeclared package file glob in package.json: ${glob}`);
     }
   }
 

@@ -21,7 +21,8 @@ npm run check:scripts
 ```
 
 This verifies the root `package.json` scripts still match the shared script
-manifest used by the repository tooling layer.
+manifest used by the repository tooling layer, and that the root package
+`files` list still matches the shared publish-asset contract.
 
 Run the root docs boundary check:
 
@@ -88,7 +89,8 @@ npm run mcp:check:scripts
 ```
 
 This verifies the `mcp-server/package.json` scripts still match the shared MCP
-script manifest.
+script manifest, and that the MCP package `files` list still matches the shared
+publish-asset contract.
 
 Run the MCP docs boundary check:
 

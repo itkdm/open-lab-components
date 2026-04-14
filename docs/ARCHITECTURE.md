@@ -62,7 +62,8 @@ does not use npm workspaces yet.
 - `tools/check-root/`
   Root quality entrypoint for smoke tests and validation.
 - `tools/check-scripts/`
-  Verifies `package.json` root scripts still match the shared script manifest.
+  Verifies `package.json` root scripts and publish `files` boundaries still
+  match the shared manifests.
 - `tools/runtime-harness/`
   Isolated DOM harness used only for runtime lifecycle verification.
 - `tools/build-site/`
