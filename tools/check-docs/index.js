@@ -6,13 +6,13 @@ const path = require("node:path");
 
 const { projectPathsFrom } = require("../_lib/paths");
 const { ROOT_DOC_SURFACES } = require("../_lib/docs-manifest");
+const { createReleaseDocSpec } = require("../_lib/release-docs");
 
 const PATHS = projectPathsFrom(__dirname);
 
-function main() {
+function collectSnippetFailures(surfaces) {
   const failures = [];
-
-  for (const surface of ROOT_DOC_SURFACES) {
+  for (const surface of surfaces) {
     const targetPath = path.join(PATHS.root, surface.relativePath);
     const text = fs.readFileSync(targetPath, "utf8");
     for (const snippet of surface.requiredSnippets) {
@@ -21,6 +21,21 @@ function main() {
       }
     }
   }
+
+  return failures;
+}
+
+function main() {
+  const failures = collectSnippetFailures(ROOT_DOC_SURFACES);
+  const releaseSpec = createReleaseDocSpec(PATHS);
+
+  if (releaseSpec.versions.rootVersion !== releaseSpec.versions.mcpVersion) {
+    failures.push(
+      `package version mismatch: root=${releaseSpec.versions.rootVersion}, mcp=${releaseSpec.versions.mcpVersion}`
+    );
+  }
+
+  failures.push(...collectSnippetFailures(releaseSpec.files));
 
   if (failures.length) {
     console.error("Root docs checks failed:");

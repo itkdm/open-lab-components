@@ -31,7 +31,8 @@ npm run check:docs
 
 This verifies the root README, quick-start guide, contribution guide, and
 architecture/testing docs still include the shared command-entry and generated
-artifact references that define the repository contract.
+artifact references that define the repository contract. It also verifies that
+versioned release docs still match the current package version and release tag.
 
 Run the generated-artifact boundary check:
 

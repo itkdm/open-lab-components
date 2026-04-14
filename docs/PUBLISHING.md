@@ -72,3 +72,4 @@ git push origin v0.2.0
 - `release:ready` runs both checks in sequence
 - `npm run check:root` covers the root library quality path before release work starts
 - `npm run check:release` confirms both publishable packages still expose the expected tarball contents
+- versioned release assets in `docs/` are expected to match the current package version and release tag

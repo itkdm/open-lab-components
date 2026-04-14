@@ -75,6 +75,8 @@ does not use npm workspaces yet.
   Pack-level release verification for both publishable packages.
   Release-facing docs are also checked against a shared publish contract so the
   publishing guide, checklists, and command docs do not drift from scripts.
+  Versioned release assets are tied to the current package version so release
+  filenames and tag references move together.
 
 ## Architectural rules
 
