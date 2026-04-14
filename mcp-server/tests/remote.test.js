@@ -348,6 +348,7 @@ test("admin overview exposes top requested and errored tools", async () => {
     assert.ok(Array.isArray(payload.topRequestedTools));
     assert.ok(Array.isArray(payload.topErroredTools));
     assert.ok(Array.isArray(payload.topSlowTools));
+    assert.ok(Array.isArray(payload.topFeedbackComponents));
     assert.deepEqual(payload.topRequestedTools[0], {
       toolName: "get_categories",
       count: 1
@@ -359,6 +360,9 @@ test("admin overview exposes top requested and errored tools", async () => {
     assert.equal(typeof payload.topSlowTools[0].toolName, "string");
     assert.equal(typeof payload.topSlowTools[0].averageDurationMs, "number");
     assert.equal(payload.topSlowTools.some((item) => item.toolName === "get_categories"), true);
+    assert.equal(payload.topFeedbackComponents[0].componentId, "phy.resistor.axial.basic");
+    assert.equal(payload.topFeedbackComponents[0].eventCount >= 1, true);
+    assert.equal(payload.topFeedbackComponents[0].totalScore > 0, true);
   });
 });
 

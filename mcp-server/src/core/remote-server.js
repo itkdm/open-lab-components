@@ -148,6 +148,36 @@ function summarizeTopSlowTools(averageMap, limit = 5) {
     .map(([toolName, averageDurationMs]) => ({ toolName, averageDurationMs }));
 }
 
+function summarizeTopFeedbackComponents(feedbackSnapshot, limit = 5) {
+  const eventTotals = new Map();
+  const scoreTotals = new Map();
+
+  for (const counts of Object.values(feedbackSnapshot?.tenantEventCounts || {})) {
+    for (const [componentId, count] of Object.entries(counts || {})) {
+      eventTotals.set(componentId, (eventTotals.get(componentId) || 0) + (Number(count) || 0));
+    }
+  }
+
+  for (const scores of Object.values(feedbackSnapshot?.tenantGlobalScores || {})) {
+    for (const [componentId, record] of Object.entries(scores || {})) {
+      const score = Number(record?.score) || 0;
+      scoreTotals.set(componentId, (scoreTotals.get(componentId) || 0) + score);
+    }
+  }
+
+  return Array.from(eventTotals.entries())
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, limit)
+    .map(([componentId, eventCount]) => ({
+      componentId,
+      eventCount,
+      totalScore: Number((scoreTotals.get(componentId) || 0).toFixed(2))
+    }));
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -365,6 +395,7 @@ async function createRemoteApp(options = {}) {
       topRequestedTools: summarizeTopTools(metricsSnapshot.requestsByTool),
       topErroredTools: summarizeTopErroredTools(metricsSnapshot.remoteMcpErrorsByTool),
       topSlowTools: summarizeTopSlowTools(metricsSnapshot.requestDurationAvgMsByTool),
+      topFeedbackComponents: summarizeTopFeedbackComponents(feedbackSnapshot),
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });
