@@ -80,6 +80,7 @@ does not use npm workspaces yet.
   The publish-step ordering is also treated as a shared contract for the same
   reason.
   The release command entrypoints and pack contracts are shared as well.
+  Release preflight steps are also declared once and reused by scripts and docs.
 
 ## Architectural rules
 

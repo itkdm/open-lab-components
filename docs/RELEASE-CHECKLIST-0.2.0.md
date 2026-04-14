@@ -11,6 +11,7 @@
 - [ ] Run `npm run release:ready`
 - [ ] Run `npm run release:check`
 - [ ] Run `npm run release:pack`
+- [ ] Confirm `npm run release:check` still expands to `validate -> build:registry -> mcp:test -> build:site`
 - [ ] Run `npm run validate`
 - [ ] Run `npm run build:registry`
 - [ ] Run `npm run mcp:test`

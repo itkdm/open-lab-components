@@ -14,6 +14,13 @@ const RELEASE_SCRIPT_COMMANDS = {
   mcpPublish: "npm --prefix mcp-server publish"
 };
 
+const RELEASE_CHECK_SEQUENCE = [
+  "npm run validate",
+  "npm run build:registry",
+  "npm run mcp:test",
+  "npm run build:site"
+];
+
 function createReleasePackContracts(paths) {
   return [
     {
@@ -42,6 +49,7 @@ function createReleasePackContracts(paths) {
 }
 
 module.exports = {
+  RELEASE_CHECK_SEQUENCE,
   RELEASE_SCRIPT_COMMANDS,
   createReleasePackContracts
 };

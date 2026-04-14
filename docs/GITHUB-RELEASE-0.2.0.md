@@ -42,6 +42,10 @@ It introduces `cmp-manifest/v2`, localized registry outputs, locale-aware JS API
 - `npm run build:registry`
 - `npm run mcp:test`
 - `npm run build:site`
+- `npm run validate`
+- `npm run build:registry`
+- `npm run mcp:test`
+- `npm run build:site`
 
 ## Docs
 

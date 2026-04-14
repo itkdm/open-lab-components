@@ -3,7 +3,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { createReleaseWorkflow } = require("./release-workflow");
-const { RELEASE_SCRIPT_COMMANDS } = require("./release-manifest");
+const { RELEASE_CHECK_SEQUENCE, RELEASE_SCRIPT_COMMANDS } = require("./release-manifest");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -29,7 +29,7 @@ function createReleaseDocSpec(paths) {
     files: [
       {
         relativePath: `docs/GITHUB-RELEASE-${version}.md`,
-        requiredSnippets: [tag, version, RELEASE_SCRIPT_COMMANDS.releaseReady]
+        requiredSnippets: [tag, version, RELEASE_SCRIPT_COMMANDS.releaseReady, ...RELEASE_CHECK_SEQUENCE]
       },
       {
         relativePath: `docs/ANNOUNCEMENT-${version}.zh-CN.md`,
@@ -37,7 +37,7 @@ function createReleaseDocSpec(paths) {
       },
       {
         relativePath: `docs/RELEASE-CHECKLIST-${version}.md`,
-        requiredSnippets: [version, RELEASE_SCRIPT_COMMANDS.releaseReady, tag]
+        requiredSnippets: [version, RELEASE_SCRIPT_COMMANDS.releaseReady, tag, ...RELEASE_CHECK_SEQUENCE]
       },
       {
         relativePath: `docs/RELEASE-COMMANDS-${version}.md`,
@@ -52,6 +52,7 @@ function createReleaseDocSpec(paths) {
           `docs/RELEASE-COMMANDS-${version}.md`,
           RELEASE_SCRIPT_COMMANDS.rootQuality,
           RELEASE_SCRIPT_COMMANDS.releaseSmoke,
+          RELEASE_SCRIPT_COMMANDS.releaseCheck,
           RELEASE_SCRIPT_COMMANDS.releasePack,
           `git tag ${tag}`
         ]

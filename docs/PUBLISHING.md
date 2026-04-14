@@ -30,6 +30,13 @@ This expands to:
 - `npm run release:check`
 - `npm run release:pack`
 
+`npm run release:check` currently runs:
+
+- `npm run validate`
+- `npm run build:registry`
+- `npm run mcp:test`
+- `npm run build:site`
+
 4. Review:
 
 - `CHANGELOG.md`

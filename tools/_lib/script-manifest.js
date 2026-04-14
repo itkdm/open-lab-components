@@ -1,5 +1,7 @@
 "use strict";
 
+const { RELEASE_CHECK_SEQUENCE } = require("./release-manifest");
+
 const ROOT_SCRIPT_GROUPS = {
   build: {
     "build": "npm run build:registry && npm run build:site",
@@ -26,7 +28,7 @@ const ROOT_SCRIPT_GROUPS = {
   release: {
     "pack:check": "npm pack --dry-run",
     "mcp:pack:check": "cd mcp-server && npm pack --dry-run",
-    "release:check": "npm run validate && npm run build:registry && npm run mcp:test && npm run build:site",
+    "release:check": RELEASE_CHECK_SEQUENCE.join(" && "),
     "release:pack": "npm run pack:check && npm run mcp:pack:check",
     "release:ready": "npm run release:check && npm run release:pack",
     "prepublishOnly": "npm run build:registry && npm run check:registry"
