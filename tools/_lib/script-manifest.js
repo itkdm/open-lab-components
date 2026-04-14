@@ -1,0 +1,53 @@
+"use strict";
+
+const ROOT_SCRIPT_GROUPS = {
+  build: {
+    "build": "npm run build:registry && npm run build:site",
+    "build:registry": "node tools/build-registry/index.js",
+    "build:site": "node tools/build-site/index.js"
+  },
+  check: {
+    "check:generated": "node tools/check-generated/index.js",
+    "check:registry": "node tools/check-registry/index.js",
+    "check:release": "node tools/release-smoke/index.js",
+    "check:root": "node tools/check-root/index.js",
+    "check:scripts": "node tools/check-scripts/index.js",
+    "check:text": "node tools/check-text/index.js"
+  },
+  mcp: {
+    "mcp:start": "npm --prefix mcp-server start",
+    "mcp:start:http": "npm --prefix mcp-server run start:http",
+    "mcp:test": "npm --prefix mcp-server test",
+    "mcp:test:remote": "npm --prefix mcp-server run test:remote"
+  },
+  release: {
+    "pack:check": "npm pack --dry-run",
+    "mcp:pack:check": "cd mcp-server && npm pack --dry-run",
+    "release:check": "npm run validate && npm run build:registry && npm run mcp:test && npm run build:site",
+    "release:pack": "npm run pack:check && npm run mcp:pack:check",
+    "release:ready": "npm run release:check && npm run release:pack",
+    "prepublishOnly": "npm run build:registry && npm run check:registry"
+  },
+  site: {
+    "dev:site": "node tools/dev-site/index.js"
+  },
+  test: {
+    "test": "npm run check:root && npm run mcp:test",
+    "test:root": "node tests/root-api.test.js",
+    "test:runtime": "npm --prefix tools/runtime-harness test",
+    "validate": "node tools/validate/index.js"
+  }
+};
+
+function listDeclaredScripts() {
+  const ordered = {};
+  for (const groupName of Object.keys(ROOT_SCRIPT_GROUPS)) {
+    Object.assign(ordered, ROOT_SCRIPT_GROUPS[groupName]);
+  }
+  return ordered;
+}
+
+module.exports = {
+  ROOT_SCRIPT_GROUPS,
+  listDeclaredScripts
+};

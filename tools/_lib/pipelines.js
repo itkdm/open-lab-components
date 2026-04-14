@@ -15,6 +15,11 @@ function createRootQualityPipeline(paths) {
     ],
     steps: [
       {
+        label: "script manifest boundaries",
+        scriptPath: path.join(paths.toolsDir, "check-scripts", "index.js"),
+        cwd: paths.root
+      },
+      {
         label: "text file boundaries",
         scriptPath: path.join(paths.toolsDir, "check-text", "index.js"),
         cwd: paths.root

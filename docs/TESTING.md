@@ -14,6 +14,15 @@ npm run check:text
 This verifies source-controlled text files use the repository-standard UTF-8
 without BOM and LF line endings.
 
+Run the script-manifest boundary check:
+
+```bash
+npm run check:scripts
+```
+
+This verifies the root `package.json` scripts still match the shared script
+manifest used by the repository tooling layer.
+
 Run the generated-artifact boundary check:
 
 ```bash
@@ -32,9 +41,10 @@ npm run check:root
 This executes:
 
 1. `tools/check-text/index.js`
-2. `tests/root-api.test.js`
-3. `tools/runtime-harness/runtime-lifecycle.test.js`
-4. `tools/validate/index.js`
+2. `tools/check-scripts/index.js`
+3. `tests/root-api.test.js`
+4. `tools/runtime-harness/runtime-lifecycle.test.js`
+5. `tools/validate/index.js`
 
 ## Release-facing checks
 

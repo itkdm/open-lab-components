@@ -52,6 +52,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
+    "check:scripts": "node tools/check-scripts/index.js",
     "check:text": "node tools/check-text/index.js",
     "check:generated": "node tools/check-generated/index.js",
     "check:root": "node tools/check-root/index.js",

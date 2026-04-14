@@ -57,6 +57,8 @@ does not use npm workspaces yet.
   Verifies generated registry output matches source manifests.
 - `tools/check-root/`
   Root quality entrypoint for smoke tests and validation.
+- `tools/check-scripts/`
+  Verifies `package.json` root scripts still match the shared script manifest.
 - `tools/runtime-harness/`
   Isolated DOM harness used only for runtime lifecycle verification.
 - `tools/build-site/`
@@ -87,6 +89,7 @@ does not use npm workspaces yet.
 ### Root library
 
 - `npm run check:text`
+- `npm run check:scripts`
 - `npm run check:generated`
 - `npm run check:root`
 - `npm run build:registry`
