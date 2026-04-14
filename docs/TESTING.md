@@ -24,7 +24,8 @@ This verifies the root `package.json` scripts still match the shared script
 manifest used by the repository tooling layer, and that the root package
 `files` list and shared package metadata still match the shared publish
 contracts, including description, keyword, `name`, `main`, and `types`
-boundaries, plus the declared `dependencies` and `devDependencies` contract.
+boundaries, plus the declared `dependencies` / `devDependencies` contract and
+the shared package version.
 
 Run the root docs boundary check:
 
@@ -94,7 +95,7 @@ This verifies the `mcp-server/package.json` scripts still match the shared MCP
 script manifest, and that the MCP package `files` list still matches the shared
 publish-asset contract and shared package metadata contract, including
 description, keyword, `name`, `type`, and `bin` boundaries, plus the declared
-dependency contract.
+dependency contract and the shared package version.
 
 Run the MCP docs boundary check:
 

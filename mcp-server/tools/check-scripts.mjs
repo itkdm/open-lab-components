@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 
 import packageMetadata from "../../tools/_lib/package-metadata.js";
 import packageDependencies from "../../tools/_lib/package-dependencies.js";
+import packageVersions from "../../tools/_lib/package-versions.js";
 import { listDeclaredScripts } from "../src/runtime/script-manifest.js";
 import { MCP_PACKAGE_FILE_GLOBS } from "../../tools/_lib/publish-assets.js";
 
@@ -13,6 +14,7 @@ const __dirname = path.dirname(__filename);
 const packageJsonPath = path.join(__dirname, "..", "package.json");
 const { MCP_PACKAGE_METADATA, SHARED_PACKAGE_METADATA } = packageMetadata;
 const { MCP_PACKAGE_DEPENDENCIES } = packageDependencies;
+const { SHARED_PACKAGE_VERSION } = packageVersions;
 
 function collectMetadataFailures(prefix, actual, expected, failures) {
   for (const [key, expectedValue] of Object.entries(expected)) {
@@ -107,6 +109,9 @@ function main() {
 
   collectMetadataFailures("", pkg, SHARED_PACKAGE_METADATA, failures);
   collectMetadataFailures("", pkg, MCP_PACKAGE_METADATA, failures);
+  if (pkg.version !== SHARED_PACKAGE_VERSION) {
+    failures.push(`package version mismatch: expected "${SHARED_PACKAGE_VERSION}"`);
+  }
   collectDependencyFailures("dependencies", pkg.dependencies, MCP_PACKAGE_DEPENDENCIES.dependencies, failures);
   collectDependencyFailures(
     "devDependencies",

@@ -64,7 +64,8 @@ does not use npm workspaces yet.
 - `tools/check-scripts/`
   Verifies `package.json` root scripts and publish `files` boundaries still
   match the shared manifests, including shared package metadata, descriptions,
-  keywords, package entry fields, and declared dependency surfaces.
+  keywords, package entry fields, declared dependency surfaces, and the shared
+  package version contract.
 - `tools/runtime-harness/`
   Isolated DOM harness used only for runtime lifecycle verification.
 - `tools/build-site/`

@@ -9,6 +9,7 @@ const {
   SHARED_PACKAGE_METADATA
 } = require("../_lib/package-metadata");
 const { ROOT_PACKAGE_DEPENDENCIES } = require("../_lib/package-dependencies");
+const { SHARED_PACKAGE_VERSION } = require("../_lib/package-versions");
 const { listDeclaredScripts } = require("../_lib/script-manifest");
 const { ROOT_PACKAGE_FILE_GLOBS } = require("../_lib/publish-assets");
 
@@ -108,6 +109,9 @@ function main() {
 
   collectMetadataFailures("", pkg, SHARED_PACKAGE_METADATA, failures);
   collectMetadataFailures("", pkg, ROOT_PACKAGE_METADATA, failures);
+  if (pkg.version !== SHARED_PACKAGE_VERSION) {
+    failures.push(`package version mismatch: expected "${SHARED_PACKAGE_VERSION}"`);
+  }
   collectDependencyFailures("dependencies", pkg.dependencies, ROOT_PACKAGE_DEPENDENCIES.dependencies, failures);
   collectDependencyFailures(
     "devDependencies",
