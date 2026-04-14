@@ -94,6 +94,7 @@ npm run pack:check
 
 Environment variables:
 
+- `MCP_RUNTIME_HOME`
 - `HOST`
 - `PORT`
 - `CUSTOMERS_CONFIG_PATH`
@@ -113,6 +114,12 @@ Environment variables:
 - `POSTGRES_URL`
 - `POSTGRES_FEEDBACK_TABLE`
 - `POSTGRES_FEEDBACK_STORE_KEY`
+
+Runtime path behavior:
+
+- if `MCP_RUNTIME_HOME` is set, default writable paths resolve under that directory
+- otherwise defaults resolve relative to the current working directory
+- explicit absolute values for `CUSTOMERS_CONFIG_PATH` and `FEEDBACK_STORE_PATH` always win
 
 Operational guidance for admin tracing, error categories, and metrics:
 

@@ -1,16 +1,10 @@
 import fs from "node:fs";
-import path from "node:path";
 import { parseCustomerRecord } from "./customer-schema.js";
-
-function resolveConfigPath(configPath) {
-  if (!configPath) return path.resolve(process.cwd(), "config", "customers.json");
-  return path.isAbsolute(configPath) ? configPath : path.resolve(process.cwd(), configPath);
-}
-
-function resolveFeedbackStorePath(storePath) {
-  if (!storePath) return path.resolve(process.cwd(), "data", "feedback-store.json");
-  return path.isAbsolute(storePath) ? storePath : path.resolve(process.cwd(), storePath);
-}
+import {
+  resolveConfigPath,
+  resolveFeedbackStorePath,
+  resolveRuntimeHome
+} from "./paths.js";
 
 function loadCustomers(configPath) {
   const resolvedPath = resolveConfigPath(configPath);
@@ -27,10 +21,11 @@ function loadCustomers(configPath) {
 }
 
 function loadRuntimeConfig(env = process.env) {
+  const runtimeHome = resolveRuntimeHome(env);
   const host = env.HOST || "127.0.0.1";
   const port = Number(env.PORT || 3000);
   const logLevel = (env.LOG_LEVEL || "info").toLowerCase();
-  const configPath = resolveConfigPath(env.CUSTOMERS_CONFIG_PATH);
+  const configPath = resolveConfigPath(env.CUSTOMERS_CONFIG_PATH, { env });
   const allowedHosts = (env.ALLOWED_HOSTS || "")
     .split(",")
     .map((item) => item.trim())
@@ -44,10 +39,11 @@ function loadRuntimeConfig(env = process.env) {
   const sessionTtlMs = Number(env.SESSION_TTL_MS || 30 * 60 * 1000);
   const maxSessionsPerCustomer = Number(env.MAX_SESSIONS_PER_CUSTOMER || 5);
   const metricsBearerToken = env.METRICS_BEARER_TOKEN ? String(env.METRICS_BEARER_TOKEN) : null;
-  const feedbackStorePath = resolveFeedbackStorePath(env.FEEDBACK_STORE_PATH);
+  const feedbackStorePath = resolveFeedbackStorePath(env.FEEDBACK_STORE_PATH, { env });
   const feedbackHalfLifeDays = Number(env.FEEDBACK_HALF_LIFE_DAYS || 30);
 
   return {
+    runtimeHome,
     host,
     port: Number.isFinite(port) && port > 0 ? port : 3000,
     configPath,

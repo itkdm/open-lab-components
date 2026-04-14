@@ -21,6 +21,7 @@ npm install
 Start from `.env.example` and set at least:
 
 ```bash
+MCP_RUNTIME_HOME=/srv/open-lab-components-mcp
 HOST=127.0.0.1
 PORT=3000
 CUSTOMERS_CONFIG_PATH=./config/customers.json
@@ -33,8 +34,12 @@ METRICS_BEARER_TOKEN=replace-with-metrics-token
 FEEDBACK_STORE_PATH=./data/feedback-store.json
 ```
 
+`MCP_RUNTIME_HOME` defines the runtime home for relative config and data paths.
+If you omit it, those paths resolve from the process working directory instead.
+
 Recommended:
 
+- set `MCP_RUNTIME_HOME` for hosted environments so config and writable state live under one explicit root
 - set `ADMIN_BEARER_TOKEN` for all hosted environments
 - set `METRICS_BEARER_TOKEN` if `/metrics` should not rely on the admin token
 - set `ALLOWED_ORIGINS` when browser-based admin or monitoring pages need CORS access

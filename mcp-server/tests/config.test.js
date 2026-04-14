@@ -3,7 +3,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { loadCustomers } from "../src/runtime/config.js";
+import { loadCustomers, loadRuntimeConfig } from "../src/runtime/config.js";
+import {
+  resolveConfigPath,
+  resolveFeedbackStorePath,
+  resolveRuntimeHome
+} from "../src/runtime/paths.js";
 
 function writeCustomersFixture(customers) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "olc-config-test-"));
@@ -60,4 +65,42 @@ test("loadCustomers rejects the same invalid payloads as the admin registry path
     }
   ]);
   assert.throws(() => loadCustomers(invalidToolsPath), /allowedTools must only contain non-empty tool names/);
+});
+
+test("runtime path helpers default to the current working directory", () => {
+  const fakeCwd = path.resolve("srv", "open-lab-mcp");
+  assert.equal(resolveRuntimeHome({}, fakeCwd), fakeCwd);
+  assert.equal(resolveConfigPath(undefined, { cwd: fakeCwd }), path.join(fakeCwd, "config", "customers.json"));
+  assert.equal(
+    resolveFeedbackStorePath(undefined, { cwd: fakeCwd }),
+    path.join(fakeCwd, "data", "feedback-store.json")
+  );
+});
+
+test("runtime path helpers support MCP_RUNTIME_HOME overrides", () => {
+  const fakeCwd = path.resolve("workspace", "repo");
+  const env = { MCP_RUNTIME_HOME: "./var/open-lab-mcp" };
+  const expectedHome = path.join(fakeCwd, "var", "open-lab-mcp");
+
+  assert.equal(resolveRuntimeHome(env, fakeCwd), expectedHome);
+  assert.equal(resolveConfigPath(undefined, { env, cwd: fakeCwd }), path.join(expectedHome, "config", "customers.json"));
+  assert.equal(
+    resolveFeedbackStorePath(undefined, { env, cwd: fakeCwd }),
+    path.join(expectedHome, "data", "feedback-store.json")
+  );
+});
+
+test("loadRuntimeConfig exposes resolved runtime paths without overriding explicit absolute paths", () => {
+  const configPath = path.join(path.sep, "etc", "open-lab-mcp", "customers.json");
+  const feedbackStorePath = path.join(path.sep, "var", "lib", "open-lab-mcp", "feedback-store.json");
+
+  const runtime = loadRuntimeConfig({
+    MCP_RUNTIME_HOME: "/srv/open-lab-mcp",
+    CUSTOMERS_CONFIG_PATH: configPath,
+    FEEDBACK_STORE_PATH: feedbackStorePath
+  });
+
+  assert.equal(runtime.runtimeHome, "/srv/open-lab-mcp");
+  assert.equal(runtime.configPath, configPath);
+  assert.equal(runtime.feedbackStorePath, feedbackStorePath);
 });
