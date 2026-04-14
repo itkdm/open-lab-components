@@ -5,7 +5,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { projectPathsFrom } = require("../_lib/paths");
 const { listGeneratedRegistryFiles } = require("../_lib/registry");
-const { listExpectedSiteDistEntries } = require("../_lib/site");
+const { listExpectedSiteDistEntries, SITE_REPUBLISHED_ROOT_DIRS } = require("../_lib/site");
 const { ensureFile, runNodeScript } = require("../_lib/checks");
 const { SUPPORTED_LOCALES } = require("../../lib/i18n");
 
@@ -51,8 +51,9 @@ function checkSiteArtifacts() {
   }
 
   assertExists(path.join(PATHS.siteDistDir, "registry", "registry.json"), "site dist registry copy");
-  assertExists(path.join(PATHS.siteDistDir, "components"), "site dist components copy");
-  assertExists(path.join(PATHS.siteDistDir, "docs"), "site dist docs copy");
+  for (const dir of SITE_REPUBLISHED_ROOT_DIRS) {
+    assertExists(path.join(PATHS.siteDistDir, dir), `site dist ${dir} copy`);
+  }
 }
 
 function main() {

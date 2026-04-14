@@ -13,28 +13,16 @@ const path = require('path');
 const { URL } = require('url');
 const { spawn } = require('child_process');
 const { projectPathsFrom } = require('../_lib/paths');
-const { isAllowedSiteRootAssetPath } = require('../_lib/site');
+const {
+  SITE_DEFAULT_DOCUMENT,
+  getSiteMimeType,
+  isAllowedSiteRootAssetPath
+} = require('../_lib/site');
 
 const PATHS = projectPathsFrom(__dirname);
 const ROOT = PATHS.root;
 const SITE_DIR = PATHS.siteDir;
 const PORT = process.env.PORT || 3000;
-const MIME_TYPES = {
-  '.html': 'text/html; charset=utf-8',
-  '.js': 'text/javascript; charset=utf-8',
-  '.json': 'application/json; charset=utf-8',
-  '.css': 'text/css; charset=utf-8',
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.jpg': 'image/jpeg',
-  '.gif': 'image/gif',
-};
-
-function getMimeType(filePath) {
-  const ext = path.extname(filePath).toLowerCase();
-  return MIME_TYPES[ext] || 'application/octet-stream';
-}
-
 function serveFile(filePath, res) {
   if (!fs.existsSync(filePath)) {
     res.writeHead(404, { 'Content-Type': 'text/plain' });
@@ -44,7 +32,7 @@ function serveFile(filePath, res) {
 
   const stat = fs.statSync(filePath);
   if (stat.isDirectory()) {
-    const indexFile = path.join(filePath, 'index.html');
+    const indexFile = path.join(filePath, SITE_DEFAULT_DOCUMENT);
     if (fs.existsSync(indexFile)) {
       serveFile(indexFile, res);
     } else {
@@ -55,7 +43,7 @@ function serveFile(filePath, res) {
   }
 
   const content = fs.readFileSync(filePath);
-  const mime = getMimeType(filePath);
+  const mime = getSiteMimeType(filePath);
 
   res.writeHead(200, {
     'Content-Type': mime,
@@ -73,7 +61,7 @@ function normalizeRequestPath(pathname) {
   }
 
   const withoutLeadingSlash = decoded.replace(/^\/+/, '');
-  const withDefault = withoutLeadingSlash || 'index.html';
+  const withDefault = withoutLeadingSlash || SITE_DEFAULT_DOCUMENT;
   const slashNormalized = withDefault.replace(/\\/g, '/');
   const normalized = path.posix.normalize(slashNormalized);
 

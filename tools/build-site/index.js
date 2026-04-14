@@ -6,19 +6,44 @@
 const fs = require('fs');
 const path = require('path');
 const { projectPathsFrom } = require('../_lib/paths');
-const { SITE_STATIC_DIRS, listSiteHtmlFiles, listSiteStaticFiles } = require('../_lib/site');
+const {
+  SITE_REPUBLISHED_ROOT_DIRS,
+  SITE_STATIC_DIRS,
+  listSiteHtmlFiles,
+  listSiteStaticFiles
+} = require('../_lib/site');
 
 const PATHS = projectPathsFrom(__dirname);
 const SITE_SRC = PATHS.siteDir;
 const SITE_DIST = PATHS.siteDistDir;
-const COMPONENTS_DIR = PATHS.componentsDir;
-const REGISTRY_DIR = PATHS.registryDir;
-const DOCS_DIR = PATHS.docsDir;
+const REPUBLISHED_DIR_SOURCES = {
+  components: PATHS.componentsDir,
+  registry: PATHS.registryDir,
+  docs: PATHS.docsDir,
+};
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
+}
+
+function resetDir(dir) {
+  if (!fs.existsSync(dir)) {
+    ensureDir(dir);
+    return;
+  }
+
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 50 });
+      break;
+    } catch (error) {
+      if (attempt === 2) throw error;
+    }
+  }
+
+  ensureDir(dir);
 }
 
 function copyDir(src, dest) {
@@ -37,24 +62,13 @@ function copyDir(src, dest) {
 
 function main() {
   // 清理并创建 dist
-  if (fs.existsSync(SITE_DIST)) {
-    fs.rmSync(SITE_DIST, { recursive: true, force: true });
-  }
-  ensureDir(SITE_DIST);
+  resetDir(SITE_DIST);
 
-  // 复制 components/ 到 site/dist/components/
-  if (fs.existsSync(COMPONENTS_DIR)) {
-    copyDir(COMPONENTS_DIR, path.join(SITE_DIST, 'components'));
-  }
-
-  // 复制 registry/ 到 site/dist/registry/
-  if (fs.existsSync(REGISTRY_DIR)) {
-    copyDir(REGISTRY_DIR, path.join(SITE_DIST, 'registry'));
-  }
-
-  // 复制 docs/ 到 site/dist/docs/
-  if (fs.existsSync(DOCS_DIR)) {
-    copyDir(DOCS_DIR, path.join(SITE_DIST, 'docs'));
+  for (const dir of SITE_REPUBLISHED_ROOT_DIRS) {
+    const srcDir = REPUBLISHED_DIR_SOURCES[dir];
+    if (fs.existsSync(srcDir)) {
+      copyDir(srcDir, path.join(SITE_DIST, dir));
+    }
   }
 
   // 复制 site 静态资源（如果有）

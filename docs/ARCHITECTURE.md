@@ -61,6 +61,8 @@ does not use npm workspaces yet.
   Produces `site/dist/` from site sources plus generated assets.
 - `tools/dev-site/`
   Local preview server for the static site shell and whitelisted root assets.
+  It shares the same site-entry and root-republish boundary constants as the
+  build and generated-artifact checks.
 - `tools/release-smoke/`
   Pack-level release verification for both publishable packages.
 
