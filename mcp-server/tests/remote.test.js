@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { startHttpServer } from "../src/core/remote-server.js";
+import { feedbackStore } from "../src/feedback/feedback-store.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -325,6 +326,14 @@ test("admin overview exposes top requested and errored tools", async () => {
       await client.close();
     }
 
+    await feedbackStore.recordFeedback({
+      componentId: "phy.mechanics.projectile.interactive",
+      feedbackType: "hidden",
+      customerId: "vip-test",
+      subject: "physics",
+      lessonGoal: "resistance lesson"
+    });
+
     const restrictedClient = new Client({ name: "remote-test-client", version: "0.1.0" });
     const restrictedTransport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/mcp`), {
       requestInit: {
@@ -349,6 +358,8 @@ test("admin overview exposes top requested and errored tools", async () => {
     assert.ok(Array.isArray(payload.topErroredTools));
     assert.ok(Array.isArray(payload.topSlowTools));
     assert.ok(Array.isArray(payload.topFeedbackComponents));
+    assert.ok(Array.isArray(payload.topPositiveFeedbackComponents));
+    assert.ok(Array.isArray(payload.topNegativeFeedbackComponents));
     assert.deepEqual(payload.topRequestedTools[0], {
       toolName: "get_categories",
       count: 1
@@ -363,6 +374,10 @@ test("admin overview exposes top requested and errored tools", async () => {
     assert.equal(payload.topFeedbackComponents[0].componentId, "phy.resistor.axial.basic");
     assert.equal(payload.topFeedbackComponents[0].eventCount >= 1, true);
     assert.equal(payload.topFeedbackComponents[0].totalScore > 0, true);
+    assert.equal(payload.topPositiveFeedbackComponents[0].componentId, "phy.resistor.axial.basic");
+    assert.equal(payload.topPositiveFeedbackComponents[0].totalScore > 0, true);
+    assert.equal(payload.topNegativeFeedbackComponents[0].componentId, "phy.mechanics.projectile.interactive");
+    assert.equal(payload.topNegativeFeedbackComponents[0].totalScore < 0, true);
   });
 });
 

@@ -178,6 +178,41 @@ function summarizeTopFeedbackComponents(feedbackSnapshot, limit = 5) {
     }));
 }
 
+function summarizeFeedbackComponentsBySentiment(feedbackSnapshot, direction, limit = 5) {
+  const scoreTotals = new Map();
+  const eventTotals = new Map();
+
+  for (const scores of Object.values(feedbackSnapshot?.tenantGlobalScores || {})) {
+    for (const [componentId, record] of Object.entries(scores || {})) {
+      const score = Number(record?.score) || 0;
+      scoreTotals.set(componentId, (scoreTotals.get(componentId) || 0) + score);
+    }
+  }
+
+  for (const counts of Object.values(feedbackSnapshot?.tenantEventCounts || {})) {
+    for (const [componentId, count] of Object.entries(counts || {})) {
+      eventTotals.set(componentId, (eventTotals.get(componentId) || 0) + (Number(count) || 0));
+    }
+  }
+
+  return Array.from(scoreTotals.entries())
+    .filter(([, score]) => (direction === "positive" ? score > 0 : score < 0))
+    .sort((a, b) => {
+      if (direction === "positive") {
+        if (b[1] !== a[1]) return b[1] - a[1];
+      } else if (a[1] !== b[1]) {
+        return a[1] - b[1];
+      }
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, limit)
+    .map(([componentId, totalScore]) => ({
+      componentId,
+      totalScore: Number(totalScore.toFixed(2)),
+      eventCount: eventTotals.get(componentId) || 0
+    }));
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -396,6 +431,8 @@ async function createRemoteApp(options = {}) {
       topErroredTools: summarizeTopErroredTools(metricsSnapshot.remoteMcpErrorsByTool),
       topSlowTools: summarizeTopSlowTools(metricsSnapshot.requestDurationAvgMsByTool),
       topFeedbackComponents: summarizeTopFeedbackComponents(feedbackSnapshot),
+      topPositiveFeedbackComponents: summarizeFeedbackComponentsBySentiment(feedbackSnapshot, "positive"),
+      topNegativeFeedbackComponents: summarizeFeedbackComponentsBySentiment(feedbackSnapshot, "negative"),
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });
