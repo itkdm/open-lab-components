@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const { projectPathsFrom } = require('../_lib/paths');
+const { SITE_STATIC_DIRS, listSiteHtmlFiles, listSiteStaticFiles } = require('../_lib/site');
 
 const PATHS = projectPathsFrom(__dirname);
 const SITE_SRC = PATHS.siteDir;
@@ -57,8 +58,7 @@ function main() {
   }
 
   // 复制 site 静态资源（如果有）
-  const staticDirs = ['assets', 'pages'];
-  for (const dir of staticDirs) {
+  for (const dir of SITE_STATIC_DIRS) {
     const srcDir = path.join(SITE_SRC, dir);
     if (fs.existsSync(srcDir)) {
       copyDir(srcDir, path.join(SITE_DIST, dir));
@@ -66,16 +66,13 @@ function main() {
   }
 
   // 复制 site/*.html 到 dist
-  const htmlFiles = fs.readdirSync(SITE_SRC).filter(f => f.endsWith('.html'));
+  const htmlFiles = listSiteHtmlFiles(SITE_SRC);
   for (const file of htmlFiles) {
     fs.copyFileSync(path.join(SITE_SRC, file), path.join(SITE_DIST, file));
   }
 
   // 复制 site 中的图片等静态资源
-  const staticFiles = fs.readdirSync(SITE_SRC).filter(f => {
-    const ext = path.extname(f).toLowerCase();
-    return ['.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp'].includes(ext);
-  });
+  const staticFiles = listSiteStaticFiles(SITE_SRC);
   for (const file of staticFiles) {
     fs.copyFileSync(path.join(SITE_SRC, file), path.join(SITE_DIST, file));
   }

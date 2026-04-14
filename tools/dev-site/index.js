@@ -13,13 +13,12 @@ const path = require('path');
 const { URL } = require('url');
 const { spawn } = require('child_process');
 const { projectPathsFrom } = require('../_lib/paths');
+const { isAllowedSiteRootAssetPath } = require('../_lib/site');
 
 const PATHS = projectPathsFrom(__dirname);
 const ROOT = PATHS.root;
 const SITE_DIR = PATHS.siteDir;
 const PORT = process.env.PORT || 3000;
-const ROOT_ALLOWED_PREFIXES = ['components/', 'registry/', 'docs/'];
-
 const MIME_TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -90,7 +89,7 @@ function normalizeRequestPath(pathname) {
 }
 
 function isAllowedRootPath(relPath) {
-  return ROOT_ALLOWED_PREFIXES.some((prefix) => relPath === prefix.slice(0, -1) || relPath.startsWith(prefix));
+  return isAllowedSiteRootAssetPath(relPath);
 }
 
 function resolveFilePath(relPath) {

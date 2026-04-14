@@ -40,6 +40,7 @@ does not use npm workspaces yet.
   Publishable npm package: `@itkdm/open-lab-components-mcp`
 - `site/`
   Static app shell for preview, docs, and playground pages
+  See `site/README.md` for source vs generated boundaries.
 
 ### Tooling
 
