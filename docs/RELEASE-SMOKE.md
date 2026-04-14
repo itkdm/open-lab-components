@@ -33,6 +33,9 @@ For the MCP package:
 - `src/core/http-cli.js` is included
 - `README.md` is included
 
+These tarball assertions intentionally mirror the published `files` boundaries
+defined in each `package.json`.
+
 ## Relationship to existing release commands
 
 - `npm run check:root` protects the root library quality path

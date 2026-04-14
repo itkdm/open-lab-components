@@ -8,6 +8,12 @@ const {
   RELEASE_CHECK_SEQUENCE,
   RELEASE_SCRIPT_COMMANDS
 } = require("./release-manifest");
+const {
+  MCP_PACKAGE_FILE_GLOBS,
+  MCP_TARBALL_REQUIRED_FILES,
+  ROOT_PACKAGE_FILE_GLOBS,
+  ROOT_TARBALL_REQUIRED_FILES
+} = require("./publish-assets");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -59,7 +65,16 @@ function createReleaseDocSpec(paths) {
           RELEASE_SCRIPT_COMMANDS.releaseCheck,
           RELEASE_SCRIPT_COMMANDS.releasePack,
           ...PREPUBLISH_SEQUENCE,
+          ...ROOT_PACKAGE_FILE_GLOBS,
+          ...MCP_PACKAGE_FILE_GLOBS,
           `git tag ${tag}`
+        ]
+      },
+      {
+        relativePath: "docs/RELEASE-SMOKE.md",
+        requiredSnippets: [
+          ...ROOT_TARBALL_REQUIRED_FILES,
+          ...MCP_TARBALL_REQUIRED_FILES
         ]
       }
     ]

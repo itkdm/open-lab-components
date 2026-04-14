@@ -1,6 +1,9 @@
 "use strict";
 
-const registryMetadata = require("../../lib/registry-metadata");
+const {
+  MCP_TARBALL_REQUIRED_FILES,
+  ROOT_TARBALL_REQUIRED_FILES
+} = require("./publish-assets");
 
 const RELEASE_SCRIPT_COMMANDS = {
   rootQuality: "npm run check:root",
@@ -34,9 +37,7 @@ function createReleasePackContracts(paths) {
       command: "npm pack --dry-run",
       requiredOutput: [
         "name: @itkdm/open-lab-components",
-        "index.js",
-        "index.d.ts",
-        "registry/" + registryMetadata.DEFAULT_REGISTRY_FILE
+        ...ROOT_TARBALL_REQUIRED_FILES
       ]
     },
     {
@@ -45,9 +46,7 @@ function createReleasePackContracts(paths) {
       command: "npm pack --dry-run",
       requiredOutput: [
         "name: @itkdm/open-lab-components-mcp",
-        "src/core/cli.js",
-        "src/core/http-cli.js",
-        "README.md"
+        ...MCP_TARBALL_REQUIRED_FILES
       ]
     }
   ];

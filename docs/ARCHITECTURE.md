@@ -83,6 +83,7 @@ does not use npm workspaces yet.
   Release preflight steps are also declared once and reused by scripts and docs.
   The narrower `prepublishOnly` publish hook is kept as a separate shared
   contract so publish-time work stays smaller than full release verification.
+  Published file-glob boundaries and tarball assertions are also shared.
 
 ## Architectural rules
 

@@ -42,6 +42,25 @@ This expands to:
 - `npm run build:registry`
 - `npm run check:registry`
 
+Published root package file globs:
+
+- `index.js`
+- `index.d.ts`
+- `lib/**/*.js`
+- `components/**/*.html`
+- `registry/*.json`
+
+Published MCP package file globs:
+
+- `src/**/*`
+- `config/**/*.json`
+- `deploy/**/*`
+- `.env.example`
+- `README.md`
+- `DEPLOYMENT.md`
+- `DEPLOYMENT-CHECKLIST.md`
+- `OPERATIONS.md`
+
 4. Review:
 
 - `CHANGELOG.md`
