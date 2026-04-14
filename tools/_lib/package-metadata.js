@@ -19,10 +19,13 @@ const SHARED_PACKAGE_METADATA = {
 const ROOT_PACKAGE_METADATA = {
   description:
     "Open protocol and runtime-ready component library for composable STEM interactive objects with locale-aware metadata and MCP support.",
+  main: "index.js",
+  name: "@itkdm/open-lab-components",
   publishConfig: {
     access: "public",
     registry: "https://registry.npmjs.org"
   },
+  types: "index.d.ts",
   keywords: [
     "components",
     "html",
@@ -50,6 +53,12 @@ const ROOT_PACKAGE_METADATA = {
 
 const MCP_PACKAGE_METADATA = {
   description: "Locale-aware MCP server for discovering and retrieving Open Lab Components.",
+  name: "@itkdm/open-lab-components-mcp",
+  type: "module",
+  bin: {
+    "open-lab-components-mcp": "./src/core/cli.js",
+    "open-lab-components-mcp-http": "./src/core/http-cli.js"
+  },
   keywords: [
     "mcp",
     "model-context-protocol",
