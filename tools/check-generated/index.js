@@ -7,23 +7,12 @@ const { projectPathsFrom } = require("../_lib/paths");
 const { listGeneratedRegistryFiles } = require("../_lib/registry");
 const { listExpectedSiteDistEntries, SITE_REPUBLISHED_ROOT_DIRS } = require("../_lib/site");
 const registryMetadata = require("../../lib/registry-metadata");
-const { ensureFile, runNodeScript } = require("../_lib/checks");
+const { runPrerequisites } = require("../_lib/checks");
+const { createGeneratedArtifactPipeline } = require("../_lib/pipelines");
 const { SUPPORTED_LOCALES } = require("../../lib/i18n");
 
 const PATHS = projectPathsFrom(__dirname);
-
-function ensureGeneratedOutputs() {
-  const registryPath = path.join(PATHS.registryDir, registryMetadata.DEFAULT_REGISTRY_FILE);
-  const distNoJekyllPath = path.join(PATHS.siteDistDir, ".nojekyll");
-
-  ensureFile("build registry", registryPath, () => {
-    runNodeScript(path.join(PATHS.toolsDir, "build-registry", "index.js"), PATHS.root);
-  });
-
-  ensureFile("build site", distNoJekyllPath, () => {
-    runNodeScript(path.join(PATHS.toolsDir, "build-site", "index.js"), PATHS.root);
-  });
-}
+const pipeline = createGeneratedArtifactPipeline(PATHS);
 
 function assertExists(absPath, label) {
   if (!fs.existsSync(absPath)) {
@@ -61,7 +50,7 @@ function checkSiteArtifacts() {
 }
 
 function main() {
-  ensureGeneratedOutputs();
+  runPrerequisites(pipeline.prerequisites);
   checkRegistryArtifacts();
   checkSiteArtifacts();
   console.log("Generated artifact checks passed.");

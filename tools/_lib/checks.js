@@ -51,10 +51,50 @@ function ensureFile(label, filePath, build) {
   build();
 }
 
+function runPrerequisites(prerequisites) {
+  for (const item of prerequisites || []) {
+    ensureFile(item.label, item.targetPath, () => {
+      runNodeScript(item.scriptPath, item.cwd);
+    });
+  }
+}
+
+function runNodePipeline(steps, successMessage) {
+  for (const step of steps || []) {
+    logStep(step.label);
+    runNodeScript(step.scriptPath, step.cwd);
+  }
+  if (successMessage) {
+    console.log(successMessage);
+  }
+}
+
+function assertIncludes(output, snippet, label) {
+  if (!output.includes(snippet)) {
+    throw new Error(`${label} is missing required output: ${snippet}`);
+  }
+}
+
+function runShellPipeline(steps, successMessage) {
+  for (const step of steps || []) {
+    const output = runShellAndCapture(step.label, step.command, step.cwd);
+    for (const snippet of step.requiredOutput || []) {
+      assertIncludes(output, snippet, step.label);
+    }
+  }
+  if (successMessage) {
+    console.log(successMessage);
+  }
+}
+
 module.exports = {
+  assertIncludes,
   ensureFile,
   logStep,
+  runNodePipeline,
+  runPrerequisites,
   runAndCapture,
+  runShellPipeline,
   runShellAndCapture,
   runCommand,
   runNodeScript
