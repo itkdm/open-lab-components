@@ -37,6 +37,11 @@ This expands to:
 - `npm run mcp:test`
 - `npm run build:site`
 
+`prepublishOnly` currently runs the narrower publish contract:
+
+- `npm run build:registry`
+- `npm run check:registry`
+
 4. Review:
 
 - `CHANGELOG.md`
@@ -103,4 +108,5 @@ The release workflow is intentionally kept in this order:
 - `npm run mcp:pack:check` is the MCP package dry-run pack entrypoint
 - `npm run check:root` covers the root library quality path before release work starts
 - `npm run check:release` confirms both publishable packages still expose the expected tarball contents
+- `prepublishOnly` keeps the actual npm publish hook limited to registry generation and registry validation
 - versioned release assets in `docs/` are expected to match the current package version and release tag

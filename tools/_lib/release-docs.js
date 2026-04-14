@@ -3,7 +3,11 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { createReleaseWorkflow } = require("./release-workflow");
-const { RELEASE_CHECK_SEQUENCE, RELEASE_SCRIPT_COMMANDS } = require("./release-manifest");
+const {
+  PREPUBLISH_SEQUENCE,
+  RELEASE_CHECK_SEQUENCE,
+  RELEASE_SCRIPT_COMMANDS
+} = require("./release-manifest");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -54,6 +58,7 @@ function createReleaseDocSpec(paths) {
           RELEASE_SCRIPT_COMMANDS.releaseSmoke,
           RELEASE_SCRIPT_COMMANDS.releaseCheck,
           RELEASE_SCRIPT_COMMANDS.releasePack,
+          ...PREPUBLISH_SEQUENCE,
           `git tag ${tag}`
         ]
       }

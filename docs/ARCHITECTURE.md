@@ -81,6 +81,8 @@ does not use npm workspaces yet.
   reason.
   The release command entrypoints and pack contracts are shared as well.
   Release preflight steps are also declared once and reused by scripts and docs.
+  The narrower `prepublishOnly` publish hook is kept as a separate shared
+  contract so publish-time work stays smaller than full release verification.
 
 ## Architectural rules
 

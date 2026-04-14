@@ -70,6 +70,15 @@ npm run check:release
 Use this before tagging or publishing to verify both npm packages still pack
 with the expected key files.
 
+The narrower npm publish hook remains:
+
+```bash
+npm run prepublishOnly
+```
+
+This is expected to cover only `build:registry` and `check:registry`, while
+`release:check` stays responsible for the broader release preflight.
+
 ## MCP package checks
 
 Run the MCP script-manifest boundary check:

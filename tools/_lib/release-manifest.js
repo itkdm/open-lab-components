@@ -21,6 +21,11 @@ const RELEASE_CHECK_SEQUENCE = [
   "npm run build:site"
 ];
 
+const PREPUBLISH_SEQUENCE = [
+  "npm run build:registry",
+  "npm run check:registry"
+];
+
 function createReleasePackContracts(paths) {
   return [
     {
@@ -49,6 +54,7 @@ function createReleasePackContracts(paths) {
 }
 
 module.exports = {
+  PREPUBLISH_SEQUENCE,
   RELEASE_CHECK_SEQUENCE,
   RELEASE_SCRIPT_COMMANDS,
   createReleasePackContracts

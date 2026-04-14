@@ -1,6 +1,6 @@
 "use strict";
 
-const { RELEASE_CHECK_SEQUENCE } = require("./release-manifest");
+const { PREPUBLISH_SEQUENCE, RELEASE_CHECK_SEQUENCE } = require("./release-manifest");
 
 const ROOT_SCRIPT_GROUPS = {
   build: {
@@ -31,7 +31,7 @@ const ROOT_SCRIPT_GROUPS = {
     "release:check": RELEASE_CHECK_SEQUENCE.join(" && "),
     "release:pack": "npm run pack:check && npm run mcp:pack:check",
     "release:ready": "npm run release:check && npm run release:pack",
-    "prepublishOnly": "npm run build:registry && npm run check:registry"
+    "prepublishOnly": PREPUBLISH_SEQUENCE.join(" && ")
   },
   site: {
     "dev:site": "node tools/dev-site/index.js"
