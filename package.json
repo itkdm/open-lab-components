@@ -64,6 +64,7 @@
     "check:registry": "node tools/check-registry/index.js",
     "check:release": "node tools/release-smoke/index.js",
     "mcp:start": "npm --prefix mcp-server start",
+    "mcp:check:docs": "npm --prefix mcp-server run check:docs",
     "mcp:start:http": "npm --prefix mcp-server run start:http",
     "mcp:check:scripts": "npm --prefix mcp-server run check:scripts",
     "mcp:test": "npm --prefix mcp-server test",

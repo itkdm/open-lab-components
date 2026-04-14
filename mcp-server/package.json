@@ -22,6 +22,7 @@
     "OPERATIONS.md"
   ],
   "scripts": {
+    "check:docs": "node ./tools/check-docs.mjs",
     "check:scripts": "node ./tools/check-scripts.mjs",
     "start": "node ./src/core/cli.js",
     "start:http": "node ./src/core/http-cli.js",

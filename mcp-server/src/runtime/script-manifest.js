@@ -5,6 +5,7 @@ export const MCP_SCRIPT_GROUPS = {
     "token:generate": "node ./src/core/token-cli.js"
   },
   check: {
+    "check:docs": "node ./tools/check-docs.mjs",
     "check:scripts": "node ./tools/check-scripts.mjs",
     "smoke:remote": "node ./deploy/smoke/verify-remote.mjs",
     "pack:check": "node ../tools/release-smoke/index.js"

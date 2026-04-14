@@ -102,6 +102,7 @@ does not use npm workspaces yet.
 
 ### MCP package
 
+- `npm run mcp:check:docs`
 - `npm run mcp:check:scripts`
 - `npm run mcp:test`
 - `npm run mcp:test:remote`

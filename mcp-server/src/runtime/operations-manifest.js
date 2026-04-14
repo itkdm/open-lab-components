@@ -1,0 +1,50 @@
+const MCP_RUNTIME_ENV_VARS = [
+  "MCP_RUNTIME_HOME",
+  "HOST",
+  "PORT",
+  "CUSTOMERS_CONFIG_PATH",
+  "LOG_LEVEL",
+  "ALLOWED_HOSTS",
+  "ALLOWED_ORIGINS",
+  "TRUST_PROXY",
+  "ADMIN_BEARER_TOKEN",
+  "SESSION_TTL_MS",
+  "MAX_SESSIONS_PER_CUSTOMER",
+  "METRICS_BEARER_TOKEN",
+  "FEEDBACK_STORE_PATH",
+  "FEEDBACK_HALF_LIFE_DAYS",
+  "FEEDBACK_STORE_BACKEND",
+  "REDIS_URL",
+  "REDIS_FEEDBACK_KEY",
+  "POSTGRES_URL",
+  "POSTGRES_FEEDBACK_TABLE",
+  "POSTGRES_FEEDBACK_STORE_KEY"
+];
+
+const MCP_DEPLOY_VERIFY_COMMANDS = [
+  "npm run check:scripts",
+  "npm run smoke:remote",
+  "npm run pack:check"
+];
+
+const MCP_OPERATIONAL_ROUTES = [
+  "/healthz",
+  "/readyz",
+  "/metrics",
+  "/admin/overview",
+  "/admin/customers",
+  "/mcp"
+];
+
+const MCP_DEPLOY_ENV_OVERRIDES = [
+  "MCP_BASE_URL",
+  "MCP_ADMIN_BEARER_TOKEN",
+  "MCP_METRICS_BEARER_TOKEN"
+];
+
+export {
+  MCP_DEPLOY_ENV_OVERRIDES,
+  MCP_DEPLOY_VERIFY_COMMANDS,
+  MCP_OPERATIONAL_ROUTES,
+  MCP_RUNTIME_ENV_VARS
+};

@@ -68,6 +68,15 @@ npm run mcp:check:scripts
 This verifies the `mcp-server/package.json` scripts still match the shared MCP
 script manifest.
 
+Run the MCP docs boundary check:
+
+```bash
+npm run mcp:check:docs
+```
+
+This verifies the MCP README and deployment guide still include the shared
+runtime env vars, operational routes, and verification commands.
+
 ## Individual checks
 
 Run the root API smoke test:
