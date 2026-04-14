@@ -57,6 +57,17 @@ npm run check:release
 Use this before tagging or publishing to verify both npm packages still pack
 with the expected key files.
 
+## MCP package checks
+
+Run the MCP script-manifest boundary check:
+
+```bash
+npm run mcp:check:scripts
+```
+
+This verifies the `mcp-server/package.json` scripts still match the shared MCP
+script manifest.
+
 ## Individual checks
 
 Run the root API smoke test:

@@ -88,6 +88,7 @@ npm run start:http
 Useful verification commands:
 
 ```bash
+npm run check:scripts
 npm run smoke:remote
 npm run pack:check
 ```

@@ -65,6 +65,7 @@
     "check:release": "node tools/release-smoke/index.js",
     "mcp:start": "npm --prefix mcp-server start",
     "mcp:start:http": "npm --prefix mcp-server run start:http",
+    "mcp:check:scripts": "npm --prefix mcp-server run check:scripts",
     "mcp:test": "npm --prefix mcp-server test",
     "mcp:test:remote": "npm --prefix mcp-server run test:remote",
     "build": "npm run build:registry && npm run build:site",
