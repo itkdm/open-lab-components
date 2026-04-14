@@ -1,6 +1,9 @@
 "use strict";
 
-const { ROOT_API_README_SNIPPETS } = require("../../lib/root-api-metadata");
+const {
+  ROOT_API_README_SNIPPETS,
+  ROOT_QUERY_API_README_SNIPPETS
+} = require("../../lib/root-api-metadata");
 
 const ROOT_DOC_CHECK_COMMANDS = [
   "npm run check:text",
@@ -42,7 +45,8 @@ const ROOT_DOC_SURFACES = [
       "npm run build:registry",
       "registry/registry.json",
       "site/dist/",
-      ...ROOT_API_README_SNIPPETS
+      ...ROOT_API_README_SNIPPETS,
+      ...ROOT_QUERY_API_README_SNIPPETS
     ]
   },
   {

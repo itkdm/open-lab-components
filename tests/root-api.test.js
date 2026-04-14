@@ -8,11 +8,12 @@ const lab = require("../index.js");
 const registryLib = require("../lib/registry.js");
 const {
   ROOT_API_EXPORTS,
-  ROOT_API_TYPE_SNIPPETS
+  ROOT_API_TYPE_SNIPPETS,
+  ROOT_QUERY_API_CONTRACT
 } = require("../lib/root-api-metadata.js");
 
-const SAMPLE_ID = "phy.power.battery.basic";
-const SAMPLE_CATEGORY = "physics/circuit";
+const SAMPLE_ID = ROOT_QUERY_API_CONTRACT.sampleId;
+const SAMPLE_CATEGORY = ROOT_QUERY_API_CONTRACT.sampleCategory;
 
 function run(name, fn) {
   try {
@@ -57,7 +58,12 @@ async function main() {
     assert.ok(filteredItems.length > 0);
     assert.ok(filteredItems.every((item) => item.category === SAMPLE_CATEGORY));
     assert.ok(englishItems.every((item) => item.category === SAMPLE_CATEGORY));
-    assert.ok(englishItems.some((item) => item.id === SAMPLE_ID && item.name === "Dry Cell Battery"));
+    assert.ok(
+      englishItems.some(
+        (item) =>
+          item.id === SAMPLE_ID && item.name === ROOT_QUERY_API_CONTRACT.sampleEnglishName
+      )
+    );
   });
 
   await run("get returns a localized manifest and null for unknown ids", () => {
@@ -67,8 +73,8 @@ async function main() {
     assert.ok(zhComponent);
     assert.ok(enComponent);
     assert.equal(enComponent.id, SAMPLE_ID);
-    assert.equal(enComponent.name, "Dry Cell Battery");
-    assert.equal(enComponent.nameEn, "Dry Cell Battery");
+    assert.equal(enComponent.name, ROOT_QUERY_API_CONTRACT.sampleEnglishName);
+    assert.equal(enComponent.nameEn, ROOT_QUERY_API_CONTRACT.sampleEnglishName);
     assert.notEqual(zhComponent.name, "");
     assert.equal(lab.get("does.not.exist"), null);
   });
@@ -90,7 +96,7 @@ async function main() {
 
   await run("resolve returns an existing component file path", () => {
     const resolvedPath = lab.resolve(SAMPLE_ID);
-    const expectedSuffix = path.join("components", "physics", "circuit", "phy.power.battery.basic.html");
+    const expectedSuffix = path.join(...ROOT_QUERY_API_CONTRACT.sampleResolvedSuffix);
 
     assert.ok(path.isAbsolute(resolvedPath));
     assert.ok(fs.existsSync(resolvedPath));

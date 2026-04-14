@@ -23,7 +23,8 @@ does not use npm workspaces yet.
   This includes the registry loader boundary used by the root package APIs.
   Registry filenames and generated artifact names are shared here so the root
   package and tooling do not drift on file-contract details.
-  The root package export surface and type-declaration contract also live here.
+  The root package export surface, query examples, and type-declaration
+  contract also live here.
 - `tests/`
   Root-package smoke tests.
 

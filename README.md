@@ -49,7 +49,9 @@ npm install @itkdm/open-lab-components
 const lab = require('@itkdm/open-lab-components');
 
 const all = lab.list();                                    // 全部 210 个组件
-const physics = lab.list({ category: 'physics/mechanics' }); // 按分类筛选
+const circuit = lab.list({ category: 'physics/circuit' }, { locale: 'en' });
+const battery = lab.get('phy.power.battery.basic', { locale: 'en-US' });
+const categories = lab.categories();
 const html = lab.readSync('phy.mechanics.projectile.interactive'); // 读取 HTML
 ```
 

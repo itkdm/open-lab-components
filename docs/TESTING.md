@@ -61,7 +61,8 @@ This executes:
 2. `tools/check-scripts/index.js`
 3. `tools/check-docs/index.js`
 4. `tests/root-api.test.js`
-   This also checks the root JS export surface and `index.d.ts` declarations.
+   This also checks the root JS export surface, shared query API contract, and
+   `index.d.ts` declarations.
 5. `tools/runtime-harness/runtime-lifecycle.test.js`
 6. `tools/validate/index.js`
 
