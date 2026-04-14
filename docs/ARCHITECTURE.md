@@ -47,6 +47,8 @@ does not use npm workspaces yet.
   explicit inside the package so hosted and local execution share one contract.
   Tool, prompt, and resource registrations are also defined through shared
   package-level manifests instead of being duplicated across entrypoints.
+  The CLI/http startup scripts, published bins, and documented run commands are
+  also tied to one shared entrypoint contract.
 - `site/`
   Static app shell for preview, docs, and playground pages
   See `site/README.md` for source vs generated boundaries.

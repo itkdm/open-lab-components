@@ -1,5 +1,7 @@
 "use strict";
 
+const { MCP_PACKAGE_BINS } = require("./mcp-entrypoints");
+
 const SHARED_PACKAGE_METADATA = {
   author: "itkdm (https://github.com/itkdm)",
   bugs: {
@@ -55,10 +57,7 @@ const MCP_PACKAGE_METADATA = {
   description: "Locale-aware MCP server for discovering and retrieving Open Lab Components.",
   name: "@itkdm/open-lab-components-mcp",
   type: "module",
-  bin: {
-    "open-lab-components-mcp": "./src/core/cli.js",
-    "open-lab-components-mcp-http": "./src/core/http-cli.js"
-  },
+  bin: MCP_PACKAGE_BINS,
   keywords: [
     "mcp",
     "model-context-protocol",

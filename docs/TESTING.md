@@ -104,7 +104,8 @@ npm run mcp:check:docs
 ```
 
 This verifies the MCP README and deployment guide still include the shared
-runtime env vars, operational routes, and verification commands.
+runtime env vars, operational routes, verification commands, and startup
+entrypoint references.
 
 ## Individual checks
 

@@ -55,6 +55,7 @@ From the repo root:
 
 ```bash
 npm run mcp:start
+npm run mcp:start:http
 ```
 
 Optional backend integration tests:
@@ -139,6 +140,11 @@ Deployment readiness checklist:
 ## Claude Desktop example
 
 Use the published binary or a local repo checkout. Example local command:
+
+Published CLI entrypoints:
+
+- `open-lab-components-mcp`
+- `open-lab-components-mcp-http`
 
 ```json
 {

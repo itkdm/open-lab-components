@@ -3,9 +3,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import {
+  MCP_DEPLOYMENT_ENTRYPOINT_TOKENS,
   MCP_DEPLOY_ENV_OVERRIDES,
   MCP_DEPLOY_VERIFY_COMMANDS,
   MCP_OPERATIONAL_ROUTES,
+  MCP_README_ENTRYPOINT_TOKENS,
   MCP_RUNTIME_ENV_VARS
 } from "../src/runtime/operations-manifest.js";
 
@@ -25,8 +27,10 @@ function main() {
   const failures = [
     ...assertIncludes(readme, MCP_RUNTIME_ENV_VARS, "README env var"),
     ...assertIncludes(readme, MCP_DEPLOY_VERIFY_COMMANDS, "README verification command"),
+    ...assertIncludes(readme, MCP_README_ENTRYPOINT_TOKENS, "README entrypoint"),
     ...assertIncludes(deployment, MCP_OPERATIONAL_ROUTES, "DEPLOYMENT route"),
-    ...assertIncludes(deployment, MCP_DEPLOY_ENV_OVERRIDES, "DEPLOYMENT env override")
+    ...assertIncludes(deployment, MCP_DEPLOY_ENV_OVERRIDES, "DEPLOYMENT env override"),
+    ...assertIncludes(deployment, MCP_DEPLOYMENT_ENTRYPOINT_TOKENS, "DEPLOYMENT entrypoint")
   ];
 
   if (failures.length) {

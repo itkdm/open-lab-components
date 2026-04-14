@@ -1,9 +1,7 @@
+import { MCP_RUNTIME_ENTRY_SCRIPTS } from "./entrypoints.js";
+
 export const MCP_SCRIPT_GROUPS = {
-  runtime: {
-    start: "node ./src/core/cli.js",
-    "start:http": "node ./src/core/http-cli.js",
-    "token:generate": "node ./src/core/token-cli.js"
-  },
+  runtime: MCP_RUNTIME_ENTRY_SCRIPTS,
   check: {
     "check:docs": "node ./tools/check-docs.mjs",
     "check:scripts": "node ./tools/check-scripts.mjs",
