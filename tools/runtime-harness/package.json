@@ -7,6 +7,6 @@
     "test": "node ./runtime-lifecycle.test.js"
   },
   "dependencies": {
-    "jsdom": "^27.0.0"
+    "jsdom": "^24.1.3"
   }
 }
