@@ -66,6 +66,9 @@ This executes:
 5. `tools/runtime-harness/runtime-lifecycle.test.js`
 6. `tools/validate/index.js`
 
+The MCP catalog tests also exercise the shared `lib/catalog.js` query layer,
+which now backs both the root package API and the MCP discovery surface.
+
 ## Release-facing checks
 
 Run the publish smoke checks:

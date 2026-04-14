@@ -25,6 +25,8 @@ does not use npm workspaces yet.
   package and tooling do not drift on file-contract details.
   The root package export surface, query examples, and type-declaration
   contract also live here.
+  Shared catalog/query primitives also live here so the root package and
+  `mcp-server` do not fork search, summary, and component-read behavior.
 - `tests/`
   Root-package smoke tests.
 
