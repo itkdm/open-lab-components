@@ -121,6 +121,7 @@ Runtime path behavior:
 - if `MCP_RUNTIME_HOME` is set, default writable paths resolve under that directory
 - otherwise defaults resolve relative to the current working directory
 - explicit absolute values for `CUSTOMERS_CONFIG_PATH` and `FEEDBACK_STORE_PATH` always win
+- runtime env keys and defaults are centralized in `src/runtime/config-manifest.js`
 
 Operational guidance for admin tracing, error categories, and metrics:
 

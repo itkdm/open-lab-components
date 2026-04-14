@@ -4,6 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { loadCustomers, loadRuntimeConfig } from "../src/runtime/config.js";
+import { MCP_DEFAULTS, MCP_ENV_KEYS } from "../src/runtime/config-manifest.js";
 import {
   resolveConfigPath,
   resolveFeedbackStorePath,
@@ -70,23 +71,29 @@ test("loadCustomers rejects the same invalid payloads as the admin registry path
 test("runtime path helpers default to the current working directory", () => {
   const fakeCwd = path.resolve("srv", "open-lab-mcp");
   assert.equal(resolveRuntimeHome({}, fakeCwd), fakeCwd);
-  assert.equal(resolveConfigPath(undefined, { cwd: fakeCwd }), path.join(fakeCwd, "config", "customers.json"));
+  assert.equal(
+    resolveConfigPath(undefined, { cwd: fakeCwd }),
+    path.join(fakeCwd, ...MCP_DEFAULTS.configRelativePath)
+  );
   assert.equal(
     resolveFeedbackStorePath(undefined, { cwd: fakeCwd }),
-    path.join(fakeCwd, "data", "feedback-store.json")
+    path.join(fakeCwd, ...MCP_DEFAULTS.feedbackStoreRelativePath)
   );
 });
 
 test("runtime path helpers support MCP_RUNTIME_HOME overrides", () => {
   const fakeCwd = path.resolve("workspace", "repo");
-  const env = { MCP_RUNTIME_HOME: "./var/open-lab-mcp" };
+  const env = { [MCP_ENV_KEYS.runtimeHome]: "./var/open-lab-mcp" };
   const expectedHome = path.join(fakeCwd, "var", "open-lab-mcp");
 
   assert.equal(resolveRuntimeHome(env, fakeCwd), expectedHome);
-  assert.equal(resolveConfigPath(undefined, { env, cwd: fakeCwd }), path.join(expectedHome, "config", "customers.json"));
+  assert.equal(
+    resolveConfigPath(undefined, { env, cwd: fakeCwd }),
+    path.join(expectedHome, ...MCP_DEFAULTS.configRelativePath)
+  );
   assert.equal(
     resolveFeedbackStorePath(undefined, { env, cwd: fakeCwd }),
-    path.join(expectedHome, "data", "feedback-store.json")
+    path.join(expectedHome, ...MCP_DEFAULTS.feedbackStoreRelativePath)
   );
 });
 
@@ -95,12 +102,28 @@ test("loadRuntimeConfig exposes resolved runtime paths without overriding explic
   const feedbackStorePath = path.join(path.sep, "var", "lib", "open-lab-mcp", "feedback-store.json");
 
   const runtime = loadRuntimeConfig({
-    MCP_RUNTIME_HOME: "/srv/open-lab-mcp",
-    CUSTOMERS_CONFIG_PATH: configPath,
-    FEEDBACK_STORE_PATH: feedbackStorePath
+    [MCP_ENV_KEYS.runtimeHome]: "/srv/open-lab-mcp",
+    [MCP_ENV_KEYS.configPath]: configPath,
+    [MCP_ENV_KEYS.feedbackStorePath]: feedbackStorePath
   });
 
   assert.equal(runtime.runtimeHome, "/srv/open-lab-mcp");
   assert.equal(runtime.configPath, configPath);
   assert.equal(runtime.feedbackStorePath, feedbackStorePath);
+});
+
+test("loadRuntimeConfig uses manifest defaults for unset or invalid values", () => {
+  const runtime = loadRuntimeConfig({
+    [MCP_ENV_KEYS.port]: "0",
+    [MCP_ENV_KEYS.sessionTtlMs]: "10",
+    [MCP_ENV_KEYS.maxSessionsPerCustomer]: "-1",
+    [MCP_ENV_KEYS.feedbackHalfLifeDays]: "0"
+  });
+
+  assert.equal(runtime.host, MCP_DEFAULTS.host);
+  assert.equal(runtime.port, MCP_DEFAULTS.port);
+  assert.equal(runtime.logLevel, MCP_DEFAULTS.logLevel);
+  assert.equal(runtime.sessionTtlMs, MCP_DEFAULTS.sessionTtlMs);
+  assert.equal(runtime.maxSessionsPerCustomer, MCP_DEFAULTS.maxSessionsPerCustomer);
+  assert.equal(runtime.feedbackHalfLifeDays, MCP_DEFAULTS.feedbackHalfLifeDays);
 });

@@ -43,6 +43,8 @@ does not use npm workspaces yet.
   Publishable npm package: `@itkdm/open-lab-components`
 - `mcp-server/`
   Publishable npm package: `@itkdm/open-lab-components-mcp`
+  Its runtime env keys, script manifest, and writable-path defaults are kept
+  explicit inside the package so hosted and local execution share one contract.
 - `site/`
   Static app shell for preview, docs, and playground pages
   See `site/README.md` for source vs generated boundaries.
