@@ -8,6 +8,7 @@ const {
   ROOT_PACKAGE_METADATA,
   SHARED_PACKAGE_METADATA
 } = require("../_lib/package-metadata");
+const { ROOT_PACKAGE_DEPENDENCIES } = require("../_lib/package-dependencies");
 const { listDeclaredScripts } = require("../_lib/script-manifest");
 const { ROOT_PACKAGE_FILE_GLOBS } = require("../_lib/publish-assets");
 
@@ -44,6 +45,28 @@ function collectMetadataFailures(prefix, actual, expected, failures) {
     }
     if (actualValue !== expectedValue) {
       failures.push(`package metadata mismatch for ${prefix}${key}: expected "${expectedValue}"`);
+    }
+  }
+}
+
+function collectDependencyFailures(prefix, actual, expected, failures) {
+  const actualObject = actual && typeof actual === "object" ? actual : {};
+
+  for (const [name, version] of Object.entries(expected)) {
+    if (!(name in actualObject)) {
+      failures.push(`missing package dependency for ${prefix}: ${name}`);
+      continue;
+    }
+    if (actualObject[name] !== version) {
+      failures.push(
+        `package dependency mismatch for ${prefix}${name}: expected "${version}"`
+      );
+    }
+  }
+
+  for (const name of Object.keys(actualObject)) {
+    if (!(name in expected)) {
+      failures.push(`undeclared package dependency for ${prefix}: ${name}`);
     }
   }
 }
@@ -85,6 +108,13 @@ function main() {
 
   collectMetadataFailures("", pkg, SHARED_PACKAGE_METADATA, failures);
   collectMetadataFailures("", pkg, ROOT_PACKAGE_METADATA, failures);
+  collectDependencyFailures("dependencies", pkg.dependencies, ROOT_PACKAGE_DEPENDENCIES.dependencies, failures);
+  collectDependencyFailures(
+    "devDependencies",
+    pkg.devDependencies,
+    ROOT_PACKAGE_DEPENDENCIES.devDependencies,
+    failures
+  );
 
   if (failures.length) {
     console.error("Script manifest checks failed:");

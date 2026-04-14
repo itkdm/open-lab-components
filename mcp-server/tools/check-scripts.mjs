@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import packageMetadata from "../../tools/_lib/package-metadata.js";
+import packageDependencies from "../../tools/_lib/package-dependencies.js";
 import { listDeclaredScripts } from "../src/runtime/script-manifest.js";
 import { MCP_PACKAGE_FILE_GLOBS } from "../../tools/_lib/publish-assets.js";
 
@@ -11,6 +12,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const packageJsonPath = path.join(__dirname, "..", "package.json");
 const { MCP_PACKAGE_METADATA, SHARED_PACKAGE_METADATA } = packageMetadata;
+const { MCP_PACKAGE_DEPENDENCIES } = packageDependencies;
 
 function collectMetadataFailures(prefix, actual, expected, failures) {
   for (const [key, expectedValue] of Object.entries(expected)) {
@@ -42,6 +44,28 @@ function collectMetadataFailures(prefix, actual, expected, failures) {
     }
     if (actualValue !== expectedValue) {
       failures.push(`package metadata mismatch for ${prefix}${key}: expected "${expectedValue}"`);
+    }
+  }
+}
+
+function collectDependencyFailures(prefix, actual, expected, failures) {
+  const actualObject = actual && typeof actual === "object" ? actual : {};
+
+  for (const [name, version] of Object.entries(expected)) {
+    if (!(name in actualObject)) {
+      failures.push(`missing package dependency for ${prefix}: ${name}`);
+      continue;
+    }
+    if (actualObject[name] !== version) {
+      failures.push(
+        `package dependency mismatch for ${prefix}.${name}: expected "${version}"`
+      );
+    }
+  }
+
+  for (const name of Object.keys(actualObject)) {
+    if (!(name in expected)) {
+      failures.push(`undeclared package dependency for ${prefix}: ${name}`);
     }
   }
 }
@@ -83,6 +107,13 @@ function main() {
 
   collectMetadataFailures("", pkg, SHARED_PACKAGE_METADATA, failures);
   collectMetadataFailures("", pkg, MCP_PACKAGE_METADATA, failures);
+  collectDependencyFailures("dependencies", pkg.dependencies, MCP_PACKAGE_DEPENDENCIES.dependencies, failures);
+  collectDependencyFailures(
+    "devDependencies",
+    pkg.devDependencies,
+    MCP_PACKAGE_DEPENDENCIES.devDependencies,
+    failures
+  );
 
   if (failures.length) {
     console.error("MCP script manifest checks failed:");
