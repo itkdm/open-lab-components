@@ -30,11 +30,32 @@ function isAllowedSiteRootAssetPath(relPath) {
   );
 }
 
+function listExpectedSiteDistEntries(siteDir) {
+  const expected = new Set([".nojekyll", "components", "docs", "registry"]);
+
+  for (const fileName of listSiteHtmlFiles(siteDir)) {
+    expected.add(fileName);
+  }
+
+  for (const fileName of listSiteStaticFiles(siteDir)) {
+    expected.add(fileName);
+  }
+
+  for (const dir of SITE_STATIC_DIRS) {
+    if (fs.existsSync(path.join(siteDir, dir))) {
+      expected.add(dir);
+    }
+  }
+
+  return Array.from(expected).sort();
+}
+
 module.exports = {
   SITE_ROOT_ASSET_PREFIXES,
   SITE_STATIC_DIRS,
   SITE_STATIC_FILE_EXTENSIONS,
   isAllowedSiteRootAssetPath,
+  listExpectedSiteDistEntries,
   listSiteHtmlFiles,
   listSiteStaticFiles
 };

@@ -32,6 +32,8 @@ does not use npm workspaces yet.
   source-controlled inputs.
 - `site/dist/`
   Generated static site output.
+  Its top-level entries are defined by the shared site tooling boundary and are
+  validated as generated artifacts, not hand-maintained files.
 
 ### Applications and publish surfaces
 
@@ -81,6 +83,7 @@ does not use npm workspaces yet.
 ### Root library
 
 - `npm run check:text`
+- `npm run check:generated`
 - `npm run check:root`
 - `npm run build:registry`
 - `npm run build:site`

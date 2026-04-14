@@ -6,7 +6,7 @@ const parse5 = require("parse5");
 const { walkDir } = require("../_lib/walk");
 const { extractManifest } = require("../_lib/manifest");
 const { projectRootFrom, toPosixRel } = require("../_lib/paths");
-const { getRegistryPaths, loadCategoryNames } = require("../_lib/registry");
+const { getRegistryPaths, loadCategoryNames, pruneGeneratedRegistryFiles } = require("../_lib/registry");
 const {
   BILINGUAL_SAMPLE_IDS,
   DEFAULT_LOCALE,
@@ -163,6 +163,7 @@ function main() {
   const registryDir = getRegistryPaths(root).registryDir;
 
   ensureDir(registryDir);
+  pruneGeneratedRegistryFiles(registryDir, SUPPORTED_LOCALES);
 
   const categoryNames = loadCategoryNames(registryDir);
   const files = walkDir(componentsDir, { filterFile: (p) => p.toLowerCase().endsWith(".html") });

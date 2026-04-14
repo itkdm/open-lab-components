@@ -53,6 +53,7 @@
   },
   "scripts": {
     "check:text": "node tools/check-text/index.js",
+    "check:generated": "node tools/check-generated/index.js",
     "check:root": "node tools/check-root/index.js",
     "test:root": "node tests/root-api.test.js",
     "test:runtime": "npm --prefix tools/runtime-harness test",

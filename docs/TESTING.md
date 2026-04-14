@@ -14,6 +14,15 @@ npm run check:text
 This verifies source-controlled text files use the repository-standard UTF-8
 without BOM and LF line endings.
 
+Run the generated-artifact boundary check:
+
+```bash
+npm run check:generated
+```
+
+This verifies the required `registry/` outputs and `site/dist/` build entries
+exist and match the shared generated-output contract.
+
 Run the root-package quality path with a single command:
 
 ```bash
