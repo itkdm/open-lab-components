@@ -5,6 +5,15 @@ these checks.
 
 ## Root library checks
 
+Run the text-file boundary check:
+
+```bash
+npm run check:text
+```
+
+This verifies source-controlled text files use the repository-standard UTF-8
+without BOM and LF line endings.
+
 Run the root-package quality path with a single command:
 
 ```bash
@@ -13,9 +22,10 @@ npm run check:root
 
 This executes:
 
-1. `tests/root-api.test.js`
-2. `tools/runtime-harness/runtime-lifecycle.test.js`
-3. `tools/validate/index.js`
+1. `tools/check-text/index.js`
+2. `tests/root-api.test.js`
+3. `tools/runtime-harness/runtime-lifecycle.test.js`
+4. `tools/validate/index.js`
 
 ## Release-facing checks
 

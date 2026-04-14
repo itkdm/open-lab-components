@@ -73,11 +73,14 @@ does not use npm workspaces yet.
    package.
 6. Runtime data such as `mcp-server/data/` is local operational state and is
    not source-controlled.
+7. Source-controlled text files are expected to use UTF-8 without BOM and LF
+   line endings, matching `.editorconfig` and `.gitattributes`.
 
 ## Entry points
 
 ### Root library
 
+- `npm run check:text`
 - `npm run check:root`
 - `npm run build:registry`
 - `npm run build:site`

@@ -26,6 +26,12 @@ function ensureRegistryBuilt() {
 
 const checks = [
   {
+    label: "text file boundaries",
+    cwd: rootDir,
+    command: process.execPath,
+    args: [path.join(PATHS.toolsDir, "check-text", "index.js")]
+  },
+  {
     label: "root api smoke",
     cwd: rootDir,
     command: process.execPath,
