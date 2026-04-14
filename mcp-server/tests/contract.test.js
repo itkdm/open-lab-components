@@ -38,6 +38,8 @@ test("recommend_components contract stays stable", () => {
   });
 
   assertResponseEnvelope(result, "recommend_components", "en");
+  assert.equal(typeof result.selectionPolicy, "object");
+  assert.equal(typeof result.appliedConstraints, "object");
   assert.ok(Array.isArray(result.items));
   assert.ok(result.items.length > 0);
   const first = result.items[0];

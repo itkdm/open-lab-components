@@ -318,6 +318,23 @@ function recommendComponents(input = {}) {
 
   return {
     ...createResponseMeta("recommend_components", locale, warnings),
+    selectionPolicy: {
+      rankingModel: "rule-based-v2",
+      qualitySignalsIncluded: true,
+      feedbackRerankIncluded: true,
+      fallbackLocale: "zh-CN"
+    },
+    appliedConstraints: {
+      subject,
+      lessonGoal,
+      audience: audience || null,
+      interactionMode: interactionMode || null,
+      mustIncludeTags,
+      preferredCategories,
+      excludeCategories,
+      limit,
+      locale: locale || null
+    },
     query: {
       subject,
       lessonGoal,

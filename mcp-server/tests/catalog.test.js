@@ -88,6 +88,10 @@ test("recommend_components returns explainable ranked recommendations", () => {
   assert.equal(result.localeApplied, "en");
   assert.ok(Array.isArray(result.warnings));
   assert.equal(result.source.kind, "open-lab-components-catalog");
+  assert.equal(result.selectionPolicy.rankingModel, "rule-based-v2");
+  assert.equal(result.selectionPolicy.qualitySignalsIncluded, true);
+  assert.equal(result.appliedConstraints.subject, "physics");
+  assert.deepEqual(result.appliedConstraints.mustIncludeTags, ["resistor"]);
   assert.ok(result.items.length > 0);
   assert.equal(result.items[0].category, "physics/circuit");
   assert.ok(result.items[0].tags.includes("resistor"));
