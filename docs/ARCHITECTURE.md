@@ -20,6 +20,7 @@ does not use npm workspaces yet.
   The source of truth for all component HTML fragments and embedded manifests.
 - `lib/`
   Shared runtime and i18n logic consumed by the root library.
+  This includes the registry loader boundary used by the root package APIs.
 - `tests/`
   Root-package smoke tests.
 

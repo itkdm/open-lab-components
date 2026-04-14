@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const lab = require("../index.js");
+const registryLib = require("../lib/registry.js");
 
 const SAMPLE_ID = "phy.power.battery.basic";
 const SAMPLE_CATEGORY = "physics/circuit";
@@ -79,6 +80,27 @@ async function main() {
     assert.ok(path.isAbsolute(resolvedPath));
     assert.ok(fs.existsSync(resolvedPath));
     assert.ok(resolvedPath.endsWith(expectedSuffix));
+  });
+
+  await run("registry loader exposes a stable error when generated registry is missing", () => {
+    const originalGetRegistry = registryLib.getRegistry;
+    const originalRegistry = lab.registry;
+
+    registryLib.getRegistry = function () {
+      throw registryLib.createRegistryMissingError();
+    };
+
+    try {
+      assert.throws(
+        () => lab.list(),
+        (error) => error && error.code === "REGISTRY_NOT_BUILT" && /build:registry/.test(error.message)
+      );
+    } finally {
+      registryLib.getRegistry = originalGetRegistry;
+      registryLib.clearRegistryCache();
+      // Re-prime cache so later callers see the real registry again.
+      void originalRegistry;
+    }
   });
 }
 

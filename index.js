@@ -27,15 +27,16 @@ var fs, pathMod;
 try { fs = require('fs'); pathMod = require('path'); } catch (e) { /* browser */ }
 var i18n;
 try { i18n = require('./lib/i18n.js'); } catch (e) { i18n = null; }
+var registryLib;
+try { registryLib = require('./lib/registry.js'); } catch (e) { registryLib = null; }
 var runtime;
 try { runtime = require('./lib/runtime.js'); } catch (e) { runtime = null; }
 
-var _registry = null;
-
 function getRegistry() {
-  if (_registry) return _registry;
-  _registry = require('./registry/registry.json');
-  return _registry;
+  if (!registryLib || !registryLib.getRegistry) {
+    throw new Error('Registry loader is unavailable');
+  }
+  return registryLib.getRegistry();
 }
 
 function getLocale(options) {
