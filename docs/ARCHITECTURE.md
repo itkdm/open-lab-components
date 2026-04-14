@@ -77,6 +77,8 @@ does not use npm workspaces yet.
   publishing guide, checklists, and command docs do not drift from scripts.
   Versioned release assets are tied to the current package version so release
   filenames and tag references move together.
+  The publish-step ordering is also treated as a shared contract for the same
+  reason.
 
 ## Architectural rules
 

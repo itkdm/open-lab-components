@@ -25,6 +25,41 @@ function collectSnippetFailures(surfaces) {
   return failures;
 }
 
+function collectReleaseWorkflowFailures(releaseSpec) {
+  const failures = [];
+  const publishingPath = path.join(PATHS.root, "docs", "PUBLISHING.md");
+  const commandsPath = path.join(
+    PATHS.root,
+    "docs",
+    `RELEASE-COMMANDS-${releaseSpec.versions.rootVersion}.md`
+  );
+  const publishing = fs.readFileSync(publishingPath, "utf8");
+  const commands = fs.readFileSync(commandsPath, "utf8");
+
+  let previousPublishingIndex = -1;
+  let previousCommandsIndex = -1;
+
+  for (const step of releaseSpec.workflow) {
+    const publishingIndex = publishing.indexOf(step.command, previousPublishingIndex + 1);
+    if (publishingIndex === -1) {
+      failures.push(`docs/PUBLISHING.md missing workflow step: ${step.command}`);
+    } else {
+      previousPublishingIndex = publishingIndex;
+    }
+
+    const commandsIndex = commands.indexOf(step.command, previousCommandsIndex + 1);
+    if (commandsIndex === -1) {
+      failures.push(
+        `docs/RELEASE-COMMANDS-${releaseSpec.versions.rootVersion}.md missing workflow step: ${step.command}`
+      );
+    } else {
+      previousCommandsIndex = commandsIndex;
+    }
+  }
+
+  return failures;
+}
+
 function main() {
   const failures = collectSnippetFailures(ROOT_DOC_SURFACES);
   const releaseSpec = createReleaseDocSpec(PATHS);
@@ -36,6 +71,7 @@ function main() {
   }
 
   failures.push(...collectSnippetFailures(releaseSpec.files));
+  failures.push(...collectReleaseWorkflowFailures(releaseSpec));
 
   if (failures.length) {
     console.error("Root docs checks failed:");

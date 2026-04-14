@@ -2,6 +2,7 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
+const { createReleaseWorkflow } = require("./release-workflow");
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, "utf8"));
@@ -23,6 +24,7 @@ function createReleaseDocSpec(paths) {
 
   return {
     versions,
+    workflow: createReleaseWorkflow(version),
     files: [
       {
         relativePath: `docs/GITHUB-RELEASE-${version}.md`,

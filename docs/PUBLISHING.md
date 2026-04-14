@@ -65,6 +65,23 @@ git push origin v0.2.0
 - `docs/GITHUB-RELEASE-0.2.0.md`
 - `docs/ANNOUNCEMENT-0.2.0.zh-CN.md`
 
+## Shared workflow order
+
+The release workflow is intentionally kept in this order:
+
+1. `npm run check:root`
+2. `npm run check:release`
+3. `npm run release:ready`
+4. `git diff -- package.json mcp-server/package.json README.en.md README.md docs site/index.html`
+5. `git commit -m "release: prepare v0.2.0 locale-aware metadata rollout"`
+6. `git tag v0.2.0`
+7. `npm publish`
+8. `npm --prefix mcp-server publish`
+9. `git push origin <branch>`
+10. `git push origin v0.2.0`
+11. `docs/GITHUB-RELEASE-0.2.0.md`
+12. `docs/ANNOUNCEMENT-0.2.0.zh-CN.md`
+
 ## Notes
 
 - `release:check` validates the repo and rebuilds publish artifacts
