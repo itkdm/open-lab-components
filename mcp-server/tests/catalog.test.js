@@ -20,6 +20,7 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const lab = require("../../index.js");
+const RESPONSE_SCHEMA_VERSION = "openlab-mcp-response/v1";
 
 test.afterEach(async () => {
   await feedbackStore.reset();
@@ -82,6 +83,11 @@ test("recommend_components returns explainable ranked recommendations", () => {
     limit: 3
   });
 
+  assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
+  assert.equal(result.responseType, "recommend_components");
+  assert.equal(result.localeApplied, "en");
+  assert.deepEqual(result.warnings, []);
+  assert.equal(result.source.kind, "open-lab-components-catalog");
   assert.ok(result.items.length > 0);
   assert.equal(result.items[0].category, "physics/circuit");
   assert.ok(result.items[0].tags.includes("resistor"));
@@ -175,6 +181,9 @@ test("build_experiment_page returns a structured page plan", () => {
     locale: "en"
   });
 
+  assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
+  assert.equal(result.responseType, "build_experiment_page");
+  assert.equal(result.localeApplied, "en");
   assert.equal(result.page.subject, "physics");
   assert.ok(Array.isArray(result.sections));
   assert.ok(result.sections.length >= 4);
@@ -193,6 +202,9 @@ test("compose_experiment_bundle returns render-ready bundle items", () => {
     locale: "en"
   });
 
+  assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
+  assert.equal(result.responseType, "compose_experiment_bundle");
+  assert.equal(result.localeApplied, "en");
   assert.equal(typeof result.bundle.itemCount, "number");
   assert.ok(Array.isArray(result.items));
   assert.ok(result.items.length > 0);
@@ -274,6 +286,10 @@ test("feedback decay reduces old boosts over time", async () => {
 
 test("get_component returns full html and registry fields", () => {
   const result = getComponent("phy.mechanics.projectile.interactive");
+  assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
+  assert.equal(result.responseType, "get_component");
+  assert.equal(result.localeApplied, "zh-CN");
+  assert.deepEqual(result.warnings, []);
   assert.equal(result.component.id, "phy.mechanics.projectile.interactive");
   assert.match(result.component.html, /data-cmp-id="phy\.mechanics\.projectile\.interactive"/);
   assert.equal(typeof result.component.sourcePath, "string");

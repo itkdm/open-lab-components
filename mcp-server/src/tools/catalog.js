@@ -3,6 +3,11 @@ import { feedbackStore } from "../feedback/feedback-store.js";
 
 const require = createRequire(import.meta.url);
 const catalog = require("../../../lib/catalog.js");
+const MCP_RESPONSE_SCHEMA_VERSION = "openlab-mcp-response/v1";
+const SOURCE_INFO = Object.freeze({
+  kind: "open-lab-components-catalog",
+  package: "@itkdm/open-lab-components-mcp"
+});
 
 const {
   clampLimit,
@@ -77,6 +82,17 @@ function recommendationSummary(item) {
   return {
     ...toSummary(item),
     description: item.description || null
+  };
+}
+
+function createResponseMeta(kind, locale, warnings = []) {
+  return {
+    schemaVersion: MCP_RESPONSE_SCHEMA_VERSION,
+    responseType: kind,
+    generatedAt: new Date().toISOString(),
+    localeApplied: locale || "zh-CN",
+    warnings: Array.isArray(warnings) ? warnings : [],
+    source: SOURCE_INFO
   };
 }
 
@@ -188,6 +204,7 @@ function recommendComponents(input = {}) {
   );
 
   return {
+    ...createResponseMeta("recommend_components", locale),
     query: {
       subject,
       lessonGoal,
@@ -296,6 +313,7 @@ function buildExperimentPagePlan(input = {}) {
   });
 
   return {
+    ...createResponseMeta("build_experiment_page", locale),
     page: {
       pageType,
       subject,
@@ -419,6 +437,7 @@ function composeExperimentBundle(input = {}) {
     .filter(Boolean);
 
   return {
+    ...createResponseMeta("compose_experiment_bundle", locale),
     bundle: {
       pageType,
       subject: subject || null,
@@ -447,7 +466,10 @@ function composeExperimentBundle(input = {}) {
 
 function getComponent(id, locale = "zh-CN") {
   try {
-    return getComponentData(id, locale);
+    return {
+      ...createResponseMeta("get_component", locale),
+      ...getComponentData(id, locale)
+    };
   } catch (caughtError) {
     if (!(caughtError && caughtError.code === "COMPONENT_NOT_FOUND")) {
       throw caughtError;
