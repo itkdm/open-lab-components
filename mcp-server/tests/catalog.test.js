@@ -195,6 +195,9 @@ test("build_experiment_page returns a structured page plan", () => {
   assert.equal(result.page.subject, "physics");
   assert.ok(Array.isArray(result.sections));
   assert.ok(result.sections.length >= 4);
+  assert.equal(typeof result.sections[0].slot, "string");
+  assert.equal(typeof result.sections[0].interactionLevel, "string");
+  assert.ok(Array.isArray(result.sections[0].hostRequirements));
   assert.ok(Array.isArray(result.selectedComponents));
   assert.ok(Array.isArray(result.assemblySteps));
 });
@@ -216,6 +219,9 @@ test("compose_experiment_bundle returns render-ready bundle items", () => {
   assert.equal(typeof result.bundle.itemCount, "number");
   assert.ok(Array.isArray(result.items));
   assert.ok(result.items.length > 0);
+  assert.equal(typeof result.items[0].slot, "string");
+  assert.equal(typeof result.items[0].interactionLevel, "string");
+  assert.ok(Array.isArray(result.items[0].hostRequirements));
   assert.ok(result.items[0].html.includes("data-cmp-id"));
   assert.ok(Array.isArray(result.renderOrder));
 });

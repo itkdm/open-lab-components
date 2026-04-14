@@ -355,6 +355,26 @@ function inferSectionType(title) {
   return "content";
 }
 
+function inferInteractionLevel(item, sectionType) {
+  if (item && hasEvents(item)) return "interactive";
+  if (sectionType === "interactive" || sectionType === "practice") return "guided";
+  return "static";
+}
+
+function inferSlot(sectionType, order) {
+  if (sectionType === "interactive") return order === 1 ? "hero" : "interactive";
+  if (sectionType === "practice") return "practice";
+  if (sectionType === "summary") return "summary";
+  return order === 1 ? "intro" : "content";
+}
+
+function buildHostRequirements(item, sectionType) {
+  const requirements = ["theme-css-vars"];
+  if (item && hasEvents(item)) requirements.push("event-listeners");
+  if (sectionType === "interactive") requirements.push("above-fold-compatible");
+  return requirements;
+}
+
 function buildSectionTitles(subject, lessonGoal, audience) {
   const target = audience ? `for ${audience}` : "";
   return [
@@ -405,6 +425,7 @@ function buildExperimentPagePlan(input = {}) {
       order: index + 1,
       title,
       sectionType,
+      slot: inferSlot(sectionType, index + 1),
       objective:
         sectionType === "interactive"
           ? `Use a visual component to make ${lessonGoal} concrete.`
@@ -416,12 +437,14 @@ function buildExperimentPagePlan(input = {}) {
         item
           ? `${item.name} fits because it scored ${item.recommendationScore} and aligns with ${subject} + ${lessonGoal}.`
           : "No component selected for this section.",
+      interactionLevel: inferInteractionLevel(item, sectionType),
       interactionPattern:
         sectionType === "interactive"
           ? interactionMode || "interactive exploration"
           : sectionType === "practice"
             ? "guided exercise"
-            : "content support"
+            : "content support",
+      hostRequirements: buildHostRequirements(item, sectionType)
     };
   });
 
@@ -545,6 +568,8 @@ function composeExperimentBundle(input = {}) {
         order: index + 1,
         sectionTitle: section.title,
         sectionType: section.sectionType,
+        slot: section.slot || inferSlot(section.sectionType, index + 1),
+        interactionLevel: inferInteractionLevel(component, section.sectionType),
         component: {
           id: component.id,
           name: component.name,
@@ -554,6 +579,7 @@ function composeExperimentBundle(input = {}) {
         },
         html: component.html,
         layoutHint: pickBundleLayout(section.sectionType, index),
+        hostRequirements: buildHostRequirements(component, section.sectionType),
         integrationNotes: [
           `Mount ${component.name} in the ${section.title} section.`,
           hasEvents(component)

@@ -66,6 +66,9 @@ test("build_experiment_page contract stays stable", () => {
   assert.equal(typeof result.page, "object");
   assert.ok(Array.isArray(result.selectedComponents));
   assert.ok(Array.isArray(result.sections));
+  assert.equal(typeof result.sections[0].slot, "string");
+  assert.equal(typeof result.sections[0].interactionLevel, "string");
+  assert.ok(Array.isArray(result.sections[0].hostRequirements));
   assert.ok(Array.isArray(result.implementationNotes));
   assert.ok(Array.isArray(result.assemblySteps));
 });
@@ -84,6 +87,9 @@ test("compose_experiment_bundle contract stays stable", () => {
   assertResponseEnvelope(result, "compose_experiment_bundle", "en");
   assert.equal(typeof result.bundle, "object");
   assert.ok(Array.isArray(result.items));
+  assert.equal(typeof result.items[0].slot, "string");
+  assert.equal(typeof result.items[0].interactionLevel, "string");
+  assert.ok(Array.isArray(result.items[0].hostRequirements));
   assert.ok(Array.isArray(result.renderOrder));
   assert.ok(Array.isArray(result.hostInstructions));
 });
