@@ -25,7 +25,8 @@ function createMetricsStore() {
   const startedAt = Date.now();
   const requestsByRoute = new Map();
   const requestsByCustomer = new Map();
-  const toolCalls = new Map();
+  const requestsByTool = new Map();
+  const requestsByToolStatus = new Map();
   const errorCounts = new Map();
   const feedbackEvents = new Map();
   const adminWrites = new Map();
@@ -38,7 +39,10 @@ function createMetricsStore() {
     recordHttpRequest({ route, customerId, status, toolName }) {
       incrementCounter(requestsByRoute, `${route}:${status}`);
       if (customerId) incrementCounter(requestsByCustomer, customerId);
-      if (toolName) incrementCounter(toolCalls, toolName);
+      if (toolName) {
+        incrementCounter(requestsByTool, toolName);
+        incrementCounter(requestsByToolStatus, `${toolName}:${status}`);
+      }
       if (status >= 400) incrementCounter(errorCounts, String(status));
     },
     recordFeedbackEvent(feedbackType) {
@@ -67,7 +71,8 @@ function createMetricsStore() {
         totalSessionsCreated,
         requestsByRoute: mapToObject(requestsByRoute),
         requestsByCustomer: mapToObject(requestsByCustomer),
-        toolCalls: mapToObject(toolCalls),
+        requestsByTool: mapToObject(requestsByTool),
+        requestsByToolStatus: mapToObject(requestsByToolStatus),
         feedbackEvents: mapToObject(feedbackEvents),
         adminWrites: mapToObject(adminWrites),
         adminWriteSummary: buildAdminWriteSummary(adminWrites),
