@@ -423,6 +423,31 @@ function buildIntegrationHints(component) {
   };
 }
 
+function summarizeCoverage(selectedItems, sections) {
+  const categories = new Set();
+  const interactionLevels = new Set();
+  const sectionTypes = new Set();
+
+  for (const item of Array.isArray(selectedItems) ? selectedItems : []) {
+    if (item && item.category) categories.add(item.category);
+  }
+
+  for (const section of Array.isArray(sections) ? sections : []) {
+    if (section && section.sectionType) sectionTypes.add(section.sectionType);
+    if (section && section.interactionLevel) interactionLevels.add(section.interactionLevel);
+  }
+
+  return {
+    selectedComponentCount: Array.isArray(selectedItems) ? selectedItems.length : 0,
+    distinctCategoryCount: categories.size,
+    sectionTypeCount: sectionTypes.size,
+    interactionLevelCount: interactionLevels.size,
+    categories: Array.from(categories).sort(),
+    sectionTypes: Array.from(sectionTypes).sort(),
+    interactionLevels: Array.from(interactionLevels).sort()
+  };
+}
+
 function buildSectionTitles(subject, lessonGoal, audience) {
   const target = audience ? `for ${audience}` : "";
   return [
@@ -522,6 +547,7 @@ function buildExperimentPagePlan(input = {}) {
       interactionMode: interactionMode || null,
       locale: locale || null
     },
+    coverageSummary: summarizeCoverage(selectedItems, sections),
     selectedComponents: selectedItems,
     sections,
     implementationNotes: [

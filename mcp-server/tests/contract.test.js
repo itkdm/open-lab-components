@@ -66,6 +66,7 @@ test("build_experiment_page contract stays stable", () => {
 
   assertResponseEnvelope(result, "build_experiment_page", "en");
   assert.equal(typeof result.page, "object");
+  assert.equal(typeof result.coverageSummary, "object");
   assert.ok(Array.isArray(result.selectedComponents));
   assert.ok(Array.isArray(result.sections));
   assert.equal(typeof result.sections[0].slot, "string");

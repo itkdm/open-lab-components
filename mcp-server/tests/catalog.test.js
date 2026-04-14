@@ -197,6 +197,10 @@ test("build_experiment_page returns a structured page plan", () => {
   assert.equal(result.responseType, "build_experiment_page");
   assert.equal(result.localeApplied, "en");
   assert.equal(result.page.subject, "physics");
+  assert.equal(typeof result.coverageSummary, "object");
+  assert.ok(Array.isArray(result.coverageSummary.categories));
+  assert.ok(Array.isArray(result.coverageSummary.sectionTypes));
+  assert.ok(Array.isArray(result.coverageSummary.interactionLevels));
   assert.ok(Array.isArray(result.sections));
   assert.ok(result.sections.length >= 4);
   assert.equal(typeof result.sections[0].slot, "string");
