@@ -276,6 +276,8 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(payload.requestsByCustomer["vip-test"] >= 1, true);
     assert.equal(payload.requestsByTool["submit_recommendation_feedback"] >= 1, true);
     assert.equal(payload.requestsByToolStatus["submit_recommendation_feedback:200"] >= 1, true);
+    assert.equal(payload.requestDurationMsByTool["submit_recommendation_feedback"] >= 0, true);
+    assert.equal(typeof payload.requestDurationAvgMsByTool["submit_recommendation_feedback"], "number");
     assert.equal(payload.feedbackBackend.kind, "file");
     assert.equal(payload.feedbackBackend.ok, true);
     assert.equal(typeof payload.feedbackStoreSummary.tenantCount, "number");

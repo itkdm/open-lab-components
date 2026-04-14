@@ -471,7 +471,8 @@ async function createRemoteApp(options = {}) {
         route: req.path,
         customerId: req.customer ? req.customer.customerId : null,
         status: res.statusCode,
-        toolName: req.mcpToolName || null
+        toolName: req.mcpToolName || null,
+        durationMs: Date.now() - startedAt
       });
       logger.info({
         event: "remote_mcp_request",

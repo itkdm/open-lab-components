@@ -21,12 +21,23 @@ function buildCounterSummary(store) {
   return Object.fromEntries(Array.from(store.entries()).sort(([a], [b]) => a.localeCompare(b)));
 }
 
+function buildAverageSummary(totalStore, countStore) {
+  const entries = Array.from(totalStore.entries()).sort(([a], [b]) => a.localeCompare(b));
+  return Object.fromEntries(
+    entries.map(([key, total]) => {
+      const count = countStore.get(key) || 0;
+      return [key, count > 0 ? Number((total / count).toFixed(2)) : 0];
+    })
+  );
+}
+
 function createMetricsStore() {
   const startedAt = Date.now();
   const requestsByRoute = new Map();
   const requestsByCustomer = new Map();
   const requestsByTool = new Map();
   const requestsByToolStatus = new Map();
+  const requestDurationMsByTool = new Map();
   const errorCounts = new Map();
   const feedbackEvents = new Map();
   const adminWrites = new Map();
@@ -36,12 +47,15 @@ function createMetricsStore() {
   let totalSessionsCreated = 0;
 
   return {
-    recordHttpRequest({ route, customerId, status, toolName }) {
+    recordHttpRequest({ route, customerId, status, toolName, durationMs }) {
       incrementCounter(requestsByRoute, `${route}:${status}`);
       if (customerId) incrementCounter(requestsByCustomer, customerId);
       if (toolName) {
         incrementCounter(requestsByTool, toolName);
         incrementCounter(requestsByToolStatus, `${toolName}:${status}`);
+        if (Number.isFinite(durationMs) && durationMs >= 0) {
+          incrementCounter(requestDurationMsByTool, toolName, durationMs);
+        }
       }
       if (status >= 400) incrementCounter(errorCounts, String(status));
     },
@@ -73,6 +87,8 @@ function createMetricsStore() {
         requestsByCustomer: mapToObject(requestsByCustomer),
         requestsByTool: mapToObject(requestsByTool),
         requestsByToolStatus: mapToObject(requestsByToolStatus),
+        requestDurationMsByTool: mapToObject(requestDurationMsByTool),
+        requestDurationAvgMsByTool: buildAverageSummary(requestDurationMsByTool, requestsByTool),
         feedbackEvents: mapToObject(feedbackEvents),
         adminWrites: mapToObject(adminWrites),
         adminWriteSummary: buildAdminWriteSummary(adminWrites),
