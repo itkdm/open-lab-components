@@ -1,0 +1,131 @@
+# Publishing Guide
+
+This repository now includes two publish-ready packages:
+
+- root package: `@itkdm/open-lab-components`
+- MCP package: `@itkdm/open-lab-components-mcp`
+
+## Recommended flow
+
+1. Run the root quality path:
+
+```bash
+npm run check:root
+```
+
+2. Run the release smoke checks:
+
+```bash
+npm run check:release
+```
+
+3. Run the broader release checks:
+
+```bash
+npm run release:ready
+```
+
+This expands to:
+
+- `npm run release:check`
+- `npm run release:pack`
+
+`npm run release:check` currently runs:
+
+- `npm run validate`
+- `npm run build:registry`
+- `npm run mcp:test`
+- `npm run build:site`
+
+`prepublishOnly` currently runs the narrower publish contract:
+
+- `npm run build:registry`
+- `npm run check:registry`
+
+Published root package file globs:
+
+- `index.js`
+- `index.d.ts`
+- `lib/**/*.js`
+- `components/**/*.html`
+- `registry/*.json`
+
+Published MCP package file globs:
+
+- `src/**/*`
+- `config/**/*.json`
+- `deploy/**/*`
+- `.env.example`
+- `README.md`
+- `DEPLOYMENT.md`
+- `DEPLOYMENT-CHECKLIST.md`
+- `OPERATIONS.md`
+
+4. Review:
+
+- `CHANGELOG.md`
+- `docs/GITHUB-RELEASE-0.2.0.md`
+- `docs/ANNOUNCEMENT-0.2.0.zh-CN.md`
+- `docs/RELEASE-CHECKLIST-0.2.0.md`
+- `docs/RELEASE-COMMANDS-0.2.0.md`
+
+5. Commit the release changes.
+
+6. Create the tag:
+
+```bash
+git tag v0.2.0
+```
+
+7. Publish the root package:
+
+```bash
+npm publish
+```
+
+8. Publish the MCP package:
+
+```bash
+npm --prefix mcp-server publish
+```
+
+9. Push the branch and tag:
+
+```bash
+git push origin <branch>
+git push origin v0.2.0
+```
+
+10. Create the GitHub Release using:
+
+- `docs/GITHUB-RELEASE-0.2.0.md`
+- `docs/ANNOUNCEMENT-0.2.0.zh-CN.md`
+
+## Shared workflow order
+
+The release workflow is intentionally kept in this order:
+
+1. `npm run check:root`
+2. `npm run check:release`
+3. `npm run release:ready`
+4. `git diff -- package.json mcp-server/package.json README.en.md README.md docs site/index.html`
+5. `git commit -m "release: prepare v0.2.0 locale-aware metadata rollout"`
+6. `git tag v0.2.0`
+7. `npm publish`
+8. `npm --prefix mcp-server publish`
+9. `git push origin <branch>`
+10. `git push origin v0.2.0`
+11. `docs/GITHUB-RELEASE-0.2.0.md`
+12. `docs/ANNOUNCEMENT-0.2.0.zh-CN.md`
+
+## Notes
+
+- `release:check` validates the repo and rebuilds publish artifacts
+- `release:pack` verifies both npm packages can be packed with the current file lists
+- `release:ready` runs both checks in sequence
+- `npm run pack:check` is the root package dry-run pack entrypoint
+- `npm run mcp:pack:check` is the MCP package dry-run pack entrypoint
+- `npm run check:root` covers the root library quality path before release work starts
+- `npm run check:release` confirms both publishable packages still expose the expected tarball contents
+- `prepublishOnly` keeps the actual npm publish hook limited to registry generation and registry validation
+- versioned release assets in `docs/` are expected to match the current package version and release tag

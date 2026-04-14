@@ -1,6 +1,6 @@
 # MCP Server（中文）
 
-[English](./MCP.en.md) | [中文镜像](./MCP.zh-CN.md)
+[English](./MCP.en.md)
 
 Open Lab Components 在 [mcp-server/](../mcp-server/) 中提供独立的 MCP server 包，用于让本地客户端、远程服务和 AI Agent 统一检索、推荐和读取组件目录。
 
@@ -152,7 +152,6 @@ MCP server 会作为独立 npm 包发布：
 ## 相关文档
 
 - [MCP English Docs](./MCP.en.md)
-- [MCP 中文镜像](./MCP.zh-CN.md)
 - [mcp-server README](../mcp-server/README.md)
 - [mcp-server 中文说明](../mcp-server/README.zh-CN.md)
 - [I18N 发布说明](./RELEASE-2026-03-I18N.md)

@@ -1,0 +1,149 @@
+"# Architecture"
+
+## Purpose
+
+This repository is a multi-surface product for STEM teaching components.
+It serves the same component assets through three delivery surfaces:
+
+- the root npm library
+- the static documentation and showcase site
+- the MCP server package
+
+The current repository intentionally keeps the root library at the repo root and
+does not use npm workspaces yet.
+
+## Top-level boundaries
+
+### Source assets
+
+- `components/`
+  The source of truth for all component HTML fragments and embedded manifests.
+- `lib/`
+  Shared runtime and i18n logic consumed by the root library.
+  This includes the registry loader boundary used by the root package APIs.
+  Registry filenames and generated artifact names are shared here so the root
+  package and tooling do not drift on file-contract details.
+  The root package export surface, query examples, and type-declaration
+  contract also live here.
+  Shared catalog/query primitives also live here so the root package and
+  `mcp-server` do not fork search, summary, and component-read behavior.
+- `tests/`
+  Root-package smoke tests.
+
+### Generated outputs
+
+- `registry/`
+  Generated registry, category, tag, and i18n-report artifacts.
+  Only `registry/.gitkeep` and `registry/category-names.json` are treated as
+  source-controlled inputs.
+- `site/dist/`
+  Generated static site output.
+  Its top-level entries are defined by the shared site tooling boundary and are
+  validated as generated artifacts, not hand-maintained files.
+
+### Applications and publish surfaces
+
+- repo root
+  Publishable npm package: `@itkdm/open-lab-components`
+- `mcp-server/`
+  Publishable npm package: `@itkdm/open-lab-components-mcp`
+  Its runtime env keys, script manifest, and writable-path defaults are kept
+  explicit inside the package so hosted and local execution share one contract.
+  Tool, prompt, and resource registrations are also defined through shared
+  package-level manifests instead of being duplicated across entrypoints.
+  The CLI/http startup scripts, published bins, and documented run commands are
+  also tied to one shared entrypoint contract.
+- `site/`
+  Static app shell for preview, docs, and playground pages
+  See `site/README.md` for source vs generated boundaries.
+
+### Tooling
+
+- `tools/build-registry/`
+  Scans `components/` and emits generated registry artifacts.
+- `tools/validate/`
+  Validates component structure and manifest constraints.
+- `tools/check-registry/`
+  Verifies generated registry output matches source manifests.
+- `tools/check-root/`
+  Root quality entrypoint for smoke tests and validation.
+- `tools/check-scripts/`
+  Verifies `package.json` root scripts and publish `files` boundaries still
+  match the shared manifests, including shared package metadata, descriptions,
+  keywords, package entry fields, declared dependency surfaces, and the shared
+  package version contract.
+- `tools/runtime-harness/`
+  Isolated DOM harness used only for runtime lifecycle verification.
+- `tools/build-site/`
+  Produces `site/dist/` from site sources plus generated assets.
+- `tools/dev-site/`
+  Local preview server for the static site shell and whitelisted root assets.
+  It shares the same site-entry and root-republish boundary constants as the
+  build and generated-artifact checks.
+- `tools/release-smoke/`
+  Pack-level release verification for both publishable packages.
+  Release-facing docs are also checked against a shared publish contract so the
+  publishing guide, checklists, and command docs do not drift from scripts.
+  Versioned release assets are tied to the current package version so release
+  filenames and tag references move together.
+  The publish-step ordering is also treated as a shared contract for the same
+  reason.
+  The release command entrypoints and pack contracts are shared as well.
+  Release preflight steps are also declared once and reused by scripts and docs.
+  The narrower `prepublishOnly` publish hook is kept as a separate shared
+  contract so publish-time work stays smaller than full release verification.
+  Published file-glob boundaries and tarball assertions are also shared.
+
+## Architectural rules
+
+1. `components/` is the only authoritative source for component content.
+2. `registry/*.json` is generated output and must not be edited manually.
+3. Root-package runtime logic stays in `lib/`, not inside tooling scripts.
+4. `mcp-server/` may consume the root package but keeps its runtime concerns
+   isolated inside its own package.
+5. `tools/runtime-harness/` is a quality-only boundary; it is not a product
+   package.
+6. Runtime data such as `mcp-server/data/` is local operational state and is
+   not source-controlled.
+7. Source-controlled text files are expected to use UTF-8 without BOM and LF
+   line endings, matching `.editorconfig` and `.gitattributes`.
+
+## Entry points
+
+### Root library
+
+- `npm run check:text`
+- `npm run check:scripts`
+- `npm run check:docs`
+- `npm run check:generated`
+- `npm run check:root`
+- `npm run build:registry`
+- `npm run build:site`
+- `npm run test`
+
+### MCP package
+
+- `npm run mcp:check:docs`
+- `npm run mcp:check:scripts`
+- `npm run mcp:test`
+- `npm run mcp:test:remote`
+- `npm run mcp:start`
+- `npm run mcp:start:http`
+
+### Release verification
+
+- `npm run check:release`
+- `npm run release:check`
+- `npm run release:pack`
+
+## Current direction
+
+The repository is being cleaned up by tightening boundaries first, not by
+moving packages aggressively. The current target is:
+
+- shared path and script conventions at the root
+- explicit source vs generated vs runtime-data separation
+- stable CI entrypoints
+
+Workspace migration can be reconsidered later after those boundaries remain
+stable.

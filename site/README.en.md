@@ -20,22 +20,22 @@ The site republishes and presents those assets.
 ### Source-controlled inputs
 
 - `site/*.html`
-  Page entry files for the public site shell
+  page entry files for the public site shell
 - `site/assets/`
-  Site-only static assets referenced by those pages
+  site-only static assets referenced by those pages
 - top-level static files in `site/`
-  For example `logo.png`, `banner.png`, and `favicon.ico`
+  such as `logo.png`, `banner.png`, and `favicon.ico`
 
 ### Generated output
 
 - `site/dist/`
-  Build output created by `npm run build:site`
+  build output created by `npm run build:site`
 
 `site/dist/` is disposable and should not be treated as a manual editing surface.
 
 ## External Build Inputs
 
-The site build intentionally republishes a small set of root-level source or generated assets into `site/dist/`:
+The site build republishes a small set of root-level source or generated assets into `site/dist/`:
 
 - `components/`
 - `registry/`

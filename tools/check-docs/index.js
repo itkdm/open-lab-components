@@ -60,6 +60,79 @@ function collectReleaseWorkflowFailures(releaseSpec) {
   return failures;
 }
 
+function toLocalizedBaseName(fileName) {
+  return fileName.replace(/(\.en|\.zh-CN)?\.md$/, "");
+}
+
+function collectLocalizedPairFailuresForDir(relativeDir, filterFn) {
+  const targetDir = path.join(PATHS.root, relativeDir);
+  const docFiles = fs
+    .readdirSync(targetDir)
+    .filter((fileName) => fileName.endsWith(".md"))
+    .filter((fileName) => (typeof filterFn === "function" ? filterFn(fileName) : true));
+  const failures = [];
+  const bases = new Set(docFiles.map(toLocalizedBaseName));
+
+  for (const base of Array.from(bases).sort()) {
+    const enFile = `${base}.en.md`;
+    const zhFile = `${base}.zh-CN.md`;
+    if (!docFiles.includes(enFile)) {
+      failures.push(`${relativeDir}/${enFile} missing localized pair`);
+    }
+    if (!docFiles.includes(zhFile)) {
+      failures.push(`${relativeDir}/${zhFile} missing localized pair`);
+    }
+  }
+
+  return failures;
+}
+
+function collectLocalizedDocPairFailures() {
+  const failures = [];
+  failures.push(...collectLocalizedPairFailuresForDir("docs"));
+  failures.push(...collectLocalizedPairFailuresForDir(".", (fileName) => [
+    "README.md",
+    "README.en.md",
+    "README.zh-CN.md",
+    "CHANGELOG.md",
+    "CHANGELOG.en.md",
+    "CHANGELOG.zh-CN.md",
+    "QUICK_START.md",
+    "QUICK_START.en.md",
+    "QUICK_START.zh-CN.md"
+  ].includes(fileName)));
+  failures.push(...collectLocalizedPairFailuresForDir("mcp-server", (fileName) => [
+    "README.md",
+    "README.en.md",
+    "README.zh-CN.md",
+    "DEPLOYMENT.md",
+    "DEPLOYMENT.en.md",
+    "DEPLOYMENT.zh-CN.md",
+    "DEPLOYMENT-CHECKLIST.md",
+    "DEPLOYMENT-CHECKLIST.en.md",
+    "DEPLOYMENT-CHECKLIST.zh-CN.md",
+    "OPERATIONS.md",
+    "OPERATIONS.en.md",
+    "OPERATIONS.zh-CN.md"
+  ].includes(fileName)));
+  failures.push(...collectLocalizedPairFailuresForDir("site", (fileName) => [
+    "README.md",
+    "README.en.md",
+    "README.zh-CN.md"
+  ].includes(fileName)));
+  failures.push(...collectLocalizedPairFailuresForDir(".github", (fileName) => [
+    "PULL_REQUEST_TEMPLATE.md",
+    "PULL_REQUEST_TEMPLATE.en.md",
+    "PULL_REQUEST_TEMPLATE.zh-CN.md"
+  ].includes(fileName)));
+  failures.push(...collectLocalizedPairFailuresForDir(".claude/commands", (fileName) => [
+    "create-component.md",
+    "create-component.en.md",
+    "create-component.zh-CN.md"
+  ].includes(fileName)));
+  return failures;
+}
+
 function main() {
   const failures = collectSnippetFailures(ROOT_DOC_SURFACES);
   const releaseSpec = createReleaseDocSpec(PATHS);
@@ -72,6 +145,7 @@ function main() {
 
   failures.push(...collectSnippetFailures(releaseSpec.files));
   failures.push(...collectReleaseWorkflowFailures(releaseSpec));
+  failures.push(...collectLocalizedDocPairFailures());
 
   if (failures.length) {
     console.error("Root docs checks failed:");

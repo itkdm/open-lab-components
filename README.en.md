@@ -1,124 +1,169 @@
 # Open Lab Components
 
-**An open protocol and component runtime base for composable STEM interactive objects**, with 210+ zero-dependency HTML components across Physics, Chemistry, Biology, Math, and Science.
-
-This repository now exposes a locale-aware manifest, registry, site, JS API, and MCP surface so hosts and AI clients can search, fetch, and render the same component catalog consistently.
-
-[![npm](https://img.shields.io/npm/v/@itkdm/open-lab-components)](https://www.npmjs.com/package/@itkdm/open-lab-components)
-[![license](https://img.shields.io/github/license/itkdm/open-lab-components)](./LICENSE)
-
 English | [中文](./README.md)
+
+Open Lab Components is a STEM teaching component infrastructure repository for host applications and AI clients. It ships 210+ zero-dependency HTML fragment components and exposes the same catalog through:
+
+- copyable `components/**/*.html`
+- searchable `registry/*.json`
+- a programmable JS API
+- a static preview/documentation site
+- an MCP server for agents
 
 ![Open Lab Components Homepage](./assets/home.png)
 
-## ✨ Features
+## Positioning
 
-- 🎯 **Pure HTML Fragment** — No framework dependency, copy and use
-- 🎨 **CSS Variable Driven** — All parameters configured via CSS variables
-- 🔒 **Style Isolation** — No host environment pollution
-- 🛠️ **TypeScript Support** — Full type definitions
-- ♿ **Accessible** — Built-in ARIA labels
+This is not a general-purpose UI library. It is a catalog of teaching objects for education workflows. `components/` is the source of truth, and the registry, site, JS API, and MCP server are derived from that same catalog so every consumer sees the same component inventory.
 
-## 📦 Component Overview
+## Current Capabilities
 
-**210 components**, **44 categories**:
+### Components and metadata
 
-| Subject | Categories | Examples |
-|---------|-----------|----------|
-| Physics | Circuit, Mechanics, Optics, Thermal, Wave, EM, Fluid | Projectile, Lens, Oscilloscope, Carnot Cycle |
-| Chemistry | Labware, Reaction, Gas, Solution, Molecular Model | Acid-Base, Ideal Gas Law, Periodic Table |
-| Biology | Cell, Organ, Genetics, Ecology | Mitosis, DNA Structure, Circulatory System |
-| Math | Geometry, Function, Calculus, Statistics, Vector | Function Graph, Unit Circle, Abacus |
-| Science | Earth Science, Life Science, Science Tools | Solar System, Water Cycle, Microscope |
+- `213` components
+- `41` categories
+- supported locales: `zh-CN`, `en`
+- default locale: `zh-CN`
+- backward compatibility for `cmp-manifest/v1`
+- recommended manifest shape: `cmp-manifest/v2`
 
-> [Live Demo](https://itkdm.github.io/open-lab-components/) — Browse all components, tweak parameters, copy code
+### JS API
 
-## 🚀 Quick Start
+The root entrypoint is [index.js](./index.js). Public exports include:
 
-### npm Install
+- `lab.list(filter, { locale })`
+- `lab.get(id, { locale })`
+- `lab.categories()`
+- `lab.readSync(id)`
+- `lab.read(id)`
+- `lab.resolve(id)`
+- `lab.mount(html, container, props)`
+- `lab.unmount(container)`
+- `lab.updateProps(container, props)`
+
+### MCP server
+
+The MCP implementation lives in [mcp-server/](./mcp-server). The current implementation supports:
+
+- local `stdio` mode
+- remote `Streamable HTTP` mode
+- tools, prompts, and resources
+- locale-aware discovery and component lookup
+- recommendations, feedback, page planning, and bundle composition
+
+Current public tools:
+
+- `get_categories`
+- `list_components`
+- `search_components`
+- `recommend_components`
+- `submit_recommendation_feedback`
+- `get_recommendation_feedback_stats`
+- `build_experiment_page`
+- `compose_experiment_bundle`
+- `get_component`
+
+Current public prompts:
+
+- `component-recommendation-brief`
+- `component-page-builder`
+- `experiment-page-executor`
+- `experiment-bundle-integrator`
+
+Current public resources:
+
+- `openlab://catalog/overview`
+- `openlab://catalog/categories`
+- `openlab://catalog/featured`
+- `openlab://component/phy.resistor.axial.basic`
+
+See:
+
+- [docs/MCP.en.md](./docs/MCP.en.md)
+- [docs/MCP.zh-CN.md](./docs/MCP.zh-CN.md)
+- [mcp-server/README.md](./mcp-server/README.md)
+- [mcp-server/README.zh-CN.md](./mcp-server/README.zh-CN.md)
+
+## Quick Start
+
+### Install from npm
 
 ```bash
 npm install @itkdm/open-lab-components
 ```
 
 ```js
-const lab = require('@itkdm/open-lab-components');
+const lab = require("@itkdm/open-lab-components");
 
-const all = lab.list();                                    // All 210 components
-const physics = lab.list({ category: 'physics/mechanics' }); // Filter by category
-const html = lab.readSync('phy.mechanics.projectile.interactive'); // Read HTML
+const all = lab.list();
+const circuit = lab.list({ category: "physics/circuit" }, { locale: "en" });
+const battery = lab.get("phy.power.battery.basic", { locale: "en-US" });
+const categories = lab.categories();
+const html = lab.readSync("phy.mechanics.projectile.interactive");
 ```
 
-### Use HTML Directly
-
-Copy a component file from `components/`, paste into your page, configure via CSS variables:
+### Use HTML fragments directly
 
 ```html
-<div class="cmp" data-cmp-id="phy.resistor.axial.basic"
-     style="--cmp-size: 80px; --cmp-body: #caa070;">
-    <!-- component content -->
+<div
+  class="cmp"
+  data-cmp-id="phy.resistor.axial.basic"
+  style="--cmp-size: 80px; --cmp-body: #caa070;"
+>
+  <!-- component content -->
 </div>
 ```
 
-### Local Development
+### Local development
 
 ```bash
 git clone https://github.com/itkdm/open-lab-components.git
-cd open-lab-components && npm install
-npm run dev:site      # Start dev server
-npm run validate      # Validate components
-npm run build         # Build all
+cd open-lab-components
+npm install
+
+npm run validate
+npm run build:registry
+npm run build:site
 ```
 
-## 🤝 Contributing
+Common commands:
 
-PRs welcome! Flow: Fork → Branch → Commit → PR
+- `npm run dev:site`
+- `npm run test:root`
+- `npm run mcp:test`
+- `npm run check:root`
+- `npm run release:ready`
 
-See [Contributing Guide](./docs/CONTRIBUTING.md) · [Component Spec](./docs/SPEC.md) · [Category Rules](./docs/CATEGORY.md) · [Event Protocol](./docs/EVENT.md)
+## Repository Layout
 
-## 📄 License
+```text
+components/    component source files and source of truth
+registry/      generated registry, category, and tag data
+lib/           root JS API, i18n, runtime, and registry loader
+site/          static preview site source and dist output
+mcp-server/    MCP package and remote runtime
+tools/         validation, build, site, and release scripts
+docs/          specs, integration, release, and MCP docs
+tests/         root API and contract tests
+```
+
+## Generated Boundaries
+
+- `registry/*.json` is generated by `npm run build:registry`
+- `site/dist/` is generated by `npm run build:site`
+- do not treat those generated outputs as manual editing surfaces
+
+## Documentation
+
+- [Component Spec](./docs/SPEC.en.md)
+- [Category Rules](./docs/CATEGORY.en.md)
+- [Event Protocol](./docs/EVENT.en.md)
+- [Integration Guide](./docs/INTEGRATION.en.md)
+- [Contribution Guide](./docs/CONTRIBUTING.en.md)
+- [Deployment Guide](./docs/DEPLOYMENT.en.md)
+- [MCP English Docs](./docs/MCP.en.md)
+- [MCP 中文文档](./docs/MCP.zh-CN.md)
+
+## License
 
 [MIT](./LICENSE)
-
-## ☕ Sponsor & Contact
-
-This project is independently developed and maintained by a college junior. If it helps you, feel free to buy me a coffee :)
-
-<table>
-  <tr>
-    <td align="center">
-      <img src="./assets/wechat-pay.png" width="200" alt="WeChat Pay"><br>
-      <b>WeChat</b>
-    </td>
-    <td align="center">
-      <img src="./assets/alipay.png" width="200" alt="Alipay"><br>
-      <b>Alipay</b>
-    </td>
-  </tr>
-</table>
-
-WeChat: `17884902310` (note: OLC) · GitHub: [@itkdm](https://github.com/itkdm)
-
-## 🙏 Acknowledgments
-
-- [@PastW1nd](https://github.com/PastW1nd)
-
----
-
-Made by **布吉岛** · ⭐ Star if you find it useful
-
-
-## Localization
-
-Open Lab Components now exposes locale-aware metadata across the registry, site, MCP server, and JS API.
-
-- Default locale: `zh-CN`
-- Current locales: `zh-CN`, `en`
-- Localized registry views: `registry/registry.zh-CN.json`, `registry/registry.en.json`
-- JS API: `lab.list(filter, { locale })`, `lab.get(id, { locale })`
-- MCP: every public tool accepts an optional `locale` parameter
-
-See [release notes](./docs/RELEASE-2026-03-I18N.md) for the migration summary, output changes, and consumer guidance.
-
-For release preparation and publish steps, see [publishing guide](./docs/PUBLISHING.md), [release checklist](./docs/RELEASE-CHECKLIST-0.2.0.md), and [GitHub release draft](./docs/GITHUB-RELEASE-0.2.0.md).
-For maintainer-facing release commands, see [release commands](./docs/RELEASE-COMMANDS-0.2.0.md).

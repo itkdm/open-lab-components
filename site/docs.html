@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Open Lab Components 文档中心：组件规范协议、分类与命名规则、事件协议、集成指南、贡献指南、部署指南，帮助您开发和集成 STEM 教育组件。">
+  <meta name="description" content="Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。">
   <meta name="keywords" content="Open Lab Components,文档,组件规范,SPEC,事件协议,集成指南,贡献指南,部署,组件开发,npm">
   <meta name="author" content="布吉岛 (itkdm)">
   <meta name="robots" content="index, follow">
@@ -15,7 +15,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://itkdm.github.io/open-lab-components/docs.html">
   <meta property="og:title" content="文档中心 - Open Lab Components">
-  <meta property="og:description" content="Open Lab Components 文档中心：查看组件规范协议、分类与命名规则、贡献指南等完整文档。">
+  <meta property="og:description" content="Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。">
   <meta property="og:image" content="https://itkdm.github.io/open-lab-components/logo.png">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="Open Lab Components">
@@ -24,7 +24,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://itkdm.github.io/open-lab-components/docs.html">
   <meta name="twitter:title" content="文档中心 - Open Lab Components">
-  <meta name="twitter:description" content="Open Lab Components 文档中心：查看组件规范协议、分类与命名规则、贡献指南等完整文档。">
+  <meta name="twitter:description" content="Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。">
   <meta name="twitter:image" content="https://itkdm.github.io/open-lab-components/logo.png">
   
   <!-- Baidu Site Verification -->
@@ -42,7 +42,7 @@
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": "Open Lab Components 文档中心",
-    "description": "Open Lab Components 文档中心：查看组件规范协议、分类与命名规则、贡献指南等完整文档。",
+    "description": "Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。",
     "url": "https://itkdm.github.io/open-lab-components/docs.html",
     "inLanguage": ["zh-CN", "en"],
     "isPartOf": {
@@ -426,6 +426,9 @@
           <li class="sidebar-item">
             <a href="#" class="sidebar-link" data-doc="deployment" data-i18n="deployment-title">部署指南</a>
           </li>
+          <li class="sidebar-item">
+            <a href="#" class="sidebar-link" data-doc="mcp" data-i18n="mcp-title">MCP 指南</a>
+          </li>
         </ul>
       </aside>
 
@@ -433,7 +436,7 @@
         <header class="page-header">
           <h1 class="page-title" data-i18n="docs-title">文档中心</h1>
           <p class="page-desc" data-i18n="docs-desc">
-            这里汇总了 Open Lab Components 的规范与贡献指南，帮助你按统一标准编写和维护实验器材组件。
+            这里汇总了 Open Lab Components 的规范、集成与 MCP 文档，帮助你按统一标准维护组件、registry、站点与 AI 接口。
           </p>
         </header>
 
@@ -455,12 +458,13 @@
   <script>
     const LANG_KEY = 'olc-lang';
     const DOCS = {
-      spec: { path: './docs/SPEC.md' },
-      category: { path: './docs/CATEGORY.md' },
-      event: { path: './docs/EVENT.md' },
-      integration: { path: './docs/INTEGRATION.md' },
-      contrib: { path: './docs/CONTRIBUTING.md' },
-      deployment: { path: './docs/DEPLOYMENT.md' }
+      spec: { zh: './docs/SPEC.zh-CN.md', en: './docs/SPEC.en.md' },
+      category: { zh: './docs/CATEGORY.zh-CN.md', en: './docs/CATEGORY.en.md' },
+      event: { zh: './docs/EVENT.zh-CN.md', en: './docs/EVENT.en.md' },
+      integration: { zh: './docs/INTEGRATION.zh-CN.md', en: './docs/INTEGRATION.en.md' },
+      contrib: { zh: './docs/CONTRIBUTING.zh-CN.md', en: './docs/CONTRIBUTING.en.md' },
+      deployment: { zh: './docs/DEPLOYMENT.zh-CN.md', en: './docs/DEPLOYMENT.en.md' },
+      mcp: { zh: './docs/MCP.zh-CN.md', en: './docs/MCP.en.md' }
     };
 
     const i18n = {
@@ -470,7 +474,7 @@
         'nav-spec': '规范',
         'nav-contribute': '贡献',
         'docs-title': '文档中心',
-        'docs-desc': '这里汇总了 Open Lab Components 的规范与贡献指南，帮助你按统一标准编写和维护实验器材组件。',
+        'docs-desc': '这里汇总了 Open Lab Components 的规范、集成与 MCP 文档，帮助你按统一标准维护组件、registry、站点与 AI 接口。',
         'sidebar-title': '文档导航',
         'toc-title': '目录',
         'spec-title': '组件协议',
@@ -479,6 +483,7 @@
         'integration-title': '集成指南',
         'contrib-title': '贡献指南',
         'deployment-title': '部署指南',
+        'mcp-title': 'MCP 指南',
         'lang-label': 'English'
       },
       en: {
@@ -487,7 +492,7 @@
         'nav-spec': 'Spec',
         'nav-contribute': 'Contribute',
         'docs-title': 'Documentation',
-        'docs-desc': 'Centralized specs and contribution guides for Open Lab Components, so everyone builds HTML fragments in a consistent way.',
+        'docs-desc': 'Centralized specs, integration guides, and MCP docs for Open Lab Components, so the component catalog, registry, site, and AI interfaces stay aligned.',
         'sidebar-title': 'Docs',
         'toc-title': 'Outline',
         'spec-title': 'Component Spec',
@@ -496,6 +501,7 @@
         'integration-title': 'Integration Guide',
         'contrib-title': 'Contribution Guide',
         'deployment-title': 'Deployment Guide',
+        'mcp-title': 'MCP Guide',
         'lang-label': '中文'
       }
     };
@@ -563,12 +569,13 @@
       const meta = DOCS[docKey];
       const container = document.getElementById('docContent');
       if (!meta || !container) return;
+      const path = meta[currentLang] || meta.zh || meta.en;
 
       currentDoc = docKey;
       container.innerHTML = '';
 
       try {
-        const res = await fetch(meta.path);
+        const res = await fetch(path);
         const text = await res.text();
         // 使用 marked 渲染 Markdown 为 HTML
         if (window.marked && window.marked.parse) {
@@ -584,7 +591,7 @@
         }
         buildToc();
       } catch (e) {
-        container.innerHTML = `<p>Failed to load document: ${e.message}</p><p>Path: ${meta.path}</p>`;
+        container.innerHTML = `<p>Failed to load document: ${e.message}</p><p>Path: ${path}</p>`;
       }
 
       document.querySelectorAll('.sidebar-link').forEach(link => {
@@ -602,6 +609,7 @@
       currentLang = currentLang === 'zh' ? 'en' : 'zh';
       localStorage.setItem(LANG_KEY, currentLang);
       applyStaticTexts();
+      loadDoc(currentDoc);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -655,5 +663,3 @@
   </script>
 </body>
 </html>
-
-

@@ -1,17 +1,15 @@
 # Open Lab Components MCP Server
 
-Locale-aware MCP server for discovering and retrieving components from the Open Lab Components library.
+English | [中文](./README.zh-CN.md)
 
-This package supports:
+Locale-aware MCP server for discovering, recommending, and retrieving components from the Open Lab Components catalog.
 
-- local `stdio` mode for VS Code and local MCP clients
-- remote `Streamable HTTP` mode for hosted access
-- locale-aware summaries and component lookup
-- MCP tools, prompts, and reference resources
-- bearer auth, per-customer tool permissions, rate limiting, and session governance
-- health, readiness, metrics, and structured request logging
+## What This Package Exposes
 
-## What it exposes
+### Transports
+
+- local `stdio`
+- remote `Streamable HTTP`
 
 ### Tools
 
@@ -24,8 +22,6 @@ This package supports:
 - `build_experiment_page`
 - `compose_experiment_bundle`
 - `get_component`
-
-All public tools accept an optional `locale` parameter.
 
 ### Prompts
 
@@ -41,9 +37,9 @@ All public tools accept an optional `locale` parameter.
 - `openlab://catalog/featured`
 - `openlab://component/phy.resistor.axial.basic`
 
-This release remains intentionally read-only. It does not create, edit, or validate components through MCP.
+This package remains read-only with respect to component source files. It does not create, edit, or validate component HTML through MCP.
 
-## Local usage
+## Local Usage
 
 ```bash
 cd mcp-server
@@ -58,21 +54,24 @@ npm run mcp:start
 npm run mcp:start:http
 ```
 
-Optional backend integration tests:
+Run tests:
 
-- set `REDIS_URL` to run the Redis feedback backend test
-- set `POSTGRES_URL` to run the PostgreSQL feedback backend test
-- run `npm run mcp:test`
+```bash
+npm run mcp:test
+```
 
-## Remote HTTP usage
+Optional backend integration coverage:
 
-Create a customer config file from the example:
+- set `REDIS_URL` to enable the Redis feedback backend test
+- set `POSTGRES_URL` to enable the PostgreSQL feedback backend test
+
+## Remote HTTP Usage
+
+Create a customer config from the shipped example:
 
 ```bash
 cp ./config/customers.example.json ./config/customers.json
 ```
-
-The published package also ships `config/customers.example.json` as the baseline hosted config template.
 
 Generate a bearer token and config entry:
 
@@ -89,6 +88,7 @@ npm run start:http
 Useful verification commands:
 
 ```bash
+npm run check:docs
 npm run check:scripts
 npm run smoke:remote
 npm run pack:check
@@ -117,120 +117,51 @@ Environment variables:
 - `POSTGRES_FEEDBACK_TABLE`
 - `POSTGRES_FEEDBACK_STORE_KEY`
 
-Runtime path behavior:
+## Runtime Features
 
-- if `MCP_RUNTIME_HOME` is set, default writable paths resolve under that directory
-- otherwise defaults resolve relative to the current working directory
-- explicit absolute values for `CUSTOMERS_CONFIG_PATH` and `FEEDBACK_STORE_PATH` always win
-- runtime env keys and defaults are centralized in `src/runtime/config-manifest.js`
+- bearer token authentication
+- per-customer tool allowlists
+- session TTL and max concurrent session limits
+- in-memory rate limiting with headers
+- structured logs and request ids
+- `/healthz`, `/readyz`, and `/metrics`
+- persisted recommendation feedback recovery
+- file, Redis, and PostgreSQL feedback backends
+- time-decayed reranking signals
+- `/admin/overview`
+- `/admin/customers`
+- `/mcp`
 
-Operational guidance for admin tracing, error categories, and metrics:
+## Locale Behavior
 
-- see [OPERATIONS.md](./OPERATIONS.md)
-  This includes the `remoteMcpErrors` buckets and `remoteMcpErrorCodes` aggregates for auth, session, policy, and runtime failures.
+- default locale: `zh-CN`
+- supported locales: `zh-CN`, `en`
+- every public tool accepts an optional `locale`
+- responses keep full `locales` payloads
+- display fields fall back to `zh-CN` when needed
 
-Remote deployment walkthrough:
+## Entry Points
 
-- see [DEPLOYMENT.md](./DEPLOYMENT.md)
-
-Deployment readiness checklist:
-
-- see [DEPLOYMENT-CHECKLIST.md](./DEPLOYMENT-CHECKLIST.md)
-
-## Claude Desktop example
-
-Use the published binary or a local repo checkout. Example local command:
-
-Published CLI entrypoints:
+Published binaries:
 
 - `open-lab-components-mcp`
 - `open-lab-components-mcp-http`
 
-```json
-{
-  "mcpServers": {
-    "open-lab-components": {
-      "command": "node",
-        "args": [
-        "D:/develop/project/edu-html/组件库/open-lab-components/mcp-server/src/core/cli.js"
-        ]
-      }
-    }
-}
-```
+Local source entrypoints:
 
-## Tool behavior
+- `src/core/cli.js`
+- `src/core/http-cli.js`
 
-### `get_categories`
+## Documentation
 
-Returns all categories with localized names and component counts.
-
-### `list_components`
-
-Returns filtered component summaries resolved for the requested locale. It never returns HTML.
-
-### `search_components`
-
-Runs deterministic lexical matching over ids, names, tags, and category metadata across supported locales.
-
-### `recommend_components`
-
-Returns explainable recommendations for lesson and product scenarios using subject, goal, audience, category, tag, and interaction signals.
-For remote clients, authenticated customer ids are injected automatically so reranking stays tenant-isolated.
-
-### `submit_recommendation_feedback`
-
-Records click, selection, save, dismiss, or hide signals so future recommendations can rerank dynamically.
-
-### `get_recommendation_feedback_stats`
-
-Returns feedback aggregates used by the in-memory reranking layer.
-
-### `build_experiment_page`
-
-Returns a structured lesson or experiment page plan with sections, selected component ids, implementation notes, and assembly steps.
-
-### `compose_experiment_bundle`
-
-Returns a render-ready bundle with component HTML, layout hints, render order, and host integration instructions.
-
-### `get_component`
-
-Returns a full registry item plus complete HTML for a single component id.
-
-## Enterprise runtime behavior
-
-- customer-scoped bearer token authentication
-- per-customer tool allowlists
-- in-memory per-customer rate limiting with response headers
-- session TTL and max concurrent sessions per customer
-- request IDs and structured JSON logs
-- `/healthz`, `/readyz`, and `/metrics` operational endpoints
-- feedback event counters for recommendation tuning
-- persistent feedback store for recommendation reranking recovery after restart
-- time-decayed feedback scoring so stale interactions lose influence over time
-- tenant-isolated reranking so one customer's behavior does not affect another customer's results
-- pluggable persistence backends: file, Redis, PostgreSQL
-
-## Locale behavior
-
-- default locale: `zh-CN`
-- supported locales: `zh-CN`, `en`
-- responses keep the full `locales` payload
-- display fields fall back to `zh-CN` when a requested locale field is missing
-
-## Release notes
-
-See [`../docs/RELEASE-2026-03-I18N.md`](../docs/RELEASE-2026-03-I18N.md) for the wider `cmp-manifest/v2` and locale-aware registry rollout.
-
-For release preparation and package publishing, see [`../docs/PUBLISHING.md`](../docs/PUBLISHING.md) and [`../docs/RELEASE-CHECKLIST-0.2.0.md`](../docs/RELEASE-CHECKLIST-0.2.0.md).
-
-## Remote deployment
-
-See [`../docs/MCP_REMOTE.md`](../docs/MCP_REMOTE.md) for Nginx, HTTPS, customer config, and Linux service guidance.
-
-## Control console
-
-If you host a separate browser-based control console, configure `ALLOWED_ORIGINS`
-to include that console origin so the browser can read `/healthz`, `/readyz`,
-and `/metrics`.
+- [中文 README](./README.zh-CN.md)
+- [Repository MCP docs](../docs/MCP.en.md)
+- [Repository MCP 中文文档](../docs/MCP.zh-CN.md)
+- [Remote deployment guide](../docs/MCP_REMOTE.en.md)
+- [远程部署中文说明](../docs/MCP_REMOTE.zh-CN.md)
+- [Deployment guide](./DEPLOYMENT.en.md)
+- [部署说明](./DEPLOYMENT.zh-CN.md)
+- [Deployment checklist](./DEPLOYMENT-CHECKLIST.en.md)
+- [部署检查清单](./DEPLOYMENT-CHECKLIST.zh-CN.md)
+- [Operations guide](./OPERATIONS.en.md)
+- [运维说明](./OPERATIONS.zh-CN.md)
