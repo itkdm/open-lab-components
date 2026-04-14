@@ -243,6 +243,10 @@ test("remote tool restrictions and rate limiting are enforced", async () => {
     assert.equal(payload.remoteMcpErrors.policy, 2);
     assert.equal(payload.remoteMcpErrorCodes.tool_not_allowed, 1);
     assert.equal(payload.remoteMcpErrorCodes.rate_limited, 1);
+    assert.equal(payload.remoteMcpErrorsByTool["list_components:policy"], 1);
+    assert.equal(payload.remoteMcpErrorsByTool["get_categories:policy"], 1);
+    assert.equal(payload.remoteMcpErrorCodesByTool["list_components:tool_not_allowed"], 1);
+    assert.equal(payload.remoteMcpErrorCodesByTool["get_categories:rate_limited"], 1);
   });
 });
 
@@ -291,6 +295,8 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
     assert.equal(typeof payload.remoteMcpErrors, "object");
     assert.equal(typeof payload.remoteMcpErrorSummary, "object");
     assert.equal(typeof payload.remoteMcpErrorCodes, "object");
+    assert.equal(typeof payload.remoteMcpErrorsByTool, "object");
+    assert.equal(typeof payload.remoteMcpErrorCodesByTool, "object");
   });
 });
 

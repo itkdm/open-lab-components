@@ -104,10 +104,11 @@ function remoteRejectionCategory(code) {
   return "runtime";
 }
 
-function recordRemoteMcpRejection(metrics, code) {
+function recordRemoteMcpRejection(metrics, code, toolName = null) {
   metrics.recordRemoteMcpError({
     category: remoteRejectionCategory(code),
-    code
+    code,
+    toolName
   });
 }
 
@@ -489,7 +490,7 @@ async function createRemoteApp(options = {}) {
     });
 
     if (!authResult.ok) {
-      recordRemoteMcpRejection(metrics, authResult.code);
+      recordRemoteMcpRejection(metrics, authResult.code, req.mcpToolName || null);
       unauthorized(
         res,
         authResult.status,
@@ -526,7 +527,7 @@ async function createRemoteApp(options = {}) {
 
     if (req.method === "POST" && req.mcpToolName) {
       if (!toolAllowed(req.customer, req.mcpToolName)) {
-        recordRemoteMcpRejection(metrics, "tool_not_allowed");
+        recordRemoteMcpRejection(metrics, "tool_not_allowed", req.mcpToolName);
         unauthorized(res, 403, {
           error: "tool_not_allowed",
           message: `Tool not allowed: ${req.mcpToolName}`
@@ -538,7 +539,7 @@ async function createRemoteApp(options = {}) {
       res.setHeader("x-ratelimit-limit", String(limit.limit));
       res.setHeader("x-ratelimit-remaining", String(limit.remaining));
       if (!limit.allowed) {
-        recordRemoteMcpRejection(metrics, "rate_limited");
+        recordRemoteMcpRejection(metrics, "rate_limited", req.mcpToolName);
         unauthorized(
           res,
           429,
@@ -574,7 +575,11 @@ async function createRemoteApp(options = {}) {
             });
             if (!created.ok) {
               const code = created.code || "session_create_failed";
-              metrics.recordRemoteMcpError({ category: classifyRemoteMcpError({ code }), code });
+              metrics.recordRemoteMcpError({
+                category: classifyRemoteMcpError({ code }),
+                code,
+                toolName: req.mcpToolName || null
+              });
               throw createRemoteMcpError(code, "Session limit exceeded for customer");
             }
             metrics.recordSessionCreated();
@@ -609,7 +614,7 @@ async function createRemoteApp(options = {}) {
       }
 
       if (!session) {
-        recordRemoteMcpRejection(metrics, "invalid_session");
+        recordRemoteMcpRejection(metrics, "invalid_session", req.mcpToolName || null);
         unauthorized(res, 400, {
           error: "invalid_session",
           message: "No valid session ID provided"
@@ -625,7 +630,11 @@ async function createRemoteApp(options = {}) {
     } catch (error) {
       const normalizedError = ensureRemoteMcpError(error, "remote_mcp_runtime_error");
       const category = classifyRemoteMcpError(normalizedError);
-      metrics.recordRemoteMcpError({ category, code: normalizedError.code });
+      metrics.recordRemoteMcpError({
+        category,
+        code: normalizedError.code,
+        toolName: req.mcpToolName || null
+      });
       logger.error({
         event: "remote_mcp_error",
         requestId: req.requestId || null,

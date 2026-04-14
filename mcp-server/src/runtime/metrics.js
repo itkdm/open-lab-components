@@ -43,6 +43,8 @@ function createMetricsStore() {
   const adminWrites = new Map();
   const remoteMcpErrors = new Map();
   const remoteMcpErrorCodes = new Map();
+  const remoteMcpErrorsByTool = new Map();
+  const remoteMcpErrorCodesByTool = new Map();
   let activeSessions = 0;
   let totalSessionsCreated = 0;
 
@@ -66,9 +68,13 @@ function createMetricsStore() {
       if (!action || !outcome) return;
       incrementCounter(adminWrites, `${action}:${outcome}:${category || "none"}`);
     },
-    recordRemoteMcpError({ category, code }) {
+    recordRemoteMcpError({ category, code, toolName }) {
       incrementCounter(remoteMcpErrors, category || "runtime");
       if (code) incrementCounter(remoteMcpErrorCodes, String(code));
+      if (toolName) {
+        incrementCounter(remoteMcpErrorsByTool, `${toolName}:${category || "runtime"}`);
+        if (code) incrementCounter(remoteMcpErrorCodesByTool, `${toolName}:${String(code)}`);
+      }
     },
     recordSessionCreated() {
       activeSessions += 1;
@@ -95,6 +101,8 @@ function createMetricsStore() {
         remoteMcpErrors: mapToObject(remoteMcpErrors),
         remoteMcpErrorSummary: buildCounterSummary(remoteMcpErrors),
         remoteMcpErrorCodes: mapToObject(remoteMcpErrorCodes),
+        remoteMcpErrorsByTool: mapToObject(remoteMcpErrorsByTool),
+        remoteMcpErrorCodesByTool: mapToObject(remoteMcpErrorCodesByTool),
         errorCounts: mapToObject(errorCounts),
         ...extra
       };
