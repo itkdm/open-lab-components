@@ -6,6 +6,7 @@ const parse5 = require("parse5");
 const { walkDir } = require("../_lib/walk");
 const { extractManifest } = require("../_lib/manifest");
 const { projectRootFrom, toPosixRel } = require("../_lib/paths");
+const { getRegistryPaths, loadCategoryNames } = require("../_lib/registry");
 const {
   BILINGUAL_SAMPLE_IDS,
   DEFAULT_LOCALE,
@@ -13,7 +14,6 @@ const {
   LOCALIZED_SCHEMA,
   SUPPORTED_LOCALES,
   localizeRegistryItem,
-  normalizeCategoryNames,
   normalizeLocales
 } = require("../../lib/i18n");
 
@@ -41,16 +41,6 @@ function getRootAttrs(raw) {
     }
   }
   return { ariaLabel: "" };
-}
-
-function loadCategoryNames(registryDir) {
-  const categoryNamesPath = path.join(registryDir, "category-names.json");
-  if (!fs.existsSync(categoryNamesPath)) return {};
-  try {
-    return normalizeCategoryNames(JSON.parse(fs.readFileSync(categoryNamesPath, "utf8")));
-  } catch (err) {
-    return {};
-  }
 }
 
 function createCoverageReport(items) {
@@ -170,7 +160,7 @@ function buildCategories(items, locale, categoryNames) {
 function main() {
   const root = projectRootFrom(__dirname);
   const componentsDir = path.join(root, "components");
-  const registryDir = path.join(root, "registry");
+  const registryDir = getRegistryPaths(root).registryDir;
 
   ensureDir(registryDir);
 

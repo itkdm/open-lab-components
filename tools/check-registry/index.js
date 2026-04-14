@@ -4,6 +4,7 @@ const path = require("path");
 const { walkDir } = require("../_lib/walk");
 const { extractManifest } = require("../_lib/manifest");
 const { projectRootFrom } = require("../_lib/paths");
+const { getRegistryPaths, readRegistryFile } = require("../_lib/registry");
 const { DEFAULT_LOCALE, SUPPORTED_LOCALES } = require("../../lib/i18n");
 
 function fail(message) {
@@ -13,9 +14,8 @@ function fail(message) {
 
 function main() {
   const root = projectRootFrom(__dirname);
-  const registryPath = path.join(root, "registry", "registry.json");
-  const raw = fs.readFileSync(registryPath, "utf8");
-  const registry = JSON.parse(raw);
+  const registryPath = getRegistryPaths(root).registryPath;
+  const registry = readRegistryFile(registryPath);
   const lib = require(path.join(root, "index.js"));
 
   if (!registry || !Array.isArray(registry.items)) return fail("registry.json must contain an items array");

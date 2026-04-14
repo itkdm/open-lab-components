@@ -6,13 +6,13 @@ const parse5 = require("parse5");
 const { walkDir } = require("../_lib/walk");
 const { extractManifest } = require("../_lib/manifest");
 const { projectRootFrom, toPosixRel } = require("../_lib/paths");
+const { getRegistryPaths, loadCategoryNames } = require("../_lib/registry");
 const {
   BILINGUAL_SAMPLE_IDS,
   DEFAULT_LOCALE,
   LEGACY_SCHEMA,
   LOCALIZED_SCHEMA,
   isNonEmptyString,
-  normalizeCategoryNames,
   normalizeLocales
 } = require("../../lib/i18n");
 
@@ -66,16 +66,6 @@ function isValidId(value) {
 
 function isValidCategory(value) {
   return /^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/.test(value);
-}
-
-function loadCategoryNames(registryDir) {
-  const categoryNamesPath = path.join(registryDir, "category-names.json");
-  if (!fs.existsSync(categoryNamesPath)) return {};
-  try {
-    return normalizeCategoryNames(JSON.parse(fs.readFileSync(categoryNamesPath, "utf8")));
-  } catch (err) {
-    return {};
-  }
 }
 
 function validateEvents(events) {
@@ -154,7 +144,7 @@ function validateLocaleShapes(manifest, locales, categoryNames, filePath, errors
 function main() {
   const root = projectRootFrom(__dirname);
   const componentsDir = path.join(root, "components");
-  const registryDir = path.join(root, "registry");
+  const registryDir = getRegistryPaths(root).registryDir;
   const files = walkDir(componentsDir, { filterFile: (p) => p.toLowerCase().endsWith(".html") });
 
   const categoryNames = loadCategoryNames(registryDir);
