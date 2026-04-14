@@ -47,7 +47,7 @@
     "token:generate": "node ./src/core/token-cli.js",
     "smoke:remote": "node ./deploy/smoke/verify-remote.mjs",
     "pack:check": "node ../tools/release-smoke/index.js",
-    "test": "node --test ./tests/catalog.test.js ./tests/config.test.js ./tests/customer-registry.test.js ./tests/feedback-backends.test.js ./tests/server.test.js ./tests/remote.test.js",
+    "test": "node --test ./tests/catalog.test.js ./tests/contract.test.js ./tests/config.test.js ./tests/customer-registry.test.js ./tests/feedback-backends.test.js ./tests/server.test.js ./tests/remote.test.js",
     "test:remote": "node --test ./tests/remote.test.js"
   },
   "dependencies": {
