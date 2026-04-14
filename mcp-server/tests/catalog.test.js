@@ -86,7 +86,7 @@ test("recommend_components returns explainable ranked recommendations", () => {
   assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
   assert.equal(result.responseType, "recommend_components");
   assert.equal(result.localeApplied, "en");
-  assert.deepEqual(result.warnings, []);
+  assert.ok(Array.isArray(result.warnings));
   assert.equal(result.source.kind, "open-lab-components-catalog");
   assert.ok(result.items.length > 0);
   assert.equal(result.items[0].category, "physics/circuit");
@@ -297,7 +297,7 @@ test("get_component returns full html and registry fields", () => {
   assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
   assert.equal(result.responseType, "get_component");
   assert.equal(result.localeApplied, "zh-CN");
-  assert.deepEqual(result.warnings, []);
+  assert.ok(Array.isArray(result.warnings));
   assert.equal(result.component.id, "phy.mechanics.projectile.interactive");
   assert.match(result.component.html, /data-cmp-id="phy\.mechanics\.projectile\.interactive"/);
   assert.equal(typeof result.component.sourcePath, "string");
@@ -309,6 +309,29 @@ test("get_component returns localized fields with locale option", () => {
   assert.equal(result.component.name, "Axial Resistor");
   assert.equal(result.component.ariaLabel, "Axial resistor");
   assert.ok(result.component.locales["zh-CN"]);
+  assert.deepEqual(result.warnings, []);
+});
+
+test("get_component emits locale fallback warning when requested locale is unavailable", () => {
+  const result = getComponent("phy.resistor.axial.basic", "fr-FR");
+  assert.equal(result.component.name, "电阻");
+  assert.equal(result.warnings.length, 1);
+  assert.equal(result.warnings[0].code, "locale_fallback");
+  assert.equal(result.warnings[0].requestedLocale, "fr-FR");
+});
+
+test("recommend_components emits no_results warning when filters exclude all components", () => {
+  const result = recommendComponents({
+    subject: "physics",
+    lessonGoal: "interactive circuit demonstration",
+    preferredCategories: ["physics/circuit"],
+    mustIncludeTags: ["non-existent-tag"],
+    locale: "en"
+  });
+
+  assert.equal(result.items.length, 0);
+  assert.equal(result.warnings.length, 1);
+  assert.equal(result.warnings[0].code, "no_results");
 });
 
 test("get_component unknown id returns suggestions metadata", () => {

@@ -96,6 +96,29 @@ function createResponseMeta(kind, locale, warnings = []) {
   };
 }
 
+function normalizeRequestedLocale(locale) {
+  if (!locale) return "zh-CN";
+  const raw = String(locale).trim().toLowerCase();
+  if (!raw || raw === "zh" || raw === "zh-cn") return "zh-CN";
+  if (raw === "en" || raw === "en-us" || raw === "en-gb") return "en";
+  return String(locale).trim();
+}
+
+function hasExactLocalePayload(item, locale) {
+  const normalized = normalizeRequestedLocale(locale);
+  const locales = item && item.locales && typeof item.locales === "object" ? item.locales : {};
+  const entry = locales[normalized];
+  return !!(entry && entry.name && entry.ariaLabel);
+}
+
+function createWarning(code, message, details = {}) {
+  return {
+    code,
+    message,
+    ...details
+  };
+}
+
 function hasDescription(item) {
   return !!(item && typeof item.description === "string" && item.description.trim());
 }
@@ -276,8 +299,25 @@ function recommendComponents(input = {}) {
       b.id.localeCompare(a.id)
   );
 
+  const limitedItems = recommendations.slice(0, limit);
+  const warnings = [];
+  if (limitedItems.length === 0) {
+    warnings.push(
+      createWarning("no_results", "No components matched the current recommendation constraints.", {
+        limit
+      })
+    );
+  }
+  if (limitedItems.length > 0 && locale && limitedItems.some((item) => !hasExactLocalePayload(item, locale))) {
+    warnings.push(
+      createWarning("locale_fallback", "Some recommended components fell back to the default locale.", {
+        requestedLocale: normalizeRequestedLocale(locale)
+      })
+    );
+  }
+
   return {
-    ...createResponseMeta("recommend_components", locale),
+    ...createResponseMeta("recommend_components", locale, warnings),
     query: {
       subject,
       lessonGoal,
@@ -289,7 +329,7 @@ function recommendComponents(input = {}) {
       excludeCategories,
       locale: locale || null
     },
-    items: recommendations.slice(0, limit)
+    items: limitedItems
   };
 }
 
@@ -385,8 +425,24 @@ function buildExperimentPagePlan(input = {}) {
     };
   });
 
+  const warnings = recommendationResult.warnings ? recommendationResult.warnings.slice() : [];
+  if (selectedItems.length === 0) {
+    warnings.push(
+      createWarning("no_components_selected", "The page plan could not select any components for the requested lesson.", {
+        maxComponents
+      })
+    );
+  } else if (selectedItems.length < maxComponents) {
+    warnings.push(
+      createWarning("low_result_count", "The page plan selected fewer components than requested.", {
+        requestedCount: maxComponents,
+        selectedCount: selectedItems.length
+      })
+    );
+  }
+
   return {
-    ...createResponseMeta("build_experiment_page", locale),
+    ...createResponseMeta("build_experiment_page", locale, warnings),
     page: {
       pageType,
       subject,
@@ -509,8 +565,27 @@ function composeExperimentBundle(input = {}) {
     })
     .filter(Boolean);
 
+  const warnings = [];
+  if (basePlan && Array.isArray(basePlan.warnings) && basePlan.warnings.length > 0) {
+    warnings.push(...basePlan.warnings);
+  }
+  if (bundleItems.length === 0) {
+    warnings.push(
+      createWarning("empty_bundle", "The bundle did not produce any renderable component items.", {
+        requestedCount: maxComponents
+      })
+    );
+  } else if (bundleItems.length < selectedComponents.length) {
+    warnings.push(
+      createWarning("partial_bundle", "Some selected components were not converted into renderable bundle items.", {
+        selectedCount: selectedComponents.length,
+        bundledCount: bundleItems.length
+      })
+    );
+  }
+
   return {
-    ...createResponseMeta("compose_experiment_bundle", locale),
+    ...createResponseMeta("compose_experiment_bundle", locale, warnings),
     bundle: {
       pageType,
       subject: subject || null,
@@ -539,9 +614,19 @@ function composeExperimentBundle(input = {}) {
 
 function getComponent(id, locale = "zh-CN") {
   try {
+    const payload = getComponentData(id, locale);
+    const warnings = [];
+    if (locale && !hasExactLocalePayload(payload.component, locale)) {
+      warnings.push(
+        createWarning("locale_fallback", "The component response fell back to the default locale.", {
+          requestedLocale: normalizeRequestedLocale(locale),
+          componentId: id
+        })
+      );
+    }
     return {
-      ...createResponseMeta("get_component", locale),
-      ...getComponentData(id, locale)
+      ...createResponseMeta("get_component", locale, warnings),
+      ...payload
     };
   } catch (caughtError) {
     if (!(caughtError && caughtError.code === "COMPONENT_NOT_FOUND")) {
