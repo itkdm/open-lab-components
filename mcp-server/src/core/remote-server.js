@@ -112,6 +112,32 @@ function recordRemoteMcpRejection(metrics, code, toolName = null) {
   });
 }
 
+function summarizeTopTools(counterMap, limit = 5) {
+  return Object.entries(counterMap || {})
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, limit)
+    .map(([toolName, count]) => ({ toolName, count }));
+}
+
+function summarizeTopErroredTools(counterMap, limit = 5) {
+  const totals = new Map();
+  for (const [key, count] of Object.entries(counterMap || {})) {
+    const [toolName] = String(key).split(":");
+    if (!toolName) continue;
+    totals.set(toolName, (totals.get(toolName) || 0) + count);
+  }
+  return Array.from(totals.entries())
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, limit)
+    .map(([toolName, errorCount]) => ({ toolName, errorCount }));
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -326,6 +352,8 @@ async function createRemoteApp(options = {}) {
       remoteMcpErrors: metricsSnapshot.remoteMcpErrors,
       remoteMcpErrorSummary: metricsSnapshot.remoteMcpErrorSummary,
       remoteMcpErrorCodes: metricsSnapshot.remoteMcpErrorCodes,
+      topRequestedTools: summarizeTopTools(metricsSnapshot.requestsByTool),
+      topErroredTools: summarizeTopErroredTools(metricsSnapshot.remoteMcpErrorsByTool),
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });

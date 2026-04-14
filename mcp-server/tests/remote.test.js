@@ -300,6 +300,64 @@ test("remote metrics endpoint returns aggregated operational data", async () => 
   });
 });
 
+test("admin overview exposes top requested and errored tools", async () => {
+  await withRemoteServer(async ({ port }) => {
+    const client = new Client({ name: "remote-test-client", version: "0.1.0" });
+    const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/mcp`), {
+      requestInit: {
+        headers: authHeaders("test-token")
+      }
+    });
+
+    try {
+      await client.connect(transport);
+      await client.callTool({ name: "get_categories", arguments: {} });
+      await client.callTool({
+        name: "submit_recommendation_feedback",
+        arguments: {
+          componentId: "phy.resistor.axial.basic",
+          feedbackType: "clicked",
+          subject: "physics",
+          lessonGoal: "resistance lesson"
+        }
+      });
+    } finally {
+      await client.close();
+    }
+
+    const restrictedClient = new Client({ name: "remote-test-client", version: "0.1.0" });
+    const restrictedTransport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${port}/mcp`), {
+      requestInit: {
+        headers: authHeaders("restricted-token")
+      }
+    });
+
+    try {
+      await restrictedClient.connect(restrictedTransport);
+      await assert.rejects(
+        () => restrictedClient.callTool({ name: "list_components", arguments: { limit: 1 } }),
+        /403|tool_not_allowed/i
+      );
+    } finally {
+      await restrictedClient.close();
+    }
+
+    const overview = await fetch(`http://127.0.0.1:${port}/admin/overview`);
+    assert.equal(overview.status, 200);
+    const payload = await overview.json();
+    assert.ok(Array.isArray(payload.topRequestedTools));
+    assert.ok(Array.isArray(payload.topErroredTools));
+    assert.deepEqual(payload.topRequestedTools[0], {
+      toolName: "get_categories",
+      count: 1
+    });
+    assert.deepEqual(payload.topErroredTools[0], {
+      toolName: "list_components",
+      errorCount: 1
+    });
+  });
+});
+
 test("remote admin and metrics endpoints enforce configured bearer tokens", async () => {
   await withRemoteServerRuntime(
     {
