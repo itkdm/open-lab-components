@@ -112,3 +112,13 @@ A: 是的，GitHub Actions 会在每次推送时自动运行 `npm run build`，�
 - [贡献指南](./docs/CONTRIBUTING.md) - 完整的贡献流程
 - [分类规则](./docs/CATEGORY.md) - 组件分类和命名规则
 
+## Root repository checks
+
+Run the consolidated root quality gate before commit:
+
+```bash
+npm run check:root
+```
+
+This covers the shared docs, text, script, root API, runtime harness, and
+component validation boundaries in one pass.

@@ -94,6 +94,7 @@ does not use npm workspaces yet.
 
 - `npm run check:text`
 - `npm run check:scripts`
+- `npm run check:docs`
 - `npm run check:generated`
 - `npm run check:root`
 - `npm run build:registry`

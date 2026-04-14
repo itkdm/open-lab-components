@@ -23,6 +23,16 @@ npm run check:scripts
 This verifies the root `package.json` scripts still match the shared script
 manifest used by the repository tooling layer.
 
+Run the root docs boundary check:
+
+```bash
+npm run check:docs
+```
+
+This verifies the root README, quick-start guide, contribution guide, and
+architecture/testing docs still include the shared command-entry and generated
+artifact references that define the repository contract.
+
 Run the generated-artifact boundary check:
 
 ```bash
@@ -42,9 +52,10 @@ This executes:
 
 1. `tools/check-text/index.js`
 2. `tools/check-scripts/index.js`
-3. `tests/root-api.test.js`
-4. `tools/runtime-harness/runtime-lifecycle.test.js`
-5. `tools/validate/index.js`
+3. `tools/check-docs/index.js`
+4. `tests/root-api.test.js`
+5. `tools/runtime-harness/runtime-lifecycle.test.js`
+6. `tools/validate/index.js`
 
 ## Release-facing checks
 

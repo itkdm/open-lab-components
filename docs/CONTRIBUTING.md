@@ -95,3 +95,13 @@ PR 描述中请包含：
 ## 5. 贡献即同意授权
 
 除非仓库另有说明，你提交的代码与资源将按仓库 `LICENSE` 授权给项目使用与再分发。
+## Root quality gate
+
+Before opening a PR, run the consolidated root check:
+
+```bash
+npm run check:root
+```
+
+This complements `npm run validate` and `npm run build:registry` by verifying
+the repository-level doc, text, script, API, and runtime boundaries.

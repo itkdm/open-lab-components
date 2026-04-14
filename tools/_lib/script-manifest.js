@@ -7,6 +7,7 @@ const ROOT_SCRIPT_GROUPS = {
     "build:site": "node tools/build-site/index.js"
   },
   check: {
+    "check:docs": "node tools/check-docs/index.js",
     "check:generated": "node tools/check-generated/index.js",
     "check:registry": "node tools/check-registry/index.js",
     "check:release": "node tools/release-smoke/index.js",
@@ -15,6 +16,8 @@ const ROOT_SCRIPT_GROUPS = {
     "check:text": "node tools/check-text/index.js"
   },
   mcp: {
+    "mcp:check:docs": "npm --prefix mcp-server run check:docs",
+    "mcp:check:scripts": "npm --prefix mcp-server run check:scripts",
     "mcp:start": "npm --prefix mcp-server start",
     "mcp:start:http": "npm --prefix mcp-server run start:http",
     "mcp:test": "npm --prefix mcp-server test",
