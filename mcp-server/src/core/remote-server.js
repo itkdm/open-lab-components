@@ -138,6 +138,16 @@ function summarizeTopErroredTools(counterMap, limit = 5) {
     .map(([toolName, errorCount]) => ({ toolName, errorCount }));
 }
 
+function summarizeTopSlowTools(averageMap, limit = 5) {
+  return Object.entries(averageMap || {})
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, limit)
+    .map(([toolName, averageDurationMs]) => ({ toolName, averageDurationMs }));
+}
+
 async function createRemoteApp(options = {}) {
   const runtime = {
     ...loadRuntimeConfig(options.env),
@@ -354,6 +364,7 @@ async function createRemoteApp(options = {}) {
       remoteMcpErrorCodes: metricsSnapshot.remoteMcpErrorCodes,
       topRequestedTools: summarizeTopTools(metricsSnapshot.requestsByTool),
       topErroredTools: summarizeTopErroredTools(metricsSnapshot.remoteMcpErrorsByTool),
+      topSlowTools: summarizeTopSlowTools(metricsSnapshot.requestDurationAvgMsByTool),
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });
