@@ -375,6 +375,37 @@ function buildHostRequirements(item, sectionType) {
   return requirements;
 }
 
+function deriveUsageContexts(component) {
+  const contexts = [];
+  if (hasEvents(component)) {
+    contexts.push("interactive-demo", "guided-practice");
+  } else {
+    contexts.push("concept-visual", "static-reference");
+  }
+  if (Array.isArray(component.tags) && component.tags.length > 0) {
+    contexts.push("tag-driven-discovery");
+  }
+  return Array.from(new Set(contexts));
+}
+
+function buildIntegrationHints(component) {
+  return {
+    interactionLevel: inferInteractionLevel(component, hasEvents(component) ? "interactive" : "content"),
+    hostRequirements: buildHostRequirements(component, hasEvents(component) ? "interactive" : "content"),
+    recommendedSlot: hasEvents(component) ? "interactive" : "content",
+    mountStrategy: hasEvents(component) ? "hydrate-and-listen" : "static-or-hydrate",
+    eventSupport: hasEvents(component)
+      ? {
+          hasEvents: true,
+          eventCount: eventCount(component)
+        }
+      : {
+          hasEvents: false,
+          eventCount: 0
+        }
+  };
+}
+
 function buildSectionTitles(subject, lessonGoal, audience) {
   const target = audience ? `for ${audience}` : "";
   return [
@@ -652,6 +683,8 @@ function getComponent(id, locale = "zh-CN") {
     }
     return {
       ...createResponseMeta("get_component", locale, warnings),
+      integrationHints: buildIntegrationHints(payload.component),
+      usageContexts: deriveUsageContexts(payload.component),
       ...payload
     };
   } catch (caughtError) {

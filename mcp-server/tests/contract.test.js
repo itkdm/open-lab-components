@@ -103,4 +103,6 @@ test("get_component contract stays stable", () => {
   assert.equal(typeof result.component.html, "string");
   assert.equal(typeof result.component.sourcePath, "string");
   assert.equal(typeof result.component.locales, "object");
+  assert.equal(typeof result.integrationHints, "object");
+  assert.ok(Array.isArray(result.usageContexts));
 });

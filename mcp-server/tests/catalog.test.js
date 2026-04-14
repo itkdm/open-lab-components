@@ -308,6 +308,8 @@ test("get_component returns full html and registry fields", () => {
   assert.match(result.component.html, /data-cmp-id="phy\.mechanics\.projectile\.interactive"/);
   assert.equal(typeof result.component.sourcePath, "string");
   assert.equal(result.component.sourcePath.includes("\\"), false);
+  assert.equal(typeof result.integrationHints, "object");
+  assert.ok(Array.isArray(result.usageContexts));
 });
 
 test("get_component returns localized fields with locale option", () => {
@@ -316,6 +318,11 @@ test("get_component returns localized fields with locale option", () => {
   assert.equal(result.component.ariaLabel, "Axial resistor");
   assert.ok(result.component.locales["zh-CN"]);
   assert.deepEqual(result.warnings, []);
+  assert.equal(typeof result.integrationHints.recommendedSlot, "string");
+  assert.equal(typeof result.integrationHints.mountStrategy, "string");
+  assert.equal(typeof result.integrationHints.eventSupport, "object");
+  assert.ok(Array.isArray(result.integrationHints.hostRequirements));
+  assert.ok(result.usageContexts.length > 0);
 });
 
 test("get_component emits locale fallback warning when requested locale is unavailable", () => {
