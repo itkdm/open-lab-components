@@ -89,10 +89,16 @@ test("compose_experiment_bundle contract stays stable", () => {
 
   assertResponseEnvelope(result, "compose_experiment_bundle", "en");
   assert.equal(typeof result.bundle, "object");
+  assert.equal(typeof result.bundleSummary, "object");
   assert.ok(Array.isArray(result.items));
   assert.equal(typeof result.items[0].slot, "string");
   assert.equal(typeof result.items[0].interactionLevel, "string");
   assert.ok(Array.isArray(result.items[0].hostRequirements));
+  assert.ok(Array.isArray(result.bundleSummary.categories));
+  assert.ok(Array.isArray(result.bundleSummary.layoutHints));
+  assert.ok(Array.isArray(result.bundleSummary.interactionLevels));
+  assert.ok(Array.isArray(result.bundleSummary.sectionTypes));
+  assert.ok(Array.isArray(result.bundleSummary.slots));
   assert.ok(Array.isArray(result.renderOrder));
   assert.ok(Array.isArray(result.hostInstructions));
 });

@@ -333,6 +333,27 @@ test("get_component returns localized fields with locale option", () => {
   assert.ok(result.usageContexts.length > 0);
 });
 
+test("compose_experiment_bundle returns bundle summary metadata", () => {
+  const result = composeExperimentBundle({
+    subject: "physics",
+    lessonGoal: "show resistor behavior with a guided lesson flow",
+    audience: "middle-school students",
+    interactionMode: "interactive demo",
+    preferredCategories: ["physics/circuit"],
+    mustIncludeTags: ["resistor"],
+    locale: "en"
+  });
+
+  assert.equal(typeof result.bundleSummary, "object");
+  assert.equal(result.bundleSummary.itemCount, result.items.length);
+  assert.ok(result.bundleSummary.distinctCategoryCount >= 1);
+  assert.ok(Array.isArray(result.bundleSummary.categories));
+  assert.ok(Array.isArray(result.bundleSummary.layoutHints));
+  assert.ok(Array.isArray(result.bundleSummary.interactionLevels));
+  assert.ok(Array.isArray(result.bundleSummary.sectionTypes));
+  assert.ok(Array.isArray(result.bundleSummary.slots));
+});
+
 test("get_component emits locale fallback warning when requested locale is unavailable", () => {
   const result = getComponent("phy.resistor.axial.basic", "fr-FR");
   assert.equal(result.component.name, "电阻");

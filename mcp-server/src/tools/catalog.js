@@ -448,6 +448,36 @@ function summarizeCoverage(selectedItems, sections) {
   };
 }
 
+function summarizeBundle(bundleItems) {
+  const categories = new Set();
+  const interactionLevels = new Set();
+  const layoutHints = new Set();
+  const sectionTypes = new Set();
+  const slots = new Set();
+
+  for (const item of Array.isArray(bundleItems) ? bundleItems : []) {
+    if (item?.component?.category) categories.add(item.component.category);
+    if (item?.interactionLevel) interactionLevels.add(item.interactionLevel);
+    if (item?.layoutHint) layoutHints.add(item.layoutHint);
+    if (item?.sectionType) sectionTypes.add(item.sectionType);
+    if (item?.slot) slots.add(item.slot);
+  }
+
+  return {
+    itemCount: Array.isArray(bundleItems) ? bundleItems.length : 0,
+    distinctCategoryCount: categories.size,
+    layoutCount: layoutHints.size,
+    sectionTypeCount: sectionTypes.size,
+    interactionLevelCount: interactionLevels.size,
+    slotCount: slots.size,
+    categories: Array.from(categories).sort(),
+    layoutHints: Array.from(layoutHints).sort(),
+    sectionTypes: Array.from(sectionTypes).sort(),
+    interactionLevels: Array.from(interactionLevels).sort(),
+    slots: Array.from(slots).sort()
+  };
+}
+
 function buildSectionTitles(subject, lessonGoal, audience) {
   const target = audience ? `for ${audience}` : "";
   return [
@@ -695,6 +725,7 @@ function composeExperimentBundle(input = {}) {
       locale: locale || null,
       itemCount: bundleItems.length
     },
+    bundleSummary: summarizeBundle(bundleItems),
     items: bundleItems,
     renderOrder: bundleItems.map((item) => item.component.id),
     hostInstructions: [
