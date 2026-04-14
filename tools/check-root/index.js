@@ -1,27 +1,19 @@
 #!/usr/bin/env node
 "use strict";
 
-const { execFileSync } = require("node:child_process");
-const fs = require("node:fs");
 const path = require("node:path");
 const { projectPathsFrom } = require("../_lib/paths");
+const { ensureFile, logStep, runCommand, runNodeScript } = require("../_lib/checks");
 
 const PATHS = projectPathsFrom(__dirname);
 const rootDir = PATHS.root;
 const registryPath = path.join(PATHS.registryDir, "registry.json");
 const buildRegistryScript = path.join(PATHS.toolsDir, "build-registry", "index.js");
 
-function run(command, args, cwd) {
-  execFileSync(command, args, {
-    cwd,
-    stdio: "inherit"
-  });
-}
-
 function ensureRegistryBuilt() {
-  if (fs.existsSync(registryPath)) return;
-  console.log("==> build registry");
-  run(process.execPath, [buildRegistryScript], rootDir);
+  ensureFile("build registry", registryPath, () => {
+    runNodeScript(buildRegistryScript, rootDir);
+  });
 }
 
 const checks = [
@@ -55,8 +47,12 @@ for (const check of checks) {
   if (check.label === "root api smoke") {
     ensureRegistryBuilt();
   }
-  console.log(`==> ${check.label}`);
-  run(check.command, check.args, check.cwd);
+  logStep(check.label);
+  if (check.command === process.execPath && check.args.length === 1) {
+    runNodeScript(check.args[0], check.cwd);
+    continue;
+  }
+  runCommand(check.command, check.args, check.cwd);
 }
 
 console.log("All root quality checks passed.");

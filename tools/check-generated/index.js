@@ -3,34 +3,25 @@
 
 const fs = require("node:fs");
 const path = require("node:path");
-const { execFileSync } = require("node:child_process");
 const { projectPathsFrom } = require("../_lib/paths");
 const { listGeneratedRegistryFiles } = require("../_lib/registry");
 const { listExpectedSiteDistEntries } = require("../_lib/site");
+const { ensureFile, runNodeScript } = require("../_lib/checks");
 const { SUPPORTED_LOCALES } = require("../../lib/i18n");
 
 const PATHS = projectPathsFrom(__dirname);
-
-function run(command, args, cwd) {
-  execFileSync(command, args, {
-    cwd,
-    stdio: "inherit"
-  });
-}
 
 function ensureGeneratedOutputs() {
   const registryPath = path.join(PATHS.registryDir, "registry.json");
   const distNoJekyllPath = path.join(PATHS.siteDistDir, ".nojekyll");
 
-  if (!fs.existsSync(registryPath)) {
-    console.log("==> build registry");
-    run(process.execPath, [path.join(PATHS.toolsDir, "build-registry", "index.js")], PATHS.root);
-  }
+  ensureFile("build registry", registryPath, () => {
+    runNodeScript(path.join(PATHS.toolsDir, "build-registry", "index.js"), PATHS.root);
+  });
 
-  if (!fs.existsSync(distNoJekyllPath)) {
-    console.log("==> build site");
-    run(process.execPath, [path.join(PATHS.toolsDir, "build-site", "index.js")], PATHS.root);
-  }
+  ensureFile("build site", distNoJekyllPath, () => {
+    runNodeScript(path.join(PATHS.toolsDir, "build-site", "index.js"), PATHS.root);
+  });
 }
 
 function assertExists(absPath, label) {
