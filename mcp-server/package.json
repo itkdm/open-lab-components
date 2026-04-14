@@ -2,7 +2,16 @@
   "name": "@itkdm/open-lab-components-mcp",
   "version": "0.2.0",
   "description": "Locale-aware MCP server for discovering and retrieving Open Lab Components.",
+  "author": "itkdm (https://github.com/itkdm)",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itkdm/open-lab-components.git"
+  },
+  "bugs": {
+    "url": "https://github.com/itkdm/open-lab-components/issues"
+  },
+  "homepage": "https://github.com/itkdm/open-lab-components#readme",
   "type": "module",
   "bin": {
     "open-lab-components-mcp": "./src/core/cli.js",

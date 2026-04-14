@@ -4,11 +4,32 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const { projectPathsFrom } = require("../_lib/paths");
+const {
+  ROOT_PACKAGE_METADATA,
+  SHARED_PACKAGE_METADATA
+} = require("../_lib/package-metadata");
 const { listDeclaredScripts } = require("../_lib/script-manifest");
 const { ROOT_PACKAGE_FILE_GLOBS } = require("../_lib/publish-assets");
 
 const PATHS = projectPathsFrom(__dirname);
 const packageJsonPath = path.join(PATHS.root, "package.json");
+
+function collectMetadataFailures(prefix, actual, expected, failures) {
+  for (const [key, expectedValue] of Object.entries(expected)) {
+    const actualValue = actual ? actual[key] : undefined;
+    if (expectedValue && typeof expectedValue === "object" && !Array.isArray(expectedValue)) {
+      if (!actualValue || typeof actualValue !== "object") {
+        failures.push(`missing package metadata object: ${prefix}${key}`);
+        continue;
+      }
+      collectMetadataFailures(`${prefix}${key}.`, actualValue, expectedValue, failures);
+      continue;
+    }
+    if (actualValue !== expectedValue) {
+      failures.push(`package metadata mismatch for ${prefix}${key}: expected "${expectedValue}"`);
+    }
+  }
+}
 
 function main() {
   const pkg = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"));
@@ -44,6 +65,9 @@ function main() {
       failures.push(`undeclared package file glob in package.json: ${glob}`);
     }
   }
+
+  collectMetadataFailures("", pkg, SHARED_PACKAGE_METADATA, failures);
+  collectMetadataFailures("", pkg, ROOT_PACKAGE_METADATA, failures);
 
   if (failures.length) {
     console.error("Script manifest checks failed:");
