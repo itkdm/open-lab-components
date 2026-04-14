@@ -104,11 +104,12 @@ function remoteRejectionCategory(code) {
   return "runtime";
 }
 
-function recordRemoteMcpRejection(metrics, code, toolName = null) {
+function recordRemoteMcpRejection(metrics, code, toolName = null, customerId = null) {
   metrics.recordRemoteMcpError({
     category: remoteRejectionCategory(code),
     code,
-    toolName
+    toolName,
+    customerId
   });
 }
 
@@ -211,6 +212,16 @@ function summarizeFeedbackComponentsBySentiment(feedbackSnapshot, direction, lim
       totalScore: Number(totalScore.toFixed(2)),
       eventCount: eventTotals.get(componentId) || 0
     }));
+}
+
+function summarizeTopCustomers(counterMap, limit = 5, valueField = "count") {
+  return Object.entries(counterMap || {})
+    .sort((a, b) => {
+      if (b[1] !== a[1]) return b[1] - a[1];
+      return a[0].localeCompare(b[0]);
+    })
+    .slice(0, limit)
+    .map(([customerId, count]) => ({ customerId, [valueField]: count }));
 }
 
 async function createRemoteApp(options = {}) {
@@ -433,6 +444,8 @@ async function createRemoteApp(options = {}) {
       topFeedbackComponents: summarizeTopFeedbackComponents(feedbackSnapshot),
       topPositiveFeedbackComponents: summarizeFeedbackComponentsBySentiment(feedbackSnapshot, "positive"),
       topNegativeFeedbackComponents: summarizeFeedbackComponentsBySentiment(feedbackSnapshot, "negative"),
+      topRequestedCustomers: summarizeTopCustomers(metricsSnapshot.requestsByCustomer),
+      topErroredCustomers: summarizeTopCustomers(metricsSnapshot.remoteMcpErrorsByCustomer, 5, "errorCount"),
       requestsByCustomer: metricsSnapshot.requestsByCustomer,
       feedbackEvents: metricsSnapshot.feedbackEvents
     });
@@ -634,7 +647,7 @@ async function createRemoteApp(options = {}) {
 
     if (req.method === "POST" && req.mcpToolName) {
       if (!toolAllowed(req.customer, req.mcpToolName)) {
-        recordRemoteMcpRejection(metrics, "tool_not_allowed", req.mcpToolName);
+        recordRemoteMcpRejection(metrics, "tool_not_allowed", req.mcpToolName, req.customer.customerId);
         unauthorized(res, 403, {
           error: "tool_not_allowed",
           message: `Tool not allowed: ${req.mcpToolName}`
@@ -646,7 +659,7 @@ async function createRemoteApp(options = {}) {
       res.setHeader("x-ratelimit-limit", String(limit.limit));
       res.setHeader("x-ratelimit-remaining", String(limit.remaining));
       if (!limit.allowed) {
-        recordRemoteMcpRejection(metrics, "rate_limited", req.mcpToolName);
+        recordRemoteMcpRejection(metrics, "rate_limited", req.mcpToolName, req.customer.customerId);
         unauthorized(
           res,
           429,

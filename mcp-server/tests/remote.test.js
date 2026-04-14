@@ -360,6 +360,8 @@ test("admin overview exposes top requested and errored tools", async () => {
     assert.ok(Array.isArray(payload.topFeedbackComponents));
     assert.ok(Array.isArray(payload.topPositiveFeedbackComponents));
     assert.ok(Array.isArray(payload.topNegativeFeedbackComponents));
+    assert.ok(Array.isArray(payload.topRequestedCustomers));
+    assert.ok(Array.isArray(payload.topErroredCustomers));
     assert.deepEqual(payload.topRequestedTools[0], {
       toolName: "get_categories",
       count: 1
@@ -378,6 +380,10 @@ test("admin overview exposes top requested and errored tools", async () => {
     assert.equal(payload.topPositiveFeedbackComponents[0].totalScore > 0, true);
     assert.equal(payload.topNegativeFeedbackComponents[0].componentId, "phy.mechanics.projectile.interactive");
     assert.equal(payload.topNegativeFeedbackComponents[0].totalScore < 0, true);
+    assert.equal(payload.topRequestedCustomers[0].customerId, "vip-test");
+    assert.equal(payload.topRequestedCustomers[0].count >= 1, true);
+    assert.equal(payload.topErroredCustomers[0].customerId, "vip-restricted");
+    assert.equal(payload.topErroredCustomers[0].errorCount >= 1, true);
   });
 });
 
