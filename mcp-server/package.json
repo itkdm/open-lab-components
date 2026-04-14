@@ -12,6 +12,15 @@
     "url": "https://github.com/itkdm/open-lab-components/issues"
   },
   "homepage": "https://github.com/itkdm/open-lab-components#readme",
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "components",
+    "registry",
+    "education",
+    "stem",
+    "localization"
+  ],
   "type": "module",
   "bin": {
     "open-lab-components-mcp": "./src/core/cli.js",

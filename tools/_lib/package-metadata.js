@@ -17,13 +17,49 @@ const SHARED_PACKAGE_METADATA = {
 };
 
 const ROOT_PACKAGE_METADATA = {
+  description:
+    "Open protocol and runtime-ready component library for composable STEM interactive objects with locale-aware metadata and MCP support.",
   publishConfig: {
     access: "public",
     registry: "https://registry.npmjs.org"
-  }
+  },
+  keywords: [
+    "components",
+    "html",
+    "fragment",
+    "protocol",
+    "manifest",
+    "registry",
+    "mcp",
+    "i18n",
+    "localization",
+    "physics",
+    "chemistry",
+    "biology",
+    "math",
+    "education",
+    "stem",
+    "lab",
+    "apparatus",
+    "interactive",
+    "svg",
+    "science",
+    "simulation"
+  ]
 };
 
-const MCP_PACKAGE_METADATA = {};
+const MCP_PACKAGE_METADATA = {
+  description: "Locale-aware MCP server for discovering and retrieving Open Lab Components.",
+  keywords: [
+    "mcp",
+    "model-context-protocol",
+    "components",
+    "registry",
+    "education",
+    "stem",
+    "localization"
+  ]
+};
 
 module.exports = {
   MCP_PACKAGE_METADATA,

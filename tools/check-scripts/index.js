@@ -17,6 +17,23 @@ const packageJsonPath = path.join(PATHS.root, "package.json");
 function collectMetadataFailures(prefix, actual, expected, failures) {
   for (const [key, expectedValue] of Object.entries(expected)) {
     const actualValue = actual ? actual[key] : undefined;
+    if (Array.isArray(expectedValue)) {
+      if (!Array.isArray(actualValue)) {
+        failures.push(`missing package metadata array: ${prefix}${key}`);
+        continue;
+      }
+      for (const item of expectedValue) {
+        if (!actualValue.includes(item)) {
+          failures.push(`missing package metadata array item for ${prefix}${key}: ${item}`);
+        }
+      }
+      for (const item of actualValue) {
+        if (!expectedValue.includes(item)) {
+          failures.push(`undeclared package metadata array item for ${prefix}${key}: ${item}`);
+        }
+      }
+      continue;
+    }
     if (expectedValue && typeof expectedValue === "object" && !Array.isArray(expectedValue)) {
       if (!actualValue || typeof actualValue !== "object") {
         failures.push(`missing package metadata object: ${prefix}${key}`);
