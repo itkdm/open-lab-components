@@ -6,6 +6,10 @@ const path = require("node:path");
 
 const lab = require("../index.js");
 const registryLib = require("../lib/registry.js");
+const {
+  ROOT_API_EXPORTS,
+  ROOT_API_TYPE_SNIPPETS
+} = require("../lib/root-api-metadata.js");
 
 const SAMPLE_ID = "phy.power.battery.basic";
 const SAMPLE_CATEGORY = "physics/circuit";
@@ -31,6 +35,17 @@ async function main() {
   assert.equal(lab.registry.schema, "cmp-registry/v2");
   assert.equal(lab.registry.count, lab.registry.items.length);
   assert.ok(lab.registry.items.length > 200);
+  });
+
+  await run("root api exports and type declarations stay on the shared contract", () => {
+    const exportedKeys = Object.keys(lab).sort();
+    const expectedKeys = ROOT_API_EXPORTS.slice().sort();
+    const typeSource = fs.readFileSync(path.join(__dirname, "..", "index.d.ts"), "utf8");
+
+    assert.deepEqual(exportedKeys, expectedKeys);
+    for (const snippet of ROOT_API_TYPE_SNIPPETS) {
+      assert.match(typeSource, new RegExp(snippet.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    }
   });
 
   await run("list returns localized items and supports category filter", () => {

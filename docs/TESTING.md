@@ -35,9 +35,10 @@ npm run check:docs
 
 This verifies the root README, quick-start guide, contribution guide, and
 architecture/testing docs still include the shared command-entry and generated
-artifact references that define the repository contract. It also verifies that
-versioned release docs still match the current package version and release tag,
-and that the documented release workflow order stays consistent.
+artifact references that define the repository contract, including the shared
+root API usage snippets. It also verifies that versioned release docs still
+match the current package version and release tag, and that the documented
+release workflow order stays consistent.
 
 Run the generated-artifact boundary check:
 
@@ -60,6 +61,7 @@ This executes:
 2. `tools/check-scripts/index.js`
 3. `tools/check-docs/index.js`
 4. `tests/root-api.test.js`
+   This also checks the root JS export surface and `index.d.ts` declarations.
 5. `tools/runtime-harness/runtime-lifecycle.test.js`
 6. `tools/validate/index.js`
 
