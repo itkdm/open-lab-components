@@ -73,6 +73,8 @@ does not use npm workspaces yet.
   build and generated-artifact checks.
 - `tools/release-smoke/`
   Pack-level release verification for both publishable packages.
+  Release-facing docs are also checked against a shared publish contract so the
+  publishing guide, checklists, and command docs do not drift from scripts.
 
 ## Architectural rules
 

@@ -10,13 +10,13 @@ This repository now includes two publish-ready packages:
 1. Run the root quality path:
 
 ```bash
-node tools/check-root/index.js
+npm run check:root
 ```
 
 2. Run the release smoke checks:
 
 ```bash
-node tools/release-smoke/index.js
+npm run check:release
 ```
 
 3. Run the broader release checks:
@@ -70,5 +70,5 @@ git push origin v0.2.0
 - `release:check` validates the repo and rebuilds publish artifacts
 - `release:pack` verifies both npm packages can be packed with the current file lists
 - `release:ready` runs both checks in sequence
-- `tools/check-root/index.js` covers the root library quality path before release work starts
-- `tools/release-smoke/index.js` confirms both publishable packages still expose the expected tarball contents
+- `npm run check:root` covers the root library quality path before release work starts
+- `npm run check:release` confirms both publishable packages still expose the expected tarball contents

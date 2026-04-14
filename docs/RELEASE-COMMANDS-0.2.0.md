@@ -38,7 +38,7 @@ npm publish
 ```
 
 ```bash
-cd mcp-server && npm publish
+npm --prefix mcp-server publish
 ```
 
 ## Push
