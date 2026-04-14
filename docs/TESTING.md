@@ -1,11 +1,14 @@
 # Testing
 
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the repository boundaries behind
+these checks.
+
 ## Root library checks
 
 Run the root-package quality path with a single command:
 
 ```bash
-node tools/check-root/index.js
+npm run check:root
 ```
 
 This executes:
@@ -19,7 +22,7 @@ This executes:
 Run the publish smoke checks:
 
 ```bash
-node tools/release-smoke/index.js
+npm run check:release
 ```
 
 Use this before tagging or publishing to verify both npm packages still pack
@@ -30,14 +33,13 @@ with the expected key files.
 Run the root API smoke test:
 
 ```bash
-node tests/root-api.test.js
+npm run test:root
 ```
 
 Run the runtime lifecycle harness:
 
 ```bash
-cd tools/runtime-harness
-npm test
+npm run test:runtime
 ```
 
 Run component validation:

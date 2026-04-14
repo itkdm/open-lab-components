@@ -12,9 +12,11 @@ const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
 const { spawn } = require('child_process');
+const { projectPathsFrom } = require('../_lib/paths');
 
-const ROOT = path.resolve(__dirname, '../../');
-const SITE_DIR = path.join(ROOT, 'site');
+const PATHS = projectPathsFrom(__dirname);
+const ROOT = PATHS.root;
+const SITE_DIR = PATHS.siteDir;
 const PORT = process.env.PORT || 3000;
 const ROOT_ALLOWED_PREFIXES = ['components/', 'registry/', 'docs/'];
 
@@ -171,7 +173,7 @@ server.listen(PORT, () => {
 // 监听 components/ 变更，触发自动构建 + 刷新
 // 注意：不要监听 registry/，否则 build-registry 自己写入 registry.json 会导致无限循环重建
 const watchTargets = [
-  path.join(ROOT, 'components'),
+  PATHS.componentsDir,
 ];
 
 for (const dir of watchTargets) {

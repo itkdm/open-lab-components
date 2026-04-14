@@ -4,10 +4,12 @@
 const { execFileSync } = require("node:child_process");
 const fs = require("node:fs");
 const path = require("node:path");
+const { projectPathsFrom } = require("../_lib/paths");
 
-const rootDir = path.resolve(__dirname, "../..");
-const registryPath = path.join(rootDir, "registry", "registry.json");
-const buildRegistryScript = path.join(rootDir, "tools", "build-registry", "index.js");
+const PATHS = projectPathsFrom(__dirname);
+const rootDir = PATHS.root;
+const registryPath = path.join(PATHS.registryDir, "registry.json");
+const buildRegistryScript = path.join(PATHS.toolsDir, "build-registry", "index.js");
 
 function run(command, args, cwd) {
   execFileSync(command, args, {
@@ -27,19 +29,19 @@ const checks = [
     label: "root api smoke",
     cwd: rootDir,
     command: process.execPath,
-    args: [path.join(rootDir, "tests", "root-api.test.js")]
+    args: [path.join(PATHS.testsDir, "root-api.test.js")]
   },
   {
     label: "runtime lifecycle harness",
-    cwd: path.join(rootDir, "tools", "runtime-harness"),
+    cwd: PATHS.runtimeHarnessDir,
     command: process.execPath,
-    args: [path.join(rootDir, "tools", "runtime-harness", "runtime-lifecycle.test.js")]
+    args: [path.join(PATHS.runtimeHarnessDir, "runtime-lifecycle.test.js")]
   },
   {
     label: "component validation",
     cwd: rootDir,
     command: process.execPath,
-    args: [path.join(rootDir, "tools", "validate", "index.js")]
+    args: [path.join(PATHS.toolsDir, "validate", "index.js")]
   }
 ];
 

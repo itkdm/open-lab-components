@@ -5,12 +5,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const { projectPathsFrom } = require('../_lib/paths');
 
-const ROOT = path.resolve(__dirname, '../../');
-const SITE_SRC = path.join(ROOT, 'site');
-const SITE_DIST = path.join(ROOT, 'site/dist');
-const COMPONENTS_DIR = path.join(ROOT, 'components');
-const REGISTRY_DIR = path.join(ROOT, 'registry');
+const PATHS = projectPathsFrom(__dirname);
+const SITE_SRC = PATHS.siteDir;
+const SITE_DIST = PATHS.siteDistDir;
+const COMPONENTS_DIR = PATHS.componentsDir;
+const REGISTRY_DIR = PATHS.registryDir;
+const DOCS_DIR = PATHS.docsDir;
 
 function ensureDir(dir) {
   if (!fs.existsSync(dir)) {
@@ -50,7 +52,6 @@ function main() {
   }
 
   // 复制 docs/ 到 site/dist/docs/
-  const DOCS_DIR = path.join(ROOT, 'docs');
   if (fs.existsSync(DOCS_DIR)) {
     copyDir(DOCS_DIR, path.join(SITE_DIST, 'docs'));
   }

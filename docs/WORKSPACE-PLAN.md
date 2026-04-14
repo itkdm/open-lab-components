@@ -3,6 +3,9 @@
 This document records the recommended path for consolidating package management
 without mixing that migration into the current quality-hardening batches.
 
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the current repository boundaries
+that this plan assumes.
+
 ## Current layout
 
 The repository currently contains three active npm boundaries plus one optional

@@ -2,10 +2,11 @@
 "use strict";
 
 const { execSync } = require("node:child_process");
-const path = require("node:path");
+const { projectPathsFrom } = require("../_lib/paths");
 
-const rootDir = path.resolve(__dirname, "../..");
-const mcpDir = path.join(rootDir, "mcp-server");
+const PATHS = projectPathsFrom(__dirname);
+const rootDir = PATHS.root;
+const mcpDir = PATHS.mcpServerDir;
 
 function runCheck(label, command, cwd) {
   console.log(`==> ${label}`);
