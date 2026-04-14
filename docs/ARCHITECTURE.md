@@ -79,6 +79,7 @@ does not use npm workspaces yet.
   filenames and tag references move together.
   The publish-step ordering is also treated as a shared contract for the same
   reason.
+  The release command entrypoints and pack contracts are shared as well.
 
 ## Architectural rules
 

@@ -1,6 +1,7 @@
 const path = require("node:path");
 
 const registryMetadata = require("../../lib/registry-metadata");
+const { createReleasePackContracts } = require("./release-manifest");
 
 function createRootQualityPipeline(paths) {
   return {
@@ -70,30 +71,7 @@ function createGeneratedArtifactPipeline(paths) {
 function createReleaseSmokePipeline(paths) {
   return {
     successMessage: "Release smoke checks passed.",
-    steps: [
-      {
-        label: "root package pack dry-run",
-        cwd: paths.root,
-        command: "npm pack --dry-run",
-        requiredOutput: [
-          "name: @itkdm/open-lab-components",
-          "index.js",
-          "index.d.ts",
-          "registry/" + registryMetadata.DEFAULT_REGISTRY_FILE
-        ]
-      },
-      {
-        label: "mcp package pack dry-run",
-        cwd: paths.mcpServerDir,
-        command: "npm pack --dry-run",
-        requiredOutput: [
-          "name: @itkdm/open-lab-components-mcp",
-          "src/core/cli.js",
-          "src/core/http-cli.js",
-          "README.md"
-        ]
-      }
-    ]
+    steps: createReleasePackContracts(paths)
   };
 }
 

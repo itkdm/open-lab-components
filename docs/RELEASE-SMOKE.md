@@ -9,6 +9,12 @@ npm run check:release
 This verifies both publishable packages can still be packed and that key files
 are present in the tarball manifests.
 
+Repository script entrypoints:
+
+- `npm run pack:check`
+- `npm run mcp:pack:check`
+- `npm run check:release`
+
 ## What it checks
 
 For the root package:
@@ -31,6 +37,7 @@ For the MCP package:
 
 - `npm run check:root` protects the root library quality path
 - `npm run check:release` protects package packing surfaces
+- `npm run pack:check` and `npm run mcp:pack:check` expose the underlying dry-run pack commands
 - `npm run release:ready` remains the broader repo-level release workflow
 
 Run all three before publish if the repo is in a release state.

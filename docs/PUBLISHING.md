@@ -25,6 +25,11 @@ npm run check:release
 npm run release:ready
 ```
 
+This expands to:
+
+- `npm run release:check`
+- `npm run release:pack`
+
 4. Review:
 
 - `CHANGELOG.md`
@@ -87,6 +92,8 @@ The release workflow is intentionally kept in this order:
 - `release:check` validates the repo and rebuilds publish artifacts
 - `release:pack` verifies both npm packages can be packed with the current file lists
 - `release:ready` runs both checks in sequence
+- `npm run pack:check` is the root package dry-run pack entrypoint
+- `npm run mcp:pack:check` is the MCP package dry-run pack entrypoint
 - `npm run check:root` covers the root library quality path before release work starts
 - `npm run check:release` confirms both publishable packages still expose the expected tarball contents
 - versioned release assets in `docs/` are expected to match the current package version and release tag
