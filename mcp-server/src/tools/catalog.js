@@ -96,6 +96,53 @@ function createResponseMeta(kind, locale, warnings = []) {
   };
 }
 
+function hasDescription(item) {
+  return !!(item && typeof item.description === "string" && item.description.trim());
+}
+
+function countDocumentedProps(item) {
+  return (Array.isArray(item.props) ? item.props : []).filter((prop) => {
+    return !!(prop && typeof prop.desc === "string" && prop.desc.trim());
+  }).length;
+}
+
+function countDocumentedEvents(item) {
+  return (Array.isArray(item.events) ? item.events : []).filter((event) => {
+    return !!(
+      event &&
+      ((typeof event.desc === "string" && event.desc.trim()) ||
+        (typeof event.label === "string" && event.label.trim()))
+    );
+  }).length;
+}
+
+function buildQualitySignals(item) {
+  const props = Array.isArray(item.props) ? item.props : [];
+  const events = Array.isArray(item.events) ? item.events : [];
+  const locales = item && item.locales && typeof item.locales === "object" ? item.locales : {};
+
+  return {
+    hasDescription: hasDescription(item),
+    localeCount: Object.values(locales).filter((entry) => entry && entry.name && entry.ariaLabel).length,
+    propCount: props.length,
+    documentedPropCount: countDocumentedProps(item),
+    eventCount: events.length,
+    documentedEventCount: countDocumentedEvents(item),
+    interactive: hasEvents(item)
+  };
+}
+
+function scoreQualitySignals(item) {
+  const signals = buildQualitySignals(item);
+  let score = 0;
+  if (signals.hasDescription) score += 12;
+  score += Math.min(8, signals.localeCount * 4);
+  score += Math.min(12, signals.documentedPropCount * 3);
+  score += Math.min(8, signals.documentedEventCount * 4);
+  if (signals.interactive) score += 6;
+  return { score, signals };
+}
+
 function recommendComponents(input = {}) {
   const locale = input.locale;
   const subject = String(input.subject || "").trim();
@@ -125,45 +172,67 @@ function recommendComponents(input = {}) {
 
     let score = 0;
     const matchDetails = [];
+    const scoreBreakdown = {
+      preferredCategory: 0,
+      subjectAlignment: 0,
+      subjectText: 0,
+      lessonGoalText: 0,
+      audienceText: 0,
+      interactionText: 0,
+      requiredTags: 0,
+      interactionReadiness: 0,
+      queryCoverage: 0,
+      quality: 0,
+      feedback: 0
+    };
     const text = collectRecommendationText(item);
 
     if (preferredCategories.includes(item.category)) {
       score += 140;
+      scoreBreakdown.preferredCategory += 140;
       matchDetails.push({ reason: "preferred category", matchedTokens: [item.category] });
     }
 
     if (normalizeText(item.category).includes(normalizeText(subject)) && subject) {
       score += 120;
+      scoreBreakdown.subjectAlignment += 120;
       matchDetails.push({ reason: "subject-category alignment", matchedTokens: [subject] });
     }
 
-    score += scoreTokensAgainstText(subjectTokens, text, 34, "subject match", matchDetails);
-    score += scoreTokensAgainstText(goalTokens, text, 24, "lesson goal match", matchDetails);
-    score += scoreTokensAgainstText(audienceTokens, text, 10, "audience match", matchDetails);
-    score += scoreTokensAgainstText(interactionTokens, text, 16, "interaction mode match", matchDetails);
+    scoreBreakdown.subjectText = scoreTokensAgainstText(subjectTokens, text, 34, "subject match", matchDetails);
+    score += scoreBreakdown.subjectText;
+    scoreBreakdown.lessonGoalText = scoreTokensAgainstText(goalTokens, text, 24, "lesson goal match", matchDetails);
+    score += scoreBreakdown.lessonGoalText;
+    scoreBreakdown.audienceText = scoreTokensAgainstText(audienceTokens, text, 10, "audience match", matchDetails);
+    score += scoreBreakdown.audienceText;
+    scoreBreakdown.interactionText = scoreTokensAgainstText(interactionTokens, text, 16, "interaction mode match", matchDetails);
+    score += scoreBreakdown.interactionText;
 
     const tags = normalizeArray(item.tags).map(normalizeText);
     const matchedRequiredTags = mustIncludeTags.filter((tag) => tags.includes(normalizeText(tag)));
     if (mustIncludeTags.length > 0 && matchedRequiredTags.length === 0) continue;
     if (matchedRequiredTags.length > 0) {
-      score += matchedRequiredTags.length * 55;
+      scoreBreakdown.requiredTags = matchedRequiredTags.length * 55;
+      score += scoreBreakdown.requiredTags;
       matchDetails.push({ reason: "required tags", matchedTokens: matchedRequiredTags });
     }
 
     if (hasEvents(item) && /interactive|experiment|simulate|demo|拖拽|交互|实验|演示/i.test(queryText)) {
       score += 45;
+      scoreBreakdown.interactionReadiness += 45;
       matchDetails.push({ reason: "interaction-ready", matchedTokens: ["events"] });
-    }
-
-    if (Array.isArray(item.props) && item.props.length > 0) {
-      score += Math.min(18, item.props.length);
     }
 
     if (queryTokens.length > 0) {
       const matchedQueryTokens = queryTokens.filter((token) => text.includes(token));
       if (matchedQueryTokens.length === 0) continue;
-      score += matchedQueryTokens.length * 6;
+      scoreBreakdown.queryCoverage = matchedQueryTokens.length * 6;
+      score += scoreBreakdown.queryCoverage;
     }
+
+    const quality = scoreQualitySignals(item);
+    scoreBreakdown.quality = quality.score;
+    score += quality.score;
 
     const feedbackAdjustment = feedbackStore.getAdjustment(item.id, {
       customerId,
@@ -176,6 +245,7 @@ function recommendComponents(input = {}) {
     });
     if (feedbackAdjustment.totalBoost !== 0) {
       score += feedbackAdjustment.totalBoost;
+      scoreBreakdown.feedback = feedbackAdjustment.totalBoost;
       matchDetails.push({
         reason: "feedback rerank",
         matchedTokens: [
@@ -188,6 +258,9 @@ function recommendComponents(input = {}) {
     recommendations.push({
       ...recommendationSummary(item),
       recommendationScore: score,
+      scoreBreakdown,
+      qualitySignals: quality.signals,
+      reasonSummary: matchDetails.map((detail) => detail.reason),
       recommendationReasons: matchDetails.slice(0, 5),
       feedbackAdjustment,
       recommendedUse:

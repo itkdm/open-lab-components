@@ -92,6 +92,13 @@ test("recommend_components returns explainable ranked recommendations", () => {
   assert.equal(result.items[0].category, "physics/circuit");
   assert.ok(result.items[0].tags.includes("resistor"));
   assert.equal(typeof result.items[0].recommendationScore, "number");
+  assert.equal(typeof result.items[0].scoreBreakdown, "object");
+  assert.equal(typeof result.items[0].qualitySignals, "object");
+  assert.ok(Array.isArray(result.items[0].reasonSummary));
+  assert.ok(result.items[0].scoreBreakdown.requiredTags > 0);
+  assert.ok(result.items[0].scoreBreakdown.quality > 0);
+  assert.equal(typeof result.items[0].qualitySignals.interactive, "boolean");
+  assert.ok(result.items[0].qualitySignals.localeCount >= 1);
   assert.ok(Array.isArray(result.items[0].recommendationReasons));
 });
 
@@ -138,6 +145,7 @@ test("recommend_components reranks based on feedback signals", async () => {
 
   assert.ok(afterIndex >= 0);
   assert.ok(after.items[afterIndex].feedbackAdjustment.totalBoost > 0);
+  assert.ok(after.items[afterIndex].scoreBreakdown.feedback > 0);
   assert.ok(afterIndex <= beforeIndex);
 });
 
