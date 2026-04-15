@@ -5,7 +5,8 @@ const { PREPUBLISH_SEQUENCE, RELEASE_CHECK_SEQUENCE } = require("./release-manif
 const ROOT_SCRIPT_GROUPS = {
   build: {
     "build": "npm run build:registry && npm run build:site",
-    "build:registry": "node tools/build-registry/index.js",
+    "build:quality-report": "node tools/build-quality-report/index.js",
+    "build:registry": "node tools/build-registry/index.js && node tools/build-quality-report/index.js",
     "build:site": "node tools/build-site/index.js"
   },
   check: {
