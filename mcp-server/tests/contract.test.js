@@ -40,6 +40,8 @@ test("recommend_components contract stays stable", () => {
   assertResponseEnvelope(result, "recommend_components", "en");
   assert.equal(typeof result.selectionPolicy, "object");
   assert.equal(typeof result.appliedConstraints, "object");
+  assert.equal(typeof result.selectionPolicy.qualityReportEnabled, "boolean");
+  assert.equal(typeof result.selectionPolicy.interactivePreferenceApplied, "boolean");
   assert.ok(Array.isArray(result.items));
   assert.ok(result.items.length > 0);
   const first = result.items[0];
@@ -47,6 +49,8 @@ test("recommend_components contract stays stable", () => {
   assert.equal(typeof first.recommendationScore, "number");
   assert.equal(typeof first.scoreBreakdown, "object");
   assert.equal(typeof first.qualitySignals, "object");
+  assert.equal(typeof first.qualitySignals.source, "string");
+  assert.equal(typeof first.interactionLevel, "string");
   assert.ok(Array.isArray(first.reasonSummary));
   assert.ok(Array.isArray(first.recommendationReasons));
   assert.equal(typeof first.feedbackAdjustment, "object");
@@ -67,6 +71,7 @@ test("build_experiment_page contract stays stable", () => {
   assertResponseEnvelope(result, "build_experiment_page", "en");
   assert.equal(typeof result.page, "object");
   assert.equal(typeof result.coverageSummary, "object");
+  assert.equal(typeof result.coverageSummary.duplicateComponentCount, "number");
   assert.ok(Array.isArray(result.selectedComponents));
   assert.ok(Array.isArray(result.sections));
   assert.equal(typeof result.sections[0].slot, "string");
@@ -90,6 +95,7 @@ test("compose_experiment_bundle contract stays stable", () => {
   assertResponseEnvelope(result, "compose_experiment_bundle", "en");
   assert.equal(typeof result.bundle, "object");
   assert.equal(typeof result.bundleSummary, "object");
+  assert.equal(typeof result.bundleSummary.duplicateComponentCount, "number");
   assert.ok(Array.isArray(result.items));
   assert.equal(typeof result.items[0].slot, "string");
   assert.equal(typeof result.items[0].interactionLevel, "string");

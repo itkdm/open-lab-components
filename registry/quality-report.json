@@ -1,0 +1,2563 @@
+{
+  "schemaVersion": "openlab-quality-report/v1",
+  "generatedAt": "2026-04-15T03:12:36.913Z",
+  "componentCount": 213,
+  "items": {
+    "bio.cell.animal.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.cell.dna.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.cell.mitosis.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.cell.photosynthesis.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.cell.plant.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.cell.respiration.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.cell.transcription.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.ecology.food-web.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.genetics.punnett-square.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.instrument.microscope.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.organ.circulatory.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.organ.ear.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.organ.eye.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.organ.heart.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.organ.lung.basic": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "bio.organ.nephron.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.organ.neuron.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "bio.organ.stomach.basic": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.gas.ideal-gas-law.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.indicator.ph-beaker.basic": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.alcohol-lamp.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.beaker.graduated.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.bunsen-burner.basic": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.labware.burette.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.condenser.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.crucible.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.distillation-flask.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.dropper.basic": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.labware.erlenmeyer-flask.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.evaporating-dish.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.funnel.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.gas-jar.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.glass-rod.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.graduated-cylinder.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.narrow-mouth-bottle.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.round-bottom-flask.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.separating-funnel.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.spatula.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.stand.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.test-tube-rack.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.test-tube.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.tripod.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.wash-bottle.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.wide-mouth-bottle.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.labware.wire-gauze.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "chem.model.bonding.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.model.molecule.ball-stick": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.model.periodic-table.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.reaction.acid-base.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.reaction.electrolysis.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.reaction.equilibrium.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.reaction.rate.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.reaction.redox.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "chem.solution.concentration.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "cs.ai.perceptron.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "cs.logic.gate.and": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.calculus.derivative.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.calculus.integral.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 13,
+        "documentedPropCount": 13,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.clock.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 15,
+        "documentedPropCount": 15,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.complex-plane.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 13,
+        "documentedPropCount": 13,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.coordinate.cartesian.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.function.graph.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 18,
+        "documentedPropCount": 18,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.angle-maker.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.area-grid.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.compass.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.conic-section.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.coordinate-grid.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.dice.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.geometry.net-folding.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.pattern-blocks.interactive": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 1,
+        "documentedPropCount": 1,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.perimeter.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.shape-sorter.interactive": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 1,
+        "documentedPropCount": 1,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.solid-shapes.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.symmetry.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.geometry.tangram.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.measure.length-compare.interactive": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 1,
+        "documentedPropCount": 1,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.measure.time-converter.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.measure.volume-model.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.measure.weight-scale.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.balance.interactive": {
+      "score": 23,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.column-addition.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.counting-sticks.interactive": {
+      "score": 23,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.decimal-model.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.fraction-bar.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.fraction-circle.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.hundred-chart.interactive": {
+      "score": 23,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.multiplication-table.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.negative-number-line.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.number-line.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.place-value.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.number.ratio-model.interactive": {
+      "score": 23,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.probability.spinner.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.statistics.bar-chart.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.statistics.histogram.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.statistics.pie-chart.interactive": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 1,
+        "documentedPropCount": 1,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.time.calendar.interactive": {
+      "score": 23,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.tool.abacus.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.tool.protractor.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.tool.ruler.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.tool.triangle-ruler.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "math.trigonometry.unit-circle.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 13,
+        "documentedPropCount": 13,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "math.vector.operations.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.balance.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 13,
+        "documentedPropCount": 13,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.bulb.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.apparatus.cylinder.graduated": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.apparatus.micrometer.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.apparatus.protractor.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.pulley-fixed.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 18,
+        "documentedPropCount": 18,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.pulley-movable.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 16,
+        "documentedPropCount": 16,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.pulley-system.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 16,
+        "documentedPropCount": 16,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.pulley.fixed": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 13,
+        "documentedPropCount": 13,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.apparatus.spring-scale.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 15,
+        "documentedPropCount": 15,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.apparatus.spring-scale.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 15,
+        "documentedPropCount": 15,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.stopwatch.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.apparatus.thermometer.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.timer.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.apparatus.tuning-fork.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.apparatus.vernier-caliper.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.ruler.vertical.metric": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.weight.hook.realistic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.weight.mass.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.atomic.bohr.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.circuit.bell.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.bulb-holder.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.capacitor.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.diode.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.electromagnet.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.circuit.fuse.glass-tube": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.led.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.motor.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.oscilloscope.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 15,
+        "documentedPropCount": 15,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.circuit.transformer.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.circuit.wire-connector.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.meter.current.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.meter.voltage.draggable": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 16,
+        "documentedPropCount": 16,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.power.battery-pack.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.power.battery.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.power.source.schematic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.resistor.axial.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.rheostat.slide.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.switch.knife.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.wire.clip.draggable": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 15,
+        "documentedPropCount": 15,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.electric.field-lines.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.em.spectrum.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.fluid.bernoulli.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.gravity.orbital.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.magnet.bar.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.magnet.compass.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.magnet.compass.dial": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.magnet.em-induction.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.magnet.field-lines.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.magnet.horseshoe.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.buoyancy.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.cart.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.cart.collision": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.cart.dynamics": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.cart.flatbed": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.friction-demo.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.inclined-plane.adjustable": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.inclined-plane.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.inclined-plane.double": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.inclined-plane.graduated": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 3,
+        "documentedPropCount": 3,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.mechanics.lever.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 18,
+        "documentedPropCount": 18,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.newton-cradle.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.pendulum.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.pressure-demo.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.projectile.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.shm.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 13,
+        "documentedPropCount": 13,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.mechanics.spring.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 10,
+        "documentedPropCount": 10,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.optics.double-slit.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.optics.fiber.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.optics.lens.concave.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.optics.lens.convex.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.optics.lens.convex.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 18,
+        "documentedPropCount": 18,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.optics.lens.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 14,
+        "documentedPropCount": 14,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.optics.mirror.concave.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.optics.mirror.convex.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.optics.mirror.plane.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 20,
+        "documentedPropCount": 20,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.optics.prism.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.optics.refraction.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 21,
+        "documentedPropCount": 21,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.thermal.carnot-cycle.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 11,
+        "documentedPropCount": 11,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.thermal.conduction.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.thermal.convection.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.thermal.radiation.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 5,
+        "documentedPropCount": 5,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.wave.doppler.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.wave.longitudinal.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.wave.sound.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 12,
+        "documentedPropCount": 12,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "phy.wave.standing.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 8,
+        "documentedPropCount": 8,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "phy.wave.transverse.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 9,
+        "documentedPropCount": 9,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.day-night.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.earth-layers.interactive": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 1,
+        "documentedPropCount": 1,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.erosion.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.moon-phases.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.seasons.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.solar-system.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 4,
+        "documentedPropCount": 4,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.volcano.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.earth.water-cycle.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.life.butterfly-lifecycle.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.life.flower-structure.basic": {
+      "score": 14,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "sci.life.food-chain.interactive": {
+      "score": 17,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 1,
+        "documentedPropCount": 1,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.life.frog-lifecycle.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.life.human-body.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.life.leaf-structure.basic": {
+      "score": 14,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "sci.life.plant-growth.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.life.seed-structure.basic": {
+      "score": 14,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "sci.tool.compass.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "sci.tool.filter-funnel.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 7,
+        "documentedPropCount": 7,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "sci.tool.magnifier.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "sci.tool.measuring-cup.basic": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 0,
+        "documentedEventCount": 0,
+        "interactive": false
+      }
+    },
+    "sci.tool.pulley-demo.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.tool.shadow-length.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.tool.simple-circuit.interactive": {
+      "score": 20,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 2,
+        "documentedPropCount": 2,
+        "eventCount": 1,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    },
+    "sci.tool.sundial.interactive": {
+      "score": 26,
+      "signals": {
+        "hasDescription": false,
+        "localeCount": 2,
+        "propCount": 6,
+        "documentedPropCount": 6,
+        "eventCount": 2,
+        "documentedEventCount": 0,
+        "interactive": true
+      }
+    }
+  }
+}

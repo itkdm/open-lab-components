@@ -43,9 +43,9 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
       "get_recommendation_feedback_stats",
       "list_components",
       "recommend_components",
-      "search_components"
-      ,
-      "submit_recommendation_feedback"
+      "search_components",
+      "submit_recommendation_feedback",
+      "validate_experiment_bundle"
     ]);
 
     const result = await client.callTool({
@@ -77,11 +77,21 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
     assert.equal(componentPayload.component.name, "Axial Resistor");
 
     const resources = await client.listResources();
-    assert.ok(resources.resources.length >= 3);
+    assert.ok(resources.resources.length >= 5);
     assert.ok(resources.resources.some((resource) => resource.uri === "openlab://catalog/overview"));
+    assert.ok(resources.resources.some((resource) => resource.uri === "openlab://catalog/interactive"));
+    assert.ok(resources.resources.some((resource) => resource.uri === "openlab://catalog/lesson-ready"));
 
     const resourcePayload = await client.readResource({ uri: "openlab://catalog/overview" });
     assert.match(resourcePayload.contents[0].text, /componentCount/);
+    const interactiveResource = await client.readResource({ uri: "openlab://catalog/interactive" });
+    assert.match(interactiveResource.contents[0].text, /qualitySummary/);
+    assert.doesNotMatch(interactiveResource.contents[0].text, /data-cmp-id=/);
+
+    const resourceTemplates = await client.listResourceTemplates();
+    assert.ok(resourceTemplates.resourceTemplates.some((resource) => resource.uriTemplate === "openlab://catalog/subject/{subject}"));
+    const subjectResource = await client.readResource({ uri: "openlab://catalog/subject/physics" });
+    assert.match(subjectResource.contents[0].text, /\"subject\": \"physics\"/);
 
     const prompt = await client.getPrompt({
       name: "component-recommendation-brief",
@@ -141,6 +151,17 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
     assert.ok(Array.isArray(bundlePayload.items));
     assert.ok(bundlePayload.items.length > 0);
     assert.match(bundlePayload.items[0].html, /data-cmp-id=/);
+
+    const validationResult = await client.callTool({
+      name: "validate_experiment_bundle",
+      arguments: {
+        items: bundlePayload.items,
+        sections: pagePlanPayload.sections
+      }
+    });
+    const validationPayload = JSON.parse(validationResult.content[0].text);
+    assert.equal(typeof validationPayload.valid, "boolean");
+    assert.ok(Array.isArray(validationPayload.issues));
 
     const feedbackResult = await client.callTool({
       name: "submit_recommendation_feedback",

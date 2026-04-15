@@ -1,14 +1,19 @@
 import { z } from "zod";
+import { ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import {
   buildExperimentPagePlan,
   composeExperimentBundle,
   getCategories,
   getComponent,
+  getInteractiveCatalogSummary,
   getRecommendationFeedbackStats,
+  getLessonReadyCatalogSummary,
+  getSubjectCatalogSummary,
   listComponents,
   recommendComponents,
   searchComponents,
-  submitRecommendationFeedback
+  submitRecommendationFeedback,
+  validateExperimentBundle
 } from "../tools/catalog.js";
 
 function jsonResponse(payload) {
@@ -85,6 +90,10 @@ const TOOL_DEFINITIONS = [
       mustIncludeTags: z.array(z.string()).optional(),
       preferredCategories: z.array(z.string()).optional(),
       excludeCategories: z.array(z.string()).optional(),
+      excludeComponentIds: z.array(z.string()).optional(),
+      preferInteractive: z.boolean().optional(),
+      requiredInteractionLevel: z.string().optional(),
+      maxPerCategory: z.number().int().positive().optional(),
       limit: z.number().int().positive().optional(),
       locale: z.string().optional()
     },
@@ -156,6 +165,42 @@ const TOOL_DEFINITIONS = [
       locale: z.string().optional()
     },
     handler: async (input) => jsonResponse(composeExperimentBundle(input))
+  },
+  {
+    name: "validate_experiment_bundle",
+    title: "Validate experiment bundle",
+    description:
+      "Validate page-plan sections or render bundle items before a host integrates them into a final lesson page.",
+    inputSchema: {
+      sections: z
+        .array(
+          z.object({
+            recommendedComponentId: z.string().optional(),
+            sectionType: z.string().optional(),
+            slot: z.string().optional(),
+            interactionLevel: z.string().optional(),
+            hostRequirements: z.array(z.string()).optional()
+          })
+        )
+        .optional(),
+      items: z
+        .array(
+          z.object({
+            sectionType: z.string().optional(),
+            slot: z.string().optional(),
+            layoutHint: z.string().optional(),
+            interactionLevel: z.string().optional(),
+            hostRequirements: z.array(z.string()).optional(),
+            component: z
+              .object({
+                id: z.string().optional()
+              })
+              .optional()
+          })
+        )
+        .optional()
+    },
+    handler: async (input) => jsonResponse(validateExperimentBundle(input))
   },
   {
     name: "get_component",
@@ -330,6 +375,61 @@ const RESOURCE_DEFINITIONS = [
           {
             uri: "openlab://catalog/featured",
             text: JSON.stringify({ items }, null, 2)
+          }
+        ]
+      };
+    }
+  },
+  {
+    name: "interactive-components",
+    uri: "openlab://catalog/interactive",
+    title: "Interactive Components",
+    description: "Discovery summary for interactive components with events and stronger host value.",
+    mimeType: "application/json",
+    handler: async () => ({
+      contents: [
+        {
+          uri: "openlab://catalog/interactive",
+          text: JSON.stringify(getInteractiveCatalogSummary("en"), null, 2)
+        }
+      ]
+    })
+  },
+  {
+    name: "lesson-ready-components",
+    uri: "openlab://catalog/lesson-ready",
+    title: "Lesson-ready Components",
+    description: "Discovery summary for components with stronger quality signals and lesson readiness.",
+    mimeType: "application/json",
+    handler: async () => ({
+      contents: [
+        {
+          uri: "openlab://catalog/lesson-ready",
+          text: JSON.stringify(getLessonReadyCatalogSummary("en"), null, 2)
+        }
+      ]
+    })
+  },
+  {
+    name: "subject-components",
+    uri: new ResourceTemplate("openlab://catalog/subject/{subject}", {
+      list: async () => ({
+        resources: ["physics", "chemistry", "biology", "math"].map((subject) => ({
+          uri: `openlab://catalog/subject/${subject}`,
+          name: `catalog-subject-${subject}`
+        }))
+      })
+    }),
+    title: "Subject Components",
+    description: "Discovery summary for a subject-scoped component catalog slice.",
+    mimeType: "application/json",
+    handler: async (_uri, variables) => {
+      const subject = typeof variables.subject === "string" ? variables.subject : "physics";
+      return {
+        contents: [
+          {
+            uri: `openlab://catalog/subject/${subject}`,
+            text: JSON.stringify(getSubjectCatalogSummary(subject, "en"), null, 2)
           }
         ]
       };

@@ -1,13 +1,20 @@
-import { createRequire } from "node:module";
+﻿import { createRequire } from "node:module";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { feedbackStore } from "../feedback/feedback-store.js";
 
 const require = createRequire(import.meta.url);
 const catalog = require("../../../lib/catalog.js");
 const MCP_RESPONSE_SCHEMA_VERSION = "openlab-mcp-response/v1";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const QUALITY_REPORT_PATH = path.resolve(__dirname, "../../../registry/quality-report.json");
 const SOURCE_INFO = Object.freeze({
   kind: "open-lab-components-catalog",
   package: "@itkdm/open-lab-components-mcp"
 });
+let qualityReportCache = undefined;
 
 const {
   clampLimit,
@@ -119,6 +126,22 @@ function createWarning(code, message, details = {}) {
   };
 }
 
+function loadQualityReport() {
+  if (qualityReportCache !== undefined) return qualityReportCache;
+  try {
+    const payload = JSON.parse(fs.readFileSync(QUALITY_REPORT_PATH, "utf8"));
+    if (!payload || typeof payload !== "object" || !payload.items || typeof payload.items !== "object") {
+      qualityReportCache = null;
+      return qualityReportCache;
+    }
+    qualityReportCache = payload;
+    return qualityReportCache;
+  } catch (_error) {
+    qualityReportCache = null;
+    return qualityReportCache;
+  }
+}
+
 function hasDescription(item) {
   return !!(item && typeof item.description === "string" && item.description.trim());
 }
@@ -166,6 +189,116 @@ function scoreQualitySignals(item) {
   return { score, signals };
 }
 
+function getQualityAssessment(item) {
+  const qualityReport = loadQualityReport();
+  const qualityEntry = qualityReport && qualityReport.items ? qualityReport.items[item.id] : null;
+  if (qualityEntry) {
+    return {
+      score: Number(qualityEntry.score) || 0,
+      signals: {
+        ...qualityEntry.signals,
+        source: "registry-report"
+      },
+      reportEnabled: true
+    };
+  }
+
+  const runtimeAssessment = scoreQualitySignals(item);
+  return {
+    score: runtimeAssessment.score,
+    signals: {
+      ...runtimeAssessment.signals,
+      source: "runtime-derived"
+    },
+    reportEnabled: false
+  };
+}
+
+function deriveComponentInteractionLevel(item) {
+  return hasEvents(item) ? "interactive" : "static";
+}
+
+function summarizeTagFrequency(items, limit = 8) {
+  const counts = new Map();
+  for (const item of Array.isArray(items) ? items : []) {
+    for (const tag of normalizeArray(item.tags)) {
+      counts.set(tag, (counts.get(tag) || 0) + 1);
+    }
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, limit)
+    .map(([tag, count]) => ({ tag, count }));
+}
+
+function summarizeQuality(items) {
+  const assessments = (Array.isArray(items) ? items : []).map((item) => getQualityAssessment(item));
+  const scores = assessments.map((entry) => entry.score);
+  const total = scores.reduce((sum, value) => sum + value, 0);
+  return {
+    reportEnabled: assessments.some((entry) => entry.reportEnabled),
+    averageScore: scores.length > 0 ? Number((total / scores.length).toFixed(2)) : 0,
+    maxScore: scores.length > 0 ? Math.max(...scores) : 0,
+    interactiveCount: (Array.isArray(items) ? items : []).filter((item) => hasEvents(item)).length
+  };
+}
+
+function summarizeDiscoveryItems(items, locale, limit = 8) {
+  const categories = new Set();
+  for (const item of items) {
+    if (item.category) categories.add(item.category);
+  }
+  const ranked = items
+    .map((item) => {
+      const quality = getQualityAssessment(item);
+      return {
+        ...recommendationSummary(item),
+        interactionLevel: deriveComponentInteractionLevel(item),
+        qualityScore: quality.score,
+        qualitySignals: quality.signals
+      };
+    })
+    .sort((a, b) => b.qualityScore - a.qualityScore || Number(b.hasEvents) - Number(a.hasEvents) || a.id.localeCompare(b.id))
+    .slice(0, limit);
+
+  return {
+    componentCount: items.length,
+    categories: Array.from(categories).sort(),
+    topTags: summarizeTagFrequency(items),
+    qualitySummary: summarizeQuality(items),
+    items: ranked
+  };
+}
+
+function getSubjectCatalogSummary(subject, locale = "en") {
+  const normalizedSubject = normalizeText(subject);
+  const items = getItems(locale).filter((item) => normalizeText(item.category).startsWith(`${normalizedSubject}/`));
+  return {
+    subject: normalizedSubject,
+    locale: locale || "en",
+    ...summarizeDiscoveryItems(items, locale)
+  };
+}
+
+function getInteractiveCatalogSummary(locale = "en") {
+  const items = getItems(locale).filter((item) => hasEvents(item));
+  return {
+    locale: locale || "en",
+    ...summarizeDiscoveryItems(items, locale)
+  };
+}
+
+function getLessonReadyCatalogSummary(locale = "en") {
+  const items = getItems(locale).filter((item) => {
+    const quality = getQualityAssessment(item);
+    return quality.score >= 24 && hasDescription(item) && countDocumentedProps(item) >= 1;
+  });
+  return {
+    locale: locale || "en",
+    ...summarizeDiscoveryItems(items, locale)
+  };
+}
+
 function recommendComponents(input = {}) {
   const locale = input.locale;
   const subject = String(input.subject || "").trim();
@@ -176,7 +309,12 @@ function recommendComponents(input = {}) {
   const mustIncludeTags = normalizeArray(input.mustIncludeTags);
   const preferredCategories = normalizeArray(input.preferredCategories);
   const excludeCategories = normalizeArray(input.excludeCategories);
+  const excludeComponentIds = normalizeArray(input.excludeComponentIds);
+  const preferInteractive = Boolean(input.preferInteractive);
+  const requiredInteractionLevel = String(input.requiredInteractionLevel || "").trim() || null;
+  const maxPerCategory = Number.isFinite(Number(input.maxPerCategory)) ? Math.max(1, Math.floor(Number(input.maxPerCategory))) : null;
   const limit = clampLimit(input.limit, 5, 10);
+  const qualityReportEnabled = Boolean(loadQualityReport());
 
   if (!subject || !lessonGoal) {
     throw new Error("subject and lessonGoal are required");
@@ -192,6 +330,8 @@ function recommendComponents(input = {}) {
 
   for (const item of getItems(locale)) {
     if (excludeCategories.includes(item.category)) continue;
+    if (excludeComponentIds.includes(item.id)) continue;
+    if (requiredInteractionLevel && deriveComponentInteractionLevel(item) !== requiredInteractionLevel) continue;
 
     let score = 0;
     const matchDetails = [];
@@ -240,10 +380,15 @@ function recommendComponents(input = {}) {
       matchDetails.push({ reason: "required tags", matchedTokens: matchedRequiredTags });
     }
 
-    if (hasEvents(item) && /interactive|experiment|simulate|demo|拖拽|交互|实验|演示/i.test(queryText)) {
+    if (hasEvents(item) && /interactive|experiment|simulate|demo/.test(normalizeText(queryText))) {
       score += 45;
       scoreBreakdown.interactionReadiness += 45;
       matchDetails.push({ reason: "interaction-ready", matchedTokens: ["events"] });
+    }
+    if (preferInteractive && hasEvents(item)) {
+      score += 36;
+      scoreBreakdown.interactionReadiness += 36;
+      matchDetails.push({ reason: "interactive preference", matchedTokens: ["preferInteractive"] });
     }
 
     if (queryTokens.length > 0) {
@@ -253,7 +398,7 @@ function recommendComponents(input = {}) {
       score += scoreBreakdown.queryCoverage;
     }
 
-    const quality = scoreQualitySignals(item);
+    const quality = getQualityAssessment(item);
     scoreBreakdown.quality = quality.score;
     score += quality.score;
 
@@ -283,6 +428,7 @@ function recommendComponents(input = {}) {
       recommendationScore: score,
       scoreBreakdown,
       qualitySignals: quality.signals,
+      interactionLevel: deriveComponentInteractionLevel(item),
       reasonSummary: matchDetails.map((detail) => detail.reason),
       recommendationReasons: matchDetails.slice(0, 5),
       feedbackAdjustment,
@@ -299,7 +445,18 @@ function recommendComponents(input = {}) {
       b.id.localeCompare(a.id)
   );
 
-  const limitedItems = recommendations.slice(0, limit);
+  const limitedItems = [];
+  const categoryCounts = new Map();
+  for (const item of recommendations) {
+    if (limitedItems.length >= limit) break;
+    if (maxPerCategory) {
+      const currentCount = categoryCounts.get(item.category) || 0;
+      if (currentCount >= maxPerCategory) continue;
+      categoryCounts.set(item.category, currentCount + 1);
+    }
+    limitedItems.push(item);
+  }
+
   const warnings = [];
   if (limitedItems.length === 0) {
     warnings.push(
@@ -319,9 +476,14 @@ function recommendComponents(input = {}) {
   return {
     ...createResponseMeta("recommend_components", locale, warnings),
     selectionPolicy: {
-      rankingModel: "rule-based-v2",
+      rankingModel: "rule-based-v3",
       qualitySignalsIncluded: true,
+      qualityReportEnabled,
       feedbackRerankIncluded: true,
+      interactivePreferenceApplied: preferInteractive,
+      diversityRules: {
+        maxPerCategory
+      },
       fallbackLocale: "zh-CN"
     },
     appliedConstraints: {
@@ -332,6 +494,10 @@ function recommendComponents(input = {}) {
       mustIncludeTags,
       preferredCategories,
       excludeCategories,
+      excludeComponentIds,
+      preferInteractive,
+      requiredInteractionLevel,
+      maxPerCategory,
       limit,
       locale: locale || null
     },
@@ -344,12 +510,12 @@ function recommendComponents(input = {}) {
       mustIncludeTags,
       preferredCategories,
       excludeCategories,
+      excludeComponentIds,
       locale: locale || null
     },
     items: limitedItems
   };
 }
-
 async function submitRecommendationFeedback(input = {}) {
   return {
     feedback: await feedbackStore.recordFeedback(input)
@@ -364,11 +530,11 @@ function getRecommendationFeedbackStats() {
 
 function inferSectionType(title) {
   const normalized = normalizeText(title);
-  if (/intro|overview|导入|概览/.test(normalized)) return "intro";
-  if (/experiment|demo|simulation|实验|演示|仿真/.test(normalized)) return "interactive";
-  if (/analysis|explain|concept|原理|解析|讲解/.test(normalized)) return "explanation";
-  if (/practice|exercise|quiz|训练|练习/.test(normalized)) return "practice";
-  if (/summary|wrap|总结|回顾/.test(normalized)) return "summary";
+  if (/intro|overview|瀵煎叆|姒傝/.test(normalized)) return "intro";
+  if (/experiment|demo|simulation|瀹為獙|婕旂ず|浠跨湡/.test(normalized)) return "interactive";
+  if (/analysis|explain|concept|鍘熺悊|瑙ｆ瀽|璁茶В/.test(normalized)) return "explanation";
+  if (/practice|exercise|quiz|璁粌|缁冧範/.test(normalized)) return "practice";
+  if (/summary|wrap|鎬荤粨|鍥為【/.test(normalized)) return "summary";
   return "content";
 }
 
@@ -427,6 +593,7 @@ function summarizeCoverage(selectedItems, sections) {
   const categories = new Set();
   const interactionLevels = new Set();
   const sectionTypes = new Set();
+  const componentIds = [];
 
   for (const item of Array.isArray(selectedItems) ? selectedItems : []) {
     if (item && item.category) categories.add(item.category);
@@ -435,11 +602,13 @@ function summarizeCoverage(selectedItems, sections) {
   for (const section of Array.isArray(sections) ? sections : []) {
     if (section && section.sectionType) sectionTypes.add(section.sectionType);
     if (section && section.interactionLevel) interactionLevels.add(section.interactionLevel);
+    if (section && section.recommendedComponentId) componentIds.push(section.recommendedComponentId);
   }
 
   return {
     selectedComponentCount: Array.isArray(selectedItems) ? selectedItems.length : 0,
     distinctCategoryCount: categories.size,
+    duplicateComponentCount: countDuplicateComponentIds(componentIds),
     sectionTypeCount: sectionTypes.size,
     interactionLevelCount: interactionLevels.size,
     categories: Array.from(categories).sort(),
@@ -454,9 +623,11 @@ function summarizeBundle(bundleItems) {
   const layoutHints = new Set();
   const sectionTypes = new Set();
   const slots = new Set();
+  const componentIds = [];
 
   for (const item of Array.isArray(bundleItems) ? bundleItems : []) {
     if (item?.component?.category) categories.add(item.component.category);
+    if (item?.component?.id) componentIds.push(item.component.id);
     if (item?.interactionLevel) interactionLevels.add(item.interactionLevel);
     if (item?.layoutHint) layoutHints.add(item.layoutHint);
     if (item?.sectionType) sectionTypes.add(item.sectionType);
@@ -466,6 +637,7 @@ function summarizeBundle(bundleItems) {
   return {
     itemCount: Array.isArray(bundleItems) ? bundleItems.length : 0,
     distinctCategoryCount: categories.size,
+    duplicateComponentCount: countDuplicateComponentIds(componentIds),
     layoutCount: layoutHints.size,
     sectionTypeCount: sectionTypes.size,
     interactionLevelCount: interactionLevels.size,
@@ -492,6 +664,101 @@ function buildSectionTitles(subject, lessonGoal, audience) {
   });
 }
 
+function findFirstCandidate(candidates, predicate, usedIds, allowReuse = false) {
+  for (const item of candidates) {
+    if (!predicate(item)) continue;
+    if (!allowReuse && usedIds.has(item.id)) continue;
+    return item;
+  }
+  return null;
+}
+
+function countDuplicateComponentIds(ids) {
+  const counts = new Map();
+  for (const id of ids.filter(Boolean)) {
+    counts.set(id, (counts.get(id) || 0) + 1);
+  }
+  let duplicates = 0;
+  for (const count of counts.values()) {
+    if (count > 1) duplicates += count - 1;
+  }
+  return duplicates;
+}
+
+function assignComponentsToSections(sectionTitles, candidates, options = {}) {
+  const maxComponents = options.maxComponents || 4;
+  const interactionMode = options.interactionMode || "";
+  const lessonGoal = options.lessonGoal || "";
+  const pageType = options.pageType || "lesson";
+  const usedIds = new Set();
+  let duplicateComponentCount = 0;
+  let coverageGapCount = 0;
+
+  const sections = sectionTitles.map((title, index) => {
+    const sectionType = inferSectionType(title);
+    const preferInteractiveSection = sectionType === "interactive" || sectionType === "practice";
+    const preferredPredicate = preferInteractiveSection ? (item) => hasEvents(item) : () => true;
+    let item = null;
+
+    if (usedIds.size < maxComponents) {
+      item =
+        findFirstCandidate(candidates, preferredPredicate, usedIds, false) ||
+        findFirstCandidate(candidates, () => true, usedIds, false);
+    }
+
+    if (!item) {
+      item =
+        findFirstCandidate(candidates, preferredPredicate, usedIds, true) ||
+        findFirstCandidate(candidates, () => true, usedIds, true);
+      if (item) duplicateComponentCount += 1;
+    }
+
+    if (item) usedIds.add(item.id);
+    if (preferInteractiveSection && (!item || !hasEvents(item))) {
+      coverageGapCount += 1;
+    }
+
+    return {
+      order: index + 1,
+      title,
+      sectionType,
+      slot: inferSlot(sectionType, index + 1),
+      objective:
+        sectionType === "interactive"
+          ? `Use a visual component to make ${lessonGoal} concrete.`
+          : sectionType === "practice"
+            ? `Help learners apply ${lessonGoal} with guided interaction.`
+            : `Support the ${pageType} flow around ${lessonGoal}.`,
+      recommendedComponentId: item ? item.id : null,
+      recommendedComponentReason:
+        item
+          ? `${item.name} fits because it scored ${item.recommendationScore} and aligns with ${options.subject} + ${lessonGoal}.`
+          : "No component selected for this section.",
+      interactionLevel: inferInteractionLevel(item, sectionType),
+      interactionPattern:
+        sectionType === "interactive"
+          ? interactionMode || "interactive exploration"
+          : sectionType === "practice"
+            ? "guided exercise"
+            : "content support",
+      hostRequirements: buildHostRequirements(item, sectionType)
+    };
+  });
+
+  const selectedItems = uniqueById(
+    sections
+      .map((section) => candidates.find((candidate) => candidate.id === section.recommendedComponentId) || null)
+      .filter(Boolean)
+  ).slice(0, maxComponents);
+
+  return {
+    sections,
+    selectedItems,
+    duplicateComponentCount,
+    coverageGapCount
+  };
+}
+
 function buildExperimentPagePlan(input = {}) {
   const subject = String(input.subject || "").trim();
   const lessonGoal = String(input.lessonGoal || "").trim();
@@ -514,42 +781,21 @@ function buildExperimentPagePlan(input = {}) {
     interactionMode,
     preferredCategories,
     mustIncludeTags,
-    limit: maxComponents,
+    excludeComponentIds: input.excludeComponentIds,
+    preferInteractive: true,
+    limit: Math.min(Math.max(maxComponents * 3, 8), 12),
     locale
   });
-
-  const selectedItems = recommendationResult.items.slice(0, maxComponents);
   const sectionTitles = buildSectionTitles(subject, lessonGoal, audience);
-  const sections = sectionTitles.map((title, index) => {
-    const sectionType = inferSectionType(title);
-    const item = selectedItems[index % Math.max(selectedItems.length, 1)] || null;
-
-    return {
-      order: index + 1,
-      title,
-      sectionType,
-      slot: inferSlot(sectionType, index + 1),
-      objective:
-        sectionType === "interactive"
-          ? `Use a visual component to make ${lessonGoal} concrete.`
-          : sectionType === "practice"
-            ? `Help learners apply ${lessonGoal} with guided interaction.`
-            : `Support the ${pageType} flow around ${lessonGoal}.`,
-      recommendedComponentId: item ? item.id : null,
-      recommendedComponentReason:
-        item
-          ? `${item.name} fits because it scored ${item.recommendationScore} and aligns with ${subject} + ${lessonGoal}.`
-          : "No component selected for this section.",
-      interactionLevel: inferInteractionLevel(item, sectionType),
-      interactionPattern:
-        sectionType === "interactive"
-          ? interactionMode || "interactive exploration"
-          : sectionType === "practice"
-            ? "guided exercise"
-            : "content support",
-      hostRequirements: buildHostRequirements(item, sectionType)
-    };
+  const assigned = assignComponentsToSections(sectionTitles, recommendationResult.items, {
+    subject,
+    lessonGoal,
+    interactionMode,
+    pageType,
+    maxComponents
   });
+  const selectedItems = assigned.selectedItems;
+  const sections = assigned.sections;
 
   const warnings = recommendationResult.warnings ? recommendationResult.warnings.slice() : [];
   if (selectedItems.length === 0) {
@@ -563,6 +809,20 @@ function buildExperimentPagePlan(input = {}) {
       createWarning("low_result_count", "The page plan selected fewer components than requested.", {
         requestedCount: maxComponents,
         selectedCount: selectedItems.length
+      })
+    );
+  }
+  if (assigned.duplicateComponentCount > 0) {
+    warnings.push(
+      createWarning("component_reused", "Some sections reuse the same component because unique candidates were exhausted.", {
+        duplicateComponentCount: assigned.duplicateComponentCount
+      })
+    );
+  }
+  if (assigned.coverageGapCount > 0) {
+    warnings.push(
+      createWarning("coverage_gap", "Some interactive or practice sections could not be matched with interactive components.", {
+        coverageGapCount: assigned.coverageGapCount
       })
     );
   }
@@ -743,6 +1003,94 @@ function composeExperimentBundle(input = {}) {
   };
 }
 
+function validateExperimentBundle(input = {}) {
+  const sections = Array.isArray(input.sections) ? input.sections : [];
+  const items = Array.isArray(input.items) ? input.items : [];
+  const issues = [];
+
+  if (items.length === 0 && sections.length === 0) {
+    issues.push({
+      code: "empty_payload",
+      severity: "error",
+      message: "Either sections or items are required for validation.",
+      target: "payload"
+    });
+  }
+
+  const itemIds = items.map((item) => item?.component?.id).filter(Boolean);
+  const sectionIds = sections.map((section) => section?.recommendedComponentId).filter(Boolean);
+  if (countDuplicateComponentIds(itemIds) > 0 || countDuplicateComponentIds(sectionIds) > 0) {
+    issues.push({
+      code: "duplicate_component",
+      severity: "error",
+      message: "The same component is assigned multiple times.",
+      target: "components"
+    });
+  }
+
+  if (sections.length > 0 && !sections.some((section) => section.sectionType === "interactive")) {
+    issues.push({
+      code: "missing_interactive_section",
+      severity: "warning",
+      message: "The page plan does not include an interactive section.",
+      target: "sections"
+    });
+  }
+
+  if (items.length > 0 && !items.some((item) => item.interactionLevel === "interactive")) {
+    issues.push({
+      code: "missing_interactive_item",
+      severity: "warning",
+      message: "The bundle does not contain an interactive component item.",
+      target: "items"
+    });
+  }
+
+  const heroCount = items.filter((item) => item.slot === "hero" || item.layoutHint === "hero").length;
+  if (heroCount > 1) {
+    issues.push({
+      code: "slot_layout_conflict",
+      severity: "error",
+      message: "More than one item claims the hero slot/layout.",
+      target: "items"
+    });
+  }
+
+  if (items.some((item) => !item.slot || !item.layoutHint)) {
+    issues.push({
+      code: "missing_layout_metadata",
+      severity: "error",
+      message: "Some bundle items are missing slot or layout metadata.",
+      target: "items"
+    });
+  }
+
+  if (sections.some((section) => !section.slot)) {
+    issues.push({
+      code: "missing_section_slot",
+      severity: "error",
+      message: "Some page-plan sections do not declare a slot.",
+      target: "sections"
+    });
+  }
+
+  if (items.some((item) => !Array.isArray(item.hostRequirements) || item.hostRequirements.length === 0) ||
+      sections.some((section) => !Array.isArray(section.hostRequirements) || section.hostRequirements.length === 0)) {
+    issues.push({
+      code: "missing_host_requirements",
+      severity: "warning",
+      message: "Some sections or bundle items do not declare host requirements.",
+      target: items.length > 0 ? "items" : "sections"
+    });
+  }
+
+  return {
+    valid: issues.length === 0,
+    issueCount: issues.length,
+    issues
+  };
+}
+
 function getComponent(id, locale = "zh-CN") {
   try {
     const payload = getComponentData(id, locale);
@@ -784,7 +1132,12 @@ export {
   getRecommendationFeedbackStats,
   buildExperimentPagePlan,
   composeExperimentBundle,
+  validateExperimentBundle,
   getComponent,
   getSuggestions,
-  toSummary
+  toSummary,
+  getSubjectCatalogSummary,
+  getInteractiveCatalogSummary,
+  getLessonReadyCatalogSummary
 };
+

@@ -7,6 +7,7 @@ tools/runtime-harness/node_modules/
 registry/*.json
 !registry/.gitkeep
 !registry/category-names.json
+!registry/quality-report.json
 site/dist/
 site/assets/registry.json
 site/assets/categories.json

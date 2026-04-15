@@ -9,7 +9,8 @@ import {
   getRecommendationFeedbackStats,
   buildExperimentPagePlan,
   composeExperimentBundle,
-  getComponent
+  getComponent,
+  validateExperimentBundle
 } from "../src/tools/catalog.js";
 import { createFeedbackStore, feedbackStore } from "../src/feedback/feedback-store.js";
 import fs from "node:fs";
@@ -88,8 +89,9 @@ test("recommend_components returns explainable ranked recommendations", () => {
   assert.equal(result.localeApplied, "en");
   assert.ok(Array.isArray(result.warnings));
   assert.equal(result.source.kind, "open-lab-components-catalog");
-  assert.equal(result.selectionPolicy.rankingModel, "rule-based-v2");
+  assert.equal(result.selectionPolicy.rankingModel, "rule-based-v3");
   assert.equal(result.selectionPolicy.qualitySignalsIncluded, true);
+  assert.equal(typeof result.selectionPolicy.qualityReportEnabled, "boolean");
   assert.equal(result.appliedConstraints.subject, "physics");
   assert.deepEqual(result.appliedConstraints.mustIncludeTags, ["resistor"]);
   assert.ok(result.items.length > 0);
@@ -102,8 +104,34 @@ test("recommend_components returns explainable ranked recommendations", () => {
   assert.ok(result.items[0].scoreBreakdown.requiredTags > 0);
   assert.ok(result.items[0].scoreBreakdown.quality > 0);
   assert.equal(typeof result.items[0].qualitySignals.interactive, "boolean");
+  assert.ok(["registry-report", "runtime-derived"].includes(result.items[0].qualitySignals.source));
   assert.ok(result.items[0].qualitySignals.localeCount >= 1);
   assert.ok(Array.isArray(result.items[0].recommendationReasons));
+});
+
+test("recommend_components honors exclusion and diversity constraints", () => {
+  const result = recommendComponents({
+    subject: "physics",
+    lessonGoal: "interactive circuit demonstration for resistance concepts",
+    preferredCategories: ["physics/circuit"],
+    preferInteractive: true,
+    maxPerCategory: 1,
+    excludeComponentIds: ["phy.resistor.axial.basic"],
+    locale: "en",
+    limit: 5
+  });
+
+  assert.equal(result.appliedConstraints.excludeComponentIds[0], "phy.resistor.axial.basic");
+  assert.equal(result.appliedConstraints.preferInteractive, true);
+  assert.equal(result.selectionPolicy.interactivePreferenceApplied, true);
+  assert.equal(result.items.some((item) => item.id === "phy.resistor.axial.basic"), false);
+  const categoryCounts = new Map();
+  for (const item of result.items) {
+    categoryCounts.set(item.category, (categoryCounts.get(item.category) || 0) + 1);
+  }
+  for (const count of categoryCounts.values()) {
+    assert.ok(count <= 1);
+  }
 });
 
 test("recommend_components requires subject and lessonGoal", () => {
@@ -203,11 +231,14 @@ test("build_experiment_page returns a structured page plan", () => {
   assert.ok(Array.isArray(result.coverageSummary.interactionLevels));
   assert.ok(Array.isArray(result.sections));
   assert.ok(result.sections.length >= 4);
+  const uniqueIds = new Set(result.sections.map((section) => section.recommendedComponentId).filter(Boolean));
+  assert.equal(uniqueIds.size, result.selectedComponents.length);
   assert.equal(typeof result.sections[0].slot, "string");
   assert.equal(typeof result.sections[0].interactionLevel, "string");
   assert.ok(Array.isArray(result.sections[0].hostRequirements));
   assert.ok(Array.isArray(result.selectedComponents));
   assert.ok(Array.isArray(result.assemblySteps));
+  assert.equal(typeof result.coverageSummary.duplicateComponentCount, "number");
 });
 
 test("compose_experiment_bundle returns render-ready bundle items", () => {
@@ -232,6 +263,7 @@ test("compose_experiment_bundle returns render-ready bundle items", () => {
   assert.ok(Array.isArray(result.items[0].hostRequirements));
   assert.ok(result.items[0].html.includes("data-cmp-id"));
   assert.ok(Array.isArray(result.renderOrder));
+  assert.equal(typeof result.bundleSummary.duplicateComponentCount, "number");
 });
 
 test("compose_experiment_bundle supports explicit component ids", () => {
@@ -374,6 +406,39 @@ test("recommend_components emits no_results warning when filters exclude all com
   assert.equal(result.items.length, 0);
   assert.equal(result.warnings.length, 1);
   assert.equal(result.warnings[0].code, "no_results");
+});
+
+test("validate_experiment_bundle returns structured issues", () => {
+  const result = validateExperimentBundle({
+    sections: [
+      {
+        sectionType: "content",
+        recommendedComponentId: "phy.resistor.axial.basic"
+      }
+    ],
+    items: [
+      {
+        slot: "hero",
+        layoutHint: "hero",
+        interactionLevel: "static",
+        component: { id: "phy.resistor.axial.basic" },
+        hostRequirements: []
+      },
+      {
+        slot: "hero",
+        layoutHint: "hero",
+        interactionLevel: "static",
+        component: { id: "phy.resistor.axial.basic" },
+        hostRequirements: []
+      }
+    ]
+  });
+
+  assert.equal(result.valid, false);
+  assert.ok(result.issueCount >= 3);
+  assert.ok(result.issues.some((issue) => issue.code === "duplicate_component"));
+  assert.ok(result.issues.some((issue) => issue.code === "slot_layout_conflict"));
+  assert.ok(result.issues.some((issue) => issue.code === "missing_host_requirements"));
 });
 
 test("get_component unknown id returns suggestions metadata", () => {
