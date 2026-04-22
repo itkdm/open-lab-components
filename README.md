@@ -147,7 +147,11 @@ npm install @itkdm/open-lab-components
 
 **3) 通过 JS API 获取并挂载组件（支持按需更新参数）：**
 ```js
-import * as lab from '@itkdm/open-lab-components';
+const lab = require('@itkdm/open-lab-components');
+
+const categories = lab.categories();
+const circuit = lab.list({ category: 'physics/circuit' }, { locale: 'en' });
+const battery = lab.get('phy.power.battery.basic', { locale: 'en-US' });
 
 // 获取你的目标容器
 const container = document.querySelector('.cmp');
@@ -164,7 +168,7 @@ lab.updateProps(container, { resistance: 200 });
 **4) 使用 Registry 查询能力：**
 ```js
 // 动态获取物理电路分类下的所有组件（支持本地化）
-const circuit = lab.list({ category: 'physics/circuit' }, { locale: 'zh-CN' });
+const circuitZh = lab.list({ category: 'physics/circuit' }, { locale: 'zh-CN' });
 ```
 
 ### 🛠️ 仓库贡献者：本地参与开发
@@ -220,10 +224,11 @@ tests/         根 API 与契约测试
 | 根 API 测试 | `npm run test:root` |
 | MCP 测试 | `npm run mcp:test` |
 | 发布前检查 | `npm run release:ready` |
+| 根目录检查 | `npm run check:root` |
 
 ## 🚧 生成产物边界
 
-- `registry/*.json` 由 `npm run build:registry` 生成。
+- `registry/registry.json` 及其他 `registry/*.json` 由 `npm run build:registry` 生成。
 - `site/dist/` 由 `npm run build:site` 生成。
 - 请勿在生成产物中手工维护业务内容。
 
