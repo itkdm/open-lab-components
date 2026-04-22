@@ -1,31 +1,104 @@
-# Open Lab Components
+<div align="center">
 
-[English](./README.en.md) | 中文
+# 🔬 Open Lab Components
 
-Open Lab Components 是一个面向宿主系统与 AI 客户端的 STEM 教学组件基础设施仓库。它提供 210+ 个零依赖 HTML fragment 组件，并把同一套组件目录同时暴露为：
+<p>
+  <a href="./README.en.md">English</a> | <b>中文</b>
+</p>
 
-- 可直接复制使用的 `components/**/*.html`
-- 可检索的 `registry/*.json`
-- 可编程消费的 JS API
-- 可浏览的静态站点
-- 可供 Agent 使用的 MCP server
+<p>
+  <a href="https://www.npmjs.com/package/@itkdm/open-lab-components"><img src="https://img.shields.io/npm/v/@itkdm/open-lab-components.svg" alt="npm version"></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="license"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/node-%3E%3D18.0.0-339933.svg" alt="node"></a>
+</p>
 
-![Open Lab Components 首页](./assets/home.png)
+<p>
+  <strong><a href="http://olc.itkdm.com">🌐 在线演示网站: olc.itkdm.com</a></strong>
+</p>
 
-## 项目定位
+<p><strong>面向宿主系统与 AI 客户端的 STEM 教学组件基础设施。</strong></p>
 
-这个仓库不是通用 UI 组件库，而是面向教育场景的“教学对象组件库”。组件本身来自 `components/`，然后派生出统一的 registry、站点和 MCP 能力，确保开发者、内容平台和 AI 客户端看到的是同一份目录。
+<p><em>一套组件目录，同时服务 HTML 复用、注册表检索、JS API 调用、静态站浏览与 MCP Agent 集成。</em></p>
 
-## 当前能力
+<br/>
 
-### 组件与数据
+<img src="./assets/home.png" alt="Open Lab Components 首页" width="100%" />
 
-- `213` 个组件
-- `41` 个分类
-- 支持语言：`zh-CN`、`en`
-- 默认语言：`zh-CN`
-- 兼容 `cmp-manifest/v1`
-- 推荐使用 `cmp-manifest/v2`
+</div>
+
+## 一眼看懂
+
+| 图标 | 能力面 | 说明 |
+| --- | --- | --- |
+| ![HTML Fragment](https://img.shields.io/badge/HTML-Fragment-E34F26?logo=html5&logoColor=white) | 组件片段 | 零依赖 HTML 片段，可直接嵌入宿主页面。 |
+| ![Registry JSON](https://img.shields.io/badge/Registry-JSON-000000?logo=json&logoColor=white) | 结构化目录 | 支持分类、检索、筛选与 catalog 构建。 |
+| ![JS API](https://img.shields.io/badge/JavaScript-API-F7DF1E?logo=javascript&logoColor=black) | 程序化接入 | 通过 `lab.*` 方法查询、读取与挂载组件。 |
+| ![Static Site](https://img.shields.io/badge/Docs-Site-0EA5E9?logo=readthedocs&logoColor=white) | 可视化站点 | 面向内容同学和开发者的浏览与演示入口。 |
+| ![MCP Server](https://img.shields.io/badge/MCP-Agent%20Server-2563EB?logo=nodedotjs&logoColor=white) | Agent 集成 | 为 AI 提供 tools、prompts、resources 接口。 |
+
+## 📚 目录
+
+- [💡 为什么选择 Open Lab Components](#💡-为什么选择-open-lab-components)
+- [🎯 适用场景](#🎯-适用场景)
+- [🚀 能力总览](#🚀-能力总览)
+- [🔄 架构闭环](#🔄-架构闭环)
+- [⚡ 快速开始](#⚡-快速开始)
+- [🤖 MCP 能力一览](#🤖-mcp-能力一览)
+- [📁 仓库结构](#📁-仓库结构)
+- [💻 常用开发命令](#💻-常用开发命令)
+- [🚧 生成产物边界](#🚧-生成产物边界)
+- [🗺️ 文档导航](#🗺️-文档导航)
+- [💬 联系与支持](#💬-联系与支持)
+- [❓ 常见问题](#❓-常见问题)
+- [📄 许可证](#📄-许可证)
+
+## 💡 为什么选择 Open Lab Components
+
+这不是通用 UI 组件库，而是教育场景下的“教学对象组件库”。
+
+- 单一事实源：`components/` 是唯一事实源。
+- 多端一致性：registry、站点、JS API、MCP 都从同一目录派生。
+- 面向 AI 友好：提供结构化 metadata、可检索能力和 Agent 可调用接口。
+
+## 🎯 适用场景
+
+| 角色 | 典型诉求 | 推荐入口 |
+| --- | --- | --- |
+| 教学内容平台 | 快速拼装实验页、避免重复造轮子 | `registry/*.json` + `components/**/*.html` |
+| 前端开发者 | 在业务页中嵌入教学组件并动态更新参数 | `index.js` 的 `lab.mount / lab.updateProps` |
+| AI Agent / 助教助手 | 自动推荐组件并生成实验页面 | MCP tools + prompts |
+| 课程设计者 | 查找分类、比对组件、形成实验方案 | 静态站 + catalog resources |
+
+## 🚀 能力总览
+
+| 维度 | 当前状态 |
+| --- | --- |
+| 组件规模 | `213+` 个组件（持续增长） |
+| 分类数量 | `41` 个分类 |
+| 多语言 | `zh-CN`、`en` |
+| 默认语言 | `zh-CN` |
+| Manifest | 兼容 `cmp-manifest/v1`，推荐 `cmp-manifest/v2` |
+| Node 要求 | `>=18.0.0` |
+
+### 你可以获得什么
+
+- 可直接复制的零依赖 HTML fragment 组件。
+- 可供程序检索与筛选的结构化 registry 数据。
+- 可在 Node 与浏览器中复用的统一 JS API。
+- 可被 Agent 调用的 MCP 工具、提示词与资源。
+
+## 🔄 架构闭环
+
+```text
+components/ (事实源)
+  |
+  +--> registry/*.json (结构化目录)
+  +--> lib + index.js (程序化 API)
+  +--> site/ (可视化浏览与演示)
+  +--> mcp-server/ (Agent 可调用能力)
+```
+
+这意味着：新增或更新组件时，开发者端、内容平台端和 AI 端看到的是同一份组件事实，不会出现目录漂移。
 
 ### JS API
 
@@ -41,100 +114,89 @@ Open Lab Components 是一个面向宿主系统与 AI 客户端的 STEM 教学�
 - `lab.unmount(container)`
 - `lab.updateProps(container, props)`
 
-### MCP server
+## ⚡ 快速开始
 
-MCP 实现位于 [mcp-server/](./mcp-server)。当前实现同时支持：
+无论是不懂代码的普通个人/老师，还是专业的前端开发者，都能轻松上手。
 
-- 本地 `stdio` 模式
-- 远程 `Streamable HTTP` 模式
-- tools、prompts、resources
-- locale-aware 查询与组件读取
-- 推荐、反馈、实验页规划与 bundle 组装
+### 👨‍🏫 普通用户或创作者：在演示网站体验
 
-当前公开 tools：
+你不必编写任何代码代码。只需访问我们的 **可视化静态演示站**（若无部署链接，可本地执行 `npm run dev:site` 启动），即可：
+1. **浏览组件**：直观查看化学、物理、生物等各学科的可交互教学组件。
+2. **实时调节**：在右侧配置面板中修改初始参数（如电阻阻值、受力大小），即时查看组件效果。
+3. **组合与复用**：调整满意后，点击“复制所需片段”，将 HTML 结构直接粘贴到你自己的教案、博客或支撑平台中。
 
-- `get_categories`
-- `list_components`
-- `search_components`
-- `recommend_components`
-- `submit_recommendation_feedback`
-- `get_recommendation_feedback_stats`
-- `build_experiment_page`
-- `compose_experiment_bundle`
-- `get_component`
+### 🧑‍💻 前端开发者：集成到自己的 Web 项目中
 
-当前公开 prompts：
+如果你需要在项目里动态挂载和控制这些组件，只需简单的几步：
 
-- `component-recommendation-brief`
-- `component-page-builder`
-- `experiment-page-executor`
-- `experiment-bundle-integrator`
-
-当前公开 resources：
-
-- `openlab://catalog/overview`
-- `openlab://catalog/categories`
-- `openlab://catalog/featured`
-- `openlab://component/phy.resistor.axial.basic`
-
-详细说明见：
-
-- [docs/MCP.zh-CN.md](./docs/MCP.zh-CN.md)
-- [docs/MCP.en.md](./docs/MCP.en.md)
-- [mcp-server/README.md](./mcp-server/README.md)
-- [mcp-server/README.zh-CN.md](./mcp-server/README.zh-CN.md)
-
-## 快速开始
-
-### 通过 npm 使用
-
+**1) 安装依赖：**
 ```bash
 npm install @itkdm/open-lab-components
 ```
 
-```js
-const lab = require('@itkdm/open-lab-components');
-
-const all = lab.list();
-const circuit = lab.list({ category: 'physics/circuit' }, { locale: 'en' });
-const battery = lab.get('phy.power.battery.basic', { locale: 'en-US' });
-const categories = lab.categories();
-const html = lab.readSync('phy.mechanics.projectile.interactive');
-```
-
-### 直接复制 HTML fragment
-
+**2) 准备 HTML 挂载点（你可以直接从演示站复制这一段）：**
 ```html
 <div
   class="cmp"
   data-cmp-id="phy.resistor.axial.basic"
   style="--cmp-size: 80px; --cmp-body: #caa070;"
 >
-  <!-- component content -->
+  <!-- 组件DOM将被挂载于此 -->
 </div>
 ```
 
-### 本地开发
+**3) 通过 JS API 获取并挂载组件（支持按需更新参数）：**
+```js
+import * as lab from '@itkdm/open-lab-components';
+
+// 获取你的目标容器
+const container = document.querySelector('.cmp');
+// 读取组件的原始HTML模板
+const componentHtml = lab.readSync('phy.resistor.axial.basic');
+
+// 将模板挂载到DOM容器中，并提供初始化参数
+lab.mount(componentHtml, container, { resistance: 100 });
+
+// 在业务交互中，随时动态更新它的状态！
+lab.updateProps(container, { resistance: 200 });
+```
+
+**4) 使用 Registry 查询能力：**
+```js
+// 动态获取物理电路分类下的所有组件（支持本地化）
+const circuit = lab.list({ category: 'physics/circuit' }, { locale: 'zh-CN' });
+```
+
+### 🛠️ 仓库贡献者：本地参与开发
 
 ```bash
 git clone https://github.com/itkdm/open-lab-components.git
 cd open-lab-components
 npm install
 
-npm run validate
-npm run build:registry
-npm run build:site
+# 确保产物生成，并启动站点
+npm run build
+npm run dev:site
 ```
 
-常用命令：
+## 🤖 MCP 能力一览
 
-- `npm run dev:site`
-- `npm run test:root`
-- `npm run mcp:test`
-- `npm run check:root`
-- `npm run release:ready`
+MCP 实现位于 [mcp-server/](./mcp-server)，支持本地 `stdio` 与远程 `Streamable HTTP` 两种模式。
 
-## 仓库结构
+| 能力类型 | 已公开 |
+| --- | --- |
+| tools | `get_categories`, `list_components`, `search_components`, `recommend_components`, `submit_recommendation_feedback`, `get_recommendation_feedback_stats`, `build_experiment_page`, `compose_experiment_bundle`, `get_component` |
+| prompts | `component-recommendation-brief`, `component-page-builder`, `experiment-page-executor`, `experiment-bundle-integrator` |
+| resources | `openlab://catalog/overview`, `openlab://catalog/categories`, `openlab://catalog/featured`, `openlab://component/phy.resistor.axial.basic` |
+
+更多说明：
+
+- [docs/MCP.zh-CN.md](./docs/MCP.zh-CN.md)
+- [docs/MCP.en.md](./docs/MCP.en.md)
+- [mcp-server/README.md](./mcp-server/README.md)
+- [mcp-server/README.zh-CN.md](./mcp-server/README.zh-CN.md)
+
+## 📁 仓库结构
 
 ```text
 components/    组件源码，仓库事实源
@@ -147,23 +209,67 @@ docs/          规范、集成、发布与 MCP 文档
 tests/         根 API 与契约测试
 ```
 
-## 生成边界
+## 💻 常用开发命令
 
-- `registry/registry.json` 和其他 `registry/*.json` 由 `npm run build:registry` 生成
-- `site/dist/` 由 `npm run build:site` 生成
-- 不要手工维护上述生成产物中的业务内容
+| 目标 | 命令 |
+| --- | --- |
+| 全量校验与构建 | `npm run validate && npm run build` |
+| 构建注册表 | `npm run build:registry` |
+| 构建站点 | `npm run build:site` |
+| 本地预览站点 | `npm run dev:site` |
+| 根 API 测试 | `npm run test:root` |
+| MCP 测试 | `npm run mcp:test` |
+| 发布前检查 | `npm run release:ready` |
 
-## 文档
+## 🚧 生成产物边界
 
-- [组件规范](./docs/SPEC.zh-CN.md)
-- [分类规则](./docs/CATEGORY.zh-CN.md)
-- [事件协议](./docs/EVENT.zh-CN.md)
-- [集成指南](./docs/INTEGRATION.zh-CN.md)
-- [贡献指南](./docs/CONTRIBUTING.zh-CN.md)
-- [部署指南](./docs/DEPLOYMENT.zh-CN.md)
-- [MCP 中文文档](./docs/MCP.zh-CN.md)
-- [MCP English Docs](./docs/MCP.en.md)
+- `registry/*.json` 由 `npm run build:registry` 生成。
+- `site/dist/` 由 `npm run build:site` 生成。
+- 请勿在生成产物中手工维护业务内容。
 
-## 许可证
+## 🗺️ 文档导航
+
+- 规范与集成：
+[组件规范](./docs/SPEC.zh-CN.md) · [分类规则](./docs/CATEGORY.zh-CN.md) · [事件协议](./docs/EVENT.zh-CN.md) · [集成指南](./docs/INTEGRATION.zh-CN.md)
+- 协作与发布：
+[贡献指南](./docs/CONTRIBUTING.zh-CN.md) · [部署指南](./docs/DEPLOYMENT.zh-CN.md) · [发布流程](./docs/RELEASE-CHECKLIST-0.2.0.zh-CN.md)
+- MCP：
+[MCP 中文文档](./docs/MCP.zh-CN.md) · [MCP English Docs](./docs/MCP.en.md)
+
+## 💬 联系与支持
+
+如果这个项目对你有帮助，欢迎通过以下方式联系与支持。
+
+![Alipay](https://img.shields.io/badge/Alipay-支持-1677FF?logo=alipay&logoColor=white)
+![WeChat](https://img.shields.io/badge/WeChat-联系-07C160?logo=wechat&logoColor=white)
+
+<table>
+  <tr>
+    <td align="center" width="50%">
+      <strong>支付宝付款码</strong><br />
+      <img src="./assets/alipay.png" alt="支付宝付款码" width="260" />
+    </td>
+    <td align="center" width="50%">
+      <strong>微信联系方式 / 支持码</strong><br />
+      <img src="./assets/wechat-pay.png" alt="微信联系方式二维码" width="260" />
+    </td>
+  </tr>
+</table>
+
+## ❓ 常见问题
+
+### Q1: 可以直接编辑 registry 里的 JSON 吗？
+
+不建议。`registry/*.json` 属于生成产物，应通过维护 `components/` 并执行构建脚本来更新。
+
+### Q2: 为什么 MCP 和 JS API 会看到同一套组件？
+
+因为二者都基于统一的组件事实源和生成流程，避免了多份目录手工维护导致的不一致。
+
+### Q3: 适合放到生产系统吗？
+
+可以。建议在接入流程中固定版本、加入 `npm run validate` 与回归测试，确保升级可控。
+
+## 📄 许可证
 
 [MIT](./LICENSE)
