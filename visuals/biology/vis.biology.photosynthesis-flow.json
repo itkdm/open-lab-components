@@ -1,0 +1,26 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.biology.photosynthesis-flow",
+  "subject": "biology",
+  "topic": "photosynthesis",
+  "type": "flowchart",
+  "version": "0.1.0",
+  "format": "image/svg+xml",
+  "asset": "vis.biology.photosynthesis-flow.svg",
+  "thumbnail": "vis.biology.photosynthesis-flow.svg",
+  "gradeRange": ["middle-school"],
+  "relatedComponents": ["bio.cell.plant.basic"],
+  "size": { "width": 1600, "height": 900 },
+  "locales": {
+    "zh-CN": {
+      "title": "光合作用流程图",
+      "summary": "把原料、场所、条件和产物整理成一条课堂讲解链路，适合板书与复习。",
+      "tags": ["光合作用", "生物", "流程图", "知识点"]
+    },
+    "en": {
+      "title": "Photosynthesis Teaching Flow",
+      "summary": "A classroom flowchart connecting inputs, chloroplast context, sunlight, and output products.",
+      "tags": ["photosynthesis", "biology", "flowchart", "lesson visual"]
+    }
+  }
+}

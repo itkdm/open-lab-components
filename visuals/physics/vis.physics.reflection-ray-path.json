@@ -1,0 +1,26 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.physics.reflection-ray-path",
+  "subject": "physics",
+  "topic": "light-reflection",
+  "type": "diagram",
+  "version": "0.1.0",
+  "format": "image/svg+xml",
+  "asset": "vis.physics.reflection-ray-path.svg",
+  "thumbnail": "vis.physics.reflection-ray-path.svg",
+  "gradeRange": ["middle-school", "high-school"],
+  "relatedComponents": ["phy.optics.mirror.plane.interactive"],
+  "size": { "width": 1600, "height": 900 },
+  "locales": {
+    "zh-CN": {
+      "title": "平面镜反射光路图",
+      "summary": "适合讲解入射角等于反射角、法线位置和光路对称关系。",
+      "tags": ["反射", "光路图", "平面镜", "物理"]
+    },
+    "en": {
+      "title": "Plane Mirror Reflection Diagram",
+      "summary": "A teaching diagram for incident rays, the normal line, and the equal-angle reflection rule.",
+      "tags": ["reflection", "ray diagram", "plane mirror", "physics"]
+    }
+  }
+}

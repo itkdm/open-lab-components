@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="100%" stop-color="#eff6ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <rect x="0" y="680" width="1600" height="220" fill="#bfdbfe"/>
+  <text x="110" y="110" font-size="54" font-family="'Segoe UI', Arial, sans-serif" fill="#1d4ed8" font-weight="700">水循环知识图</text>
+  <text x="110" y="160" font-size="25" font-family="'Segoe UI', Arial, sans-serif" fill="#334155">适合导入“自然界中的水为什么总在循环”这一核心问题</text>
+  <g font-family="'Segoe UI', Arial, sans-serif">
+    <ellipse cx="260" cy="700" rx="180" ry="55" fill="#2563eb"/>
+    <text x="212" y="708" font-size="30" fill="#eff6ff" font-weight="700">水面</text>
+    <circle cx="1240" cy="170" r="70" fill="#facc15"/>
+    <text x="1208" y="180" font-size="24" fill="#854d0e" font-weight="700">太阳</text>
+    <ellipse cx="720" cy="240" rx="150" ry="70" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+    <ellipse cx="860" cy="270" rx="120" ry="56" fill="#ffffff" stroke="#cbd5e1" stroke-width="4"/>
+    <text x="700" y="250" font-size="28" fill="#334155" font-weight="700">凝结成云</text>
+    <path d="M320 640C360 560 390 500 440 440" stroke="#0ea5e9" stroke-width="10" fill="none" stroke-dasharray="18 14"/>
+    <polygon points="448,424 430,448 460,448" fill="#0ea5e9"/>
+    <text x="360" y="540" font-size="28" fill="#0369a1" font-weight="700">蒸发</text>
+    <path d="M800 330C840 390 860 440 860 520" stroke="#38bdf8" stroke-width="10" fill="none" stroke-dasharray="16 12"/>
+    <polygon points="860,536 844,508 876,508" fill="#38bdf8"/>
+    <text x="880" y="450" font-size="28" fill="#0f766e" font-weight="700">降水</text>
+    <path d="M930 700C1080 700 1180 660 1260 600" stroke="#2563eb" stroke-width="10" fill="none"/>
+    <polygon points="1278,586 1248,592 1264,616" fill="#2563eb"/>
+    <text x="1040" y="650" font-size="28" fill="#1d4ed8" font-weight="700">汇集与径流</text>
+  </g>
+</svg>

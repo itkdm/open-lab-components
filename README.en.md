@@ -88,6 +88,7 @@ This is not a generic UI toolkit. It is a catalog of teaching objects for educat
 - A unified JS API for programmatic integration.
 - A reusable visual gallery for teacher-ready diagrams and knowledge visuals.
 - Agent-callable MCP tools, prompts, and resources.
+- Dedicated docs for extending the visual asset gallery.
 
 ## 🔄 Architecture Loop
 
@@ -119,6 +120,10 @@ The root entrypoint is [index.js](./index.js). Public exports include:
 - `lab.visuals.list(filter, { locale })`
 - `lab.visuals.get(id, { locale })`
 - `lab.visuals.subjects()`
+
+### Visual Asset Docs
+
+- [Visual Assets](./docs/VISUALS.en.md)
 
 ## ⚡ Quick Start
 

@@ -1,0 +1,26 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.math.probability-tree-basic",
+  "subject": "math",
+  "topic": "probability-tree",
+  "type": "diagram",
+  "version": "0.1.0",
+  "format": "image/svg+xml",
+  "asset": "vis.math.probability-tree-basic.svg",
+  "thumbnail": "vis.math.probability-tree-basic.svg",
+  "gradeRange": ["middle-school", "high-school"],
+  "relatedComponents": [],
+  "size": { "width": 1600, "height": 900 },
+  "locales": {
+    "zh-CN": {
+      "title": "基础概率树状图",
+      "summary": "适合讲解分步事件、路径概率和分类讨论的入门树状图模板。",
+      "tags": ["概率", "树状图", "数学", "分类讨论"]
+    },
+    "en": {
+      "title": "Basic Probability Tree Diagram",
+      "summary": "A reusable intro template for multi-step events, path probabilities, and case analysis.",
+      "tags": ["probability", "tree diagram", "math", "case analysis"]
+    }
+  }
+}

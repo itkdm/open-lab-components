@@ -1,0 +1,26 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.science.water-cycle-map",
+  "subject": "science",
+  "topic": "water-cycle",
+  "type": "knowledge-map",
+  "version": "0.1.0",
+  "format": "image/svg+xml",
+  "asset": "vis.science.water-cycle-map.svg",
+  "thumbnail": "vis.science.water-cycle-map.svg",
+  "gradeRange": ["primary-school", "middle-school"],
+  "relatedComponents": [],
+  "size": { "width": 1600, "height": 900 },
+  "locales": {
+    "zh-CN": {
+      "title": "水循环知识图",
+      "summary": "把蒸发、凝结、降水和汇集整理为一张课堂上可直接讲解的循环示意图。",
+      "tags": ["水循环", "科学", "知识图", "过程示意"]
+    },
+    "en": {
+      "title": "Water Cycle Knowledge Map",
+      "summary": "A reusable lesson visual linking evaporation, condensation, precipitation, and collection.",
+      "tags": ["water cycle", "science", "knowledge map", "process diagram"]
+    }
+  }
+}
