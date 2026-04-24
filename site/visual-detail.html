@@ -172,21 +172,26 @@
       width: 100%;
       height: 100%;
       min-height: 360px;
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      box-shadow: var(--shadow-sm);
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      overflow: auto;
+      position: relative;
+    }
+
+    .preview-canvas {
+      min-width: 100%;
+      min-height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: auto;
+      padding: 1.5rem;
     }
 
     .preview-surface img {
-      max-width: 100%;
-      max-height: 100%;
       display: block;
-      object-fit: contain;
-      background: #fff;
+      background: transparent;
+      box-shadow: none;
     }
 
     .controls-pane {
@@ -342,56 +347,6 @@
       opacity: 0.6;
     }
 
-    .modal {
-      position: fixed;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      background: rgba(15, 23, 42, 0.72);
-      z-index: 300;
-    }
-
-    .modal.open {
-      display: flex;
-    }
-
-    .modal-card {
-      width: min(1320px, 100%);
-      height: min(90vh, 920px);
-      background: var(--surface);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14);
-      display: grid;
-      grid-template-rows: auto 1fr;
-    }
-
-    .modal-toolbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    .modal-body {
-      overflow: auto;
-      background: var(--bg);
-      padding: 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-body img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      background: #fff;
-    }
-
     @media (max-width: 960px) {
       body {
         overflow: auto;
@@ -461,7 +416,9 @@
       <div class="preview-content">
         <div class="preview-frame">
           <div class="preview-surface">
-            <img id="previewImage" alt="">
+            <div class="preview-canvas">
+              <img id="previewImage" alt="">
+            </div>
           </div>
         </div>
       </div>
@@ -497,18 +454,6 @@
     </div>
   </div>
 
-  <div id="previewModal" class="modal" aria-hidden="true">
-    <div class="modal-card">
-      <div class="modal-toolbar">
-        <strong id="modalTitle">图片预览</strong>
-        <button id="closeModal" class="action-btn" type="button">关闭</button>
-      </div>
-      <div class="modal-body">
-        <img id="modalImage" alt="">
-      </div>
-    </div>
-  </div>
-
   <script>
     function goBack(event) {
       if (window.history.length > 1 && document.referrer && document.referrer.indexOf(location.origin) === 0) {
@@ -523,6 +468,9 @@
     const urlParams = new URLSearchParams(window.location.search);
     const visualId = urlParams.get("id");
     let currentItem = null;
+    let zoomScale = 1;
+    let fitWidth = 0;
+    let fitHeight = 0;
 
     const i18n = {
       zh: {
@@ -534,7 +482,6 @@
         "copy-success": "已复制",
         "copy-fail": "复制失败",
         "download": "下载图片",
-        "enlarge": "放大查看",
         "open-original": "打开原图",
         "meta-subject": "学科",
         "meta-type": "分类",
@@ -548,8 +495,7 @@
         "not-found-desc": "请检查图片 ID 是否正确。",
         "need-id-title": "请指定图片 ID",
         "need-id-desc": "请在 URL 中添加 ?id=图片ID",
-        "lang-label": "English",
-        "preview-title": "图片预览"
+        "lang-label": "English"
       },
       en: {
         "back": "Back",
@@ -560,7 +506,6 @@
         "copy-success": "Copied",
         "copy-fail": "Copy failed",
         "download": "Download Image",
-        "enlarge": "Enlarge",
         "open-original": "Open Original",
         "meta-subject": "Subject",
         "meta-type": "Category",
@@ -574,8 +519,7 @@
         "not-found-desc": "Please check whether the visual ID is correct.",
         "need-id-title": "Visual ID required",
         "need-id-desc": "Please append ?id=visualId in the URL.",
-        "lang-label": "中文",
-        "preview-title": "Image Preview"
+        "lang-label": "中文"
       }
     };
 
@@ -623,8 +567,6 @@
       });
       const langBtn = document.getElementById("langToggle");
       if (langBtn) langBtn.textContent = t("lang-label");
-      document.getElementById("modalTitle").textContent = t("preview-title");
-      document.getElementById("closeModal").textContent = t("back") === "Back" ? "Close" : "关闭";
     }
 
     function setHeader(item) {
@@ -678,18 +620,16 @@
       const assetFilename = getAssetFilename(item.assetPath, item.id);
 
       setHeader(item);
-      document.getElementById("previewImage").src = `./${item.assetPath}`;
-      document.getElementById("previewImage").alt = item.title;
+      const previewImage = document.getElementById("previewImage");
+      previewImage.src = `./${item.assetPath}`;
+      previewImage.alt = item.title;
       document.getElementById("promptOutput").textContent = item.aiPrompt || "";
+      zoomScale = 1;
 
       document.getElementById("details").innerHTML = `
-        <div class="control-group">
-          <h3>${t("download")}</h3>
-          <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-            <a class="action-btn primary" href="./${item.assetPath}" download="${escapeHtml(assetFilename)}">${t("download")}</a>
-            <button class="action-btn" id="enlargeButton" type="button">${t("enlarge")}</button>
-            <a class="action-btn" href="./${item.assetPath}" target="_blank" rel="noopener">${t("open-original")}</a>
-          </div>
+        <div class="control-group" style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+          <a class="action-btn primary" href="./${item.assetPath}" download="${escapeHtml(assetFilename)}">${t("download")}</a>
+          <a class="action-btn" href="./${item.assetPath}" target="_blank" rel="noopener">${t("open-original")}</a>
         </div>
 
         <div class="control-group">
@@ -736,8 +676,7 @@
           </div>
         </div>
       `;
-
-      document.getElementById("enlargeButton").addEventListener("click", openModal);
+      setupZoom();
     }
 
     async function copyPrompt() {
@@ -756,20 +695,46 @@
       }
     }
 
-    function openModal() {
-      if (!currentItem) return;
-      const modal = document.getElementById("previewModal");
-      const modalImage = document.getElementById("modalImage");
-      modalImage.src = `./${currentItem.assetPath}`;
-      modalImage.alt = currentItem.title;
-      modal.classList.add("open");
-      modal.setAttribute("aria-hidden", "false");
+    function updateZoom() {
+      const previewImage = document.getElementById("previewImage");
+      if (!previewImage || !fitWidth || !fitHeight) return;
+      previewImage.style.width = `${Math.round(fitWidth * zoomScale)}px`;
+      previewImage.style.height = `${Math.round(fitHeight * zoomScale)}px`;
     }
 
-    function closeModal() {
-      const modal = document.getElementById("previewModal");
-      modal.classList.remove("open");
-      modal.setAttribute("aria-hidden", "true");
+    function setupZoom() {
+      const surface = document.querySelector(".preview-surface");
+      const image = document.getElementById("previewImage");
+      if (!surface || !image) return;
+
+      const refreshFit = () => {
+        const naturalWidth = image.naturalWidth || currentItem?.size?.width || 1200;
+        const naturalHeight = image.naturalHeight || currentItem?.size?.height || 675;
+        const maxWidth = Math.max(160, surface.clientWidth - 48);
+        const maxHeight = Math.max(160, surface.clientHeight - 48);
+        const ratio = Math.min(maxWidth / naturalWidth, maxHeight / naturalHeight, 1);
+        fitWidth = naturalWidth * ratio;
+        fitHeight = naturalHeight * ratio;
+        updateZoom();
+      };
+
+      if (image.complete) {
+        refreshFit();
+      } else {
+        image.onload = refreshFit;
+      }
+
+      surface.onwheel = (event) => {
+        event.preventDefault();
+        const nextScale = event.deltaY < 0 ? zoomScale * 1.12 : zoomScale / 1.12;
+        zoomScale = Math.min(6, Math.max(0.4, nextScale));
+        updateZoom();
+      };
+
+      window.onresize = () => {
+        zoomScale = Math.max(1, zoomScale);
+        refreshFit();
+      };
     }
 
     function switchLang() {
@@ -780,13 +745,6 @@
     }
 
     document.getElementById("langToggle").addEventListener("click", switchLang);
-    document.getElementById("closeModal").addEventListener("click", closeModal);
-    document.getElementById("previewModal").addEventListener("click", (event) => {
-      if (event.target.id === "previewModal") closeModal();
-    });
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") closeModal();
-    });
 
     applyStaticTexts();
     loadVisual();
