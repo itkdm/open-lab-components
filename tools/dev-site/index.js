@@ -161,6 +161,7 @@ server.listen(PORT, () => {
 // 注意：不要监听 registry/，否则 build-registry 自己写入 registry.json 会导致无限循环重建
 const watchTargets = [
   PATHS.componentsDir,
+  PATHS.visualsDir,
 ];
 
 for (const dir of watchTargets) {

@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 const SITE_DEFAULT_DOCUMENT = "index.html";
-const SITE_REPUBLISHED_ROOT_DIRS = ["components", "registry", "docs"];
+const SITE_REPUBLISHED_ROOT_DIRS = ["components", "registry", "docs", "visuals"];
 const SITE_STATIC_DIRS = ["assets", "pages"];
 const SITE_ROOT_ASSET_PREFIXES = SITE_REPUBLISHED_ROOT_DIRS.map((dir) => `${dir}/`);
 const SITE_STATIC_FILE_EXTENSIONS = new Set([

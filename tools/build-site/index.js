@@ -20,6 +20,7 @@ const REPUBLISHED_DIR_SOURCES = {
   components: PATHS.componentsDir,
   registry: PATHS.registryDir,
   docs: PATHS.docsDir,
+  visuals: PATHS.visualsDir,
 };
 
 function ensureDir(dir) {
