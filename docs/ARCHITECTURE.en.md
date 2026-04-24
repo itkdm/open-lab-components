@@ -18,6 +18,10 @@ does not use npm workspaces yet.
 
 - `components/`
   The source of truth for all component HTML fragments and embedded manifests.
+- `visuals/`
+  The source of truth for static teaching visuals such as diagrams, flowcharts,
+  and knowledge maps. Visual metadata is structured so the root package, site,
+  and MCP server can discover the same assets consistently.
 - `lib/`
   Shared runtime and i18n logic consumed by the root library.
   This includes the registry loader boundary used by the root package APIs.
@@ -33,7 +37,7 @@ does not use npm workspaces yet.
 ### Generated outputs
 
 - `registry/`
-  Generated registry, category, tag, and i18n-report artifacts.
+  Generated registry, category, tag, i18n-report, and visual-catalog artifacts.
   Only `registry/.gitkeep` and `registry/category-names.json` are treated as
   source-controlled inputs.
 - `site/dist/`
@@ -97,15 +101,16 @@ does not use npm workspaces yet.
 ## Architectural rules
 
 1. `components/` is the only authoritative source for component content.
-2. `registry/*.json` is generated output and must not be edited manually.
-3. Root-package runtime logic stays in `lib/`, not inside tooling scripts.
-4. `mcp-server/` may consume the root package but keeps its runtime concerns
+2. `visuals/` is the authoritative source for visual asset definitions.
+3. `registry/*.json` is generated output and must not be edited manually.
+4. Root-package runtime logic stays in `lib/`, not inside tooling scripts.
+5. `mcp-server/` may consume the root package but keeps its runtime concerns
    isolated inside its own package.
-5. `tools/runtime-harness/` is a quality-only boundary; it is not a product
+6. `tools/runtime-harness/` is a quality-only boundary; it is not a product
    package.
-6. Runtime data such as `mcp-server/data/` is local operational state and is
+7. Runtime data such as `mcp-server/data/` is local operational state and is
    not source-controlled.
-7. Source-controlled text files are expected to use UTF-8 without BOM and LF
+8. Source-controlled text files are expected to use UTF-8 without BOM and LF
    line endings, matching `.editorconfig` and `.gitattributes`.
 
 ## Entry points

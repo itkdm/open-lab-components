@@ -3,13 +3,16 @@ import assert from "node:assert/strict";
 import {
   getCategories,
   listComponents,
+  listVisuals,
   searchComponents,
+  searchVisuals,
   recommendComponents,
   submitRecommendationFeedback,
   getRecommendationFeedbackStats,
   buildExperimentPagePlan,
   composeExperimentBundle,
   getComponent,
+  getVisual,
   validateExperimentBundle
 } from "../src/tools/catalog.js";
 import { createFeedbackStore, feedbackStore } from "../src/feedback/feedback-store.js";
@@ -71,6 +74,28 @@ test("search_components ranks exact id matches first", () => {
 
 test("search_components rejects empty query", () => {
   assert.throws(() => searchComponents({ query: "" }), /query is required/);
+});
+
+test("list_visuals filters by subject and localizes titles", () => {
+  const result = listVisuals({ subject: "physics", locale: "en" });
+  assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
+  assert.ok(result.items.length > 0);
+  assert.ok(result.items.every((item) => item.subject === "physics"));
+  assert.equal(result.items[0].titleEn !== "", true);
+});
+
+test("search_visuals ranks exact id matches first", () => {
+  const result = searchVisuals({ query: "vis.physics.series-circuit-flow", locale: "en" });
+  assert.ok(result.items.length > 0);
+  assert.equal(result.items[0].id, "vis.physics.series-circuit-flow");
+  assert.equal(result.items[0].matchReason, "exact id");
+});
+
+test("get_visual returns localized metadata and raw svg content", () => {
+  const result = getVisual("vis.physics.series-circuit-flow", "en");
+  assert.equal(result.visual.title, "Series Circuit Teaching Flow");
+  assert.match(result.visual.content, /<svg/);
+  assert.equal(result.integrationHints.embedMode, "inline-or-img");
 });
 
 test("recommend_components returns explainable ranked recommendations", () => {

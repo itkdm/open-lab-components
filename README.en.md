@@ -33,6 +33,7 @@
 | ![HTML Fragment](https://img.shields.io/badge/HTML-Fragment-E34F26?logo=html5&logoColor=white) | Component fragments | Zero-dependency HTML fragments ready for host pages. |
 | ![Registry JSON](https://img.shields.io/badge/Registry-JSON-000000?logo=json&logoColor=white) | Structured catalog | Supports category navigation, search, and filtering logic. |
 | ![JS API](https://img.shields.io/badge/JavaScript-API-F7DF1E?logo=javascript&logoColor=black) | Programmatic integration | Access and render components via `lab.*` APIs. |
+| ![Teaching Visuals](https://img.shields.io/badge/Teaching-Visuals-0F766E?logo=googleslides&logoColor=white) | Visual asset gallery | Reusable knowledge maps, flowcharts, and diagrams organized by subject. |
 | ![Static Site](https://img.shields.io/badge/Docs-Site-0EA5E9?logo=readthedocs&logoColor=white) | Visual browsing site | Browse and preview components for teams and contributors. |
 | ![MCP Server](https://img.shields.io/badge/MCP-Agent%20Server-2563EB?logo=nodedotjs&logoColor=white) | Agent interface | Exposes tools, prompts, and resources for AI clients. |
 
@@ -85,6 +86,7 @@ This is not a generic UI toolkit. It is a catalog of teaching objects for educat
 - Zero-dependency HTML fragments ready to copy and use.
 - Structured registry data for search, filtering, and catalog logic.
 - A unified JS API for programmatic integration.
+- A reusable visual gallery for teacher-ready diagrams and knowledge visuals.
 - Agent-callable MCP tools, prompts, and resources.
 
 ## 🔄 Architecture Loop
@@ -94,6 +96,7 @@ components/ (source of truth)
   |
   +--> registry/*.json (structured catalog)
   +--> lib + index.js (programmable API)
+  +--> visuals/ (teacher-ready visual assets)
   +--> site/ (visual browsing and demo)
   +--> mcp-server/ (agent-callable interface)
 ```
@@ -113,6 +116,9 @@ The root entrypoint is [index.js](./index.js). Public exports include:
 - `lab.mount(html, container, props)`
 - `lab.unmount(container)`
 - `lab.updateProps(container, props)`
+- `lab.visuals.list(filter, { locale })`
+- `lab.visuals.get(id, { locale })`
+- `lab.visuals.subjects()`
 
 ## ⚡ Quick Start
 

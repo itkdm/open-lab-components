@@ -6,6 +6,7 @@ import { feedbackStore } from "../feedback/feedback-store.js";
 
 const require = createRequire(import.meta.url);
 const catalog = require("../../../lib/catalog.js");
+const visualCatalog = require("../../../lib/visual-catalog.js");
 const MCP_RESPONSE_SCHEMA_VERSION = "openlab-mcp-response/v1";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,10 +31,21 @@ const {
   tokenize,
   toSummary
 } = catalog;
+const {
+  get: getVisualById,
+  list: listVisualRegistryItems,
+  readSync: readVisualSync,
+  subjects: getVisualSubjects,
+  summarize: summarizeVisual
+} = visualCatalog;
 
 function normalizeArray(value) {
   if (!Array.isArray(value)) return [];
   return value.map((item) => String(item || "").trim()).filter(Boolean);
+}
+
+function clampVisualLimit(limit) {
+  return clampLimit(limit, 12, 30);
 }
 
 function collectRecommendationText(item) {
@@ -92,6 +104,27 @@ function recommendationSummary(item) {
   };
 }
 
+function buildVisualSearchText(item) {
+  return normalizeText(
+    [
+      item.id,
+      item.subject,
+      item.topic,
+      item.type,
+      item.title,
+      item.titleEn,
+      item.summary,
+      item.summaryEn,
+      ...(Array.isArray(item.tags) ? item.tags : []),
+      ...Object.values(item.locales || {}).flatMap((localeEntry) => [
+        localeEntry.title,
+        localeEntry.summary,
+        ...(Array.isArray(localeEntry.tags) ? localeEntry.tags : [])
+      ])
+    ].join(" ")
+  );
+}
+
 function createResponseMeta(kind, locale, warnings = []) {
   return {
     schemaVersion: MCP_RESPONSE_SCHEMA_VERSION,
@@ -100,6 +133,132 @@ function createResponseMeta(kind, locale, warnings = []) {
     localeApplied: locale || "zh-CN",
     warnings: Array.isArray(warnings) ? warnings : [],
     source: SOURCE_INFO
+  };
+}
+
+function listVisuals(input = {}) {
+  const locale = input.locale;
+  const subject = String(input.subject || "").trim();
+  const type = String(input.type || "").trim();
+  const topic = String(input.topic || "").trim();
+  const tag = String(input.tag || "").trim();
+  const limit = clampVisualLimit(input.limit);
+  const items = listVisualRegistryItems({
+    subject: subject || undefined,
+    type: type || undefined,
+    topic: topic || undefined,
+    tag: tag || undefined
+  }, { locale });
+
+  return {
+    ...createResponseMeta("list_visuals", locale),
+    appliedFilters: {
+      subject: subject || null,
+      type: type || null,
+      topic: topic || null,
+      tag: tag || null,
+      limit
+    },
+    total: items.length,
+    items: items.slice(0, limit).map(summarizeVisual)
+  };
+}
+
+function searchVisuals(input = {}) {
+  const locale = input.locale;
+  const query = String(input.query || "").trim();
+  const subject = String(input.subject || "").trim();
+  const type = String(input.type || "").trim();
+  const limit = clampVisualLimit(input.limit);
+  if (!query) {
+    throw new Error("query is required");
+  }
+
+  const normalizedQuery = normalizeText(query);
+  const tokens = tokenize(query);
+  const items = listVisualRegistryItems(undefined, { locale })
+    .filter((item) => {
+      if (subject && item.subject !== subject) return false;
+      if (type && item.type !== type) return false;
+      return true;
+    })
+    .map((item) => {
+      const text = buildVisualSearchText(item);
+      let score = 0;
+      let matchReason = "token match";
+      if (normalizeText(item.id) === normalizedQuery) {
+        score = 1000;
+        matchReason = "exact id";
+      } else if (normalizeText(item.title) === normalizedQuery) {
+        score = 950;
+        matchReason = "exact title";
+      } else if (text.includes(normalizedQuery)) {
+        score = 700;
+        matchReason = "substring match";
+      } else {
+        const matchedTokens = tokens.filter((token) => text.includes(token));
+        if (!matchedTokens.length) return null;
+        score = 500 + matchedTokens.length * 10;
+      }
+
+      return {
+        ...summarizeVisual(item),
+        score,
+        matchReason
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score || a.id.localeCompare(b.id))
+    .slice(0, limit);
+
+  return {
+    ...createResponseMeta("search_visuals", locale),
+    query,
+    appliedFilters: {
+      subject: subject || null,
+      type: type || null,
+      limit
+    },
+    items
+  };
+}
+
+function buildVisualIntegrationHints(visual) {
+  return {
+    placement: visual.type === "flowchart" || visual.type === "procedure" ? "instruction-section" : "concept-section",
+    embedMode: visual.format === "image/svg+xml" ? "inline-or-img" : "img",
+    relatedComponents: Array.isArray(visual.relatedComponents) ? visual.relatedComponents.slice() : []
+  };
+}
+
+function getVisual(id, locale = "zh-CN") {
+  const visual = getVisualById(id, { locale });
+  if (!visual) {
+    const error = new Error(`Visual not found: ${id}`);
+    error.code = "VISUAL_NOT_FOUND";
+    error.data = { id };
+    throw error;
+  }
+
+  return {
+    ...createResponseMeta("get_visual", locale),
+    integrationHints: buildVisualIntegrationHints(visual),
+    visual: {
+      ...visual,
+      content: readVisualSync(id)
+    }
+  };
+}
+
+function getVisualCatalogOverview(locale = "en") {
+  const items = listVisualRegistryItems(undefined, { locale });
+  return {
+    locale,
+    visualCount: items.length,
+    subjectCount: new Set(items.map((item) => item.subject)).size,
+    typeCount: new Set(items.map((item) => item.type)).size,
+    subjects: getVisualSubjects(),
+    featured: items.slice(0, 6).map(summarizeVisual)
   };
 }
 
@@ -1127,6 +1286,8 @@ export {
   getCategories,
   listComponents,
   searchComponents,
+  listVisuals,
+  searchVisuals,
   recommendComponents,
   submitRecommendationFeedback,
   getRecommendationFeedbackStats,
@@ -1134,10 +1295,11 @@ export {
   composeExperimentBundle,
   validateExperimentBundle,
   getComponent,
+  getVisual,
+  getVisualCatalogOverview,
   getSuggestions,
   toSummary,
   getSubjectCatalogSummary,
   getInteractiveCatalogSummary,
   getLessonReadyCatalogSummary
 };
-

@@ -9,9 +9,13 @@ import {
   getRecommendationFeedbackStats,
   getLessonReadyCatalogSummary,
   getSubjectCatalogSummary,
+  getVisual,
+  getVisualCatalogOverview,
   listComponents,
+  listVisuals,
   recommendComponents,
   searchComponents,
+  searchVisuals,
   submitRecommendationFeedback,
   validateExperimentBundle
 } from "../tools/catalog.js";
@@ -75,6 +79,33 @@ const TOOL_DEFINITIONS = [
       locale: z.string().optional()
     },
     handler: async (input) => jsonResponse(searchComponents(input))
+  },
+  {
+    name: "list_visuals",
+    title: "List teaching visuals",
+    description: "List visual teaching assets filtered by subject, type, topic, and tag.",
+    inputSchema: {
+      subject: z.string().optional(),
+      type: z.string().optional(),
+      topic: z.string().optional(),
+      tag: z.string().optional(),
+      limit: z.number().int().positive().optional(),
+      locale: z.string().optional()
+    },
+    handler: async (input) => jsonResponse(listVisuals(input))
+  },
+  {
+    name: "search_visuals",
+    title: "Search teaching visuals",
+    description: "Search visual teaching assets by title, summary, tag, topic, and id.",
+    inputSchema: {
+      query: z.string().min(1),
+      subject: z.string().optional(),
+      type: z.string().optional(),
+      limit: z.number().int().positive().optional(),
+      locale: z.string().optional()
+    },
+    handler: async (input) => jsonResponse(searchVisuals(input))
   },
   {
     name: "recommend_components",
@@ -236,6 +267,40 @@ const TOOL_DEFINITIONS = [
         throw error;
       }
     }
+  },
+  {
+    name: "get_visual",
+    title: "Get a teaching visual",
+    description: "Return a full visual asset record including localized metadata and raw asset content.",
+    inputSchema: {
+      id: z.string().min(1),
+      locale: z.string().optional()
+    },
+    handler: async ({ id, locale }) => {
+      try {
+        return jsonResponse(getVisual(id, locale));
+      } catch (error) {
+        if (error && error.code === "VISUAL_NOT_FOUND") {
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  {
+                    error: "Visual not found",
+                    id: error.data.id
+                  },
+                  null,
+                  2
+                )
+              }
+            ]
+          };
+        }
+        throw error;
+      }
+    }
   }
 ];
 
@@ -363,6 +428,21 @@ const RESOURCE_DEFINITIONS = [
     })
   },
   {
+    name: "visual-overview",
+    uri: "openlab://visuals/overview",
+    title: "Visual Overview",
+    description: "Overview of the subject-scoped teaching visual gallery.",
+    mimeType: "application/json",
+    handler: async () => ({
+      contents: [
+        {
+          uri: "openlab://visuals/overview",
+          text: JSON.stringify(getVisualCatalogOverview("en"), null, 2)
+        }
+      ]
+    })
+  },
+  {
     name: "featured-components",
     uri: "openlab://catalog/featured",
     title: "Featured Components",
@@ -446,6 +526,21 @@ const RESOURCE_DEFINITIONS = [
         {
           uri: "openlab://component/phy.resistor.axial.basic",
           text: JSON.stringify(getComponent("phy.resistor.axial.basic", "en"), null, 2)
+        }
+      ]
+    })
+  },
+  {
+    name: "visual-series-circuit",
+    uri: "openlab://visual/vis.physics.series-circuit-flow",
+    title: "Reference Visual",
+    description: "A concrete teaching visual resource payload for gallery-aware hosts.",
+    mimeType: "application/json",
+    handler: async () => ({
+      contents: [
+        {
+          uri: "openlab://visual/vis.physics.series-circuit-flow",
+          text: JSON.stringify(getVisual("vis.physics.series-circuit-flow", "en"), null, 2)
         }
       ]
     })
