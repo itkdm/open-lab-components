@@ -8,7 +8,10 @@
   "format": "image/svg+xml",
   "asset": "vis.physics.series-circuit-flow.svg",
   "thumbnail": "vis.physics.series-circuit-flow.svg",
-  "gradeRange": ["middle-school", "high-school"],
+  "gradeRange": [
+    "middle-school",
+    "high-school"
+  ],
   "relatedComponents": [
     "phy.power.battery.basic",
     "phy.resistor.axial.basic",
@@ -22,12 +25,24 @@
     "zh-CN": {
       "title": "串联电路工作流程图",
       "summary": "用电源、开关、电阻和灯泡串起一个最常见的教学电路，适合课前导入和实验讲解。",
-      "tags": ["串联电路", "电学", "流程图", "实验讲解"]
+      "tags": [
+        "串联电路",
+        "电学",
+        "流程图",
+        "实验讲解"
+      ],
+      "prompt": "初中物理教学流程图，主题为串联电路工作流程，展示电源、开关、电阻、灯泡形成的完整回路，绿色课堂信息图风格，扁平化矢量图，中文标签，白底，16:9。"
     },
     "en": {
       "title": "Series Circuit Teaching Flow",
       "summary": "A quick visual walkthrough of the battery-switch-resistor-bulb loop for lesson intros and guided experiments.",
-      "tags": ["series circuit", "electricity", "flowchart", "lesson visual"]
+      "tags": [
+        "series circuit",
+        "electricity",
+        "flowchart",
+        "lesson visual"
+      ],
+      "prompt": "Physics classroom flowchart for a series circuit, showing battery, switch, resistor, and bulb in one complete loop, green lesson infographic, flat vector style, white background, clearly labeled, 16:9."
     }
   }
 }

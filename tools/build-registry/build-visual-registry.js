@@ -35,6 +35,8 @@ function localizeVisual(item, locale) {
     titleEn: english.title || item.titleEn || item.title || item.id,
     summary: localized.summary || item.summary || "",
     summaryEn: english.summary || item.summaryEn || item.summary || "",
+    aiPrompt: localized.prompt || item.aiPrompt || "",
+    aiPromptEn: english.prompt || item.aiPromptEn || item.aiPrompt || "",
     tags: Array.isArray(localized.tags) && localized.tags.length
       ? localized.tags.slice()
       : ensureArray(item.tags)
@@ -125,12 +127,16 @@ function main() {
       locales[locale] = {
         title: String(localeData.title || "").trim(),
         summary: String(localeData.summary || "").trim(),
+        prompt: String(localeData.prompt || "").trim(),
         tags: ensureArray(localeData.tags).map((tag) => String(tag).trim()).filter(Boolean)
       };
     }
 
     if (!locales[DEFAULT_LOCALE] || !locales[DEFAULT_LOCALE].title) {
       throw new Error(`visual missing ${DEFAULT_LOCALE} title: ${filePath}`);
+    }
+    if (!locales[DEFAULT_LOCALE].prompt) {
+      throw new Error(`visual missing ${DEFAULT_LOCALE} prompt: ${filePath}`);
     }
 
     const defaultLocale = locales[DEFAULT_LOCALE];
@@ -147,6 +153,8 @@ function main() {
       titleEn: english.title || defaultLocale.title,
       summary: defaultLocale.summary,
       summaryEn: english.summary || defaultLocale.summary,
+      aiPrompt: defaultLocale.prompt,
+      aiPromptEn: english.prompt || defaultLocale.prompt,
       tags: defaultLocale.tags,
       gradeRange: ensureArray(raw.gradeRange).map((item) => String(item).trim()).filter(Boolean),
       relatedComponents: ensureArray(raw.relatedComponents).map((item) => String(item).trim()).filter(Boolean),

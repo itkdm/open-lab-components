@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="查看 Open Lab Components 教学图片详情，支持放大预览、下载资源和查看 AI 生图提示词。">
+  <meta name="keywords" content="Open Lab Components,教学图片,图片详情,AI提示词,图片下载,图片放大">
+  <meta name="author" content="布吉岛(itkdm)">
+  <meta name="robots" content="index, follow">
+  <meta name="language" content="zh-CN">
+  <link rel="icon" type="image/png" href="./logo.png">
+  <title>图片详情 - Open Lab Components</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #059669;
+      --primary-hover: #047857;
+      --bg: #eff4ee;
+      --surface: #ffffff;
+      --surface-soft: #f7faf7;
+      --border: #d1d5db;
+      --border-light: #e5e7eb;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --text-tertiary: #6b7280;
+      --accent: #10b981;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.14);
+      --radius: 0.75rem;
+      --radius-sm: 0.5rem;
+      --radius-lg: 1rem;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .nav-header {
+      position: sticky;
+      top: 0;
+      background: var(--bg);
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .nav-logo {
+      height: 32px;
+      width: 32px;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9375rem;
+      font-weight: 500;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--text-primary);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      padding: 0.72rem 1rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: 1px solid transparent;
+      line-height: 1.1;
+      background: transparent;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text-primary);
+      border-color: var(--border);
+    }
+
+    .lang-btn {
+      min-width: 78px;
+    }
+
+    main {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px 24px 40px;
+    }
+
+    .back-row {
+      margin-bottom: 14px;
+    }
+
+    .back-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+
+    .back-link:hover {
+      color: var(--text-primary);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .visual-panel {
+      overflow: hidden;
+    }
+
+    .visual-stage {
+      padding: 20px;
+      background: var(--surface-soft);
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .visual-frame {
+      width: 100%;
+      min-height: 420px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .visual-frame img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .visual-actions {
+      padding: 16px 20px 20px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .meta-panel {
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .title-block {
+      display: grid;
+      gap: 8px;
+    }
+
+    .title-block h1 {
+      font-size: 1.75rem;
+      line-height: 1.25;
+    }
+
+    .meta-line {
+      color: var(--text-secondary);
+      font-size: 0.9375rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .meta-line .subject {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .meta-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .meta-item {
+      display: grid;
+      gap: 4px;
+      padding: 12px 14px;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius);
+      background: var(--surface-soft);
+    }
+
+    .meta-label {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+
+    .meta-value {
+      font-size: 0.9375rem;
+      color: var(--text-primary);
+      word-break: break-word;
+    }
+
+    .prompt-box {
+      border: 1px solid rgba(5, 150, 105, 0.18);
+      background: rgba(16, 185, 129, 0.08);
+      border-radius: var(--radius);
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .prompt-box pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      font-family: inherit;
+    }
+
+    .empty-state {
+      padding: 5rem 2rem;
+      text-align: center;
+      color: var(--text-secondary);
+      background: var(--surface);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(15, 23, 42, 0.72);
+      z-index: 300;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(1280px, 100%);
+      max-height: calc(100vh - 48px);
+      background: var(--surface);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .modal-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .modal-body {
+      overflow: auto;
+      background: var(--surface-soft);
+      padding: 18px;
+    }
+
+    .modal-body img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: var(--radius);
+      background: #fff;
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .nav-container {
+        padding: 12px 16px;
+        height: auto;
+        min-height: 64px;
+        flex-wrap: wrap;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      main {
+        padding: 16px 16px 32px;
+      }
+
+      .visual-stage,
+      .visual-actions,
+      .meta-panel {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .visual-frame {
+        min-height: 260px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav-header">
+    <div class="nav-container">
+      <a href="./index.html" class="nav-brand">
+        <img src="./logo.png" alt="OLC Logo" class="nav-logo">
+        <span>Open Lab Components</span>
+      </a>
+      <div class="nav-links">
+        <a href="./docs.html" class="nav-link" data-i18n="nav-docs">文档</a>
+        <a href="./components.html" class="nav-link" data-i18n="nav-components">组件</a>
+        <a href="./visuals.html" class="nav-link active" data-i18n="nav-visuals">图片馆</a>
+      </div>
+      <div class="nav-actions">
+        <a href="https://github.com/itkdm/open-lab-components" class="btn btn-primary" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
+          </svg>
+          GitHub
+        </a>
+        <button id="langToggle" class="btn btn-secondary lang-btn" type="button">English</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="back-row">
+      <a id="backLink" class="back-link" href="./visuals.html">← 返回图片馆</a>
+    </div>
+    <div id="content">
+      <div class="empty-state" data-i18n="loading">加载中...</div>
+    </div>
+  </main>
+
+  <div id="previewModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-toolbar">
+        <strong id="modalTitle">预览</strong>
+        <button id="closeModal" class="btn btn-secondary" type="button">关闭</button>
+      </div>
+      <div class="modal-body">
+        <img id="modalImage" alt="">
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const LANG_KEY = "olc-lang";
+    const i18n = {
+      zh: {
+        "nav-docs": "文档",
+        "nav-components": "组件",
+        "nav-visuals": "图片馆",
+        "loading": "加载中...",
+        "back": "← 返回图片馆",
+        "meta-subject": "学科",
+        "meta-type": "分类",
+        "meta-topic": "主题",
+        "meta-size": "尺寸",
+        "meta-format": "格式",
+        "meta-grades": "适用学段",
+        "meta-related": "相关组件",
+        "prompt-label": "AI 生图提示词",
+        "download": "下载图片",
+        "enlarge": "放大查看",
+        "open-original": "打开原图",
+        "close": "关闭",
+        "not-found-title": "未找到图片资源",
+        "not-found-desc": "请返回图片馆重新选择。",
+        "lang-label": "English",
+        "preview-title": "图片预览"
+      },
+      en: {
+        "nav-docs": "Docs",
+        "nav-components": "Components",
+        "nav-visuals": "Visuals",
+        "loading": "Loading...",
+        "back": "← Back to Visuals",
+        "meta-subject": "Subject",
+        "meta-type": "Category",
+        "meta-topic": "Topic",
+        "meta-size": "Size",
+        "meta-format": "Format",
+        "meta-grades": "Grade Range",
+        "meta-related": "Related Components",
+        "prompt-label": "AI Image Prompt",
+        "download": "Download Image",
+        "enlarge": "Enlarge",
+        "open-original": "Open Original",
+        "close": "Close",
+        "not-found-title": "Visual asset not found",
+        "not-found-desc": "Please go back to the gallery and choose another item.",
+        "lang-label": "中文",
+        "preview-title": "Preview"
+      }
+    };
+
+    let currentLang = resolveInitialLang();
+    let currentItem = null;
+
+    function resolveInitialLang() {
+      const params = new URLSearchParams(window.location.search);
+      const queryLang = (params.get("lang") || "").toLowerCase();
+      if (queryLang === "en") return "en";
+      if (queryLang === "zh" || queryLang === "zh-cn") return "zh";
+      const stored = (localStorage.getItem(LANG_KEY) || "").toLowerCase();
+      if (stored === "en" || stored === "zh" || stored === "zh-cn") return stored.startsWith("en") ? "en" : "zh";
+      return (navigator.language || "").toLowerCase().startsWith("en") ? "en" : "zh";
+    }
+
+    function t(key) {
+      return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function resolveLocaleFile() {
+      return currentLang === "en" ? "en" : "zh-CN";
+    }
+
+    function getVisualId() {
+      return new URLSearchParams(window.location.search).get("id") || "";
+    }
+
+    function applyStaticTexts() {
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        element.textContent = t(element.getAttribute("data-i18n"));
+      });
+      document.getElementById("langToggle").textContent = t("lang-label");
+      document.getElementById("backLink").textContent = t("back");
+      document.getElementById("closeModal").textContent = t("close");
+      document.getElementById("modalTitle").textContent = t("preview-title");
+    }
+
+    async function loadVisual() {
+      const id = getVisualId();
+      if (!id) {
+        renderMissing();
+        return;
+      }
+
+      try {
+        const response = await fetch(`./registry/visuals.${resolveLocaleFile()}.json`);
+        const payload = await response.json();
+        const items = Array.isArray(payload.items) ? payload.items : [];
+        currentItem = items.find((item) => item.id === id) || null;
+        if (!currentItem) {
+          renderMissing();
+          return;
+        }
+        renderVisual();
+      } catch (_error) {
+        renderMissing();
+      }
+    }
+
+    function renderMissing() {
+      document.title = `${t("not-found-title")} - Open Lab Components`;
+      document.getElementById("content").innerHTML = `
+        <div class="empty-state">
+          <h2>${t("not-found-title")}</h2>
+          <p>${t("not-found-desc")}</p>
+        </div>
+      `;
+    }
+
+    function formatValue(value, fallback = "-") {
+      if (Array.isArray(value)) return value.length ? value.join(", ") : fallback;
+      return value ? String(value) : fallback;
+    }
+
+    function renderVisual() {
+      const item = currentItem;
+      document.title = `${item.title} - Open Lab Components`;
+      const sizeText = item.size && item.size.width && item.size.height
+        ? `${item.size.width} × ${item.size.height}`
+        : "-";
+      const detailHref = `./visuals.html?lang=${currentLang}`;
+
+      document.getElementById("backLink").href = detailHref;
+      document.getElementById("content").innerHTML = `
+        <div class="layout">
+          <section class="panel visual-panel">
+            <div class="visual-stage">
+              <div class="visual-frame">
+                <img id="mainImage" src="./${item.assetPath}" alt="${escapeHtml(item.title)}">
+              </div>
+            </div>
+            <div class="visual-actions">
+              <a class="btn btn-primary" href="./${item.assetPath}" download="${escapeHtml(item.id)}.svg">${t("download")}</a>
+              <button id="enlargeButton" class="btn btn-secondary" type="button">${t("enlarge")}</button>
+              <a class="btn btn-secondary" href="./${item.assetPath}" target="_blank" rel="noopener">${t("open-original")}</a>
+            </div>
+          </section>
+
+          <aside class="panel meta-panel">
+            <div class="title-block">
+              <h1>${escapeHtml(item.title)}</h1>
+              <div class="meta-line">
+                <span class="subject">${escapeHtml(item.subject)}</span>
+                <span>·</span>
+                <span>${escapeHtml(item.type)}</span>
+              </div>
+            </div>
+
+            <div class="meta-grid">
+              <div class="meta-item">
+                <div class="meta-label">${t("meta-subject")}</div>
+                <div class="meta-value">${escapeHtml(item.subject)}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">${t("meta-type")}</div>
+                <div class="meta-value">${escapeHtml(item.type)}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">${t("meta-topic")}</div>
+                <div class="meta-value">${escapeHtml(item.topic)}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">${t("meta-size")}</div>
+                <div class="meta-value">${escapeHtml(sizeText)}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">${t("meta-format")}</div>
+                <div class="meta-value">${escapeHtml(item.format)}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">${t("meta-grades")}</div>
+                <div class="meta-value">${escapeHtml(formatValue(item.gradeRange))}</div>
+              </div>
+              <div class="meta-item">
+                <div class="meta-label">${t("meta-related")}</div>
+                <div class="meta-value">${escapeHtml(formatValue(item.relatedComponents))}</div>
+              </div>
+            </div>
+
+            <div class="prompt-box">
+              <div class="meta-label">${t("prompt-label")}</div>
+              <pre>${escapeHtml(item.aiPrompt || "")}</pre>
+            </div>
+          </aside>
+        </div>
+      `;
+
+      document.getElementById("enlargeButton").addEventListener("click", openModal);
+    }
+
+    function openModal() {
+      if (!currentItem) return;
+      const modal = document.getElementById("previewModal");
+      const modalImage = document.getElementById("modalImage");
+      modalImage.src = `./${currentItem.assetPath}`;
+      modalImage.alt = currentItem.title;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeModal() {
+      const modal = document.getElementById("previewModal");
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    function switchLang() {
+      currentLang = currentLang === "zh" ? "en" : "zh";
+      localStorage.setItem(LANG_KEY, currentLang);
+      const params = new URLSearchParams(window.location.search);
+      params.set("lang", currentLang);
+      window.location.search = params.toString();
+    }
+
+    document.getElementById("langToggle").addEventListener("click", switchLang);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("previewModal").addEventListener("click", (event) => {
+      if (event.target.id === "previewModal") closeModal();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeModal();
+    });
+
+    applyStaticTexts();
+    loadVisual();
+  </script>
+</body>
+</html>

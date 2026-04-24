@@ -113,6 +113,7 @@ async function main() {
 
     assert.ok(visual);
     assert.equal(visual.title, ROOT_QUERY_API_CONTRACT.sampleVisualEnglishTitle);
+    assert.ok(typeof visual.aiPrompt === "string" && visual.aiPrompt.length > 0);
     assert.ok(lab.visuals.subjects().includes("physics"));
     assert.match(visualSvg, /<svg/);
     assert.equal(visualSvgAsync, visualSvg);

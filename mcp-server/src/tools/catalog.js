@@ -115,10 +115,13 @@ function buildVisualSearchText(item) {
       item.titleEn,
       item.summary,
       item.summaryEn,
+      item.aiPrompt,
+      item.aiPromptEn,
       ...(Array.isArray(item.tags) ? item.tags : []),
       ...Object.values(item.locales || {}).flatMap((localeEntry) => [
         localeEntry.title,
         localeEntry.summary,
+        localeEntry.prompt,
         ...(Array.isArray(localeEntry.tags) ? localeEntry.tags : [])
       ])
     ].join(" ")

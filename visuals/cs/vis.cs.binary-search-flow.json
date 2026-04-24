@@ -8,7 +8,10 @@
   "format": "image/svg+xml",
   "asset": "vis.cs.binary-search-flow.svg",
   "thumbnail": "vis.cs.binary-search-flow.svg",
-  "gradeRange": ["middle-school", "high-school"],
+  "gradeRange": [
+    "middle-school",
+    "high-school"
+  ],
   "relatedComponents": [],
   "size": {
     "width": 1600,
@@ -18,12 +21,24 @@
     "zh-CN": {
       "title": "二分查找流程图",
       "summary": "适合算法入门课，帮助老师把“有序、比较、中点、缩小范围”的逻辑讲清楚。",
-      "tags": ["二分查找", "算法", "流程图", "计算机"]
+      "tags": [
+        "二分查找",
+        "算法",
+        "流程图",
+        "计算机"
+      ],
+      "prompt": "计算机科学课堂流程图，主题为二分查找，展示有序数组、取中点、比较大小、缩小区间的决策流程，蓝绿色配色，扁平化矢量图，中文标签，白底，16:9。"
     },
     "en": {
       "title": "Binary Search Flowchart",
       "summary": "A classroom-ready algorithm flow focused on sorted data, midpoint comparison, and interval shrinking.",
-      "tags": ["binary search", "algorithm", "flowchart", "computer science"]
+      "tags": [
+        "binary search",
+        "algorithm",
+        "flowchart",
+        "computer science"
+      ],
+      "prompt": "Computer science classroom flowchart for binary search, showing sorted array, midpoint, comparison, and interval shrinking decisions, blue-green palette, flat vector style, white background, labeled for teaching, 16:9."
     }
   }
 }

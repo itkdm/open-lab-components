@@ -8,19 +8,37 @@
   "format": "image/svg+xml",
   "asset": "vis.science.water-cycle-map.svg",
   "thumbnail": "vis.science.water-cycle-map.svg",
-  "gradeRange": ["primary-school", "middle-school"],
+  "gradeRange": [
+    "primary-school",
+    "middle-school"
+  ],
   "relatedComponents": [],
-  "size": { "width": 1600, "height": 900 },
+  "size": {
+    "width": 1600,
+    "height": 900
+  },
   "locales": {
     "zh-CN": {
       "title": "水循环知识图",
       "summary": "把蒸发、凝结、降水和汇集整理为一张课堂上可直接讲解的循环示意图。",
-      "tags": ["水循环", "科学", "知识图", "过程示意"]
+      "tags": [
+        "水循环",
+        "科学",
+        "知识图",
+        "过程示意"
+      ],
+      "prompt": "小学到初中科学知识图，主题为水循环，展示蒸发、凝结、降水和汇集的循环过程，蓝绿色自然风格，扁平化矢量信息图，中文标签，白底，16:9。"
     },
     "en": {
       "title": "Water Cycle Knowledge Map",
       "summary": "A reusable lesson visual linking evaporation, condensation, precipitation, and collection.",
-      "tags": ["water cycle", "science", "knowledge map", "process diagram"]
+      "tags": [
+        "water cycle",
+        "science",
+        "knowledge map",
+        "process diagram"
+      ],
+      "prompt": "Science knowledge map for the water cycle, showing evaporation, condensation, precipitation, and collection, blue-green natural palette, flat vector infographic, white background, classroom labels, 16:9."
     }
   }
 }

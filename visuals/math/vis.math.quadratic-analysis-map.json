@@ -8,7 +8,10 @@
   "format": "image/svg+xml",
   "asset": "vis.math.quadratic-analysis-map.svg",
   "thumbnail": "vis.math.quadratic-analysis-map.svg",
-  "gradeRange": ["middle-school", "high-school"],
+  "gradeRange": [
+    "middle-school",
+    "high-school"
+  ],
   "relatedComponents": [
     "math.function.graph.interactive"
   ],
@@ -20,12 +23,24 @@
     "zh-CN": {
       "title": "二次函数分析导图",
       "summary": "把开口方向、顶点、对称轴和增减性整理成一张导图，方便老师复习时统一梳理。",
-      "tags": ["二次函数", "抛物线", "知识导图", "数学"]
+      "tags": [
+        "二次函数",
+        "抛物线",
+        "知识导图",
+        "数学"
+      ],
+      "prompt": "中学数学知识导图，主题为二次函数分析，展示开口方向、顶点、对称轴和增减性，理性清晰的教学排版，扁平化矢量风格，中文标签，白底，16:9。"
     },
     "en": {
       "title": "Quadratic Function Analysis Map",
       "summary": "A compact teaching map linking opening direction, vertex, axis of symmetry, and monotonicity.",
-      "tags": ["quadratic function", "parabola", "analysis map", "math"]
+      "tags": [
+        "quadratic function",
+        "parabola",
+        "analysis map",
+        "math"
+      ],
+      "prompt": "Math knowledge map for quadratic function analysis, showing opening direction, vertex, axis of symmetry, and monotonicity, structured teaching layout, flat vector style, white background, labeled, 16:9."
     }
   }
 }

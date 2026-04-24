@@ -8,19 +8,36 @@
   "format": "image/svg+xml",
   "asset": "vis.chemistry.particle-state-map.svg",
   "thumbnail": "vis.chemistry.particle-state-map.svg",
-  "gradeRange": ["middle-school"],
+  "gradeRange": [
+    "middle-school"
+  ],
   "relatedComponents": [],
-  "size": { "width": 1600, "height": 900 },
+  "size": {
+    "width": 1600,
+    "height": 900
+  },
   "locales": {
     "zh-CN": {
       "title": "物质三态粒子模型图",
       "summary": "把固态、液态、气态的粒子排列和运动特点放在一张图里，适合课堂对比讲解。",
-      "tags": ["三态", "粒子模型", "化学", "知识图"]
+      "tags": [
+        "三态",
+        "粒子模型",
+        "化学",
+        "知识图"
+      ],
+      "prompt": "初中化学教学示意图，主题为物质三态粒子模型，对比固态、液态、气态的粒子排列和运动特点，橙色系，扁平化矢量信息图，中文标注，白底，适合课堂对比讲解，16:9。"
     },
     "en": {
       "title": "Particle Model of States of Matter",
       "summary": "A comparison board for particle arrangement and motion across solid, liquid, and gas.",
-      "tags": ["states of matter", "particle model", "chemistry", "knowledge map"]
+      "tags": [
+        "states of matter",
+        "particle model",
+        "chemistry",
+        "knowledge map"
+      ],
+      "prompt": "Chemistry classroom diagram for particle models of solid, liquid, and gas, comparing particle arrangement and motion, orange palette, flat vector infographic, white background, clear labels for teaching, 16:9."
     }
   }
 }

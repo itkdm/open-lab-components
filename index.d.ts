@@ -75,6 +75,7 @@ export interface Registry {
 export interface VisualLocaleData {
   title: string;
   summary: string;
+  prompt: string;
   tags: string[];
 }
 
@@ -90,6 +91,8 @@ export interface VisualAsset {
   titleEn: string;
   summary: string;
   summaryEn: string;
+  aiPrompt: string;
+  aiPromptEn: string;
   tags: string[];
   gradeRange: string[];
   relatedComponents: string[];

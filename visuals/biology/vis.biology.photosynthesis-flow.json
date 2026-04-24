@@ -8,19 +8,38 @@
   "format": "image/svg+xml",
   "asset": "vis.biology.photosynthesis-flow.svg",
   "thumbnail": "vis.biology.photosynthesis-flow.svg",
-  "gradeRange": ["middle-school"],
-  "relatedComponents": ["bio.cell.plant.basic"],
-  "size": { "width": 1600, "height": 900 },
+  "gradeRange": [
+    "middle-school"
+  ],
+  "relatedComponents": [
+    "bio.cell.plant.basic"
+  ],
+  "size": {
+    "width": 1600,
+    "height": 900
+  },
   "locales": {
     "zh-CN": {
       "title": "光合作用流程图",
       "summary": "把原料、场所、条件和产物整理成一条课堂讲解链路，适合板书与复习。",
-      "tags": ["光合作用", "生物", "流程图", "知识点"]
+      "tags": [
+        "光合作用",
+        "生物",
+        "流程图",
+        "知识点"
+      ],
+      "prompt": "中学生生物教学流程图，主题为光合作用，展示原料、场所、条件和产物之间的流程关系，绿色植物课堂图示，扁平化矢量风格，中文标签，结构清晰，白底，16:9。"
     },
     "en": {
       "title": "Photosynthesis Teaching Flow",
       "summary": "A classroom flowchart connecting inputs, chloroplast context, sunlight, and output products.",
-      "tags": ["photosynthesis", "biology", "flowchart", "lesson visual"]
+      "tags": [
+        "photosynthesis",
+        "biology",
+        "flowchart",
+        "lesson visual"
+      ],
+      "prompt": "Biology teaching flowchart about photosynthesis, showing inputs, chloroplast context, conditions, and products in a clear lesson sequence, green palette, flat vector illustration, white background, labeled for classroom use, 16:9."
     }
   }
 }

@@ -94,6 +94,7 @@ test("search_visuals ranks exact id matches first", () => {
 test("get_visual returns localized metadata and raw svg content", () => {
   const result = getVisual("vis.physics.series-circuit-flow", "en");
   assert.equal(result.visual.title, "Series Circuit Teaching Flow");
+  assert.ok(result.visual.aiPrompt.includes("flat vector"));
   assert.match(result.visual.content, /<svg/);
   assert.equal(result.integrationHints.embedMode, "inline-or-img");
 });
