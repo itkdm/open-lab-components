@@ -17,6 +17,7 @@ const {
   localizeRegistryItem,
   normalizeLocales
 } = require("../../lib/i18n");
+const { main: buildVisualRegistry } = require("./build-visual-registry");
 
 function ensureDir(p) {
   fs.mkdirSync(p, { recursive: true });
@@ -303,3 +304,4 @@ function main() {
 }
 
 main();
+buildVisualRegistry();

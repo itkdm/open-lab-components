@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#fff7ed" />
+  <text x="120" y="120" font-size="54" font-family="'Segoe UI', Arial, sans-serif" fill="#7c2d12" font-weight="700">酸碱滴定实验流程</text>
+  <text x="120" y="172" font-size="26" font-family="'Segoe UI', Arial, sans-serif" fill="#9a3412">适合讲实验步骤、关键观察点和误差来源</text>
+  <g font-family="'Segoe UI', Arial, sans-serif">
+    <rect x="120" y="260" width="300" height="160" rx="28" fill="#ffffff" stroke="#fdba74" stroke-width="4" />
+    <text x="156" y="318" font-size="32" fill="#9a3412" font-weight="700">1. 仪器准备</text>
+    <text x="156" y="364" font-size="23" fill="#7c2d12">润洗滴定管、装入标准液</text>
+    <text x="156" y="398" font-size="23" fill="#7c2d12">锥形瓶中加入待测液和指示剂</text>
+
+    <rect x="470" y="260" width="300" height="160" rx="28" fill="#ffffff" stroke="#fdba74" stroke-width="4" />
+    <text x="506" y="318" font-size="32" fill="#9a3412" font-weight="700">2. 初始读数</text>
+    <text x="506" y="364" font-size="23" fill="#7c2d12">视线与凹液面最低点齐平</text>
+    <text x="506" y="398" font-size="23" fill="#7c2d12">记录到 0.01 mL</text>
+
+    <rect x="820" y="260" width="300" height="160" rx="28" fill="#ffffff" stroke="#fdba74" stroke-width="4" />
+    <text x="856" y="318" font-size="32" fill="#9a3412" font-weight="700">3. 缓慢滴定</text>
+    <text x="856" y="364" font-size="23" fill="#7c2d12">边滴边摇匀</text>
+    <text x="856" y="398" font-size="23" fill="#7c2d12">接近终点时逐滴加入</text>
+
+    <rect x="1170" y="260" width="300" height="160" rx="28" fill="#fff" stroke="#fb923c" stroke-width="4" />
+    <text x="1206" y="318" font-size="32" fill="#9a3412" font-weight="700">4. 判断终点</text>
+    <text x="1206" y="364" font-size="23" fill="#7c2d12">颜色刚好稳定变化</text>
+    <text x="1206" y="398" font-size="23" fill="#7c2d12">再次读取终止刻度</text>
+
+    <path d="M420 340H470M770 340H820M1120 340H1170" stroke="#ea580c" stroke-width="8" fill="none" />
+    <circle cx="448" cy="340" r="10" fill="#ea580c" />
+    <circle cx="798" cy="340" r="10" fill="#ea580c" />
+    <circle cx="1148" cy="340" r="10" fill="#ea580c" />
+  </g>
+  <g font-family="'Segoe UI', Arial, sans-serif">
+    <rect x="120" y="520" width="640" height="250" rx="32" fill="#ffffff" stroke="#fdba74" stroke-width="4" />
+    <text x="160" y="585" font-size="34" fill="#9a3412" font-weight="700">课堂提醒</text>
+    <text x="160" y="640" font-size="25" fill="#7c2d12">• 终点不是越红越好，而是刚好稳定变色</text>
+    <text x="160" y="685" font-size="25" fill="#7c2d12">• 滴定管尖嘴不能有气泡</text>
+    <text x="160" y="730" font-size="25" fill="#7c2d12">• 平行实验可提高结果可靠性</text>
+    <rect x="840" y="520" width="640" height="250" rx="32" fill="#7c2d12" opacity="0.94" />
+    <text x="880" y="585" font-size="34" fill="#ffedd5" font-weight="700">可扩展讲法</text>
+    <text x="880" y="640" font-size="25" fill="#fed7aa">• 用体积差计算消耗的标准液体积</text>
+    <text x="880" y="685" font-size="25" fill="#fed7aa">• 结合化学方程式推导待测液浓度</text>
+    <text x="880" y="730" font-size="25" fill="#fed7aa">• 讨论系统误差与操作误差的区别</text>
+  </g>
+</svg>

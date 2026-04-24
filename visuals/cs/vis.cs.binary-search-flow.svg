@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900">
+  <rect width="1600" height="900" fill="#eff6ff" />
+  <text x="120" y="118" font-size="54" font-family="'Segoe UI', Arial, sans-serif" fill="#1e3a8a" font-weight="700">二分查找流程图</text>
+  <text x="120" y="170" font-size="26" font-family="'Segoe UI', Arial, sans-serif" fill="#1d4ed8">把“找中点、比大小、缩范围”一步步讲清楚</text>
+  <g font-family="'Segoe UI', Arial, sans-serif" fill="none" stroke="#60a5fa" stroke-width="4">
+    <rect x="640" y="210" width="320" height="120" rx="28" fill="#ffffff" />
+    <text x="712" y="284" font-size="34" fill="#1e3a8a" font-weight="700" stroke="none">开始</text>
+
+    <rect x="590" y="380" width="420" height="130" rx="28" fill="#ffffff" />
+    <text x="660" y="442" font-size="32" fill="#1e3a8a" font-weight="700" stroke="none">数组是否有序？</text>
+    <text x="644" y="480" font-size="23" fill="#1d4ed8" stroke="none">二分查找必须建立在有序序列上</text>
+
+    <rect x="180" y="610" width="360" height="150" rx="28" fill="#ffffff" />
+    <text x="236" y="672" font-size="30" fill="#1e3a8a" font-weight="700" stroke="none">取中点 middle</text>
+    <text x="236" y="712" font-size="23" fill="#1d4ed8" stroke="none">比较 target 与 a[middle]</text>
+
+    <rect x="620" y="610" width="360" height="150" rx="28" fill="#ffffff" />
+    <text x="682" y="672" font-size="30" fill="#1e3a8a" font-weight="700" stroke="none">相等则返回</text>
+    <text x="682" y="712" font-size="23" fill="#1d4ed8" stroke="none">找到目标立即结束</text>
+
+    <rect x="1060" y="610" width="360" height="150" rx="28" fill="#ffffff" />
+    <text x="1112" y="672" font-size="30" fill="#1e3a8a" font-weight="700" stroke="none">缩小搜索区间</text>
+    <text x="1112" y="712" font-size="23" fill="#1d4ed8" stroke="none">左半区或右半区继续</text>
+
+    <path d="M800 330V380M800 510V570M800 570H360M800 570H800M800 570H1240" stroke="#2563eb" stroke-width="8" />
+  </g>
+  <g font-family="'Segoe UI', Arial, sans-serif">
+    <rect x="120" y="780" width="1360" height="70" rx="20" fill="#1e3a8a" />
+    <text x="170" y="826" font-size="26" fill="#dbeafe">讲解重点：每轮都把搜索范围减半，所以时间复杂度通常是 O(log n)</text>
+  </g>
+</svg>

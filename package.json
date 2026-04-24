@@ -15,7 +15,8 @@
     "index.d.ts",
     "lib/**/*.js",
     "components/**/*.html",
-    "registry/*.json"
+    "registry/*.json",
+    "visuals/**/*"
   ],
   "repository": {
     "type": "git",

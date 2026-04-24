@@ -1,0 +1,31 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.chemistry.titration-workflow",
+  "subject": "chemistry",
+  "topic": "acid-base-titration",
+  "type": "procedure",
+  "version": "0.1.0",
+  "format": "image/svg+xml",
+  "asset": "vis.chemistry.titration-workflow.svg",
+  "thumbnail": "vis.chemistry.titration-workflow.svg",
+  "gradeRange": ["high-school"],
+  "relatedComponents": [
+    "chem.equipment.beaker.basic"
+  ],
+  "size": {
+    "width": 1600,
+    "height": 900
+  },
+  "locales": {
+    "zh-CN": {
+      "title": "酸碱滴定实验流程图",
+      "summary": "把滴定前准备、读数、滴定和终点判断整理成课堂可直接展示的流程图。",
+      "tags": ["滴定", "酸碱中和", "实验流程", "化学"]
+    },
+    "en": {
+      "title": "Acid-Base Titration Workflow",
+      "summary": "A teacher-ready visual covering setup, reading, titration, and endpoint confirmation in one board.",
+      "tags": ["titration", "acid base", "procedure", "chemistry"]
+    }
+  }
+}

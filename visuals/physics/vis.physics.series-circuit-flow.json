@@ -1,0 +1,33 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.physics.series-circuit-flow",
+  "subject": "physics",
+  "topic": "circuit-basics",
+  "type": "flowchart",
+  "version": "0.1.0",
+  "format": "image/svg+xml",
+  "asset": "vis.physics.series-circuit-flow.svg",
+  "thumbnail": "vis.physics.series-circuit-flow.svg",
+  "gradeRange": ["middle-school", "high-school"],
+  "relatedComponents": [
+    "phy.power.battery.basic",
+    "phy.resistor.axial.basic",
+    "phy.switch.knife.basic"
+  ],
+  "size": {
+    "width": 1600,
+    "height": 900
+  },
+  "locales": {
+    "zh-CN": {
+      "title": "串联电路工作流程图",
+      "summary": "用电源、开关、电阻和灯泡串起一个最常见的教学电路，适合课前导入和实验讲解。",
+      "tags": ["串联电路", "电学", "流程图", "实验讲解"]
+    },
+    "en": {
+      "title": "Series Circuit Teaching Flow",
+      "summary": "A quick visual walkthrough of the battery-switch-resistor-bulb loop for lesson intros and guided experiments.",
+      "tags": ["series circuit", "electricity", "flowchart", "lesson visual"]
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.math.quadratic-analysis-map",
+  "subject": "math",
+  "topic": "quadratic-function",
+  "type": "knowledge-map",
+  "version": "0.1.0",
+  "format": "image/svg+xml",
+  "asset": "vis.math.quadratic-analysis-map.svg",
+  "thumbnail": "vis.math.quadratic-analysis-map.svg",
+  "gradeRange": ["middle-school", "high-school"],
+  "relatedComponents": [
+    "math.function.graph.interactive"
+  ],
+  "size": {
+    "width": 1600,
+    "height": 900
+  },
+  "locales": {
+    "zh-CN": {
+      "title": "二次函数分析导图",
+      "summary": "把开口方向、顶点、对称轴和增减性整理成一张导图，方便老师复习时统一梳理。",
+      "tags": ["二次函数", "抛物线", "知识导图", "数学"]
+    },
+    "en": {
+      "title": "Quadratic Function Analysis Map",
+      "summary": "A compact teaching map linking opening direction, vertex, axis of symmetry, and monotonicity.",
+      "tags": ["quadratic function", "parabola", "analysis map", "math"]
+    }
+  }
+}

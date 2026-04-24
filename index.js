@@ -27,6 +27,8 @@ var catalog;
 try { catalog = require('./lib/catalog.js'); } catch (e) { catalog = null; }
 var runtime;
 try { runtime = require('./lib/runtime.js'); } catch (e) { runtime = null; }
+var visualCatalog;
+try { visualCatalog = require('./lib/visual-catalog.js'); } catch (e) { visualCatalog = null; }
 
 function getRegistry() {
   if (!catalog || !catalog.getRegistry) {
@@ -45,5 +47,14 @@ module.exports = {
   mount: runtime && runtime.mount,
   unmount: runtime && runtime.unmount,
   updateProps: runtime && runtime.updateProps,
-  get registry() { return getRegistry(); }
+  get registry() { return getRegistry(); },
+  visuals: visualCatalog && {
+    list: visualCatalog.list,
+    get: visualCatalog.get,
+    subjects: visualCatalog.subjects,
+    readSync: visualCatalog.readSync,
+    read: visualCatalog.read,
+    resolve: visualCatalog.resolve,
+    get registry() { return visualCatalog.getRegistry(); }
+  }
 };
