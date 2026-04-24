@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="查看 Open Lab Components 教学图片详情，支持放大预览、下载资源和查看 AI 生图提示词。">
+  <meta name="description" content="查看 Open Lab Components 教学图片详情，支持放大预览、下载图片和查看 AI 生图提示词。">
   <meta name="keywords" content="Open Lab Components,教学图片,图片详情,AI提示词,图片下载,图片放大">
   <meta name="author" content="布吉岛(itkdm)">
   <meta name="robots" content="index, follow">
   <meta name="language" content="zh-CN">
+  <link rel="canonical" href="https://itkdm.github.io/open-lab-components/visual-detail.html">
   <link rel="icon" type="image/png" href="./logo.png">
   <title>图片详情 - Open Lab Components</title>
   <style>
@@ -22,7 +23,6 @@
       --primary-hover: #047857;
       --bg: #eff4ee;
       --surface: #ffffff;
-      --surface-soft: #f7faf7;
       --border: #d1d5db;
       --border-light: #e5e7eb;
       --text-primary: #1f2937;
@@ -30,235 +30,236 @@
       --text-tertiary: #6b7280;
       --accent: #10b981;
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-      --shadow-md: 0 16px 40px rgba(15, 23, 42, 0.14);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
       --radius: 0.75rem;
       --radius-sm: 0.5rem;
-      --radius-lg: 1rem;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Roboto", "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden;
     }
 
-    .nav-header {
+    header {
       position: sticky;
       top: 0;
-      background: var(--bg);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-light);
       z-index: 100;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     }
 
-    .nav-container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 24px;
+    .header-content {
+      width: 100%;
+      padding: 0 2rem;
       height: 64px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 1rem;
     }
 
-    .nav-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-primary);
-      text-decoration: none;
-      letter-spacing: -0.02em;
-    }
-
-    .nav-logo {
-      height: 32px;
-      width: 32px;
-      border-radius: 8px;
-      object-fit: contain;
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-    }
-
-    .nav-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.9375rem;
-      font-weight: 500;
-    }
-
-    .nav-link:hover,
-    .nav-link.active {
-      color: var(--text-primary);
-    }
-
-    .nav-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .btn {
-      padding: 0.72rem 1rem;
+    .back-btn,
+    .lang-btn,
+    .action-btn {
+      padding: 0.5rem 0.875rem;
+      background: transparent;
+      border: 1px solid var(--border);
       border-radius: var(--radius-sm);
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
       text-decoration: none;
+      color: var(--text-primary);
+      font-size: 0.875rem;
+      font-weight: 500;
       display: inline-flex;
       align-items: center;
-      justify-content: center;
       gap: 0.5rem;
-      border: 1px solid transparent;
       line-height: 1.1;
-      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
-    .btn-primary {
-      background: var(--primary);
-      color: #fff;
+    .back-btn:hover,
+    .lang-btn:hover,
+    .action-btn:hover {
+      background: var(--bg);
       border-color: var(--primary);
+      color: var(--primary);
     }
 
-    .btn-primary:hover {
+    .action-btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .action-btn.primary:hover {
       background: var(--primary-hover);
       border-color: var(--primary-hover);
-    }
-
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--text-primary);
-      border-color: var(--border);
+      color: #fff;
     }
 
     .lang-btn {
-      min-width: 78px;
+      margin-left: auto;
     }
 
-    main {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 18px 24px 40px;
+    .header-info {
+      flex: 1;
+      min-width: 0;
+      padding: 0 0.5rem;
     }
 
-    .back-row {
-      margin-bottom: 14px;
-    }
-
-    .back-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.875rem;
+    .header-info h1 {
+      font-size: 1.25rem;
       font-weight: 600;
-    }
-
-    .back-link:hover {
+      margin-bottom: 0.125rem;
       color: var(--text-primary);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .layout {
-      display: grid;
-      grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.9fr);
-      gap: 24px;
-      align-items: start;
+    .header-info p {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-sm);
+    .container {
+      display: flex;
+      height: calc(100vh - 64px);
+      position: relative;
+      z-index: 1;
     }
 
-    .visual-panel {
+    .preview-pane {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      min-width: 0;
       overflow: hidden;
     }
 
-    .visual-stage {
-      padding: 20px;
-      background: var(--surface-soft);
-      border-bottom: 1px solid var(--border-light);
+    .preview-content {
+      flex: 1;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+      padding: 0;
+      background: var(--bg);
+      overflow: auto;
+      position: relative;
     }
 
-    .visual-frame {
-      width: 100%;
-      min-height: 420px;
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius);
-      overflow: hidden;
-      background: #fff;
+    .preview-frame {
+      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-    }
-
-    .visual-frame img {
+      position: relative;
       width: 100%;
-      height: auto;
-      display: block;
+      height: 100%;
+      padding: 2rem;
     }
 
-    .visual-actions {
-      padding: 16px 20px 20px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .meta-panel {
-      padding: 20px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .title-block {
-      display: grid;
-      gap: 8px;
-    }
-
-    .title-block h1 {
-      font-size: 1.75rem;
-      line-height: 1.25;
-    }
-
-    .meta-line {
-      color: var(--text-secondary);
-      font-size: 0.9375rem;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-    }
-
-    .meta-line .subject {
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    .meta-grid {
-      display: grid;
-      gap: 12px;
-    }
-
-    .meta-item {
-      display: grid;
-      gap: 4px;
-      padding: 12px 14px;
+    .preview-surface {
+      width: 100%;
+      height: 100%;
+      min-height: 360px;
+      background: var(--surface);
       border: 1px solid var(--border-light);
-      border-radius: var(--radius);
-      background: var(--surface-soft);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+    }
+
+    .preview-surface img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .controls-pane {
+      width: 400px;
+      background: var(--surface);
+      overflow-y: auto;
+      padding: 0;
+      border-left: 1px solid var(--border-light);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .controls-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1.5rem;
+    }
+
+    .controls-footer {
+      border-top: 1px solid var(--border-light);
+      padding: 1.5rem;
+      background: var(--surface);
+      position: sticky;
+      bottom: 0;
+    }
+
+    .controls-pane::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .controls-pane::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+
+    .controls-pane::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+
+    .control-group {
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-light);
+    }
+
+    .control-group:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .control-group h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 0.875rem;
+      color: var(--text-primary);
+    }
+
+    .meta-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .meta-row {
+      display: grid;
+      gap: 0.25rem;
     }
 
     .meta-label {
       font-size: 0.75rem;
       color: var(--text-tertiary);
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.04em;
       font-weight: 700;
     }
 
@@ -268,30 +269,77 @@
       word-break: break-word;
     }
 
-    .prompt-box {
-      border: 1px solid rgba(5, 150, 105, 0.18);
-      background: rgba(16, 185, 129, 0.08);
-      border-radius: var(--radius);
-      padding: 14px;
-      display: grid;
-      gap: 8px;
+    .tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
     }
 
-    .prompt-box pre {
+    .tag {
+      padding: 0.25rem 0.5rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .code-block {
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid #1e293b;
+    }
+
+    .code-block-header {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: #111827;
+      border-bottom: 1px solid #1e293b;
+    }
+
+    .code-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.375rem 0.625rem;
+      border-radius: 0.375rem;
+      border: 1px solid #334155;
+      background: transparent;
+      color: #e2e8f0;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+
+    .code-copy-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .code-block code {
+      display: block;
       white-space: pre-wrap;
       word-break: break-word;
-      font-size: 0.875rem;
-      color: var(--text-primary);
-      font-family: inherit;
+      padding: 1rem;
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      font-family: Consolas, Monaco, "Courier New", monospace;
     }
 
     .empty-state {
-      padding: 5rem 2rem;
+      padding: 3rem 1rem;
       text-align: center;
       color: var(--text-secondary);
-      background: var(--surface);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-lg);
+    }
+
+    .empty-state-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.6;
     }
 
     .modal {
@@ -310,12 +358,12 @@
     }
 
     .modal-card {
-      width: min(1280px, 100%);
-      max-height: calc(100vh - 48px);
+      width: min(1320px, 100%);
+      height: min(90vh, 920px);
       background: var(--surface);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.14);
       display: grid;
       grid-template-rows: auto 1fr;
     }
@@ -330,91 +378,130 @@
 
     .modal-body {
       overflow: auto;
-      background: var(--surface-soft);
-      padding: 18px;
+      background: var(--bg);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .modal-body img {
-      width: 100%;
+      max-width: 100%;
       height: auto;
       display: block;
-      border-radius: var(--radius);
       background: #fff;
     }
 
-    @media (max-width: 980px) {
-      .layout {
-        grid-template-columns: 1fr;
+    @media (max-width: 960px) {
+      body {
+        overflow: auto;
+      }
+
+      .container {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .controls-pane {
+        width: 100%;
+        border-left: none;
+        border-top: 1px solid var(--border-light);
+      }
+
+      .preview-pane {
+        min-height: 50vh;
       }
     }
 
     @media (max-width: 768px) {
-      .nav-container {
-        padding: 12px 16px;
+      .header-content {
+        padding: 0 1rem;
+        flex-wrap: wrap;
         height: auto;
         min-height: 64px;
-        flex-wrap: wrap;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
       }
 
-      .nav-links {
-        display: none;
+      .lang-btn {
+        margin-left: 0;
       }
 
-      main {
-        padding: 16px 16px 32px;
+      .header-info {
+        order: 3;
+        width: 100%;
+        padding: 0;
       }
 
-      .visual-stage,
-      .visual-actions,
-      .meta-panel {
-        padding-left: 16px;
-        padding-right: 16px;
-      }
-
-      .visual-frame {
-        min-height: 260px;
+      .preview-frame {
+        padding: 1rem;
       }
     }
   </style>
 </head>
 <body>
-  <nav class="nav-header">
-    <div class="nav-container">
-      <a href="./index.html" class="nav-brand">
-        <img src="./logo.png" alt="OLC Logo" class="nav-logo">
-        <span>Open Lab Components</span>
+  <header>
+    <div class="header-content">
+      <a href="./visuals.html" class="back-btn" id="backBtn" onclick="return goBack(event)">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+        <span data-i18n="back">返回</span>
       </a>
-      <div class="nav-links">
-        <a href="./docs.html" class="nav-link" data-i18n="nav-docs">文档</a>
-        <a href="./components.html" class="nav-link" data-i18n="nav-components">组件</a>
-        <a href="./visuals.html" class="nav-link active" data-i18n="nav-visuals">图片馆</a>
-      </div>
-      <div class="nav-actions">
-        <a href="https://github.com/itkdm/open-lab-components" class="btn btn-primary" target="_blank" rel="noopener">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
-          </svg>
-          GitHub
-        </a>
-        <button id="langToggle" class="btn btn-secondary lang-btn" type="button">English</button>
+      <button id="langToggle" class="lang-btn" type="button">English</button>
+      <div class="header-info">
+        <h1 id="visualName">加载中...</h1>
+        <p id="visualMeta"></p>
       </div>
     </div>
-  </nav>
+  </header>
 
-  <main>
-    <div class="back-row">
-      <a id="backLink" class="back-link" href="./visuals.html">← 返回图片馆</a>
+  <div class="container">
+    <div class="preview-pane">
+      <div class="preview-content">
+        <div class="preview-frame">
+          <div class="preview-surface">
+            <img id="previewImage" alt="">
+          </div>
+        </div>
+      </div>
     </div>
-    <div id="content">
-      <div class="empty-state" data-i18n="loading">加载中...</div>
+
+    <div class="controls-pane">
+      <div class="controls-content">
+        <div id="details">
+          <div class="empty-state">
+            <div class="empty-state-icon">🖼️</div>
+            <p data-i18n="loading-details">加载图片详情中...</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls-footer">
+        <div class="control-group" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;">
+          <h3 data-i18n="prompt-title">AI 生图提示词</h3>
+          <div class="code-block">
+            <div class="code-block-header">
+              <button class="code-copy-btn" id="codeCopyBtn" type="button" onclick="copyPrompt()" title="复制提示词">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span data-i18n="btn-copy">复制</span>
+              </button>
+            </div>
+            <code id="promptOutput">加载中...</code>
+          </div>
+        </div>
+      </div>
     </div>
-  </main>
+  </div>
 
   <div id="previewModal" class="modal" aria-hidden="true">
     <div class="modal-card">
       <div class="modal-toolbar">
-        <strong id="modalTitle">预览</strong>
-        <button id="closeModal" class="btn btn-secondary" type="button">关闭</button>
+        <strong id="modalTitle">图片预览</strong>
+        <button id="closeModal" class="action-btn" type="button">关闭</button>
       </div>
       <div class="modal-body">
         <img id="modalImage" alt="">
@@ -423,68 +510,86 @@
   </div>
 
   <script>
+    function goBack(event) {
+      if (window.history.length > 1 && document.referrer && document.referrer.indexOf(location.origin) === 0) {
+        event.preventDefault();
+        window.history.back();
+        return false;
+      }
+      return true;
+    }
+
     const LANG_KEY = "olc-lang";
+    const urlParams = new URLSearchParams(window.location.search);
+    const visualId = urlParams.get("id");
+    let currentItem = null;
+
     const i18n = {
       zh: {
-        "nav-docs": "文档",
-        "nav-components": "组件",
-        "nav-visuals": "图片馆",
+        "back": "返回",
+        "loading-details": "加载图片详情中...",
         "loading": "加载中...",
-        "back": "← 返回图片馆",
-        "meta-subject": "学科",
-        "meta-type": "分类",
-        "meta-topic": "主题",
-        "meta-size": "尺寸",
-        "meta-format": "格式",
-        "meta-grades": "适用学段",
-        "meta-related": "相关组件",
-        "prompt-label": "AI 生图提示词",
+        "prompt-title": "AI 生图提示词",
+        "btn-copy": "复制",
+        "copy-success": "已复制",
+        "copy-fail": "复制失败",
         "download": "下载图片",
         "enlarge": "放大查看",
         "open-original": "打开原图",
-        "close": "关闭",
-        "not-found-title": "未找到图片资源",
-        "not-found-desc": "请返回图片馆重新选择。",
+        "meta-subject": "学科",
+        "meta-type": "分类",
+        "meta-topic": "主题",
+        "meta-format": "格式",
+        "meta-size": "尺寸",
+        "meta-grades": "适用学段",
+        "meta-related": "相关组件",
+        "meta-tags": "标签",
+        "not-found-title": "图片未找到",
+        "not-found-desc": "请检查图片 ID 是否正确。",
+        "need-id-title": "请指定图片 ID",
+        "need-id-desc": "请在 URL 中添加 ?id=图片ID",
         "lang-label": "English",
         "preview-title": "图片预览"
       },
       en: {
-        "nav-docs": "Docs",
-        "nav-components": "Components",
-        "nav-visuals": "Visuals",
+        "back": "Back",
+        "loading-details": "Loading visual details...",
         "loading": "Loading...",
-        "back": "← Back to Visuals",
-        "meta-subject": "Subject",
-        "meta-type": "Category",
-        "meta-topic": "Topic",
-        "meta-size": "Size",
-        "meta-format": "Format",
-        "meta-grades": "Grade Range",
-        "meta-related": "Related Components",
-        "prompt-label": "AI Image Prompt",
+        "prompt-title": "AI Image Prompt",
+        "btn-copy": "Copy",
+        "copy-success": "Copied",
+        "copy-fail": "Copy failed",
         "download": "Download Image",
         "enlarge": "Enlarge",
         "open-original": "Open Original",
-        "close": "Close",
-        "not-found-title": "Visual asset not found",
-        "not-found-desc": "Please go back to the gallery and choose another item.",
+        "meta-subject": "Subject",
+        "meta-type": "Category",
+        "meta-topic": "Topic",
+        "meta-format": "Format",
+        "meta-size": "Size",
+        "meta-grades": "Grade Range",
+        "meta-related": "Related Components",
+        "meta-tags": "Tags",
+        "not-found-title": "Visual not found",
+        "not-found-desc": "Please check whether the visual ID is correct.",
+        "need-id-title": "Visual ID required",
+        "need-id-desc": "Please append ?id=visualId in the URL.",
         "lang-label": "中文",
-        "preview-title": "Preview"
+        "preview-title": "Image Preview"
       }
     };
 
-    let currentLang = resolveInitialLang();
-    let currentItem = null;
-
     function resolveInitialLang() {
-      const params = new URLSearchParams(window.location.search);
-      const queryLang = (params.get("lang") || "").toLowerCase();
+      const queryLang = (urlParams.get("lang") || "").toLowerCase();
       if (queryLang === "en") return "en";
       if (queryLang === "zh" || queryLang === "zh-cn") return "zh";
       const stored = (localStorage.getItem(LANG_KEY) || "").toLowerCase();
-      if (stored === "en" || stored === "zh" || stored === "zh-cn") return stored.startsWith("en") ? "en" : "zh";
+      if (stored === "en") return "en";
+      if (stored === "zh" || stored === "zh-cn") return "zh";
       return (navigator.language || "").toLowerCase().startsWith("en") ? "en" : "zh";
     }
+
+    let currentLang = resolveInitialLang();
 
     function t(key) {
       return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
@@ -498,28 +603,55 @@
         .replace(/"/g, "&quot;");
     }
 
+    function formatValue(value, fallback = "-") {
+      if (Array.isArray(value)) return value.length ? value.join(", ") : fallback;
+      return value ? String(value) : fallback;
+    }
+
     function resolveLocaleFile() {
       return currentLang === "en" ? "en" : "zh-CN";
     }
 
-    function getVisualId() {
-      return new URLSearchParams(window.location.search).get("id") || "";
+    function getAssetFilename(assetPath, id) {
+      const clean = String(assetPath || "").split("/").pop() || "";
+      return clean || `${id || "visual"}.asset`;
     }
 
     function applyStaticTexts() {
       document.querySelectorAll("[data-i18n]").forEach((element) => {
         element.textContent = t(element.getAttribute("data-i18n"));
       });
-      document.getElementById("langToggle").textContent = t("lang-label");
-      document.getElementById("backLink").textContent = t("back");
-      document.getElementById("closeModal").textContent = t("close");
+      const langBtn = document.getElementById("langToggle");
+      if (langBtn) langBtn.textContent = t("lang-label");
       document.getElementById("modalTitle").textContent = t("preview-title");
+      document.getElementById("closeModal").textContent = t("back") === "Back" ? "Close" : "关闭";
+    }
+
+    function setHeader(item) {
+      const name = item ? item.title : t("loading");
+      const meta = item
+        ? `${item.subject} · ${item.type} · ${item.topic}`
+        : "";
+      document.getElementById("visualName").textContent = name;
+      document.getElementById("visualMeta").textContent = meta;
+      document.title = item ? `${item.title} - Open Lab Components` : `图片详情 - Open Lab Components`;
+    }
+
+    function renderEmpty(title, desc) {
+      setHeader(null);
+      document.getElementById("details").innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">⚠️</div>
+          <h3>${title}</h3>
+          <p>${desc}</p>
+        </div>
+      `;
+      document.getElementById("promptOutput").textContent = "";
     }
 
     async function loadVisual() {
-      const id = getVisualId();
-      if (!id) {
-        renderMissing();
+      if (!visualId) {
+        renderEmpty(t("need-id-title"), t("need-id-desc"));
         return;
       }
 
@@ -527,106 +659,101 @@
         const response = await fetch(`./registry/visuals.${resolveLocaleFile()}.json`);
         const payload = await response.json();
         const items = Array.isArray(payload.items) ? payload.items : [];
-        currentItem = items.find((item) => item.id === id) || null;
+        currentItem = items.find((item) => item.id === visualId) || null;
         if (!currentItem) {
-          renderMissing();
+          renderEmpty(t("not-found-title"), t("not-found-desc"));
           return;
         }
         renderVisual();
       } catch (_error) {
-        renderMissing();
+        renderEmpty(t("not-found-title"), t("not-found-desc"));
       }
-    }
-
-    function renderMissing() {
-      document.title = `${t("not-found-title")} - Open Lab Components`;
-      document.getElementById("content").innerHTML = `
-        <div class="empty-state">
-          <h2>${t("not-found-title")}</h2>
-          <p>${t("not-found-desc")}</p>
-        </div>
-      `;
-    }
-
-    function formatValue(value, fallback = "-") {
-      if (Array.isArray(value)) return value.length ? value.join(", ") : fallback;
-      return value ? String(value) : fallback;
     }
 
     function renderVisual() {
       const item = currentItem;
-      document.title = `${item.title} - Open Lab Components`;
       const sizeText = item.size && item.size.width && item.size.height
         ? `${item.size.width} × ${item.size.height}`
         : "-";
-      const detailHref = `./visuals.html?lang=${currentLang}`;
+      const assetFilename = getAssetFilename(item.assetPath, item.id);
 
-      document.getElementById("backLink").href = detailHref;
-      document.getElementById("content").innerHTML = `
-        <div class="layout">
-          <section class="panel visual-panel">
-            <div class="visual-stage">
-              <div class="visual-frame">
-                <img id="mainImage" src="./${item.assetPath}" alt="${escapeHtml(item.title)}">
-              </div>
-            </div>
-            <div class="visual-actions">
-              <a class="btn btn-primary" href="./${item.assetPath}" download="${escapeHtml(item.id)}.svg">${t("download")}</a>
-              <button id="enlargeButton" class="btn btn-secondary" type="button">${t("enlarge")}</button>
-              <a class="btn btn-secondary" href="./${item.assetPath}" target="_blank" rel="noopener">${t("open-original")}</a>
-            </div>
-          </section>
+      setHeader(item);
+      document.getElementById("previewImage").src = `./${item.assetPath}`;
+      document.getElementById("previewImage").alt = item.title;
+      document.getElementById("promptOutput").textContent = item.aiPrompt || "";
 
-          <aside class="panel meta-panel">
-            <div class="title-block">
-              <h1>${escapeHtml(item.title)}</h1>
-              <div class="meta-line">
-                <span class="subject">${escapeHtml(item.subject)}</span>
-                <span>·</span>
-                <span>${escapeHtml(item.type)}</span>
-              </div>
-            </div>
+      document.getElementById("details").innerHTML = `
+        <div class="control-group">
+          <h3>${t("download")}</h3>
+          <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+            <a class="action-btn primary" href="./${item.assetPath}" download="${escapeHtml(assetFilename)}">${t("download")}</a>
+            <button class="action-btn" id="enlargeButton" type="button">${t("enlarge")}</button>
+            <a class="action-btn" href="./${item.assetPath}" target="_blank" rel="noopener">${t("open-original")}</a>
+          </div>
+        </div>
 
-            <div class="meta-grid">
-              <div class="meta-item">
-                <div class="meta-label">${t("meta-subject")}</div>
-                <div class="meta-value">${escapeHtml(item.subject)}</div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-label">${t("meta-type")}</div>
-                <div class="meta-value">${escapeHtml(item.type)}</div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-label">${t("meta-topic")}</div>
-                <div class="meta-value">${escapeHtml(item.topic)}</div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-label">${t("meta-size")}</div>
-                <div class="meta-value">${escapeHtml(sizeText)}</div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-label">${t("meta-format")}</div>
-                <div class="meta-value">${escapeHtml(item.format)}</div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-label">${t("meta-grades")}</div>
-                <div class="meta-value">${escapeHtml(formatValue(item.gradeRange))}</div>
-              </div>
-              <div class="meta-item">
-                <div class="meta-label">${t("meta-related")}</div>
-                <div class="meta-value">${escapeHtml(formatValue(item.relatedComponents))}</div>
-              </div>
+        <div class="control-group">
+          <h3>${t("meta-type")}</h3>
+          <div class="meta-list">
+            <div class="meta-row">
+              <div class="meta-label">${t("meta-subject")}</div>
+              <div class="meta-value">${escapeHtml(item.subject)}</div>
             </div>
+            <div class="meta-row">
+              <div class="meta-label">${t("meta-type")}</div>
+              <div class="meta-value">${escapeHtml(item.type)}</div>
+            </div>
+            <div class="meta-row">
+              <div class="meta-label">${t("meta-topic")}</div>
+              <div class="meta-value">${escapeHtml(item.topic)}</div>
+            </div>
+            <div class="meta-row">
+              <div class="meta-label">${t("meta-format")}</div>
+              <div class="meta-value">${escapeHtml(item.format)}</div>
+            </div>
+            <div class="meta-row">
+              <div class="meta-label">${t("meta-size")}</div>
+              <div class="meta-value">${escapeHtml(sizeText)}</div>
+            </div>
+            <div class="meta-row">
+              <div class="meta-label">${t("meta-grades")}</div>
+              <div class="meta-value">${escapeHtml(formatValue(item.gradeRange))}</div>
+            </div>
+            <div class="meta-row">
+              <div class="meta-label">${t("meta-related")}</div>
+              <div class="meta-value">${escapeHtml(formatValue(item.relatedComponents))}</div>
+            </div>
+          </div>
+        </div>
 
-            <div class="prompt-box">
-              <div class="meta-label">${t("prompt-label")}</div>
-              <pre>${escapeHtml(item.aiPrompt || "")}</pre>
-            </div>
-          </aside>
+        <div class="control-group">
+          <h3>${t("meta-tags")}</h3>
+          <div class="tags">
+            ${(item.tags || []).length
+              ? item.tags.map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")
+              : `<span class="meta-value">-</span>`
+            }
+          </div>
         </div>
       `;
 
       document.getElementById("enlargeButton").addEventListener("click", openModal);
+    }
+
+    async function copyPrompt() {
+      const text = (currentItem && currentItem.aiPrompt) || "";
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        const btn = document.getElementById("codeCopyBtn");
+        const label = btn.querySelector("span");
+        label.textContent = t("copy-success");
+        setTimeout(() => {
+          label.textContent = t("btn-copy");
+        }, 1200);
+      } catch (_error) {
+        alert(t("copy-fail"));
+      }
     }
 
     function openModal() {
@@ -648,9 +775,8 @@
     function switchLang() {
       currentLang = currentLang === "zh" ? "en" : "zh";
       localStorage.setItem(LANG_KEY, currentLang);
-      const params = new URLSearchParams(window.location.search);
-      params.set("lang", currentLang);
-      window.location.search = params.toString();
+      urlParams.set("lang", currentLang);
+      window.location.search = urlParams.toString();
     }
 
     document.getElementById("langToggle").addEventListener("click", switchLang);

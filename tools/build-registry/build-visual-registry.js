@@ -26,6 +26,16 @@ function ensureArray(value) {
   return Array.isArray(value) ? value.slice() : [];
 }
 
+function inferFormat(assetRelPath) {
+  var ext = path.extname(assetRelPath || "").toLowerCase();
+  if (ext === ".svg") return "image/svg+xml";
+  if (ext === ".png") return "image/png";
+  if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
+  if (ext === ".webp") return "image/webp";
+  if (ext === ".gif") return "image/gif";
+  return "application/octet-stream";
+}
+
 function localizeVisual(item, locale) {
   const localized = resolveLocaleEntry(item.locales, locale);
   const english = resolveLocaleEntry(item.locales, "en");
@@ -148,7 +158,7 @@ function main() {
       topic: String(raw.topic || "").trim(),
       type: String(raw.type || "").trim(),
       version: String(raw.version || "0.1.0").trim(),
-      format: String(raw.format || "image/svg+xml").trim(),
+      format: String(raw.format || inferFormat(assetRel)).trim(),
       title: defaultLocale.title,
       titleEn: english.title || defaultLocale.title,
       summary: defaultLocale.summary,

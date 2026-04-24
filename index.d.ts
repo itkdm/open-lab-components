@@ -142,8 +142,8 @@ export const visuals: {
   list(filter?: VisualListFilter, options?: LocaleOptions): VisualAsset[];
   get(id: string, options?: LocaleOptions): VisualAsset | null;
   subjects(): string[];
-  readSync(id: string): string;
-  read(id: string): Promise<string>;
+  readSync(id: string): string | Uint8Array;
+  read(id: string): Promise<string | Uint8Array>;
   resolve(id: string): string;
   registry: VisualRegistry;
 };

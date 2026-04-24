@@ -35,6 +35,7 @@ const {
   get: getVisualById,
   list: listVisualRegistryItems,
   readSync: readVisualSync,
+  isTextFormat: isTextVisualFormat,
   subjects: getVisualSubjects,
   summarize: summarizeVisual
 } = visualCatalog;
@@ -243,12 +244,15 @@ function getVisual(id, locale = "zh-CN") {
     throw error;
   }
 
+  const content = readVisualSync(id);
+  const isTextContent = isTextVisualFormat(visual.format);
   return {
     ...createResponseMeta("get_visual", locale),
     integrationHints: buildVisualIntegrationHints(visual),
     visual: {
       ...visual,
-      content: readVisualSync(id)
+      content: isTextContent ? content : null,
+      contentEncoding: isTextContent ? "utf-8" : "binary"
     }
   };
 }
