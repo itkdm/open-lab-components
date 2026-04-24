@@ -55,6 +55,7 @@ module.exports = {
     readSync: visualCatalog.readSync,
     read: visualCatalog.read,
     resolve: visualCatalog.resolve,
+    taxonomy: visualCatalog.taxonomy,
     get registry() { return visualCatalog.getRegistry(); }
   }
 };

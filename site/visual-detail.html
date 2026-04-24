@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="查看 Open Lab Components 教学图片详情，支持放大预览、下载图片和查看 AI 生图提示词。">
-  <meta name="keywords" content="Open Lab Components,教学图片,图片详情,AI提示词,图片下载,图片放大">
+  <meta name="description" content="查看 Open Lab Components 教学图片详情，支持下载图片和滚轮缩放查看。">
+  <meta name="keywords" content="Open Lab Components,教学图片,图片详情,AI提示词,图片下载">
   <meta name="author" content="布吉岛(itkdm)">
   <meta name="robots" content="index, follow">
   <meta name="language" content="zh-CN">
@@ -151,7 +151,6 @@
       display: flex;
       align-items: stretch;
       justify-content: stretch;
-      padding: 0;
       background: var(--bg);
       overflow: auto;
       position: relative;
@@ -162,7 +161,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
       width: 100%;
       height: 100%;
       padding: 2rem;
@@ -173,8 +171,6 @@
       height: 100%;
       min-height: 360px;
       background: transparent;
-      border: none;
-      box-shadow: none;
       overflow: auto;
       position: relative;
     }
@@ -198,7 +194,6 @@
       width: 400px;
       background: var(--surface);
       overflow-y: auto;
-      padding: 0;
       border-left: 1px solid var(--border-light);
       display: flex;
       flex-direction: column;
@@ -216,19 +211,6 @@
       background: var(--surface);
       position: sticky;
       bottom: 0;
-    }
-
-    .controls-pane::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    .controls-pane::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-
-    .controls-pane::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 4px;
     }
 
     .control-group {
@@ -439,7 +421,7 @@
           <h3 data-i18n="prompt-title">AI 生图提示词</h3>
           <div class="code-block">
             <div class="code-block-header">
-              <button class="code-copy-btn" id="codeCopyBtn" type="button" onclick="copyPrompt()" title="复制提示词">
+              <button class="code-copy-btn" id="codeCopyBtn" type="button" onclick="copyPrompt()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                   <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -485,11 +467,8 @@
         "open-original": "打开原图",
         "meta-subject": "学科",
         "meta-type": "分类",
-        "meta-topic": "主题",
-        "meta-format": "格式",
         "meta-size": "尺寸",
         "meta-grades": "适用学段",
-        "meta-related": "相关组件",
         "meta-tags": "标签",
         "not-found-title": "图片未找到",
         "not-found-desc": "请检查图片 ID 是否正确。",
@@ -509,11 +488,8 @@
         "open-original": "Open Original",
         "meta-subject": "Subject",
         "meta-type": "Category",
-        "meta-topic": "Topic",
-        "meta-format": "Format",
         "meta-size": "Size",
         "meta-grades": "Grade Range",
-        "meta-related": "Related Components",
         "meta-tags": "Tags",
         "not-found-title": "Visual not found",
         "not-found-desc": "Please check whether the visual ID is correct.",
@@ -534,6 +510,13 @@
     }
 
     let currentLang = resolveInitialLang();
+    let taxonomyData = {
+      subjects: {},
+      types: {},
+      grades: {},
+      originTypes: {},
+      thumbnailModes: {}
+    };
 
     function t(key) {
       return i18n[currentLang]?.[key] ?? i18n.zh[key] ?? key;
@@ -547,9 +530,19 @@
         .replace(/"/g, "&quot;");
     }
 
-    function formatValue(value, fallback = "-") {
-      if (Array.isArray(value)) return value.length ? value.join(", ") : fallback;
-      return value ? String(value) : fallback;
+    function localizeSubject(subject) {
+      return taxonomyData.subjects?.[subject] || subject;
+    }
+
+    function localizeType(type) {
+      return taxonomyData.types?.[type] || type;
+    }
+
+    function localizeGradeRange(values) {
+      if (!Array.isArray(values) || !values.length) return "-";
+      return values.map((value) => {
+        return taxonomyData.grades?.[value] || value;
+      }).join(currentLang === "en" ? ", " : "、");
     }
 
     function resolveLocaleFile() {
@@ -571,16 +564,15 @@
 
     function setHeader(item) {
       const name = item ? item.title : t("loading");
-      const meta = item
-        ? `${item.subject} · ${item.type} · ${item.topic}`
-        : "";
+      const meta = item ? `${localizeSubject(item.subject)} · ${localizeType(item.type)}` : "";
       document.getElementById("visualName").textContent = name;
       document.getElementById("visualMeta").textContent = meta;
-      document.title = item ? `${item.title} - Open Lab Components` : `图片详情 - Open Lab Components`;
+      document.title = item ? `${item.title} - Open Lab Components` : "图片详情 - Open Lab Components";
     }
 
     function renderEmpty(title, desc) {
       setHeader(null);
+      document.querySelector(".controls-footer").style.display = "none";
       document.getElementById("details").innerHTML = `
         <div class="empty-state">
           <div class="empty-state-icon">⚠️</div>
@@ -598,9 +590,17 @@
       }
 
       try {
-        const response = await fetch(`./registry/visuals.${resolveLocaleFile()}.json`);
+        const locale = resolveLocaleFile();
+        const [response, taxonomyResponse] = await Promise.all([
+          fetch(`./registry/visuals.${locale}.json`),
+          fetch(`./registry/visual-taxonomy.${locale}.json`)
+        ]);
         const payload = await response.json();
+        const taxonomyPayload = await taxonomyResponse.json();
         const items = Array.isArray(payload.items) ? payload.items : [];
+        if (taxonomyPayload && typeof taxonomyPayload === "object") {
+          taxonomyData = taxonomyPayload;
+        }
         currentItem = items.find((item) => item.id === visualId) || null;
         if (!currentItem) {
           renderEmpty(t("not-found-title"), t("not-found-desc"));
@@ -624,6 +624,8 @@
       previewImage.src = `./${item.assetPath}`;
       previewImage.alt = item.title;
       document.getElementById("promptOutput").textContent = item.aiPrompt || "";
+      document.getElementById("codeCopyBtn").style.display = item.aiPrompt ? "inline-flex" : "none";
+      document.querySelector(".controls-footer").style.display = item.aiPrompt ? "block" : "none";
       zoomScale = 1;
 
       document.getElementById("details").innerHTML = `
@@ -637,19 +639,11 @@
           <div class="meta-list">
             <div class="meta-row">
               <div class="meta-label">${t("meta-subject")}</div>
-              <div class="meta-value">${escapeHtml(item.subject)}</div>
+              <div class="meta-value">${escapeHtml(localizeSubject(item.subject))}</div>
             </div>
             <div class="meta-row">
               <div class="meta-label">${t("meta-type")}</div>
-              <div class="meta-value">${escapeHtml(item.type)}</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">${t("meta-topic")}</div>
-              <div class="meta-value">${escapeHtml(item.topic)}</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">${t("meta-format")}</div>
-              <div class="meta-value">${escapeHtml(item.format)}</div>
+              <div class="meta-value">${escapeHtml(localizeType(item.type))}</div>
             </div>
             <div class="meta-row">
               <div class="meta-label">${t("meta-size")}</div>
@@ -657,11 +651,7 @@
             </div>
             <div class="meta-row">
               <div class="meta-label">${t("meta-grades")}</div>
-              <div class="meta-value">${escapeHtml(formatValue(item.gradeRange))}</div>
-            </div>
-            <div class="meta-row">
-              <div class="meta-label">${t("meta-related")}</div>
-              <div class="meta-value">${escapeHtml(formatValue(item.relatedComponents))}</div>
+              <div class="meta-value">${escapeHtml(localizeGradeRange(item.gradeRange))}</div>
             </div>
           </div>
         </div>
@@ -676,6 +666,7 @@
           </div>
         </div>
       `;
+
       setupZoom();
     }
 

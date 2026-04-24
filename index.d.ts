@@ -79,6 +79,17 @@ export interface VisualLocaleData {
   tags: string[];
 }
 
+export interface VisualPersonMeta {
+  name: string | null;
+  url: string | null;
+}
+
+export interface VisualLinkMeta {
+  label?: string | null;
+  name?: string | null;
+  url: string | null;
+}
+
 export interface VisualAsset {
   schema: string;
   id: string;
@@ -97,10 +108,30 @@ export interface VisualAsset {
   gradeRange: string[];
   relatedComponents: string[];
   size: { width: number; height: number } | null;
+  originType: string;
+  author: VisualPersonMeta | null;
+  source: VisualLinkMeta | null;
+  license: VisualLinkMeta | null;
+  thumbnailMode: string;
+  focalPoint: { x: number; y: number } | null;
+  featured: boolean;
   locales: Record<string, VisualLocaleData>;
   sourcePath: string;
   assetPath: string;
   thumbnailPath: string;
+}
+
+export interface VisualTaxonomy {
+  schema: string;
+  generatedAt: string;
+  defaultLocale: string;
+  locale: string;
+  locales: string[];
+  subjects: Record<string, string>;
+  types: Record<string, string>;
+  grades: Record<string, string>;
+  originTypes: Record<string, string>;
+  thumbnailModes: Record<string, string>;
 }
 
 export interface VisualRegistry {
@@ -145,5 +176,6 @@ export const visuals: {
   readSync(id: string): string | Uint8Array;
   read(id: string): Promise<string | Uint8Array>;
   resolve(id: string): string;
+  taxonomy(locale?: string): VisualTaxonomy;
   registry: VisualRegistry;
 };

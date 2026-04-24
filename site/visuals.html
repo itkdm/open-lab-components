@@ -10,7 +10,7 @@
   <meta name="language" content="zh-CN">
   <link rel="canonical" href="https://itkdm.github.io/open-lab-components/visuals.html">
   <link rel="icon" type="image/png" href="./logo.png">
-  <title>图片馆 - Open Lab Components</title>
+  <title>图片 - Open Lab Components</title>
   <style>
     * {
       margin: 0;
@@ -32,7 +32,6 @@
       --accent: #10b981;
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
-      --radius: 0.75rem;
       --radius-sm: 0.5rem;
       --radius-lg: 1rem;
     }
@@ -250,14 +249,41 @@
     .card-preview img {
       width: 100%;
       height: 100%;
-      object-fit: cover;
       display: block;
     }
 
     .card-body {
-      padding: 1rem 1rem 1.1rem;
+      padding: 1rem 1rem 0.95rem;
       display: grid;
-      gap: 0.45rem;
+      gap: 0.35rem;
+      align-content: start;
+    }
+
+    .card-tags {
+      display: flex;
+      gap: 0.4rem;
+      margin-top: 0.1rem;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.22rem 0.5rem;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.18);
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 500;
+      line-height: 1.1;
+      flex: 0 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .card-title {
@@ -265,7 +291,6 @@
       line-height: 1.4;
       font-weight: 700;
       color: var(--text-primary);
-      min-height: 2.8rem;
     }
 
     .card-meta {
@@ -275,6 +300,8 @@
       flex-wrap: wrap;
       gap: 0.35rem;
       align-items: center;
+      margin-top: 0.15rem;
+      padding-top: 0.15rem;
     }
 
     .card-meta .subject {
@@ -350,9 +377,9 @@
         <span>Open Lab Components</span>
       </a>
       <div class="nav-links">
-        <a href="./docs.html" class="nav-link" data-i18n="nav-docs">文档</a>
         <a href="./components.html" class="nav-link" data-i18n="nav-components">组件</a>
-        <a href="./visuals.html" class="nav-link active" data-i18n="nav-visuals">图片馆</a>
+        <a href="./visuals.html" class="nav-link active" data-i18n="nav-visuals">图片</a>
+        <a href="./docs.html" class="nav-link" data-i18n="nav-docs">文档</a>
       </div>
       <div class="nav-actions">
         <a href="https://github.com/itkdm/open-lab-components" class="btn btn-primary" target="_blank" rel="noopener">
@@ -369,7 +396,7 @@
   <div class="toolbar-header">
     <div class="toolbar-container">
       <div class="toolbar-row">
-        <input id="searchInput" class="search-box" type="text" autocomplete="off" placeholder="搜索图片资源（名称、分类、主题）...">
+        <input id="searchInput" class="search-box" type="text" autocomplete="off" placeholder="搜索图片资源（名称、标签、主题）...">
         <select id="subjectFilter">
           <option value="" data-i18n-option="filter-all-subjects">全部学科</option>
         </select>
@@ -393,30 +420,30 @@
     const LANG_KEY = "olc-lang";
     const i18n = {
       zh: {
-        "nav-docs": "文档",
         "nav-components": "组件",
-        "nav-visuals": "图片馆",
+        "nav-visuals": "图片",
+        "nav-docs": "文档",
         "loading": "加载中...",
         "empty-title": "没有找到匹配的图片资源",
         "empty-desc": "试试调整搜索关键词或筛选条件",
         "load-fail-title": "无法加载图片资源",
         "load-fail-desc": "请先运行 npm run build:registry",
-        "search-placeholder": "搜索图片资源（名称、分类、主题）...",
+        "search-placeholder": "搜索图片资源（名称、标签、主题）...",
         "filter-all-subjects": "全部学科",
         "filter-all-types": "全部类型",
         "stats-template": "当前展示 <strong>{count}</strong> 张图片 · 覆盖 <strong>{subjects}</strong> 个学科 · <strong>{types}</strong> 种类型",
         "lang-label": "English"
       },
       en: {
-        "nav-docs": "Docs",
         "nav-components": "Components",
-        "nav-visuals": "Visuals",
+        "nav-visuals": "Images",
+        "nav-docs": "Docs",
         "loading": "Loading...",
         "empty-title": "No matching visual assets",
         "empty-desc": "Try adjusting your search or filters",
         "load-fail-title": "Failed to load visual assets",
         "load-fail-desc": "Please run npm run build:registry first.",
-        "search-placeholder": "Search visual assets (name, subject, topic)...",
+        "search-placeholder": "Search visual assets (name, tags, topic)...",
         "filter-all-subjects": "All Subjects",
         "filter-all-types": "All Types",
         "stats-template": "Showing <strong>{count}</strong> visuals · <strong>{subjects}</strong> subjects · <strong>{types}</strong> types",
@@ -426,6 +453,13 @@
 
     let registry = [];
     let filtered = [];
+    let taxonomyData = {
+      subjects: {},
+      types: {},
+      grades: {},
+      originTypes: {},
+      thumbnailModes: {}
+    };
     let currentLang = resolveInitialLang();
 
     function resolveInitialLang() {
@@ -450,6 +484,21 @@
         .replace(/"/g, "&quot;");
     }
 
+    function localizeSubject(subject) {
+      return taxonomyData.subjects?.[subject] || subject;
+    }
+
+    function localizeType(type) {
+      return taxonomyData.types?.[type] || type;
+    }
+
+    function resolvePreviewStyle(item) {
+      const mode = item.thumbnailMode === "contain" ? "contain" : "cover";
+      const x = typeof item.focalPoint?.x === "number" ? `${Math.round(item.focalPoint.x * 100)}%` : "50%";
+      const y = typeof item.focalPoint?.y === "number" ? `${Math.round(item.focalPoint.y * 100)}%` : "50%";
+      return `object-fit:${mode};object-position:${x} ${y};`;
+    }
+
     function applyStaticTexts() {
       document.querySelectorAll("[data-i18n]").forEach((element) => {
         element.textContent = t(element.getAttribute("data-i18n"));
@@ -467,9 +516,16 @@
     async function loadRegistry() {
       try {
         const locale = currentLang === "en" ? "en" : "zh-CN";
-        const response = await fetch(`./registry/visuals.${locale}.json`);
+        const [response, taxonomyResponse] = await Promise.all([
+          fetch(`./registry/visuals.${locale}.json`),
+          fetch(`./registry/visual-taxonomy.${locale}.json`)
+        ]);
         const payload = await response.json();
+        const taxonomyPayload = await taxonomyResponse.json();
         registry = Array.isArray(payload.items) ? payload.items : [];
+        if (taxonomyPayload && typeof taxonomyPayload === "object") {
+          taxonomyData = taxonomyPayload;
+        }
         buildFilters();
         filter();
       } catch (_error) {
@@ -485,11 +541,11 @@
     function buildFilters() {
       const subjects = [...new Set(registry.map((item) => item.subject))].sort();
       const types = [...new Set(registry.map((item) => item.type))].sort();
-      fillSelect(document.getElementById("subjectFilter"), t("filter-all-subjects"), subjects);
-      fillSelect(document.getElementById("typeFilter"), t("filter-all-types"), types);
+      fillSelect(document.getElementById("subjectFilter"), t("filter-all-subjects"), subjects, localizeSubject);
+      fillSelect(document.getElementById("typeFilter"), t("filter-all-types"), types, localizeType);
     }
 
-    function fillSelect(select, defaultLabel, values) {
+    function fillSelect(select, defaultLabel, values, formatter) {
       const previous = select.value;
       select.innerHTML = "";
       const defaultOption = document.createElement("option");
@@ -499,7 +555,7 @@
       values.forEach((value) => {
         const option = document.createElement("option");
         option.value = value;
-        option.textContent = value;
+        option.textContent = formatter ? formatter(value) : value;
         select.appendChild(option);
       });
       select.value = values.includes(previous) ? previous : "";
@@ -567,14 +623,17 @@
         <a class="card-link" href="${createDetailUrl(item)}">
           <article class="card">
             <div class="card-preview">
-              <img src="./${item.thumbnailPath}" alt="${escapeHtml(item.title)}" loading="lazy">
+              <img src="./${item.thumbnailPath}" alt="${escapeHtml(item.title)}" loading="lazy" style="${resolvePreviewStyle(item)}">
             </div>
             <div class="card-body">
               <div class="card-title">${escapeHtml(item.title)}</div>
+              <div class="card-tags">
+                ${(item.tags || []).slice(0, 3).map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}
+              </div>
               <div class="card-meta">
-                <span class="subject">${escapeHtml(item.subject)}</span>
+                <span class="subject">${escapeHtml(localizeSubject(item.subject))}</span>
                 <span>·</span>
-                <span>${escapeHtml(item.type)}</span>
+                <span>${escapeHtml(localizeType(item.type))}</span>
               </div>
             </div>
           </article>

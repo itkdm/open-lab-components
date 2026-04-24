@@ -5,6 +5,7 @@ const { projectRootFrom, toPosixRel } = require("../_lib/paths");
 const { walkDir } = require("../_lib/walk");
 const { SUPPORTED_LOCALES, DEFAULT_LOCALE, normalizeLocale, resolveLocaleEntry } = require("../../lib/i18n");
 const visualMetadata = require("../../lib/visual-registry-metadata");
+const visualTaxonomy = require("../../lib/visual-taxonomy");
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -24,6 +25,67 @@ function pruneGeneratedVisualRegistryFiles(registryDir) {
 
 function ensureArray(value) {
   return Array.isArray(value) ? value.slice() : [];
+}
+
+function ensureString(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizeOriginType(value) {
+  var normalized = ensureString(value) || "ai-generated";
+  return Object.prototype.hasOwnProperty.call(visualTaxonomy.VISUAL_TAXONOMY.originTypes, normalized)
+    ? normalized
+    : "curated";
+}
+
+function normalizeThumbnailMode(value) {
+  var normalized = ensureString(value) || "cover";
+  return Object.prototype.hasOwnProperty.call(visualTaxonomy.VISUAL_TAXONOMY.thumbnailModes, normalized)
+    ? normalized
+    : "cover";
+}
+
+function normalizeFocalPoint(value) {
+  if (!value || typeof value !== "object") return null;
+  var x = Number(value.x);
+  var y = Number(value.y);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  return {
+    x: Math.max(0, Math.min(1, x)),
+    y: Math.max(0, Math.min(1, y))
+  };
+}
+
+function normalizePerson(value) {
+  if (!value) return null;
+  if (typeof value === "string") {
+    var name = value.trim();
+    return name ? { name: name, url: null } : null;
+  }
+  if (typeof value !== "object") return null;
+  var nextName = ensureString(value.name);
+  var nextUrl = ensureString(value.url);
+  if (!nextName && !nextUrl) return null;
+  return {
+    name: nextName || null,
+    url: nextUrl || null
+  };
+}
+
+function normalizeLinkMeta(value, labelKey) {
+  if (!value) return null;
+  if (typeof value === "string") {
+    var label = value.trim();
+    return label ? { [labelKey]: label, url: null } : null;
+  }
+  if (typeof value !== "object") return null;
+  var nextLabel = ensureString(value[labelKey]);
+  var nextUrl = ensureString(value.url);
+  if (!nextLabel && !nextUrl) return null;
+  return {
+    [labelKey]: nextLabel || null,
+    url: nextUrl || null
+  };
 }
 
 function inferFormat(assetRelPath) {
@@ -130,23 +192,23 @@ function main() {
     if (!fs.existsSync(path.join(root, assetRel))) {
       throw new Error(`visual asset missing for ${id}: ${assetRel}`);
     }
+    if (!fs.existsSync(path.join(root, thumbnailRel))) {
+      throw new Error(`visual thumbnail missing for ${id}: ${thumbnailRel}`);
+    }
 
     const locales = {};
     for (const [localeKey, localeData] of Object.entries(raw.locales || {})) {
       const locale = normalizeLocale(localeKey);
       locales[locale] = {
-        title: String(localeData.title || "").trim(),
-        summary: String(localeData.summary || "").trim(),
-        prompt: String(localeData.prompt || "").trim(),
+        title: ensureString(localeData.title),
+        summary: ensureString(localeData.summary),
+        prompt: ensureString(localeData.prompt),
         tags: ensureArray(localeData.tags).map((tag) => String(tag).trim()).filter(Boolean)
       };
     }
 
     if (!locales[DEFAULT_LOCALE] || !locales[DEFAULT_LOCALE].title) {
       throw new Error(`visual missing ${DEFAULT_LOCALE} title: ${filePath}`);
-    }
-    if (!locales[DEFAULT_LOCALE].prompt) {
-      throw new Error(`visual missing ${DEFAULT_LOCALE} prompt: ${filePath}`);
     }
 
     const defaultLocale = locales[DEFAULT_LOCALE];
@@ -169,6 +231,13 @@ function main() {
       gradeRange: ensureArray(raw.gradeRange).map((item) => String(item).trim()).filter(Boolean),
       relatedComponents: ensureArray(raw.relatedComponents).map((item) => String(item).trim()).filter(Boolean),
       size: raw.size && typeof raw.size === "object" ? raw.size : null,
+      originType: normalizeOriginType(raw.originType),
+      author: normalizePerson(raw.author),
+      source: normalizeLinkMeta(raw.source, "label"),
+      license: normalizeLinkMeta(raw.license, "name"),
+      thumbnailMode: normalizeThumbnailMode(raw.thumbnailMode),
+      focalPoint: normalizeFocalPoint(raw.focalPoint),
+      featured: Boolean(raw.featured),
       locales,
       sourcePath: toPosixRel(root, filePath),
       assetPath: assetRel,
@@ -234,6 +303,20 @@ function main() {
     JSON.stringify(buildTags(items, DEFAULT_LOCALE), null, 2),
     "utf8"
   );
+
+  fs.writeFileSync(
+    path.join(registryDir, visualMetadata.VISUAL_TAXONOMY_FILE),
+    JSON.stringify(visualTaxonomy.createTaxonomyPayload(DEFAULT_LOCALE), null, 2),
+    "utf8"
+  );
+
+  for (const locale of SUPPORTED_LOCALES) {
+    fs.writeFileSync(
+      path.join(registryDir, visualMetadata.getLocalizedVisualTaxonomyFile(locale)),
+      JSON.stringify(visualTaxonomy.createTaxonomyPayload(locale), null, 2),
+      "utf8"
+    );
+  }
 }
 
 module.exports = { main };

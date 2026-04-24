@@ -112,12 +112,16 @@ function buildVisualSearchText(item) {
       item.subject,
       item.topic,
       item.type,
+      item.originType,
       item.title,
       item.titleEn,
       item.summary,
       item.summaryEn,
       item.aiPrompt,
       item.aiPromptEn,
+      item.author && item.author.name,
+      item.source && item.source.label,
+      item.license && item.license.name,
       ...(Array.isArray(item.tags) ? item.tags : []),
       ...Object.values(item.locales || {}).flatMap((localeEntry) => [
         localeEntry.title,
@@ -231,6 +235,9 @@ function buildVisualIntegrationHints(visual) {
   return {
     placement: visual.type === "flowchart" || visual.type === "procedure" ? "instruction-section" : "concept-section",
     embedMode: visual.format === "image/svg+xml" ? "inline-or-img" : "img",
+    originType: visual.originType || "ai-generated",
+    thumbnailMode: visual.thumbnailMode || "cover",
+    focalPoint: visual.focalPoint || null,
     relatedComponents: Array.isArray(visual.relatedComponents) ? visual.relatedComponents.slice() : []
   };
 }

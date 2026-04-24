@@ -109,11 +109,14 @@ async function main() {
     const visualSvg = lab.visuals.readSync(SAMPLE_VISUAL_ID);
     const visualSvgAsync = await lab.visuals.read(SAMPLE_VISUAL_ID);
     const resolvedPath = lab.visuals.resolve(SAMPLE_VISUAL_ID);
+    const taxonomy = lab.visuals.taxonomy("en");
     const expectedSuffix = path.join(...ROOT_QUERY_API_CONTRACT.sampleVisualResolvedSuffix);
 
     assert.ok(visual);
     assert.equal(visual.title, ROOT_QUERY_API_CONTRACT.sampleVisualEnglishTitle);
-    assert.ok(typeof visual.aiPrompt === "string" && visual.aiPrompt.length > 0);
+    assert.ok(typeof visual.aiPrompt === "string");
+    assert.equal(taxonomy.subjects.physics, "Physics");
+    assert.equal(taxonomy.types.flowchart, "Flowchart");
     assert.ok(lab.visuals.subjects().includes("physics"));
     assert.match(visualSvg, /<svg/);
     assert.equal(visualSvgAsync, visualSvg);
