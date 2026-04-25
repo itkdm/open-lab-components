@@ -1,0 +1,52 @@
+{
+  "schema": "olc-visual/v1",
+  "id": "vis.physics.lever-balance-condition",
+  "subject": "physics",
+  "topic": "lever-balance-condition",
+  "type": "diagram",
+  "version": "0.1.0",
+  "format": "image/png",
+  "asset": "vis.physics.lever-balance-condition.png",
+  "thumbnail": "vis.physics.lever-balance-condition.png",
+  "gradeRange": [
+    "middle-school"
+  ],
+  "relatedComponents": [],
+  "size": {
+    "width": 1672,
+    "height": 941
+  },
+  "originType": "ai-generated",
+  "featured": true,
+  "thumbnailMode": "cover",
+  "focalPoint": {
+    "x": 0.5,
+    "y": 0.46
+  },
+  "locales": {
+    "zh-CN": {
+      "title": "杠杆平衡条件示意图",
+      "summary": "用简洁结构图展示支点、动力、阻力及力臂关系，适合课堂快速讲清杠杆平衡条件。",
+      "tags": [
+        "杠杆",
+        "平衡条件",
+        "动力臂",
+        "阻力臂",
+        "物理"
+      ],
+      "prompt": "中小学课堂教学展示图，面向老师课堂讲解、课件展示和板书辅助使用，核心目标是更直观、更形象地展示单个知识点。强调知识准确、结构清晰、视觉表达强、可直接教学使用。采用扁平化二维教学图示风格，版式规整，层级明确，重点突出，以图形、结构、方向、分区、箭头、空间关系和对比关系表达知识，不依赖大段文字说明。整体坚持少字原则，只保留必要标题、关键词和关键标签，不写长句，不写整段解释，不做讲义式排版。使用白色或极浅色纯净背景，保留足够留白和安全边距，适合16:9横版高清画面和课堂投影。中文标签规范、清晰、易读，文字数量克制，字号层级明确。图中元素以示意图、流程图、结构图、对比图、知识图为主，不要人物主体，不要照片风，不要写实风，不要3D，不要复杂光影，不要纹理噪点，不要水印，不要品牌标识，不要无关背景元素。整体风格统一、干净、理性、教学导向，适合长期作为教学资源库素材。主题为：杠杆平衡条件。图像类型：结构示意图。必须展示的知识点：支点、动力、阻力、动力臂、阻力臂、杠杆平衡条件。推荐版式：中心结构加左右对比。主色调：蓝橙色。适用学段：初中。文字控制：只保留标题、关键词、必要标签，避免长句。"
+    },
+    "en": {
+      "title": "Lever Balance Condition Diagram",
+      "summary": "A clean structural classroom visual showing the fulcrum, effort, resistance, arm lengths, and the lever balance condition.",
+      "tags": [
+        "lever",
+        "balance condition",
+        "effort arm",
+        "resistance arm",
+        "physics"
+      ],
+      "prompt": "K-12 classroom teaching visual designed for lesson explanation, slide decks, and board-support use. The core goal is to make a single knowledge point more intuitive and easier to understand at a glance. Prioritize subject accuracy, clear structure, strong visual communication, and direct classroom usability. Use a flat 2D educational diagram style with orderly layout, clear hierarchy, and strong emphasis on the core concept. Express knowledge mainly through shapes, arrows, spatial relationships, grouping, process flow, and contrast rather than through long written explanations. Keep the text minimal by default: only necessary titles, keywords, and essential labels. Do not write long sentences, paragraph explanations, or handout-like copy blocks. Use a white or very light clean background with enough whitespace and safe margins. The composition should fit a high-resolution 16:9 horizontal canvas suitable for projection. Labels should be clear, readable, and classroom-friendly, but text quantity should remain restrained. Visual elements should mainly be diagrams, flowcharts, structure maps, comparison charts, and concept boards. Do not use main human characters, photo style, realism, 3D, complex lighting, heavy texture noise, watermarks, logos, brand marks, or unrelated background elements. The overall visual language should stay unified, clean, rational, and teaching-oriented for long-term reuse in an educational asset library. Topic: lever balance condition. Image type: structural mechanics diagram. Must include: fulcrum, effort, resistance, effort arm, resistance arm, and the balance condition. Recommended layout: centered structure with side labels. Primary palette: blue and orange. Grade range: middle school. Text control: titles, keywords, and essential labels only; avoid long sentences."
+    }
+  }
+}

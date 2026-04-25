@@ -30,27 +30,27 @@
   "locales": {
     "zh-CN": {
       "title": "串联电路与并联电路对比图",
-      "summary": "用左右对比的方式讲清串联与并联在连接方式、电流路径、相互影响和灯泡损坏现象上的区别，适合课堂投影与复习讲解。",
+      "summary": "用低文字、强结构的左右对比方式展示串联与并联在路径、连接方式和故障表现上的差异，适合课堂快速讲解。",
       "tags": [
         "串联电路",
         "并联电路",
         "电路对比",
-        "知识图",
+        "对比图",
         "物理"
       ],
-      "prompt": "中小学课堂教学信息图，面向老师备课、课件、讲义和课堂投影使用，强调知识准确、结构清晰、可直接教学使用。采用扁平化二维教育信息图风格，版式规整，信息层级明确，重点突出，避免海报化设计，避免情绪化插画，避免装饰过多。使用白色或极浅色纯净背景，保留足够留白和安全边距，适合16:9横版高清画面。中文标签规范、清晰、易读，字体端正，字号层级分明，适合投影。图中元素以示意图、流程图、结构图、对比图、知识图为主，不要人物主体，不要照片风，不要写实风，不要3D，不要复杂光影，不要纹理噪点，不要水印，不要品牌标识，不要无关背景元素。整体风格统一、干净、理性、教学导向，适合长期作为教学资源库素材。主题为：串联电路与并联电路对比。图像类型：对比知识图。必须展示的知识点：连接方式、电流路径、相互影响、一个灯泡损坏后的现象、电流和电压特点。推荐版式：左右对比加底部总结表。主色调：蓝绿色。适用学段：初中。"
+      "prompt": "中小学课堂教学展示图，面向老师课堂讲解、课件展示和板书辅助使用，核心目标是更直观、更形象地展示单个知识点。强调知识准确、结构清晰、视觉表达强、可直接教学使用。采用扁平化二维教学图示风格，版式规整，层级明确，重点突出，以图形、结构、方向、分区、箭头、空间关系和对比关系表达知识，不依赖大段文字说明。整体坚持少字原则，只保留必要标题、关键词和关键标签，不写长句，不写整段解释，不做讲义式排版。使用白色或极浅色纯净背景，保留足够留白和安全边距，适合16:9横版高清画面和课堂投影。中文标签规范、清晰、易读，文字数量克制，字号层级明确。图中元素以示意图、流程图、结构图、对比图、知识图为主，不要人物主体，不要照片风，不要写实风，不要3D，不要复杂光影，不要纹理噪点，不要水印，不要品牌标识，不要无关背景元素。整体风格统一、干净、理性、教学导向，适合长期作为教学资源库素材。主题为：串联电路与并联电路对比。图像类型：对比知识图。必须展示的知识点：一条路径与多条路径、元件连接方式、一个灯泡损坏后的现象、是否互相影响、电流路径方向。推荐版式：左右对比。主色调：蓝绿色。适用学段：初中。文字控制：只保留标题、关键词、必要标签，避免长句。"
     },
     "en": {
       "title": "Series and Parallel Circuit Comparison",
-      "summary": "A side-by-side classroom comparison of series and parallel circuits, focusing on wiring pattern, current path, device interaction, and bulb failure behavior.",
+      "summary": "A low-text side-by-side classroom visual showing how series and parallel circuits differ in path count, wiring pattern, and failure behavior.",
       "tags": [
         "series circuit",
         "parallel circuit",
         "circuit comparison",
-        "knowledge map",
+        "comparison chart",
         "physics"
       ],
-      "prompt": "K-12 classroom teaching infographic designed for lesson preparation, slide decks, handouts, and classroom projection. Prioritize subject accuracy, clear structure, and direct teaching usability. Use a flat 2D educational infographic style with orderly layout, clear information hierarchy, and strong emphasis on the core concept. Avoid poster styling, emotional illustration, and excessive decoration. Use a white or very light clean background with enough whitespace and safe margins. The composition should fit a high-resolution 16:9 horizontal canvas. Labels should be clear, readable, and classroom-friendly. Visual elements should mainly be diagrams, flowcharts, structure maps, comparison charts, and concept boards. Do not use main human characters, photo style, realism, 3D, complex lighting, heavy texture noise, watermarks, logos, brand marks, or unrelated background elements. The overall visual language should stay unified, clean, rational, and teaching-oriented for long-term reuse in an educational asset library. Topic: comparison of series and parallel circuits. Image type: comparison concept board. Must include: wiring pattern, current paths, interaction between devices, what happens when one bulb fails, current and voltage characteristics. Recommended layout: split comparison with a summary table at the bottom. Primary palette: blue and green. Grade range: middle school."
+      "prompt": "K-12 classroom teaching visual designed for lesson explanation, slide decks, and board-support use. The core goal is to make a single knowledge point more intuitive and easier to understand at a glance. Prioritize subject accuracy, clear structure, strong visual communication, and direct classroom usability. Use a flat 2D educational diagram style with orderly layout, clear hierarchy, and strong emphasis on the core concept. Express knowledge mainly through shapes, arrows, spatial relationships, grouping, process flow, and contrast rather than through long written explanations. Keep the text minimal by default: only necessary titles, keywords, and essential labels. Do not write long sentences, paragraph explanations, or handout-like copy blocks. Use a white or very light clean background with enough whitespace and safe margins. The composition should fit a high-resolution 16:9 horizontal canvas suitable for projection. Labels should be clear, readable, and classroom-friendly, but text quantity should remain restrained. Visual elements should mainly be diagrams, flowcharts, structure maps, comparison charts, and concept boards. Do not use main human characters, photo style, realism, 3D, complex lighting, heavy texture noise, watermarks, logos, brand marks, or unrelated background elements. The overall visual language should stay unified, clean, rational, and teaching-oriented for long-term reuse in an educational asset library. Topic: comparison of series and parallel circuits. Image type: comparison concept board. Must include: path count, wiring pattern, device interaction, what happens when one bulb fails, current direction. Recommended layout: split comparison. Primary palette: blue and green. Grade range: middle school. Text control: titles, keywords, and essential labels only; avoid long sentences."
     }
   }
 }
