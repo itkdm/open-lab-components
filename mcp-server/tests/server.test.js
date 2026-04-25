@@ -83,9 +83,8 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
       name: "get_visual",
       arguments: { id: "vis.physics.series-circuit-flow", locale: "en" }
     });
-    const visualPayload = JSON.parse(visualResult.content[0].text);
-    assert.equal(visualPayload.visual.title, "Series Circuit Teaching Flow");
-    assert.match(visualPayload.visual.content, /<svg/);
+    assert.equal(visualResult.isError, true);
+    assert.match(visualResult.content[0].text, /Visual not found/);
 
     const resources = await client.listResources();
     assert.ok(resources.resources.length >= 5);

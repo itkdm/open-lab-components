@@ -6,6 +6,7 @@ const path = require("node:path");
 
 const lab = require("../index.js");
 const registryLib = require("../lib/registry.js");
+const visualRegistryLib = require("../lib/visual-registry.js");
 const {
   ROOT_API_EXPORTS,
   ROOT_API_TYPE_SNIPPETS,
@@ -14,7 +15,6 @@ const {
 
 const SAMPLE_ID = ROOT_QUERY_API_CONTRACT.sampleId;
 const SAMPLE_CATEGORY = ROOT_QUERY_API_CONTRACT.sampleCategory;
-const SAMPLE_VISUAL_ID = ROOT_QUERY_API_CONTRACT.sampleVisualId;
 
 function run(name, fn) {
   try {
@@ -104,34 +104,29 @@ async function main() {
     assert.ok(resolvedPath.endsWith(expectedSuffix));
   });
 
-  await run("visuals expose localized metadata and file access helpers", async () => {
-    const visual = lab.visuals.get(SAMPLE_VISUAL_ID, { locale: "en" });
-    const visualSvg = lab.visuals.readSync(SAMPLE_VISUAL_ID);
-    const visualSvgAsync = await lab.visuals.read(SAMPLE_VISUAL_ID);
-    const resolvedPath = lab.visuals.resolve(SAMPLE_VISUAL_ID);
+  await run("visuals support an empty registry and shared taxonomy", () => {
     const taxonomy = lab.visuals.taxonomy("en");
-    const expectedSuffix = path.join(...ROOT_QUERY_API_CONTRACT.sampleVisualResolvedSuffix);
 
-    assert.ok(visual);
-    assert.equal(visual.title, ROOT_QUERY_API_CONTRACT.sampleVisualEnglishTitle);
-    assert.ok(typeof visual.aiPrompt === "string");
+    assert.equal(lab.visuals.registry.schema, "olc-visual-registry/v1");
+    assert.equal(lab.visuals.registry.count, 0);
+    assert.deepEqual(lab.visuals.list(), []);
+    assert.equal(lab.visuals.get("vis.missing.asset"), null);
+    assert.deepEqual(lab.visuals.subjects(), []);
     assert.equal(taxonomy.subjects.physics, "Physics");
     assert.equal(taxonomy.types.flowchart, "Flowchart");
-    assert.ok(lab.visuals.subjects().includes("physics"));
-    assert.match(visualSvg, /<svg/);
-    assert.equal(visualSvgAsync, visualSvg);
-    assert.ok(path.isAbsolute(resolvedPath));
-    assert.ok(fs.existsSync(resolvedPath));
-    assert.ok(resolvedPath.endsWith(expectedSuffix));
-    assert.equal(lab.visuals.registry.count >= 5, true);
   });
 
   await run("registry loader exposes a stable error when generated registry is missing", () => {
     const originalGetRegistry = registryLib.getRegistry;
     const originalRegistry = lab.registry;
+    const originalGetVisualRegistry = visualRegistryLib.getRegistry;
+    const originalVisualRegistry = lab.visuals.registry;
 
     registryLib.getRegistry = function () {
       throw registryLib.createRegistryMissingError();
+    };
+    visualRegistryLib.getRegistry = function () {
+      throw visualRegistryLib.createVisualRegistryMissingError();
     };
 
     try {
@@ -139,11 +134,18 @@ async function main() {
         () => lab.list(),
         (error) => error && error.code === "REGISTRY_NOT_BUILT" && /build:registry/.test(error.message)
       );
+      assert.throws(
+        () => lab.visuals.list(),
+        (error) => error && error.code === "VISUAL_REGISTRY_NOT_BUILT" && /build:registry/.test(error.message)
+      );
     } finally {
       registryLib.getRegistry = originalGetRegistry;
+      visualRegistryLib.getRegistry = originalGetVisualRegistry;
       registryLib.clearRegistryCache();
+      visualRegistryLib.clearRegistryCache();
       // Re-prime cache so later callers see the real registry again.
       void originalRegistry;
+      void originalVisualRegistry;
     }
   });
 }

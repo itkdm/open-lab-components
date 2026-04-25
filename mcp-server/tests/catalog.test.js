@@ -76,27 +76,23 @@ test("search_components rejects empty query", () => {
   assert.throws(() => searchComponents({ query: "" }), /query is required/);
 });
 
-test("list_visuals filters by subject and localizes titles", () => {
+test("list_visuals returns an empty but valid payload when no visuals exist", () => {
   const result = listVisuals({ subject: "physics", locale: "en" });
   assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
-  assert.ok(result.items.length > 0);
-  assert.ok(result.items.every((item) => item.subject === "physics"));
-  assert.equal(result.items[0].titleEn !== "", true);
+  assert.equal(result.total, 0);
+  assert.deepEqual(result.items, []);
 });
 
-test("search_visuals ranks exact id matches first", () => {
+test("search_visuals returns no matches when registry is empty", () => {
   const result = searchVisuals({ query: "vis.physics.series-circuit-flow", locale: "en" });
-  assert.ok(result.items.length > 0);
-  assert.equal(result.items[0].id, "vis.physics.series-circuit-flow");
-  assert.equal(result.items[0].matchReason, "exact id");
+  assert.deepEqual(result.items, []);
 });
 
-test("get_visual returns localized metadata and raw svg content", () => {
-  const result = getVisual("vis.physics.series-circuit-flow", "en");
-  assert.equal(result.visual.title, "Series Circuit Teaching Flow");
-  assert.ok(result.visual.aiPrompt.includes("flat vector"));
-  assert.match(result.visual.content, /<svg/);
-  assert.equal(result.integrationHints.embedMode, "inline-or-img");
+test("get_visual returns a stable not found error when registry is empty", () => {
+  assert.throws(
+    () => getVisual("vis.physics.series-circuit-flow", "en"),
+    (error) => error && error.code === "VISUAL_NOT_FOUND"
+  );
 });
 
 test("recommend_components returns explainable ranked recommendations", () => {
