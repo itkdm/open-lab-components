@@ -79,6 +79,10 @@ npm run build:registry
 
 ## 使用入口
 
+公共提示词文档：
+
+- `docs/VISUAL-PROMPTS.md`
+
 根包 API：
 
 ```js

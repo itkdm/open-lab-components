@@ -94,6 +94,10 @@ This generates:
 
 ## API Surface
 
+Shared prompt guide:
+
+- `docs/VISUAL-PROMPTS.en.md`
+
 Root package:
 
 ```js
