@@ -79,12 +79,21 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
     const componentPayload = JSON.parse(getResult.content[0].text);
     assert.equal(componentPayload.component.name, "Axial Resistor");
 
+    const visualListResult = await client.callTool({
+      name: "list_visuals",
+      arguments: { subject: "physics", locale: "en" }
+    });
+    const visualListPayload = JSON.parse(visualListResult.content[0].text);
+    assert.ok(Array.isArray(visualListPayload.items));
+
     const visualResult = await client.callTool({
       name: "get_visual",
-      arguments: { id: "vis.physics.series-circuit-flow", locale: "en" }
+      arguments: { id: "vis.physics.series-parallel-circuit", locale: "en" }
     });
-    assert.equal(visualResult.isError, true);
-    assert.match(visualResult.content[0].text, /Visual not found/);
+    const visualPayload = JSON.parse(visualResult.content[0].text);
+    assert.equal(visualPayload.visual.title, "Series and Parallel Circuit Comparison");
+    assert.equal(visualPayload.visual.format, "image/png");
+    assert.equal(visualPayload.visual.content, null);
 
     const resources = await client.listResources();
     assert.ok(resources.resources.length >= 5);

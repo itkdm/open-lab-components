@@ -15,6 +15,7 @@ const {
 
 const SAMPLE_ID = ROOT_QUERY_API_CONTRACT.sampleId;
 const SAMPLE_CATEGORY = ROOT_QUERY_API_CONTRACT.sampleCategory;
+const SAMPLE_VISUAL_ID = ROOT_QUERY_API_CONTRACT.sampleVisualId;
 
 function run(name, fn) {
   try {
@@ -104,16 +105,35 @@ async function main() {
     assert.ok(resolvedPath.endsWith(expectedSuffix));
   });
 
-  await run("visuals support an empty registry and shared taxonomy", () => {
+  await run("visuals support shared taxonomy and localized file access", async () => {
     const taxonomy = lab.visuals.taxonomy("en");
 
     assert.equal(lab.visuals.registry.schema, "olc-visual-registry/v1");
-    assert.equal(lab.visuals.registry.count, 0);
-    assert.deepEqual(lab.visuals.list(), []);
-    assert.equal(lab.visuals.get("vis.missing.asset"), null);
-    assert.deepEqual(lab.visuals.subjects(), []);
     assert.equal(taxonomy.subjects.physics, "Physics");
     assert.equal(taxonomy.types.flowchart, "Flowchart");
+    assert.equal(lab.visuals.get("vis.missing.asset"), null);
+
+    if (lab.visuals.registry.count === 0) {
+      assert.deepEqual(lab.visuals.list(), []);
+      assert.deepEqual(lab.visuals.subjects(), []);
+      return;
+    }
+
+    const visual = lab.visuals.get(SAMPLE_VISUAL_ID, { locale: "en" });
+    const visualRaw = lab.visuals.readSync(SAMPLE_VISUAL_ID);
+    const visualRawAsync = await lab.visuals.read(SAMPLE_VISUAL_ID);
+    const resolvedPath = lab.visuals.resolve(SAMPLE_VISUAL_ID);
+    const expectedSuffix = path.join(...ROOT_QUERY_API_CONTRACT.sampleVisualResolvedSuffix);
+
+    assert.ok(visual);
+    assert.equal(visual.title, ROOT_QUERY_API_CONTRACT.sampleVisualEnglishTitle);
+    assert.ok(Array.isArray(visual.tags) && visual.tags.length > 0);
+    assert.ok(lab.visuals.subjects().includes("physics"));
+    assert.ok(path.isAbsolute(resolvedPath));
+    assert.ok(fs.existsSync(resolvedPath));
+    assert.ok(resolvedPath.endsWith(expectedSuffix));
+    assert.ok(visualRaw instanceof Uint8Array || Buffer.isBuffer(visualRaw));
+    assert.equal(Buffer.compare(Buffer.from(visualRaw), Buffer.from(visualRawAsync)), 0);
   });
 
   await run("registry loader exposes a stable error when generated registry is missing", () => {
