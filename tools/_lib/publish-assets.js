@@ -5,7 +5,8 @@ const ROOT_PACKAGE_FILE_GLOBS = [
   "index.d.ts",
   "lib/**/*.js",
   "components/**/*.html",
-  "registry/*.json"
+  "registry/*.json",
+  "visuals/**/*"
 ];
 
 const MCP_PACKAGE_FILE_GLOBS = [

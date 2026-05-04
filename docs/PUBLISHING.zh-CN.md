@@ -51,6 +51,7 @@ npm run release:ready
 - `lib/**/*.js`
 - `components/**/*.html`
 - `registry/*.json`
+- `visuals/**/*`
 
 MCP 包会发布这些文件：
 
