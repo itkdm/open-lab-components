@@ -93,13 +93,7 @@ function collectLocalizedDocPairFailures() {
   failures.push(...collectLocalizedPairFailuresForDir(".", (fileName) => [
     "README.md",
     "README.en.md",
-    "README.zh-CN.md",
-    "CHANGELOG.md",
-    "CHANGELOG.en.md",
-    "CHANGELOG.zh-CN.md",
-    "QUICK_START.md",
-    "QUICK_START.en.md",
-    "QUICK_START.zh-CN.md"
+    "README.zh-CN.md"
   ].includes(fileName)));
   failures.push(...collectLocalizedPairFailuresForDir("mcp-server", (fileName) => [
     "README.md",

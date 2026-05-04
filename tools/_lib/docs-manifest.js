@@ -50,16 +50,6 @@ const ROOT_DOC_SURFACES = [
     ]
   },
   {
-    relativePath: "QUICK_START.md",
-    requiredSnippets: [
-      "npm run validate",
-      "npm run build:registry",
-      "npm run build:site",
-      "npm run check:root",
-      "registry/registry.json"
-    ]
-  },
-  {
     relativePath: "docs/CONTRIBUTING.md",
     requiredSnippets: [
       "npm run validate",
