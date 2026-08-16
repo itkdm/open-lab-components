@@ -49,3 +49,11 @@ Those directories remain authoritative outside `site/`.
 - `tools/build-site/` defines the site build boundary
 - `tools/dev-site/` serves `site/` plus a whitelisted set of root assets during local preview
 - if a new root asset should appear in the site, add it to the shared site tooling boundary instead of hardcoding another one-off path in a single script
+
+## Maintenance Notes
+
+- Keep page sources in `site/*.html`; treat `site/dist/` as generated output.
+- Rebuild with `npm run build:site` after changing site sources or republished
+  root assets.
+- Prefer updating shared tooling boundaries when a new root asset needs to be
+  published by the site build.
