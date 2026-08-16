@@ -244,6 +244,8 @@ tests/         root API and contract tests
 [Component Spec](./docs/SPEC.en.md) · [Category Rules](./docs/CATEGORY.en.md) · [Event Protocol](./docs/EVENT.en.md) · [Integration Guide](./docs/INTEGRATION.en.md)
 - Collaboration and release:
 [Contribution Guide](./docs/CONTRIBUTING.en.md) · [Deployment Guide](./docs/DEPLOYMENT.en.md) · [Release Checklist](./docs/RELEASE-CHECKLIST-0.2.0.en.md)
+- Showcase and adoption:
+[Showcase Notes](./docs/SHOWCASE.en.md) · [中文场景展示](./docs/SHOWCASE.zh-CN.md)
 - MCP:
 [MCP English Docs](./docs/MCP.en.md) · [MCP 中文文档](./docs/MCP.zh-CN.md)
 

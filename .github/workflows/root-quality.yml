@@ -1,6 +1,7 @@
 name: Root Quality
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
