@@ -238,8 +238,6 @@ tests/         根 API 与契约测试
 [组件规范](./docs/SPEC.zh-CN.md) · [分类规则](./docs/CATEGORY.zh-CN.md) · [事件协议](./docs/EVENT.zh-CN.md) · [集成指南](./docs/INTEGRATION.zh-CN.md)
 - 协作与发布：
 [贡献指南](./docs/CONTRIBUTING.zh-CN.md) · [部署指南](./docs/DEPLOYMENT.zh-CN.md) · [发布流程](./docs/RELEASE-CHECKLIST-0.2.0.zh-CN.md)
-- 展示与接入：
-[场景展示](./docs/SHOWCASE.zh-CN.md) · [Showcase](./docs/SHOWCASE.en.md)
 - MCP：
 [MCP 中文文档](./docs/MCP.zh-CN.md) · [MCP English Docs](./docs/MCP.en.md)
 
