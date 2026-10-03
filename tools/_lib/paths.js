@@ -18,7 +18,6 @@ function createProjectPaths(rootDir) {
     siteDistDir: path.join(rootDir, "site", "dist"),
     testsDir: path.join(rootDir, "tests"),
     toolsDir: path.join(rootDir, "tools"),
-    visualsDir: path.join(rootDir, "visuals"),
     runtimeHarnessDir: path.join(rootDir, "tools", "runtime-harness"),
     mcpServerDir: path.join(rootDir, "mcp-server")
   };

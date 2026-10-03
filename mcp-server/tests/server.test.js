@@ -41,12 +41,9 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
       "get_categories",
       "get_component",
       "get_recommendation_feedback_stats",
-      "get_visual",
       "list_components",
-      "list_visuals",
       "recommend_components",
       "search_components",
-      "search_visuals",
       "submit_recommendation_feedback",
       "validate_experiment_bundle"
     ]);
@@ -79,36 +76,17 @@ test("server boots over stdio and serves the v1 toolset", { concurrency: false }
     const componentPayload = JSON.parse(getResult.content[0].text);
     assert.equal(componentPayload.component.name, "Axial Resistor");
 
-    const visualListResult = await client.callTool({
-      name: "list_visuals",
-      arguments: { subject: "physics", locale: "en" }
-    });
-    const visualListPayload = JSON.parse(visualListResult.content[0].text);
-    assert.ok(Array.isArray(visualListPayload.items));
-
-    const visualResult = await client.callTool({
-      name: "get_visual",
-      arguments: { id: "vis.physics.series-parallel-circuit", locale: "en" }
-    });
-    const visualPayload = JSON.parse(visualResult.content[0].text);
-    assert.equal(visualPayload.visual.title, "Series and Parallel Circuit Comparison");
-    assert.equal(visualPayload.visual.format, "image/png");
-    assert.equal(visualPayload.visual.content, null);
-
     const resources = await client.listResources();
-    assert.ok(resources.resources.length >= 5);
+    assert.ok(resources.resources.length >= 3);
     assert.ok(resources.resources.some((resource) => resource.uri === "openlab://catalog/overview"));
     assert.ok(resources.resources.some((resource) => resource.uri === "openlab://catalog/interactive"));
     assert.ok(resources.resources.some((resource) => resource.uri === "openlab://catalog/lesson-ready"));
-    assert.ok(resources.resources.some((resource) => resource.uri === "openlab://visuals/overview"));
 
     const resourcePayload = await client.readResource({ uri: "openlab://catalog/overview" });
     assert.match(resourcePayload.contents[0].text, /componentCount/);
     const interactiveResource = await client.readResource({ uri: "openlab://catalog/interactive" });
     assert.match(interactiveResource.contents[0].text, /qualitySummary/);
     assert.doesNotMatch(interactiveResource.contents[0].text, /data-cmp-id=/);
-    const visualResource = await client.readResource({ uri: "openlab://visuals/overview" });
-    assert.match(visualResource.contents[0].text, /visualCount/);
 
     const resourceTemplates = await client.listResourceTemplates();
     assert.ok(resourceTemplates.resourceTemplates.some((resource) => resource.uriTemplate === "openlab://catalog/subject/{subject}"));

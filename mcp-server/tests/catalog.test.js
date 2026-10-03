@@ -3,16 +3,13 @@ import assert from "node:assert/strict";
 import {
   getCategories,
   listComponents,
-  listVisuals,
   searchComponents,
-  searchVisuals,
   recommendComponents,
   submitRecommendationFeedback,
   getRecommendationFeedbackStats,
   buildExperimentPagePlan,
   composeExperimentBundle,
   getComponent,
-  getVisual,
   validateExperimentBundle
 } from "../src/tools/catalog.js";
 import { createFeedbackStore, feedbackStore } from "../src/feedback/feedback-store.js";
@@ -74,40 +71,6 @@ test("search_components ranks exact id matches first", () => {
 
 test("search_components rejects empty query", () => {
   assert.throws(() => searchComponents({ query: "" }), /query is required/);
-});
-
-test("list_visuals returns a valid payload for the visual registry state", () => {
-  const result = listVisuals({ subject: "physics", locale: "en" });
-  assert.equal(result.schemaVersion, RESPONSE_SCHEMA_VERSION);
-  assert.equal(typeof result.total, "number");
-  assert.ok(Array.isArray(result.items));
-  assert.ok(result.items.every((item) => item.subject === "physics"));
-});
-
-test("search_visuals supports exact id matches when visuals exist", () => {
-  const result = searchVisuals({ query: "vis.physics.series-parallel-circuit", locale: "en" });
-  assert.ok(Array.isArray(result.items));
-  if (result.items.length > 0) {
-    assert.equal(result.items[0].id, "vis.physics.series-parallel-circuit");
-  }
-});
-
-test("get_visual returns localized metadata when a visual exists", () => {
-  const listResult = listVisuals({ locale: "en" });
-  if (listResult.items.length === 0) {
-    assert.throws(
-      () => getVisual("vis.physics.series-parallel-circuit", "en"),
-      (error) => error && error.code === "VISUAL_NOT_FOUND"
-    );
-    return;
-  }
-
-  const result = getVisual("vis.physics.series-parallel-circuit", "en");
-  assert.equal(result.visual.title, "Series and Parallel Circuit Comparison");
-  assert.equal(result.visual.format, "image/png");
-  assert.equal(result.visual.content, null);
-  assert.equal(result.visual.contentEncoding, "binary");
-  assert.equal(result.integrationHints.embedMode, "img");
 });
 
 test("recommend_components returns explainable ranked recommendations", () => {

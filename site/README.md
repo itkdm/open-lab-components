@@ -40,7 +40,6 @@ The site build intentionally republishes a small set of root-level source or gen
 - `components/`
 - `registry/`
 - `docs/`
-- `visuals/`
 
 Those directories remain authoritative outside `site/`.
 

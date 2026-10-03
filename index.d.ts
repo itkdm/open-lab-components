@@ -72,86 +72,8 @@ export interface Registry {
   items: ComponentManifest[];
 }
 
-export interface VisualLocaleData {
-  title: string;
-  summary: string;
-  prompt: string;
-  tags: string[];
-}
-
-export interface VisualPersonMeta {
-  name: string | null;
-  url: string | null;
-}
-
-export interface VisualLinkMeta {
-  label?: string | null;
-  name?: string | null;
-  url: string | null;
-}
-
-export interface VisualAsset {
-  schema: string;
-  id: string;
-  subject: string;
-  topic: string;
-  type: string;
-  version: string;
-  format: string;
-  title: string;
-  titleEn: string;
-  summary: string;
-  summaryEn: string;
-  aiPrompt: string;
-  aiPromptEn: string;
-  tags: string[];
-  gradeRange: string[];
-  relatedComponents: string[];
-  size: { width: number; height: number } | null;
-  originType: string;
-  author: VisualPersonMeta | null;
-  source: VisualLinkMeta | null;
-  license: VisualLinkMeta | null;
-  thumbnailMode: string;
-  focalPoint: { x: number; y: number } | null;
-  featured: boolean;
-  locales: Record<string, VisualLocaleData>;
-  sourcePath: string;
-  assetPath: string;
-  thumbnailPath: string;
-}
-
-export interface VisualTaxonomy {
-  schema: string;
-  generatedAt: string;
-  defaultLocale: string;
-  locale: string;
-  locales: string[];
-  subjects: Record<string, string>;
-  types: Record<string, string>;
-  grades: Record<string, string>;
-  originTypes: Record<string, string>;
-  thumbnailModes: Record<string, string>;
-}
-
-export interface VisualRegistry {
-  schema: string;
-  generatedAt: string;
-  defaultLocale: string;
-  locales: string[];
-  count: number;
-  items: VisualAsset[];
-}
-
 export interface ListFilter {
   category?: string;
-  tag?: string;
-}
-
-export interface VisualListFilter {
-  subject?: string;
-  topic?: string;
-  type?: string;
   tag?: string;
 }
 
@@ -169,13 +91,3 @@ export function mount(html: string, container: HTMLElement, props?: Record<strin
 export function unmount(container: HTMLElement): void;
 export function updateProps(container: HTMLElement, props?: Record<string, unknown>): void;
 export const registry: Registry;
-export const visuals: {
-  list(filter?: VisualListFilter, options?: LocaleOptions): VisualAsset[];
-  get(id: string, options?: LocaleOptions): VisualAsset | null;
-  subjects(): string[];
-  readSync(id: string): string | Uint8Array;
-  read(id: string): Promise<string | Uint8Array>;
-  resolve(id: string): string;
-  taxonomy(locale?: string): VisualTaxonomy;
-  registry: VisualRegistry;
-};

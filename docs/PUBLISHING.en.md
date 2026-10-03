@@ -49,7 +49,6 @@ Published root package file globs:
 - `lib/**/*.js`
 - `components/**/*.html`
 - `registry/*.json`
-- `visuals/**/*`
 
 Published MCP package file globs:
 
