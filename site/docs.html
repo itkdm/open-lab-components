@@ -4,28 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。">
-  <meta name="keywords" content="Open Lab Components,文档,组件规范,SPEC,事件协议,集成指南,贡献指南,部署,组件开发,npm">
   <meta name="author" content="布吉岛 (itkdm)">
   <meta name="robots" content="index, follow">
   <meta name="language" content="zh-CN">
-  <link rel="canonical" href="https://itkdm.github.io/open-lab-components/docs.html">
+  <link rel="canonical" href="https://olc.itkdm.com/docs.html">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; img-src 'self' data: https:; connect-src 'self'; font-src 'self' https://cdn.jsdelivr.net;">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://itkdm.github.io/open-lab-components/docs.html">
+  <meta property="og:url" content="https://olc.itkdm.com/docs.html">
   <meta property="og:title" content="文档中心 - Open Lab Components">
   <meta property="og:description" content="Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。">
-  <meta property="og:image" content="https://itkdm.github.io/open-lab-components/logo.png">
+  <meta property="og:image" content="https://olc.itkdm.com/logo.png">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="Open Lab Components">
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://itkdm.github.io/open-lab-components/docs.html">
+  <meta name="twitter:url" content="https://olc.itkdm.com/docs.html">
   <meta name="twitter:title" content="文档中心 - Open Lab Components">
   <meta name="twitter:description" content="Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。">
-  <meta name="twitter:image" content="https://itkdm.github.io/open-lab-components/logo.png">
+  <meta name="twitter:image" content="https://olc.itkdm.com/logo.png">
   
   <!-- Baidu Site Verification -->
   <meta name="baidu-site-verification" content="codeva-xRoTjtvxqL" />
@@ -33,7 +32,8 @@
   <!-- Microsoft Bing Site Verification -->
   <meta name="msvalidate.01" content="8369F75782EB856615D12EF9B5706E82" />
   
-  <link rel="icon" type="image/png" href="./logo.png">
+  <link rel="icon" href="./favicon-64.png" type="image/png" sizes="64x64">
+  <link rel="icon" href="./favicon.ico" sizes="32x32">
   <title>文档中心 - Open Lab Components</title>
   
   <!-- JSON-LD Structured Data -->
@@ -43,12 +43,12 @@
     "@type": "TechArticle",
     "headline": "Open Lab Components 文档中心",
     "description": "Open Lab Components 文档中心：查看组件协议、集成指南、部署说明与 MCP 文档，统一理解 registry、站点与 AI 接口。",
-    "url": "https://itkdm.github.io/open-lab-components/docs.html",
+    "url": "https://olc.itkdm.com/docs.html",
     "inLanguage": ["zh-CN", "en"],
     "isPartOf": {
       "@type": "WebSite",
       "name": "Open Lab Components",
-      "url": "https://itkdm.github.io/open-lab-components/"
+      "url": "https://olc.itkdm.com/"
     },
     "about": {
       "@type": "Thing",
@@ -382,8 +382,8 @@
 <body>
   <nav class="nav-header">
     <div class="nav-container">
-      <a href="./index.html" class="nav-brand">
-        <img src="./logo.png" alt="OLC Logo" class="nav-logo" />
+      <a href="./" class="nav-brand">
+        <img src="./logo-128.webp" alt="" aria-hidden="true" class="nav-logo" width="40" height="40" decoding="async" />
         <span>Open Lab Components</span>
       </a>
       <div class="nav-links">
@@ -397,7 +397,7 @@
           </svg>
           GitHub
         </a>
-        <a href="./index.html#contribute" class="btn btn-secondary" data-i18n="nav-contribute">贡献</a>
+        <a href="./#contribute" class="btn btn-secondary" data-i18n="nav-contribute">贡献</a>
         <button id="langToggle" class="btn btn-secondary lang-btn" type="button">English</button>
       </div>
     </div>
@@ -580,6 +580,15 @@
         // 使用 marked 渲染 Markdown 为 HTML
         if (window.marked && window.marked.parse) {
           container.innerHTML = window.marked.parse(text);
+          // 页面的主 H1 已是“文档中心”，将 Markdown 文档标题降为 H2。
+          container.querySelectorAll('h1').forEach(heading => {
+            const replacement = document.createElement('h2');
+            replacement.innerHTML = heading.innerHTML;
+            for (const attribute of heading.attributes) {
+              replacement.setAttribute(attribute.name, attribute.value);
+            }
+            heading.replaceWith(replacement);
+          });
         } else {
           container.innerHTML = `<pre>${text}</pre>`;
         }

@@ -13,7 +13,7 @@
 </p>
 
 <p>
-  <strong><a href="http://olc.itkdm.com">🌐 Live Demo: olc.itkdm.com</a></strong>
+  <strong><a href="https://olc.itkdm.com">🌐 Live Demo: olc.itkdm.com</a></strong>
 </p>
 
 <p><strong>A STEM teaching component infrastructure for host apps and AI clients.</strong></p>

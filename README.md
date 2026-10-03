@@ -13,7 +13,7 @@
 </p>
 
 <p>
-  <strong><a href="http://olc.itkdm.com">🌐 在线演示网站: olc.itkdm.com</a></strong>
+  <strong><a href="https://olc.itkdm.com">🌐 在线演示网站: olc.itkdm.com</a></strong>
 </p>
 
 <p><strong>面向宿主系统与 AI 客户端的 STEM 教学组件基础设施。</strong></p>

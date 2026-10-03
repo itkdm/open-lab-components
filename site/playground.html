@@ -4,27 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Open Lab Components 组件预览与调试工具：实时预览组件效果，调整参数配置，查看使用代码，方便快速测试和集成组件。">
-  <meta name="keywords" content="Open Lab Components,组件预览,组件调试,实时预览,组件测试,参数配置">
+  <meta name="robots" content="noindex, follow">
   <meta name="author" content="布吉岛 (itkdm)">
   <meta name="robots" content="index, follow">
   <meta name="language" content="zh-CN">
-  <link rel="canonical" href="https://itkdm.github.io/open-lab-components/playground.html">
+  <link rel="canonical" href="https://olc.itkdm.com/playground.html">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://itkdm.github.io/open-lab-components/playground.html">
+  <meta property="og:url" content="https://olc.itkdm.com/playground.html">
   <meta property="og:title" content="组件预览 - Open Lab Components">
   <meta property="og:description" content="Open Lab Components 组件预览与调试工具：实时预览组件效果，调整参数配置，查看使用代码。">
-  <meta property="og:image" content="https://itkdm.github.io/open-lab-components/logo.png">
+  <meta property="og:image" content="https://olc.itkdm.com/logo.png">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="Open Lab Components">
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://itkdm.github.io/open-lab-components/playground.html">
+  <meta name="twitter:url" content="https://olc.itkdm.com/playground.html">
   <meta name="twitter:title" content="组件预览 - Open Lab Components">
   <meta name="twitter:description" content="Open Lab Components 组件预览与调试工具：实时预览组件效果，调整参数配置，查看使用代码。">
-  <meta name="twitter:image" content="https://itkdm.github.io/open-lab-components/logo.png">
+  <meta name="twitter:image" content="https://olc.itkdm.com/logo.png">
   
   <!-- Baidu Site Verification -->
   <meta name="baidu-site-verification" content="codeva-xRoTjtvxqL" />
@@ -32,7 +32,8 @@
   <!-- Microsoft Bing Site Verification -->
   <meta name="msvalidate.01" content="8369F75782EB856615D12EF9B5706E82" />
   
-  <link rel="icon" type="image/png" href="./logo.png">
+  <link rel="icon" href="./favicon-64.png" type="image/png" sizes="64x64">
+  <link rel="icon" href="./favicon.ico" sizes="32x32">
   <title>组件预览 - Open Lab Components</title>
   
   <!-- JSON-LD Structured Data -->
@@ -42,13 +43,13 @@
     "@type": "WebApplication",
     "name": "Open Lab Components Playground",
     "description": "Open Lab Components 组件预览与调试工具：实时预览组件效果，调整参数配置，查看使用代码。",
-    "url": "https://itkdm.github.io/open-lab-components/playground.html",
+    "url": "https://olc.itkdm.com/playground.html",
     "inLanguage": ["zh-CN", "en"],
     "applicationCategory": "DeveloperApplication",
     "isPartOf": {
       "@type": "WebSite",
       "name": "Open Lab Components",
-      "url": "https://itkdm.github.io/open-lab-components/"
+      "url": "https://olc.itkdm.com/"
     },
     "featureList": "实时预览,参数调整,代码生成,组件调试"
   }
@@ -896,15 +897,6 @@
       }
       metaDesc.setAttribute('content', pageDescription);
       
-      // 更新或创建 meta keywords
-      let metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (!metaKeywords) {
-        metaKeywords = document.createElement('meta');
-        metaKeywords.setAttribute('name', 'keywords');
-        document.head.appendChild(metaKeywords);
-      }
-      metaKeywords.setAttribute('content', keywords);
-      
       // 更新 canonical URL
       const baseUrl = window.location.origin + window.location.pathname.split('/').slice(0, -1).join('/');
       const playgroundUrl = `${baseUrl}/playground.html?id=${component.id}`;
@@ -997,7 +989,7 @@
               <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
               <h2 style="margin-bottom: 0.5rem;">${t('no-component-title')}</h2>
               <p style="color: var(--text-secondary); margin-bottom: 1rem;">${t('no-component-desc')}</p>
-              <a href="./index.html" style="display: inline-block; padding: 0.625rem 1.25rem; background: var(--primary); color: white; text-decoration: none; border-radius: 0.5rem;">${t('back-home')}</a>
+              <a href="./" style="display: inline-block; padding: 0.625rem 1.25rem; background: var(--primary); color: white; text-decoration: none; border-radius: 0.5rem;">${t('back-home')}</a>
             </div>
           `;
           return;
@@ -1024,7 +1016,7 @@
             <div style="font-size: 3rem; margin-bottom: 1rem;">❌</div>
             <h2 style="margin-bottom: 0.5rem;">${t('load-fail-title')}</h2>
             <p style="color: var(--text-secondary); margin-bottom: 1rem;">${t('load-fail-desc-prefix')}${err.message}</p>
-            <a href="./index.html" style="display: inline-block; padding: 0.625rem 1.25rem; background: var(--primary); color: white; text-decoration: none; border-radius: 0.5rem;">${t('back-home')}</a>
+            <a href="./" style="display: inline-block; padding: 0.625rem 1.25rem; background: var(--primary); color: white; text-decoration: none; border-radius: 0.5rem;">${t('back-home')}</a>
           </div>
         `;
       }
@@ -1435,7 +1427,7 @@ ${componentHtml}
           <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
           <h2 style="margin-bottom: 0.5rem;">${t('need-id-title')}</h2>
           <p style="color: var(--text-secondary); margin-bottom: 1rem;">${t('need-id-desc')}</p>
-          <a href="./index.html" style="display: inline-block; padding: 0.625rem 1.25rem; background: var(--primary); color: white; text-decoration: none; border-radius: 0.5rem;">${t('back-home')}</a>
+          <a href="./" style="display: inline-block; padding: 0.625rem 1.25rem; background: var(--primary); color: white; text-decoration: none; border-radius: 0.5rem;">${t('back-home')}</a>
         </div>
       `;
     }

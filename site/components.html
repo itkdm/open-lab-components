@@ -4,27 +4,26 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="浏览 Open Lab Components 的 210+ STEM 教育组件，覆盖物理、化学、生物、数学、科学。支持搜索、筛选和实时预览。">
-  <meta name="keywords" content="Open Lab Components,组件列表,物理,化学,生物,数学,科学,STEM教育组件,交互组件,HTML组件">
   <meta name="author" content="布吉岛 (itkdm)">
   <meta name="robots" content="index, follow">
   <meta name="language" content="zh-CN">
-  <link rel="canonical" href="https://itkdm.github.io/open-lab-components/components.html">
+  <link rel="canonical" href="https://olc.itkdm.com/components.html">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://itkdm.github.io/open-lab-components/components.html">
+  <meta property="og:url" content="https://olc.itkdm.com/components.html">
   <meta property="og:title" content="组件列表 - Open Lab Components">
   <meta property="og:description" content="浏览 Open Lab Components 的所有实验器材组件，支持搜索、筛选和实时预览。">
-  <meta property="og:image" content="https://itkdm.github.io/open-lab-components/logo.png">
+  <meta property="og:image" content="https://olc.itkdm.com/logo.png">
   <meta property="og:locale" content="zh_CN">
   <meta property="og:site_name" content="Open Lab Components">
   
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://itkdm.github.io/open-lab-components/components.html">
+  <meta name="twitter:url" content="https://olc.itkdm.com/components.html">
   <meta name="twitter:title" content="组件列表 - Open Lab Components">
   <meta name="twitter:description" content="浏览 Open Lab Components 的所有实验器材组件，支持搜索、筛选和实时预览。">
-  <meta name="twitter:image" content="https://itkdm.github.io/open-lab-components/logo.png">
+  <meta name="twitter:image" content="https://olc.itkdm.com/logo.png">
   
   <!-- Baidu Site Verification -->
   <meta name="baidu-site-verification" content="codeva-xRoTjtvxqL" />
@@ -32,7 +31,8 @@
   <!-- Microsoft Bing Site Verification -->
   <meta name="msvalidate.01" content="8369F75782EB856615D12EF9B5706E82" />
   
-  <link rel="icon" type="image/png" href="./logo.png">
+  <link rel="icon" href="./favicon-64.png" type="image/png" sizes="64x64">
+  <link rel="icon" href="./favicon.ico" sizes="32x32">
   <title>组件列表 - Open Lab Components</title>
   
   <!-- JSON-LD Structured Data -->
@@ -42,12 +42,12 @@
     "@type": "CollectionPage",
     "name": "组件列表 - Open Lab Components",
     "description": "浏览 Open Lab Components 的所有实验器材组件，包括物理实验器材和电路元件。支持搜索、筛选和实时预览。",
-    "url": "https://itkdm.github.io/open-lab-components/components.html",
+    "url": "https://olc.itkdm.com/components.html",
     "inLanguage": ["zh-CN", "en"],
     "isPartOf": {
       "@type": "WebSite",
       "name": "Open Lab Components",
-      "url": "https://itkdm.github.io/open-lab-components/"
+      "url": "https://olc.itkdm.com/"
     }
   }
   </script>
@@ -292,7 +292,7 @@
       margin-bottom: 24px;
     }
     
-    .section-header h2 {
+    .section-header h1 {
       font-size: 1.5rem;
       font-weight: 700;
       color: var(--text-primary);
@@ -514,7 +514,12 @@
       .toolbar-controls {
         margin-left: 0;
         width: 100%;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .toolbar-controls select {
+        width: 100%;
       }
       
       .hero {
@@ -547,8 +552,8 @@
   <!-- 第1层：导航层 -->
   <nav class="nav-header">
     <div class="nav-container">
-      <a href="./index.html" class="nav-brand">
-        <img src="./logo.png" alt="OLC Logo" class="nav-logo" />
+      <a href="./" class="nav-brand">
+        <img src="./logo-128.webp" alt="" aria-hidden="true" class="nav-logo" width="40" height="40" decoding="async" />
         <span>Open Lab Components</span>
       </a>
       <div class="nav-links">
@@ -562,7 +567,7 @@
           </svg>
           GitHub
         </a>
-        <a href="./index.html#contribute" class="btn btn-secondary" data-i18n="nav-contribute">贡献</a>
+        <a href="./#contribute" class="btn btn-secondary" data-i18n="nav-contribute">贡献</a>
         <button id="langToggle" class="btn btn-secondary lang-btn" type="button">English</button>
       </div>
     </div>
@@ -602,7 +607,7 @@
   <!-- 主内容区 -->
   <main id="components">
     <div class="section-header">
-      <h2 data-i18n="section-title">全部组件</h2>
+      <h1 data-i18n="section-title">全部组件</h1>
       <p><span data-i18n="section-desc-prefix">共</span> <span id="componentCountText">-</span> <span data-i18n="section-desc-suffix">个组件，覆盖多个实验场景。</span></p>
     </div>
     
@@ -983,7 +988,7 @@
         return `
           <div class="card" onclick="openPlayground('${c.id}')">
             <div class="card-preview">
-              <iframe src="${componentPath}" scrolling="no"></iframe>
+              <iframe src="${componentPath}" title="${getComponentName(c)}" loading="lazy" scrolling="no"></iframe>
               <div class="card-actions">
                 <button class="card-action-btn primary" onclick="event.stopPropagation(); openPlayground('${c.id}')">${t('btn-preview')}</button>
                 <button class="card-action-btn" onclick="event.stopPropagation(); copyComponent('${c.id}')">${t('btn-copy')}</button>

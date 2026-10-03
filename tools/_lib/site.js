@@ -12,7 +12,9 @@ const SITE_STATIC_FILE_EXTENSIONS = new Set([
   ".gif",
   ".svg",
   ".ico",
-  ".webp"
+  ".webp",
+  ".txt",
+  ".xml"
 ]);
 const SITE_MIME_TYPES = {
   ".css": "text/css; charset=utf-8",
@@ -25,7 +27,9 @@ const SITE_MIME_TYPES = {
   ".json": "application/json; charset=utf-8",
   ".png": "image/png",
   ".svg": "image/svg+xml",
-  ".webp": "image/webp"
+  ".webp": "image/webp",
+  ".txt": "text/plain; charset=utf-8",
+  ".xml": "application/xml; charset=utf-8"
 };
 
 function listSiteHtmlFiles(siteDir) {
